@@ -31,16 +31,16 @@ import java.io.IOException;
  * @author graemerocher
  * @since 1.0.0
  */
-@ConfigurationProperties(OracleCloudAuthConfigurationProperties.PREFIX)
-@Requires(property = OracleCloudAuthConfigurationProperties.PREFIX)
+@ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD)
+@Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
 public class OracleCloudAuthConfigurationProperties {
-    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".auth";
+    public static final String TENANT_ID = OracleCloudCoreFactory.ORACLE_CLOUD + ".tenant-id";
 
     private Readable privateKeyFile;
     private String privateKey;
 
     @ConfigurationBuilder(prefixes = "", excludes = "privateKeySupplier")
-    private SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder = SimpleAuthenticationDetailsProvider.builder();
+    private final SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder = SimpleAuthenticationDetailsProvider.builder();
 
     /**
      * @return The builder.

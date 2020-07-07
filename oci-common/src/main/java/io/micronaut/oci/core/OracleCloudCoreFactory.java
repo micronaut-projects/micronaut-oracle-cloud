@@ -55,7 +55,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(condition = OracleCloudConfigCondition.class)
-    @Requires(missingProperty = OracleCloudAuthConfigurationProperties.PREFIX)
+    @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     protected AuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
         return new ConfigFileAuthenticationDetailsProvider(
@@ -69,11 +69,10 @@ public class OracleCloudCoreFactory {
      * @return The {@link AuthenticationDetailsProvider}.
      */
     @Singleton
-    @Requires(property = OracleCloudAuthConfigurationProperties.PREFIX)
+    @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     protected AuthenticationDetailsProvider simpleAuthenticationDetailsProvider(
             OracleCloudAuthConfigurationProperties config) {
-        SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder = SimpleAuthenticationDetailsProvider.builder();
         return config.getBuilder().build();
     }
 
