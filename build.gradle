@@ -13,7 +13,18 @@ buildscript {
 subprojects { Project subproject ->
     group "io.micronaut.oci"
 
-    apply plugin: "io.micronaut.build.common"
+    if (subproject.name == 'oci-bom') {
+        apply plugin: "java-platform"
+        version projectVersion
+    } else {
+        apply plugin: "io.micronaut.build.common"    
+
+        dependencies {
+            api platform("com.oracle.oci.sdk:oci-java-sdk-bom:$ociVersion")
+        }
+    }
+
+    
     apply plugin: "io.micronaut.build.dependency-updates"
 
     if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {

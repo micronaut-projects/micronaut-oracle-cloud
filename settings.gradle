@@ -1,3 +1,4 @@
 rootProject.name = 'oci'
 
+include 'oci-bom'
 include 'oci-core'
