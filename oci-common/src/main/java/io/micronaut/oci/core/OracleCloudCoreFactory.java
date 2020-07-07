@@ -18,12 +18,16 @@ package io.micronaut.oci.core;
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Sets up core beans for integration with Oracle cloud clients.
@@ -33,20 +37,44 @@ import java.io.IOException;
 @Factory
 public class OracleCloudCoreFactory {
 
+    public static final String ORACLE_CLOUD = "oracle.cloud";
+
+    private final String profile;
+
+    /**
+     * @param profile The configured profile
+     */
+    protected OracleCloudCoreFactory(@Nullable @Property(name = ORACLE_CLOUD + ".config.profile") String profile) {
+        this.profile = profile;
+    }
+
     /**
      * Configures a {@link ConfigFileAuthenticationDetailsProvider} if no other {@link AuthenticationDetailsProvider} is present.
-     * @param config The config to use
      * @return The {@link AuthenticationDetailsProvider}.
      * @throws IOException If an exception occurs reading configuration.
      */
     @Singleton
-    @Requires(missingBeans = AuthenticationDetailsProvider.class)
+    @Requires(condition = OracleCloudConfigCondition.class)
+    @Requires(missingProperty = OracleCloudAuthConfigurationProperties.PREFIX)
     @Primary
-    protected AuthenticationDetailsProvider authenticationDetailsProvider(
-            OracleCloudConfigurationProperties config) throws IOException {
+    protected AuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
         return new ConfigFileAuthenticationDetailsProvider(
-                config.getProfile().orElse(null)
+                profile
         );
+    }
+
+    /**
+     * Configures a {@link ConfigFileAuthenticationDetailsProvider} if no other {@link AuthenticationDetailsProvider} is present.
+     * @param config The config to use
+     * @return The {@link AuthenticationDetailsProvider}.
+     */
+    @Singleton
+    @Requires(property = OracleCloudAuthConfigurationProperties.PREFIX)
+    @Primary
+    protected AuthenticationDetailsProvider simpleAuthenticationDetailsProvider(
+            OracleCloudAuthConfigurationProperties config) {
+        SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder = SimpleAuthenticationDetailsProvider.builder();
+        return config.getBuilder().build();
     }
 
     /**
@@ -57,7 +85,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Primary
     protected ClientConfiguration.ClientConfigurationBuilder configurationBuilder(
-            OracleCloudConfigurationProperties props) {
+            OracleCloudClientConfigurationProperties props) {
         return props.getClientBuilder();
     }
 
@@ -71,5 +99,12 @@ public class OracleCloudCoreFactory {
     @Primary
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
+    }
+
+    /**
+     * @return The configured profile.
+     */
+    public Optional<String> getProfile() {
+        return Optional.ofNullable(profile);
     }
 }

@@ -22,25 +22,20 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 
-import java.util.Optional;
-
 /**
  * Configuration for the {@link com.oracle.bmc.auth.AuthenticationDetailsProvider}.
  *
  * @author graemerocher
  * @since 1.0.0
  */
-@ConfigurationProperties(OracleCloudConfigurationProperties.ORACLE_CLOUD)
-public class OracleCloudConfigurationProperties {
-    public static final String ORACLE_CLOUD = "oracle.cloud";
-
-    private String profile;
-    @ConfigurationBuilder(prefixes = "", value = "client", excludes = {"retryConfiguration", "circuitBreakerConfiguration"})
+@ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD + ".client")
+public class OracleCloudClientConfigurationProperties {
+    @ConfigurationBuilder(prefixes = "", excludes = {"retryConfiguration", "circuitBreakerConfiguration"})
     private final ClientConfiguration.ClientConfigurationBuilder clientBuilder = ClientConfiguration.builder();
-    @ConfigurationBuilder(prefixes = "", value = "client.retry")
+    @ConfigurationBuilder(prefixes = "", value = "retry")
     @Nullable
     private RetryConfiguration.Builder retryBuilder;
-    @ConfigurationBuilder(prefixes = "", value = "client.circuit-breaker")
+    @ConfigurationBuilder(prefixes = "", value = "circuit-breaker")
     @Nullable
     private CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder circuitBreakerBuilder;
 
@@ -77,14 +72,4 @@ public class OracleCloudConfigurationProperties {
         return circuitBreakerBuilder;
     }
 
-    /**
-     * @return The user profile to use.
-     */
-    public Optional<String> getProfile() {
-        return Optional.ofNullable(profile);
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
 }
