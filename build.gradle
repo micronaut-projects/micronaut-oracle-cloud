@@ -17,11 +17,31 @@ subprojects { Project subproject ->
         apply plugin: "java-platform"
         version projectVersion
     } else {
-        apply plugin: "io.micronaut.build.common"    
+        apply plugin: "io.micronaut.build.common"
 
         dependencies {
             api platform("com.oracle.oci.sdk:oci-java-sdk-bom:$ociVersion")
+
+            testImplementation("io.micronaut.test:micronaut-test-junit5")
+            testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+            testAnnotationProcessor "io.micronaut:micronaut-inject-java"
         }
+
+        test {
+            useJUnitPlatform()
+        }
+
+         tasks.withType(JavaCompile) {
+             options.encoding = "UTF-8"
+             options.compilerArgs.addAll([
+                     '-parameters',
+                     // enables incremental compilation
+                     '-Amicronaut.processing.incremental=true',
+                     '-Amicronaut.processing.annotations=io.micronaut.oci.*',
+                     "-Amicronaut.processing.group=$project.group",
+                     "-Amicronaut.processing.module=$project.name",
+             ])
+         }
     }
 
     
