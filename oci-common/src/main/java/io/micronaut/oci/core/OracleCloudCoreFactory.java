@@ -18,7 +18,6 @@ package io.micronaut.oci.core;
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
-import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;

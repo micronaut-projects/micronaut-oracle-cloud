@@ -61,7 +61,6 @@ public class OracleCloudAuthConfigurationProperties {
         return builder;
     }
 
-
     /**
      * @param privateKeyFile The private key location.
      */
