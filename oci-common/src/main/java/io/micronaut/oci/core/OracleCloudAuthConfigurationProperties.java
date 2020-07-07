@@ -22,6 +22,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.io.Readable;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 /**
@@ -35,38 +36,43 @@ import java.io.IOException;
 public class OracleCloudAuthConfigurationProperties {
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".auth";
 
-    private Readable privateKey;
+    private Readable privateKeyFile;
+    private String privateKey;
 
-    @ConfigurationBuilder(prefixes = "")
+    @ConfigurationBuilder(prefixes = "", excludes = "privateKeySupplier")
     private SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder = SimpleAuthenticationDetailsProvider.builder();
 
     /**
      * @return The builder.
      */
     public SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder getBuilder() {
-        if (privateKey != null) {
+        if (privateKeyFile != null) {
             builder.privateKeySupplier(() -> {
                 try {
-                    return privateKey.asInputStream();
+                    return privateKeyFile.asInputStream();
                 } catch (IOException e) {
                     throw new ConfigurationException("Invalid Oracle Cloud private key specified");
                 }
             });
         }
+        if (privateKey != null) {
+            builder.privateKeySupplier(() -> new ByteArrayInputStream(privateKey.getBytes()));
+        }
         return builder;
     }
 
+
     /**
-     * @return The private key
+     * @param privateKeyFile The private key location.
      */
-    public Readable getPrivateKey() {
-        return privateKey;
+    public void setPrivateKeyFile(Readable privateKeyFile) {
+        this.privateKeyFile = privateKeyFile;
     }
 
     /**
-     * @param privateKey The private key location.
+     * @param privateKey The private key as a string
      */
-    public void setPrivateKey(Readable privateKey) {
+    public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
     }
 }

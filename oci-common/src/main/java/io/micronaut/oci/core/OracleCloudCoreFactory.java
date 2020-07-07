@@ -37,7 +37,7 @@ import java.util.Optional;
 @Factory
 public class OracleCloudCoreFactory {
 
-    public static final String ORACLE_CLOUD = "oracle.cloud";
+    public static final String ORACLE_CLOUD = "oci";
 
     private final String profile;
 

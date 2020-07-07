@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
-@Property(name = "oracle.cloud.auth.tenantId", value = "something")
-@Property(name = "oracle.cloud.auth.region", value = "ap-mumbai-1")
+@Property(name = "oci.auth.tenantId", value = "something")
+@Property(name = "oci.auth.region", value = "ap-mumbai-1")
 public class OracleCloudCustomAuthConfigTest {
 
     @Test
