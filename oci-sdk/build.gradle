@@ -1,5 +1,6 @@
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor project(":oci-sdk-processor")
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     api project(":oci-common")
@@ -13,3 +14,4 @@ dependencies {
     }
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
 }
+spotlessJavaMisc.enabled = false
