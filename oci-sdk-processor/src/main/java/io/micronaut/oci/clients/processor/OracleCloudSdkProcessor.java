@@ -71,11 +71,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                         final String factoryName = simpleName + "Factory";
                         final String factoryPackageName = packageName.replace("com.oracle.bmc", "io.micronaut.oci.clients");
                         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
-                        final MethodSpec.Builder constructor = buildConstructor(builder);
+                        final MethodSpec.Builder constructor = buildConstructor(simpleName, builder);
                         final ClassName builderType = ClassName.get(packageName, simpleName + ".Builder");
                         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
                         builder.addAnnotation(Factory.class);
-                        final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class).addMember("classes", "ObjectStorageClient.class");
+                        final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class).addMember("classes", simpleName + ".class");
                         builder.addAnnotation(requiresSpec.build());
                         builder.addMethod(constructor.build());
 
@@ -124,7 +124,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         return builder;
     }
 
-    private MethodSpec.Builder buildConstructor(TypeSpec.Builder builder) {
+    private MethodSpec.Builder buildConstructor(String simpleName, TypeSpec.Builder builder) {
         final MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration")
@@ -133,7 +133,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http.signing", "RequestSignerFactory"), "requestSignerFactory")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(ObjectStorageClient.builder(), clientConfiguration, clientConfigurator, requestSignerFactory)")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, clientConfigurator, requestSignerFactory)")
                         .addStatement("builder = super.getBuilder()").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         return constructor;

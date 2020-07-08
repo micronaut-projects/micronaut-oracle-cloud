@@ -18,9 +18,11 @@
  * Package containing client factories for the Oracle Cloud SDK.
  */
 @Requires(classes = {
-        ObjectStorageClient.class
+        ObjectStorageClient.class,
+        FileStorageClient.class
 })
 package io.micronaut.oci.clients;
 
+import com.oracle.bmc.filestorage.FileStorageClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import io.micronaut.context.annotation.Requires;
