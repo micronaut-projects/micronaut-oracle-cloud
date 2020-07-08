@@ -19,12 +19,18 @@
  */
 @Requires(classes = {
         ObjectStorageClient.class,
+        ObjectStorageAsyncClient.class,
         FileStorageClient.class,
-        GatewayClient.class
+        FileStorageAsyncClient.class,
+        GatewayClient.class,
+        GatewayAsyncClient.class
 })
 package io.micronaut.oci.clients;
 
+import com.oracle.bmc.apigateway.GatewayAsyncClient;
 import com.oracle.bmc.apigateway.GatewayClient;
+import com.oracle.bmc.filestorage.FileStorageAsyncClient;
 import com.oracle.bmc.filestorage.FileStorageClient;
+import com.oracle.bmc.objectstorage.ObjectStorageAsyncClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import io.micronaut.context.annotation.Requires;
