@@ -16,6 +16,7 @@
 package io.micronaut.oci.core;
 
 import com.oracle.bmc.Region;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.TypeConverterRegistrar;
 
@@ -23,9 +24,13 @@ import javax.inject.Singleton;
 
 /**
  * Converters for Oracle Cloud Configuration.
+ *
+ * @author graemerocher
+ * @since 1.0.0
  */
 @Singleton
-public class OracleCloudConverterRegistrar implements TypeConverterRegistrar {
+@Internal
+final class OracleCloudConverterRegistrar implements TypeConverterRegistrar {
     @Override
     public void register(ConversionService<?> conversionService) {
         conversionService.addConverter(String.class, Region.class, Region::fromRegionCodeOrId);

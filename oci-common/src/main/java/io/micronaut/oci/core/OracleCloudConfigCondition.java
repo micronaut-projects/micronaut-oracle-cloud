@@ -22,7 +22,8 @@ import io.micronaut.core.type.Argument;
 import java.io.File;
 
 /**
- * Allows enabling config based configuration.
+ * A condition used to enable file based configuration if the file exists that is specified by either {@code oci.config} or
+ * available at {@code $USE_HOME/.oci/config}.
  *
  * @author graemerocher
  * @since 1.0.0
@@ -30,7 +31,7 @@ import java.io.File;
 class OracleCloudConfigCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context) {
-        String configPath = context.getProperty("oracle.cloud.config", Argument.STRING)
+        String configPath = context.getProperty(OracleCloudCoreFactory.ORACLE_CLOUD + ".config", Argument.STRING)
                 .orElseGet(() -> System.getProperty("user.home") + "/.oci/config");
         if (new File(configPath).exists()) {
             return true;

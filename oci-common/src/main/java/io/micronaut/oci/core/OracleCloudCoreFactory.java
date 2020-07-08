@@ -29,7 +29,13 @@ import java.io.IOException;
 import java.util.Optional;
 
 /**
- * Sets up core beans for integration with Oracle cloud clients.
+ * Sets up core beans for integration with Oracle cloud clients. The following beans are exposed:
+ *
+ * <ul>
+ *     <li>{@code AuthenticationDetailsProvider}</li>
+ *     <li>{@code ClientConfiguration.ClientConfigurationBuilder}</li>
+ *     <li>{@code ClientConfiguration}</li>
+ * </ul>
  *
  * @see AuthenticationDetailsProvider
  */
