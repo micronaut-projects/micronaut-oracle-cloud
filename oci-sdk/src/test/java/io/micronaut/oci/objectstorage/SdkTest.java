@@ -4,6 +4,8 @@ import com.oracle.bmc.apigateway.GatewayAsyncClient;
 import com.oracle.bmc.apigateway.GatewayClient;
 import com.oracle.bmc.bds.BdsAsyncClient;
 import com.oracle.bmc.bds.BdsClient;
+import com.oracle.bmc.budget.BudgetAsyncClient;
+import com.oracle.bmc.budget.BudgetClient;
 import com.oracle.bmc.filestorage.FileStorageAsyncClient;
 import com.oracle.bmc.filestorage.FileStorageClient;
 import io.micronaut.test.annotation.MicronautTest;
@@ -18,6 +20,12 @@ public class SdkTest {
 
     @Test
     void testBdsClient(BdsClient client, BdsAsyncClient asyncClient) {
+        assertNotNull(client);
+        assertNotNull(asyncClient);
+    }
+
+    @Test
+    void testBudgetClient(BudgetClient client, BudgetAsyncClient asyncClient) {
         assertNotNull(client);
         assertNotNull(asyncClient);
     }
