@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -36,7 +36,8 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="../../../../io/micronaut/oci/core/package-summary.html">Package</a></li>
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
 <li class="navBarCell1Rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../deprecated-list.html">Deprecated</a></li>
@@ -46,7 +47,7 @@ var activeTableTab = "activeTableTab";
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../io/micronaut/oci/core/OracleCloudConverterRegistrar.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../io/micronaut/oci/core/OracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">
@@ -109,10 +110,18 @@ var activeTableTab = "activeTableTab";
 <pre>@Factory
 public class <span class="typeNameLabel">OracleCloudCoreFactory</span>
 extends java.lang.Object</pre>
-<div class="block">Sets up core beans for integration with Oracle cloud clients.</div>
+<div class="block">Sets up core beans for integration with Oracle cloud clients. The following beans are exposed:
+
+ <ul>
+     <li><code>AuthenticationDetailsProvider</code></li>
+     <li><code>ClientConfiguration.ClientConfigurationBuilder</code></li>
+     <li><code>ClientConfiguration</code></li>
+ </ul></div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><code>AuthenticationDetailsProvider</code></dd>
+<dd><code>com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;</code>, 
+<code>ResourcePrincipalAuthenticationDetailsProvider</code>, 
+<code>SimpleAuthenticationDetailsProvider</code></dd>
 </dl>
 </li>
 </ul>
@@ -177,9 +186,10 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>protected com.oracle.bmc.auth.AuthenticationDetailsProvider</code></td>
+<td class="colFirst"><code>protected com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#configFileAuthenticationDetailsProvider--">configFileAuthenticationDetailsProvider</a></span>()</code>
-<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
+<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config</code>.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -193,9 +203,16 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#getProfile--">getProfile</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>protected com.oracle.bmc.auth.AuthenticationDetailsProvider</code></td>
+<td class="colFirst"><code>protected com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#resourcePrincipalAuthenticationDetailsProvider--">resourcePrincipalAuthenticationDetailsProvider</a></span>()</code>
+<div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>protected com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#simpleAuthenticationDetailsProvider-io.micronaut.oci.core.OracleCloudAuthConfigurationProperties-">simpleAuthenticationDetailsProvider</a></span>(<a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</code>
-<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
+<div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </td>
 </tr>
 </table>
@@ -272,14 +289,17 @@ extends java.lang.Object</pre>
 <pre>@Singleton
  @Requires(condition=io.micronaut.oci.core.OracleCloudConfigCondition.class) @Requires(missingProperty="oci.tenant-id")
  @Primary
-protected&nbsp;com.oracle.bmc.auth.AuthenticationDetailsProvider&nbsp;configFileAuthenticationDetailsProvider()
-                                                                                                                                                                                                                                          throws java.io.IOException</pre>
-<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
+protected&nbsp;com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider&nbsp;configFileAuthenticationDetailsProvider()
+                                                                                                                                                                                                                                                    throws java.io.IOException</pre>
+<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config</code>.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The <code>AuthenticationDetailsProvider</code>.</dd>
+<dd>The <code>ConfigFileAuthenticationDetailsProvider</code>.</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - If an exception occurs reading configuration.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>ConfigFileAuthenticationDetailsProvider</code></dd>
 </dl>
 </li>
 </ul>
@@ -292,13 +312,35 @@ protected&nbsp;com.oracle.bmc.auth.AuthenticationDetailsProvider&nbsp;configFile
 <pre>@Singleton
  @Requires(property="oci.tenant-id")
  @Primary
-protected&nbsp;com.oracle.bmc.auth.AuthenticationDetailsProvider&nbsp;simpleAuthenticationDetailsProvider(<a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</pre>
-<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
+protected&nbsp;com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider&nbsp;simpleAuthenticationDetailsProvider(<a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</pre>
+<div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>config</code> - The config to use</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The <code>AuthenticationDetailsProvider</code>.</dd>
+<dd>The <code>SimpleAuthenticationDetailsProvider</code>.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>SimpleAuthenticationDetailsProvider</code></dd>
+</dl>
+</li>
+</ul>
+<a name="resourcePrincipalAuthenticationDetailsProvider--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>resourcePrincipalAuthenticationDetailsProvider</h4>
+<pre>@Singleton
+ @Requires(property="OCI_RESOURCE_PRINCIPAL_VERSION")
+ @Primary
+protected&nbsp;com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider&nbsp;resourcePrincipalAuthenticationDetailsProvider()</pre>
+<div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The <code>ResourcePrincipalAuthenticationDetailsProvider</code>.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>ResourcePrincipalAuthenticationDetailsProvider</code></dd>
 </dl>
 </li>
 </ul>
@@ -368,7 +410,8 @@ protected&nbsp;com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration(com.o
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="../../../../io/micronaut/oci/core/package-summary.html">Package</a></li>
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
 <li class="navBarCell1Rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../deprecated-list.html">Deprecated</a></li>
@@ -378,7 +421,7 @@ protected&nbsp;com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration(com.o
 </div>
 <div class="subNav">
 <ul class="navList">
-<li><a href="../../../../io/micronaut/oci/core/OracleCloudConverterRegistrar.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
+<li><a href="../../../../io/micronaut/oci/core/OracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">Prev&nbsp;Class</span></a></li>
 <li>Next&nbsp;Class</li>
 </ul>
 <ul class="navList">

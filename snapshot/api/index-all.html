@@ -30,7 +30,8 @@
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="io/micronaut/oci/core/package-summary.html">Package</a></li>
+<li><a href="overview-summary.html">Overview</a></li>
+<li>Package</li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
 <li><a href="deprecated-list.html">Deprecated</a></li>
@@ -66,7 +67,31 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#I:C">C</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a name="I:C">
+<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a name="I:A">
+<!--   -->
+</a>
+<h2 class="title">A</h2>
+<dl>
+<dt><a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oci.core.sdk"><span class="typeNameLink">AbstractSdkClientFactory</span></a>&lt;<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a> extends com.oracle.bmc.common.ClientBuilderBase&lt;<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>,<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">T</a>&gt;,<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">T</a>&gt; - Class in <a href="io/micronaut/oci/core/sdk/package-summary.html">io.micronaut.oci.core.sdk</a></dt>
+<dd>
+<div class="block">Abstract base factory for SDK objects.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html#AbstractSdkClientFactory-B-com.oracle.bmc.ClientConfiguration-com.oracle.bmc.http.ClientConfigurator-com.oracle.bmc.http.signing.RequestSignerFactory-">AbstractSdkClientFactory(B, ClientConfiguration, ClientConfigurator, RequestSignerFactory)</a></span> - Constructor for class io.micronaut.oci.core.sdk.<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oci.core.sdk">AbstractSdkClientFactory</a></dt>
+<dd>
+<div class="block">Default constructor.</div>
+</dd>
+</dl>
+<a name="I:B">
+<!--   -->
+</a>
+<h2 class="title">B</h2>
+<dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html#build-com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider-">build(AbstractAuthenticationDetailsProvider)</a></span> - Method in class io.micronaut.oci.core.sdk.<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oci.core.sdk">AbstractSdkClientFactory</a></dt>
+<dd>
+<div class="block">Builds the client.</div>
+</dd>
+</dl>
+<a name="I:C">
 <!--   -->
 </a>
 <h2 class="title">C</h2>
@@ -77,7 +102,8 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#configFileAuthenticationDetailsProvider--">configFileAuthenticationDetailsProvider()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
 <dd>
-<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
+<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config</code>.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#configurationBuilder-io.micronaut.oci.core.OracleCloudClientConfigurationProperties-">configurationBuilder(OracleCloudClientConfigurationProperties)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
 <dd>
@@ -90,6 +116,8 @@
 <h2 class="title">G</h2>
 <dl>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#getBuilder--">getBuilder()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html#getBuilder--">getBuilder()</a></span> - Method in class io.micronaut.oci.core.sdk.<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oci.core.sdk">AbstractSdkClientFactory</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudClientConfigurationProperties.html#getCircuitBreakerBuilder--">getCircuitBreakerBuilder()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudClientConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
@@ -105,7 +133,13 @@
 </a>
 <h2 class="title">I</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html#init-javax.annotation.processing.ProcessingEnvironment-">init(ProcessingEnvironment)</a></span> - Method in class io.micronaut.oci.clients.processor.<a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oci.clients.processor">OracleCloudSdkProcessor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oci/clients/processor/package-summary.html">io.micronaut.oci.clients.processor</a> - package io.micronaut.oci.clients.processor</dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oci/core/package-summary.html">io.micronaut.oci.core</a> - package io.micronaut.oci.core</dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oci/core/sdk/package-summary.html">io.micronaut.oci.core.sdk</a> - package io.micronaut.oci.core.sdk</dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:O">
@@ -127,17 +161,26 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudClientConfigurationProperties.html#OracleCloudClientConfigurationProperties--">OracleCloudClientConfigurationProperties()</a></span> - Constructor for class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudClientConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oci/core/OracleCloudConverterRegistrar.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">OracleCloudConverterRegistrar</span></a> - Class in <a href="io/micronaut/oci/core/package-summary.html">io.micronaut.oci.core</a></dt>
-<dd>
-<div class="block">Converters for Oracle Cloud Configuration.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudConverterRegistrar.html#OracleCloudConverterRegistrar--">OracleCloudConverterRegistrar()</a></span> - Constructor for class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudConverterRegistrar.html" title="class in io.micronaut.oci.core">OracleCloudConverterRegistrar</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">OracleCloudCoreFactory</span></a> - Class in <a href="io/micronaut/oci/core/package-summary.html">io.micronaut.oci.core</a></dt>
 <dd>
 <div class="block">Sets up core beans for integration with Oracle cloud clients.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#OracleCloudCoreFactory-java.lang.String-">OracleCloudCoreFactory(String)</a></span> - Constructor for class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oci.clients.processor"><span class="typeNameLink">OracleCloudSdkProcessor</span></a> - Class in <a href="io/micronaut/oci/clients/processor/package-summary.html">io.micronaut.oci.clients.processor</a></dt>
+<dd>
+<div class="block">An annotation processor that generates the Oracle Cloud SDK integration
+ for Micronaut.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html#OracleCloudSdkProcessor--">OracleCloudSdkProcessor()</a></span> - Constructor for class io.micronaut.oci.clients.processor.<a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oci.clients.processor">OracleCloudSdkProcessor</a></dt>
+<dd>&nbsp;</dd>
+</dl>
+<a name="I:P">
+<!--   -->
+</a>
+<h2 class="title">P</h2>
+<dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html#process-java.util.Set-javax.annotation.processing.RoundEnvironment-">process(Set&lt;? extends TypeElement&gt;, RoundEnvironment)</a></span> - Method in class io.micronaut.oci.clients.processor.<a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oci.clients.processor">OracleCloudSdkProcessor</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:R">
@@ -145,21 +188,26 @@
 </a>
 <h2 class="title">R</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudConverterRegistrar.html#register-io.micronaut.core.convert.ConversionService-">register(ConversionService&lt;?&gt;)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudConverterRegistrar.html" title="class in io.micronaut.oci.core">OracleCloudConverterRegistrar</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#resourcePrincipalAuthenticationDetailsProvider--">resourcePrincipalAuthenticationDetailsProvider()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
+<dd>
+<div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
+</dd>
 </dl>
 <a name="I:S">
 <!--   -->
 </a>
 <h2 class="title">S</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPassphrase-java.lang.String-">setPassphrase(String)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPrivateKey-java.lang.String-">setPrivateKey(String)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPrivateKeyFile-io.micronaut.core.io.Readable-">setPrivateKeyFile(Readable)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#simpleAuthenticationDetailsProvider-io.micronaut.oci.core.OracleCloudAuthConfigurationProperties-">simpleAuthenticationDetailsProvider(OracleCloudAuthConfigurationProperties)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
 <dd>
-<div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
+<div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </dd>
 </dl>
 <a name="I:T">
@@ -170,7 +218,7 @@
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#TENANT_ID">TENANT_ID</a></span> - Static variable in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
 </dl>
-<a href="#I:C">C</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;</div>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">
 <!--   -->
@@ -180,7 +228,8 @@
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="io/micronaut/oci/core/package-summary.html">Package</a></li>
+<li><a href="overview-summary.html">Overview</a></li>
+<li>Package</li>
 <li>Class</li>
 <li><a href="overview-tree.html">Tree</a></li>
 <li><a href="deprecated-list.html">Deprecated</a></li>

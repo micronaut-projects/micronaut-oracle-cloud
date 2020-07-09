@@ -1,1 +1,3 @@
+io.micronaut.oci.clients.processor
 io.micronaut.oci.core
+io.micronaut.oci.core.sdk

@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -36,7 +36,8 @@ var activeTableTab = "activeTableTab";
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="../../../../io/micronaut/oci/core/package-summary.html">Package</a></li>
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
 <li class="navBarCell1Rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../deprecated-list.html">Deprecated</a></li>
@@ -177,9 +178,13 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPrivateKey-java.lang.String-">setPrivateKey</a></span>(java.lang.String&nbsp;privateKey)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPassphrase-java.lang.String-">setPassphrase</a></span>(java.lang.String&nbsp;passphrase)</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPrivateKey-java.lang.String-">setPrivateKey</a></span>(java.lang.String&nbsp;privateKey)</code>&nbsp;</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPrivateKeyFile-io.micronaut.core.io.Readable-">setPrivateKeyFile</a></span>(io.micronaut.core.io.Readable&nbsp;privateKeyFile)</code>&nbsp;</td>
 </tr>
@@ -272,13 +277,26 @@ extends java.lang.Object</pre>
 <a name="setPrivateKey-java.lang.String-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>setPrivateKey</h4>
 <pre>public&nbsp;void&nbsp;setPrivateKey(java.lang.String&nbsp;privateKey)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>privateKey</code> - The private key as a string</dd>
+</dl>
+</li>
+</ul>
+<a name="setPassphrase-java.lang.String-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>setPassphrase</h4>
+<pre>public&nbsp;void&nbsp;setPassphrase(java.lang.String&nbsp;passphrase)</pre>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>passphrase</code> - Sets the passphrase</dd>
 </dl>
 </li>
 </ul>
@@ -298,7 +316,8 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <ul class="navList" title="Navigation">
-<li><a href="../../../../io/micronaut/oci/core/package-summary.html">Package</a></li>
+<li><a href="../../../../overview-summary.html">Overview</a></li>
+<li><a href="package-summary.html">Package</a></li>
 <li class="navBarCell1Rev">Class</li>
 <li><a href="package-tree.html">Tree</a></li>
 <li><a href="../../../../deprecated-list.html">Deprecated</a></li>
