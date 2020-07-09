@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @MicronautTest
 @Property(name = "oci.tenantId", value = "something")
 @Property(name = "oci.region", value = "ap-mumbai-1")
+@Property(name = "oci.passphrase", value = "junk")
 public class OracleCloudCustomAuthConfigTest {
 
     @Test
@@ -21,6 +22,10 @@ public class OracleCloudCustomAuthConfigTest {
         assertEquals(
                 "something",
                 provider.getTenantId()
+        );
+        assertArrayEquals(
+                "junk".toCharArray(),
+                provider.getPassphraseCharacters()
         );
         assertEquals(
                 Region.fromRegionCodeOrId("ap-mumbai-1"),

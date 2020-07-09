@@ -37,6 +37,7 @@ public class OracleCloudAuthConfigurationProperties {
     public static final String TENANT_ID = OracleCloudCoreFactory.ORACLE_CLOUD + ".tenant-id";
 
     private Readable privateKeyFile;
+    private char[] passphrase;
     private String privateKey;
 
     @ConfigurationBuilder(prefixes = "", excludes = "privateKeySupplier")
@@ -58,6 +59,9 @@ public class OracleCloudAuthConfigurationProperties {
         if (privateKey != null) {
             builder.privateKeySupplier(() -> new ByteArrayInputStream(privateKey.getBytes()));
         }
+        if (passphrase != null) {
+            builder.passphraseCharacters(passphrase);
+        }
         return builder;
     }
 
@@ -73,5 +77,16 @@ public class OracleCloudAuthConfigurationProperties {
      */
     public void setPrivateKey(String privateKey) {
         this.privateKey = privateKey;
+    }
+
+    /**
+     * @param passphrase Sets the passphrase
+     */
+    public void setPassphrase(String passphrase) {
+        if (passphrase != null) {
+            this.passphrase = passphrase.toCharArray();
+        } else {
+            this.passphrase = null;
+        }
     }
 }
