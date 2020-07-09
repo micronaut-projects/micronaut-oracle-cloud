@@ -18,6 +18,8 @@
  * Package containing client factories for the Oracle Cloud SDK.
  */
 @Requires(classes = {
+        BdsClient.class,
+        BdsAsyncClient.class,
         ObjectStorageClient.class,
         ObjectStorageAsyncClient.class,
         FileStorageClient.class,
@@ -29,6 +31,8 @@ package io.micronaut.oci.clients;
 
 import com.oracle.bmc.apigateway.GatewayAsyncClient;
 import com.oracle.bmc.apigateway.GatewayClient;
+import com.oracle.bmc.bds.BdsAsyncClient;
+import com.oracle.bmc.bds.BdsClient;
 import com.oracle.bmc.filestorage.FileStorageAsyncClient;
 import com.oracle.bmc.filestorage.FileStorageClient;
 import com.oracle.bmc.objectstorage.ObjectStorageAsyncClient;

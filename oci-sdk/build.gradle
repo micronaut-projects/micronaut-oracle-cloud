@@ -6,13 +6,15 @@ dependencies {
     api project(":oci-common")
 
     // optional modules
-    compileOnly "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
-    compileOnly "com.oracle.oci.sdk:oci-java-sdk-filestorage"
     compileOnly "com.oracle.oci.sdk:oci-java-sdk-apigateway"
+    compileOnly "com.oracle.oci.sdk:oci-java-sdk-bds"
+    compileOnly "com.oracle.oci.sdk:oci-java-sdk-filestorage"
+    compileOnly "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
 
-    testImplementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
-    testImplementation "com.oracle.oci.sdk:oci-java-sdk-filestorage"
     testImplementation "com.oracle.oci.sdk:oci-java-sdk-apigateway"
+    testImplementation "com.oracle.oci.sdk:oci-java-sdk-bds"
+    testImplementation "com.oracle.oci.sdk:oci-java-sdk-filestorage"
+    testImplementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }

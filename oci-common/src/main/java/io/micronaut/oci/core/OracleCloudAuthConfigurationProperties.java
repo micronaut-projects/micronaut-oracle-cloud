@@ -18,7 +18,6 @@ package io.micronaut.oci.core;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.io.Readable;
 
@@ -32,21 +31,24 @@ import java.io.IOException;
  * @since 1.0.0
  */
 @ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD)
-@Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
 public class OracleCloudAuthConfigurationProperties {
     public static final String TENANT_ID = OracleCloudCoreFactory.ORACLE_CLOUD + ".tenant-id";
 
-    private Readable privateKeyFile;
-    private char[] passphrase;
-    private String privateKey;
-
     @ConfigurationBuilder(prefixes = "", excludes = "privateKeySupplier")
-    private final SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder = SimpleAuthenticationDetailsProvider.builder();
+    private final SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder builder =
+            SimpleAuthenticationDetailsProvider.builder();
 
     /**
      * @return The builder.
      */
     public SimpleAuthenticationDetailsProvider.SimpleAuthenticationDetailsProviderBuilder getBuilder() {
+        return builder;
+    }
+
+    /**
+     * @param privateKeyFile The private key location.
+     */
+    public void setPrivateKeyFile(Readable privateKeyFile) {
         if (privateKeyFile != null) {
             builder.privateKeySupplier(() -> {
                 try {
@@ -56,27 +58,15 @@ public class OracleCloudAuthConfigurationProperties {
                 }
             });
         }
-        if (privateKey != null) {
-            builder.privateKeySupplier(() -> new ByteArrayInputStream(privateKey.getBytes()));
-        }
-        if (passphrase != null) {
-            builder.passphraseCharacters(passphrase);
-        }
-        return builder;
-    }
-
-    /**
-     * @param privateKeyFile The private key location.
-     */
-    public void setPrivateKeyFile(Readable privateKeyFile) {
-        this.privateKeyFile = privateKeyFile;
     }
 
     /**
      * @param privateKey The private key as a string
      */
     public void setPrivateKey(String privateKey) {
-        this.privateKey = privateKey;
+        if (privateKey != null) {
+            builder.privateKeySupplier(() -> new ByteArrayInputStream(privateKey.getBytes()));
+        }
     }
 
     /**
@@ -84,9 +74,7 @@ public class OracleCloudAuthConfigurationProperties {
      */
     public void setPassphrase(String passphrase) {
         if (passphrase != null) {
-            this.passphrase = passphrase.toCharArray();
-        } else {
-            this.passphrase = null;
+            this.builder.passPhrase(passphrase);
         }
     }
 }

@@ -1,21 +1,36 @@
 package io.micronaut.oci.objectstorage;
 
+import com.oracle.bmc.apigateway.GatewayAsyncClient;
 import com.oracle.bmc.apigateway.GatewayClient;
+import com.oracle.bmc.bds.BdsAsyncClient;
+import com.oracle.bmc.bds.BdsClient;
+import com.oracle.bmc.filestorage.FileStorageAsyncClient;
 import com.oracle.bmc.filestorage.FileStorageClient;
 import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 // test that each SDK client is setup and injectable
 @MicronautTest
 public class SdkTest {
+
     @Test
-    void testFileStorageClient(FileStorageClient client) {
-        Assertions.assertNotNull(client);
+    void testBdsClient(BdsClient client, BdsAsyncClient asyncClient) {
+        assertNotNull(client);
+        assertNotNull(asyncClient);
     }
 
     @Test
-    void testApiGatewayClient(GatewayClient client) {
-        Assertions.assertNotNull(client);
+    void testFileStorageClient(FileStorageClient client, FileStorageAsyncClient asyncClient) {
+        assertNotNull(client);
+        assertNotNull(asyncClient);
+    }
+
+    @Test
+    void testApiGatewayClient(GatewayClient client, GatewayAsyncClient asyncClient) {
+        assertNotNull(client);
+        assertNotNull(asyncClient);
     }
 }
