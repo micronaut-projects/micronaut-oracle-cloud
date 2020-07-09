@@ -44,6 +44,7 @@ jobs:
           OCI_REGION: ${{ secrets.OCI_REGION }}
           OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
+          OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
       - name: Publish Test Report
         if: failure()
         uses: scacap/action-surefire-report@v1
