@@ -1,0 +1,15 @@
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+
+    api project(":oci-function")
+    testImplementation("org.spockframework:spock-core:${spockVersion}") {
+        exclude module:'groovy-all'
+    }
+    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+}

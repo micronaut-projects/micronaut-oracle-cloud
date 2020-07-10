@@ -2,5 +2,7 @@ rootProject.name = 'oci'
 
 include 'oci-bom'
 include 'oci-common'
+include 'oci-function'
+include 'oci-function-http'
 include 'oci-sdk'
 include 'oci-sdk-processor'
