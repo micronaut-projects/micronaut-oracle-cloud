@@ -1,16 +1,22 @@
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor project(":oci-sdk-processor")
+    annotationProcessor "io.micronaut:micronaut-graal"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
+    api "io.micronaut:micronaut-function"
     api project(":oci-common")
+    api 'com.fnproject.fn:api:1.0.109'
 
-    // optional modules
-    compileOnly group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
-    testImplementation group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
+    testImplementation 'com.fnproject.fn:testing-junit4:1.0.109'
+    testImplementation(project(":oci-sdk"))
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+    testImplementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
 }
-spotlessJavaMiscCheck.enabled = false
