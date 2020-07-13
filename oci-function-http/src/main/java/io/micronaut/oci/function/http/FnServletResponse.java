@@ -31,6 +31,7 @@ import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * Implementation of the {@link ServletHttpResponse} interface for Project.fn.
@@ -58,8 +59,14 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
                 body.toByteArray(),
                 status.getCode() < 400 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
                 getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString(),
-                Headers.fromMultiHeaderMap(headers)
+                toFnHeaders()
         );
+    }
+
+    private Headers toFnHeaders() {
+        Map<String, List<String>> fnHeaders = new LinkedHashMap<>(headers.size());
+        headers.forEach((name, values) -> fnHeaders.put("Fn-Http-H-" + name, values));
+        return Headers.fromMultiHeaderMap(fnHeaders);
     }
 
     @Override
@@ -143,7 +150,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
         @Override
         public MutableHttpHeaders add(CharSequence header, CharSequence value) {
             if (header != null && value != null) {
-                headers.computeIfAbsent(headers.toString(), s -> new ArrayList<>(5)).add(value.toString());
+                headers.computeIfAbsent(header.toString(), s -> new ArrayList<>(5)).add(value.toString());
             }
             return this;
         }

@@ -21,6 +21,7 @@ import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.oci.function.OciFunction;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
@@ -42,6 +43,7 @@ public class HttpFunction extends OciFunction {
     /**
      * Default constructor.
      */
+    @ReflectiveAccess
     public HttpFunction() {
     }
 
@@ -88,10 +90,11 @@ public class HttpFunction extends OciFunction {
      * @return The output event
      */
     @SuppressWarnings("unused")
+    @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
         FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext);
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-                new FnServletRequest<>(inputEvent, gatewayContext),
+                new FnServletRequest<>(inputEvent, response, gatewayContext, httpHandler.getMediaTypeCodecRegistry()),
                 response
         );
         this.httpHandler.service(

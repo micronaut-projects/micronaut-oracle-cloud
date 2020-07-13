@@ -31,14 +31,14 @@ import java.util.*;
  * @since 1.0.0
  */
 @Internal
-class FnMultiValueMap implements ConvertibleMultiValues<String> {
+public class FnMultiValueMap implements ConvertibleMultiValues<String> {
     private final Map<String, List<String>> map;
 
     /**
      * Default constructor.
      * @param map The target map. Never null
      */
-    FnMultiValueMap(Map<String, List<String>> map) {
+    public FnMultiValueMap(Map<String, List<String>> map) {
         this.map = Objects.requireNonNull(map, "Passed map cannot be null");
     }
 

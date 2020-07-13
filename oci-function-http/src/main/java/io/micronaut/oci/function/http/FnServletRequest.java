@@ -16,26 +16,34 @@
 package io.micronaut.oci.function.http;
 
 import com.fnproject.fn.api.InputEvent;
+import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpParameters;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.codec.MediaTypeCodec;
+import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.micronaut.http.cookie.Cookies;
 import io.micronaut.servlet.http.ServletCookies;
+import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
+import io.micronaut.servlet.http.ServletHttpResponse;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of {@link ServletHttpRequest} for Project.fn.
@@ -45,18 +53,25 @@ import java.util.*;
  * @param <B> The body type
  */
 @Internal
-final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B> {
+final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent> {
 
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
+    private final FnServletResponse<Object> response;
     private MutableConvertibleValues<Object> attributes;
     private ServletCookies cookies;
+    private final MediaTypeCodecRegistry codecRegistry;
+    private final Map<Argument, Optional> consumedBodies = new ConcurrentHashMap<>();
 
     public FnServletRequest(
             InputEvent inputEvent,
-            HTTPGatewayContext gatewayContext) {
+            FnServletResponse<Object> response,
+            HTTPGatewayContext gatewayContext,
+            MediaTypeCodecRegistry codecRegistry) {
         this.inputEvent = inputEvent;
+        this.response = response;
         this.gatewayContext = gatewayContext;
+        this.codecRegistry = codecRegistry;
     }
 
     @Override
@@ -76,8 +91,29 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B> {
 
     @NonNull
     @Override
-    public <T> Optional<T> getBody(@NonNull Argument<T> type) {
-        return inputEvent.consumeBody(inputStream -> ConversionService.SHARED.convert(inputStream, type));
+    public <T> Optional<T> getBody(@NonNull Argument<T> arg) {
+        if (arg == null) {
+            return Optional.empty();
+        }
+        //noinspection unchecked
+        return consumedBodies.computeIfAbsent(arg, argument -> inputEvent.consumeBody(inputStream -> {
+            final Class<T> type = arg.getType();
+            final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
+
+            final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
+            if (codec != null) {
+                if (ConvertibleValues.class == type) {
+                    final Map map = codec.decode(Map.class, inputStream);
+                    ConvertibleValues result = ConvertibleValues.of(map);
+                    return Optional.of(result);
+                } else {
+                    final T value = codec.decode(arg, inputStream);
+                    return Optional.ofNullable(value);
+                }
+
+            }
+            return Optional.empty();
+        }));
     }
 
     @Override
@@ -151,6 +187,17 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B> {
     @Override
     public Optional<B> getBody() {
         return Optional.empty();
+    }
+
+    @Override
+    public ServletHttpRequest<InputEvent, ? super Object> getRequest() {
+        //noinspection unchecked
+        return (ServletHttpRequest) this;
+    }
+
+    @Override
+    public ServletHttpResponse<OutputEvent, ? super Object> getResponse() {
+        return response;
     }
 
     /**

@@ -23,6 +23,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
+import io.micronaut.core.annotation.ReflectiveAccess;
 
 
 /**
@@ -38,6 +39,7 @@ public abstract class OciFunction implements AutoCloseable {
     /**
      * Default constructor. Uses a self managed application context.
      */
+    @ReflectiveAccess
     public OciFunction() {
     }
 
@@ -45,6 +47,7 @@ public abstract class OciFunction implements AutoCloseable {
      * Construct a function with the given context.
      * @param applicationContext The application context
      */
+    @ReflectiveAccess
     public OciFunction(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
@@ -54,6 +57,7 @@ public abstract class OciFunction implements AutoCloseable {
      * @param ctx The application context.
      */
     @FnConfiguration
+    @ReflectiveAccess
     public final void setupContext(RuntimeContext ctx) {
         if (applicationContext == null) {
             applicationContext = newApplicationContextBuilder(ctx)
