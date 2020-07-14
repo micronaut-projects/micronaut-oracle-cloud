@@ -42,7 +42,7 @@ import java.util.Set;
  * @author graemerocher
  * @since 1.0.0
  */
-@SupportedAnnotationTypes("io.micronaut.context.annotation.Requires")
+@SupportedAnnotationTypes("io.micronaut.oci.clients.SdkClients")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class OracleCloudSdkProcessor extends AbstractProcessor {
 
@@ -61,7 +61,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         for (TypeElement annotation : annotations) {
             final Set<? extends Element> element = roundEnv.getElementsAnnotatedWith(annotation);
             for (Element e : element) {
-                if (e instanceof PackageElement && ((PackageElement) e).getQualifiedName().toString().equals("io.micronaut.oci.clients")) {
+                if (e instanceof TypeElement && e.getSimpleName().toString().equals("SdkAutomaticFeature")) {
 
                     List<String> clientNames = resolveClientNames(e);
 
@@ -144,11 +144,12 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final List<? extends AnnotationMirror> annotationMirrors = e.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             TypeElement te = (TypeElement) annotationMirror.getAnnotationType().asElement();
-            if (Requires.class.getName().equals(te.getQualifiedName().toString())) {
+            String ann = te.getSimpleName().toString();
+            if (ann.equals("SdkClients")) {
                 final Map<? extends ExecutableElement, ? extends AnnotationValue> values = annotationMirror.getElementValues();
                 for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : values.entrySet()) {
                     final ExecutableElement executableElement = entry.getKey();
-                    if (executableElement.getSimpleName().toString().equals("classes")) {
+                    if (executableElement.getSimpleName().toString().equals("value")) {
                         final AnnotationValue value = entry.getValue();
                         final Object v = value.getValue();
                         if (v instanceof Iterable) {

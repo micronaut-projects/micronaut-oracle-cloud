@@ -7,6 +7,7 @@ buildscript {
     }
     dependencies {
         classpath "io.micronaut.build:micronaut-gradle-plugins:2.0.4"
+        classpath "io.micronaut.gradle:micronaut-gradle-plugin:1.0.0.M7"
     }
 }
 
@@ -16,6 +17,8 @@ subprojects { Project subproject ->
     if (subproject.name == 'oci-bom') {
         apply plugin: "java-platform"
         version projectVersion
+    } else if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
+        return
     } else {
         apply plugin: "io.micronaut.build.common"
 
@@ -46,12 +49,9 @@ subprojects { Project subproject ->
 
     
     apply plugin: "io.micronaut.build.dependency-updates"
-
-    if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples" || subproject.name == 'oci-sdk-processor') {
-        return
+    if (subproject.name != 'oci-sdk-processor') {
+        apply plugin: "io.micronaut.build.publishing"
     }
-
-    apply plugin: "io.micronaut.build.publishing"
 }
 
 apply plugin: "io.micronaut.build.docs"

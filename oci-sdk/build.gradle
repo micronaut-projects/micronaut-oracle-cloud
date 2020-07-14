@@ -4,7 +4,7 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     api project(":oci-common")
-
+    compileOnly("org.graalvm.nativeimage:svm")
     // optional modules
     compileOnly group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
     testImplementation group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
