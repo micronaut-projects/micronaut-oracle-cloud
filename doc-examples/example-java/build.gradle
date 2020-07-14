@@ -16,9 +16,3 @@ dependencies {
 }
 
 mainClassName = "example.Application"
-run {
-    jvmArgs "-agentlib:native-image-agent=config-output-dir=tmp"
-}
-nativeImage {
-    args('--no-fallback', '--enable-all-security-services')
-}
