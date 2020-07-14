@@ -7,6 +7,7 @@ import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
 import com.oracle.bmc.responses.AsyncHandler;
+import io.micronaut.oci.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +23,17 @@ public class ObjectStorageClientTest {
     private final ObjectStorageClient objectStorageClient;
     private final AuthenticationDetailsProvider detailsProvider;
     private final ObjectStorageAsync objectStorageAsync;
+    private final ObjectStorageRxClient objectStorageRxClient;
 
     public ObjectStorageClientTest(
             ObjectStorageClient objectStorageClient,
             ObjectStorageAsync objectStorageAsync,
-            AuthenticationDetailsProvider detailsProvider) {
+            AuthenticationDetailsProvider detailsProvider,
+            ObjectStorageRxClient objectStorageRxClient) {
         this.objectStorageClient = objectStorageClient;
         this.detailsProvider = detailsProvider;
         this.objectStorageAsync = objectStorageAsync;
+        this.objectStorageRxClient = objectStorageRxClient;
     }
 
     @Test
@@ -39,6 +43,19 @@ public class ObjectStorageClientTest {
         builder.compartmentId(detailsProvider.getTenantId());
         final List<BucketSummary> items = objectStorageClient
                 .listBuckets(builder.build())
+                .getItems();
+
+        assertNotNull(items);
+    }
+
+    @Test
+    void testObjectStorageClientRx() {
+        final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+        builder.namespaceName("kg");
+        builder.compartmentId(detailsProvider.getTenantId());
+        final List<BucketSummary> items = objectStorageRxClient
+                .listBuckets(builder.build())
+                .blockingGet()
                 .getItems();
 
         assertNotNull(items);

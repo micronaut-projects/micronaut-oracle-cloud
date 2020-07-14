@@ -143,7 +143,7 @@ final class SdkAutomaticFeature implements Feature {
                 if (c != null) {
                     Set<Class> allInterfaces = ReflectionUtils.getAllInterfaces(c);
                     for (Class i : allInterfaces) {
-                        if (i.getName().equals("Async")) {
+                        if (i.getName().endsWith("Async")) {
                             continue;
                         }
                         populateReflectionData(reflectiveAccess, i);

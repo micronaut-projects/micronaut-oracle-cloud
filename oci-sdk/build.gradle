@@ -5,8 +5,10 @@ dependencies {
 
     api project(":oci-common")
     compileOnly("org.graalvm.nativeimage:svm")
+    compileOnly("io.reactivex.rxjava2:rxjava")
     // optional modules
     compileOnly group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
+    testImplementation("io.reactivex.rxjava2:rxjava")
     testImplementation group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
