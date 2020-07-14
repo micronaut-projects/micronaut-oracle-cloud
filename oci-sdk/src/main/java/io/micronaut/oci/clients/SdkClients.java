@@ -18,7 +18,7 @@ package io.micronaut.oci.clients;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@Retention(value = RetentionPolicy.SOURCE)
+@Retention(value = RetentionPolicy.RUNTIME)
 public @interface SdkClients {
     Class<?>[] value();
 }

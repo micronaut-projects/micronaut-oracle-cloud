@@ -15,6 +15,7 @@
  */
 package io.micronaut.oci.clients;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.oracle.bmc.analytics.AnalyticsAsyncClient;
 import com.oracle.bmc.analytics.AnalyticsClient;
 import com.oracle.bmc.announcementsservice.AnnouncementAsyncClient;
@@ -58,15 +59,16 @@ import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.svm.core.annotate.AutomaticFeature;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.AnnotationMetadata;
-import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.graal.AutomaticFeatureUtils;
+import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinitionReference;
 import org.graalvm.nativeimage.hosted.Feature;
 import javax.inject.Singleton;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -127,33 +129,56 @@ final class SdkAutomaticFeature implements Feature {
     public void beforeAnalysis(BeforeAnalysisAccess access) {
 
         // setup BC security
-        AutomaticFeatureUtils.addResourcePatterns("javax/crypto/Cipher.class", "org/bouncycastle/MARKER");
-        AutomaticFeatureUtils.initializeAtBuildTime(access, "com.oracle.bmc.http.signing.internal.PEMFileRSAPrivateKeySupplier");
-
         AnnotationMetadata annotationMetadata = getAnnotationMetadata(access);
 
         if (annotationMetadata != null) {
-            List<AnnotationValue<Requires>> values =
-                    annotationMetadata.getAnnotationValuesByType(Requires.class);
             Set<Class<?>> reflectiveAccess = new HashSet<>();
-            for (AnnotationValue<Requires> value : values) {
-                String[] classes = value.stringValues("classes");
-                for (String aClass : classes) {
-                    Class<?> c = access.findClassByName(aClass);
-                    if (c != null) {
-                        Set<Class> allInterfaces = ReflectionUtils.getAllInterfaces(c);
-                        for (Class i : allInterfaces) {
-                            if (i.getName().equals("Async")) {
-                                continue;
-                            }
-                            populateReflectionData(reflectiveAccess, i);
+            String[] classes = annotationMetadata.stringValues(SdkClients.class);
+            for (String aClass : classes) {
+                final String packageName = NameUtils.getPackageName(aClass);
+                final String simpleName = NameUtils.getSimpleName(aClass);
+                final String factoryName = packageName.replace("com.oracle.bmc", "io.micronaut.oci.clients") + "." + simpleName + "Factory";
+                AutomaticFeatureUtils.initializeAtRunTime(access, factoryName);
+                Class<?> c = access.findClassByName(aClass);
+                if (c != null) {
+                    Set<Class> allInterfaces = ReflectionUtils.getAllInterfaces(c);
+                    for (Class i : allInterfaces) {
+                        if (i.getName().equals("Async")) {
+                            continue;
                         }
+                        populateReflectionData(reflectiveAccess, i);
                     }
                 }
             }
 
-            for (Class<?> aClass : reflectiveAccess) {
-                AutomaticFeatureUtils.registerAllForRuntimeReflection(access, aClass.getName());
+            for (Class<?> type : reflectiveAccess) {
+                JsonDeserialize deser = type.getAnnotation(JsonDeserialize.class);
+                if (deser != null) {
+                    Class<?> builder = deser.builder();
+                    if (builder != null && builder != Void.class) {
+                        AutomaticFeatureUtils.registerAllForRuntimeReflection(access, builder.getName());
+                    }
+                    AutomaticFeatureUtils.registerMethodsForRuntimeReflection(access, type.getName());
+                    AutomaticFeatureUtils.registerFieldsForRuntimeReflection(access, type.getName());
+                } else if (type.isEnum() || type.isInterface()) {
+                    AutomaticFeatureUtils.registerMethodsForRuntimeReflection(access, type.getName());
+                    AutomaticFeatureUtils.registerFieldsForRuntimeReflection(access, type.getName());
+                } else {
+                    Constructor<?>[] declaredConstructors = type.getDeclaredConstructors();
+                    boolean hasNoArgsConstructor = false;
+                    for (Constructor<?> declaredConstructor : declaredConstructors) {
+                        if (declaredConstructor.getParameterCount() == 0) {
+                            hasNoArgsConstructor = true;
+                            break;
+                        }
+                    }
+                    if (!hasNoArgsConstructor) {
+                        AutomaticFeatureUtils.registerMethodsForRuntimeReflection(access, type.getName());
+                        AutomaticFeatureUtils.registerFieldsForRuntimeReflection(access, type.getName());
+                    } else {
+                        AutomaticFeatureUtils.registerAllForRuntimeReflection(access, type.getName());
+                    }
+                }
             }
         }
     }
