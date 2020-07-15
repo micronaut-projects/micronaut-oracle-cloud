@@ -32,6 +32,8 @@ import com.oracle.bmc.bds.BdsAsyncClient;
 import com.oracle.bmc.bds.BdsClient;
 import com.oracle.bmc.budget.BudgetAsyncClient;
 import com.oracle.bmc.budget.BudgetClient;
+import com.oracle.bmc.cims.IncidentAsyncClient;
+import com.oracle.bmc.cims.IncidentClient;
 import com.oracle.bmc.containerengine.ContainerEngineAsyncClient;
 import com.oracle.bmc.containerengine.ContainerEngineClient;
 import com.oracle.bmc.core.*;
@@ -46,16 +48,64 @@ import com.oracle.bmc.dataintegration.DataIntegrationClient;
 import com.oracle.bmc.datasafe.DataSafeClient;
 import com.oracle.bmc.datascience.DataScienceAsyncClient;
 import com.oracle.bmc.datascience.DataScienceClient;
-import com.oracle.bmc.dts.ApplianceExportJobAsyncClient;
-import com.oracle.bmc.dts.ApplianceExportJobClient;
+import com.oracle.bmc.dts.*;
 import com.oracle.bmc.email.EmailAsyncClient;
 import com.oracle.bmc.email.EmailClient;
+import com.oracle.bmc.events.EventsAsyncClient;
+import com.oracle.bmc.events.EventsClient;
 import com.oracle.bmc.filestorage.FileStorageAsyncClient;
 import com.oracle.bmc.filestorage.FileStorageClient;
 import com.oracle.bmc.functions.FunctionsInvokeAsyncClient;
 import com.oracle.bmc.functions.FunctionsInvokeClient;
+import com.oracle.bmc.functions.FunctionsManagementAsyncClient;
+import com.oracle.bmc.functions.FunctionsManagementClient;
+import com.oracle.bmc.healthchecks.HealthChecksAsyncClient;
+import com.oracle.bmc.healthchecks.HealthChecksClient;
+import com.oracle.bmc.identity.IdentityAsyncClient;
+import com.oracle.bmc.identity.IdentityClient;
+import com.oracle.bmc.integration.IntegrationInstanceAsyncClient;
+import com.oracle.bmc.integration.IntegrationInstanceClient;
+import com.oracle.bmc.keymanagement.KmsVaultAsyncClient;
+import com.oracle.bmc.keymanagement.KmsVaultClient;
+import com.oracle.bmc.limits.*;
+import com.oracle.bmc.loadbalancer.LoadBalancerAsyncClient;
+import com.oracle.bmc.loadbalancer.LoadBalancerClient;
+import com.oracle.bmc.marketplace.MarketplaceAsyncClient;
+import com.oracle.bmc.marketplace.MarketplaceClient;
+import com.oracle.bmc.monitoring.MonitoringAsyncClient;
+import com.oracle.bmc.monitoring.MonitoringClient;
+import com.oracle.bmc.mysql.*;
+import com.oracle.bmc.nosql.NosqlAsyncClient;
+import com.oracle.bmc.nosql.NosqlClient;
 import com.oracle.bmc.objectstorage.ObjectStorageAsyncClient;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.bmc.oce.OceInstanceAsyncClient;
+import com.oracle.bmc.oce.OceInstanceClient;
+import com.oracle.bmc.ocvp.*;
+import com.oracle.bmc.oda.OdaAsyncClient;
+import com.oracle.bmc.oda.OdaClient;
+import com.oracle.bmc.ons.NotificationControlPlaneAsyncClient;
+import com.oracle.bmc.ons.NotificationControlPlaneClient;
+import com.oracle.bmc.ons.NotificationDataPlaneAsyncClient;
+import com.oracle.bmc.ons.NotificationDataPlaneClient;
+import com.oracle.bmc.osmanagement.OsManagementAsyncClient;
+import com.oracle.bmc.osmanagement.OsManagementClient;
+import com.oracle.bmc.resourcemanager.ResourceManagerAsyncClient;
+import com.oracle.bmc.resourcemanager.ResourceManagerClient;
+import com.oracle.bmc.resourcesearch.ResourceSearchAsyncClient;
+import com.oracle.bmc.resourcesearch.ResourceSearchClient;
+import com.oracle.bmc.secrets.SecretsAsyncClient;
+import com.oracle.bmc.secrets.SecretsClient;
+import com.oracle.bmc.streaming.StreamAdminAsyncClient;
+import com.oracle.bmc.streaming.StreamAdminClient;
+import com.oracle.bmc.usageapi.UsageapiAsyncClient;
+import com.oracle.bmc.usageapi.UsageapiClient;
+import com.oracle.bmc.vault.VaultsAsyncClient;
+import com.oracle.bmc.vault.VaultsClient;
+import com.oracle.bmc.waas.RedirectAsyncClient;
+import com.oracle.bmc.waas.RedirectClient;
+import com.oracle.bmc.waas.WaasAsyncClient;
+import com.oracle.bmc.waas.WaasClient;
 import com.oracle.svm.core.annotate.AutomaticFeature;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.AnnotationMetadata;
@@ -74,6 +124,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
+
 
 @Internal
 @AutomaticFeature
@@ -113,16 +164,101 @@ import java.util.*;
         DataScienceClient.class,
         DatabaseClient.class,
         DatabaseAsyncClient.class,
+        DbBackupsClient.class,
+        DbBackupsAsyncClient.class,
+        DbSystemClient.class,
+        DbSystemAsyncClient.class,
         EmailClient.class,
         EmailAsyncClient.class,
-        ObjectStorageClient.class,
-        ObjectStorageAsyncClient.class,
+        EsxiHostClient.class,
+        EsxiHostAsyncClient.class,
+        EventsClient.class,
+        EventsAsyncClient.class,
         FileStorageClient.class,
         FileStorageAsyncClient.class,
+        FunctionsInvokeClient.class,
+        FunctionsInvokeAsyncClient.class,
+        FunctionsManagementClient.class,
+        FunctionsManagementAsyncClient.class,
         GatewayClient.class,
         GatewayAsyncClient.class,
-        FunctionsInvokeClient.class,
-        FunctionsInvokeAsyncClient.class
+        HealthChecksClient.class,
+        HealthChecksAsyncClient.class,
+        IdentityClient.class,
+        IdentityAsyncClient.class,
+        IncidentClient.class,
+        IncidentAsyncClient.class,
+        IntegrationInstanceClient.class,
+        IntegrationInstanceAsyncClient.class,
+        KmsVaultAsyncClient.class,
+        KmsVaultClient.class,
+        LimitsClient.class,
+        LimitsAsyncClient.class,
+        LoadBalancerClient.class,
+        LoadBalancerAsyncClient.class,
+        MarketplaceClient.class,
+        MarketplaceAsyncClient.class,
+        MonitoringClient.class,
+        MonitoringAsyncClient.class,
+        MysqlaasClient.class,
+        MysqlaasAsyncClient.class,
+        NosqlClient.class,
+        NosqlAsyncClient.class,
+        NotificationControlPlaneClient.class,
+        NotificationControlPlaneAsyncClient.class,
+        NotificationDataPlaneClient.class,
+        NotificationDataPlaneAsyncClient.class,
+        ObjectStorageClient.class,
+        ObjectStorageAsyncClient.class,
+        OceInstanceClient.class,
+        OceInstanceAsyncClient.class,
+        OdaClient.class,
+        OdaAsyncClient.class,
+        OsManagementClient.class,
+        OsManagementAsyncClient.class,
+        QuotasClient.class,
+        QuotasAsyncClient.class,
+        RedirectClient.class,
+        RedirectAsyncClient.class,
+        ResourceManagerClient.class,
+        ResourceManagerAsyncClient.class,
+        ResourceSearchClient.class,
+        ResourceSearchAsyncClient.class,
+        SddcClient.class,
+        SddcAsyncClient.class,
+        SecretsClient.class,
+        SecretsAsyncClient.class,
+        ShippingVendorsClient.class,
+        ShippingVendorsAsyncClient.class,
+        StreamAdminClient.class,
+        StreamAdminAsyncClient.class,
+        TransferApplianceClient.class,
+        TransferApplianceAsyncClient.class,
+        TransferApplianceEntitlementClient.class,
+        TransferApplianceEntitlementAsyncClient.class,
+        TransferDeviceClient.class,
+        TransferDeviceAsyncClient.class,
+        TransferJobClient.class,
+        TransferJobAsyncClient.class,
+        TransferPackageClient.class,
+        TransferPackageAsyncClient.class,
+        UsageapiClient.class,
+        UsageapiAsyncClient.class,
+        VaultsClient.class,
+        VaultsAsyncClient.class,
+        VirtualNetworkClient.class,
+        VirtualNetworkAsyncClient.class,
+        WaasClient.class,
+        WaasAsyncClient.class,
+        WorkRequestClient.class,
+        WorkRequestAsyncClient.class,
+        com.oracle.bmc.workrequests.WorkRequestClient.class,
+        com.oracle.bmc.workrequests.WorkRequestAsyncClient.class,
+        WorkRequestsClient.class,
+        WorkRequestsAsyncClient.class,
+        com.oracle.bmc.apigateway.WorkRequestsClient.class,
+        com.oracle.bmc.apigateway.WorkRequestsAsyncClient.class
+
 })
 @Requires(property = "oci.sdk.compiler", value = StringUtils.TRUE)
 @Singleton
@@ -137,7 +273,7 @@ final class SdkAutomaticFeature implements Feature {
                 "org.glassfish.jersey.message.internal.MediaTypeProvider",
                 "org.glassfish.jersey.message.internal.CacheControlProvider",
                 "org.glassfish.jersey.message.internal.LinkProvider").forEach((n) ->
-            AutomaticFeatureUtils.initializeAtBuildTime(access, n)
+                AutomaticFeatureUtils.initializeAtBuildTime(access, n)
         );
         // setup BC security
         AnnotationMetadata annotationMetadata = getAnnotationMetadata(access);
@@ -238,8 +374,8 @@ final class SdkAutomaticFeature implements Feature {
 
     private AnnotationMetadata getAnnotationMetadata(BeforeAnalysisAccess access, String targetClass) {
         return getBeanReference(access, targetClass)
-                    .map(BeanDefinitionReference::getAnnotationMetadata)
-                    .orElse(AnnotationMetadata.EMPTY_METADATA);
+                .map(BeanDefinitionReference::getAnnotationMetadata)
+                .orElse(AnnotationMetadata.EMPTY_METADATA);
     }
 
     private Optional<BeanDefinitionReference<?>> getBeanReference(BeforeAnalysisAccess access, String targetClass) {
