@@ -67,9 +67,12 @@ import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinitionReference;
 import org.graalvm.nativeimage.hosted.Feature;
+
 import javax.inject.Singleton;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 @Internal
@@ -128,6 +131,14 @@ final class SdkAutomaticFeature implements Feature {
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
 
+        // rest client config
+        Arrays.asList(
+                "org.glassfish.jersey.internal.LocalizationMessages",
+                "org.glassfish.jersey.message.internal.MediaTypeProvider",
+                "org.glassfish.jersey.message.internal.CacheControlProvider",
+                "org.glassfish.jersey.message.internal.LinkProvider").forEach((n) ->
+            AutomaticFeatureUtils.initializeAtBuildTime(access, n)
+        );
         // setup BC security
         AnnotationMetadata annotationMetadata = getAnnotationMetadata(access);
 
@@ -187,9 +198,24 @@ final class SdkAutomaticFeature implements Feature {
         Method[] methods = type.getDeclaredMethods();
         for (Method m : methods) {
             Class<?> rt = m.getReturnType();
-            if (includeInReflectiveData(reflectiveAccess, rt)) {
-                reflectiveAccess.add(rt);
-                populateReflectionData(reflectiveAccess, rt);
+            if (Collection.class.isAssignableFrom(rt)) {
+                Type grt = m.getGenericReturnType();
+                if (grt instanceof ParameterizedType) {
+                    Type[] args = ((ParameterizedType) grt).getActualTypeArguments();
+                    if (args != null && args.length == 1) {
+                        Type arg = args[0];
+                        if (arg instanceof Class && includeInReflectiveData(reflectiveAccess, arg)) {
+                            Class<?> t = (Class<?>) arg;
+                            reflectiveAccess.add(t);
+                            populateReflectionData(reflectiveAccess, t);
+                        }
+                    }
+                }
+            } else {
+                if (includeInReflectiveData(reflectiveAccess, rt)) {
+                    reflectiveAccess.add(rt);
+                    populateReflectionData(reflectiveAccess, rt);
+                }
             }
             Class<?>[] parameterTypes = m.getParameterTypes();
             for (Class<?> pt : parameterTypes) {
@@ -201,8 +227,8 @@ final class SdkAutomaticFeature implements Feature {
         }
     }
 
-    private boolean includeInReflectiveData(Set<Class<?>> reflectiveAccess, Class<?> rt) {
-        return rt.getName().startsWith("com.oracle.bmc") && !rt.getName().endsWith("$Builder") && !reflectiveAccess.contains(rt);
+    private boolean includeInReflectiveData(Set<Class<?>> reflectiveAccess, Type rt) {
+        return rt.getTypeName().startsWith("com.oracle.bmc") && !rt.getTypeName().endsWith("$Builder") && !reflectiveAccess.contains(rt);
     }
 
     private AnnotationMetadata getAnnotationMetadata(BeforeAnalysisAccess access) {
