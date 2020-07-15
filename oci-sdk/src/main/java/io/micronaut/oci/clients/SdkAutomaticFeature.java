@@ -61,6 +61,7 @@ import com.oracle.bmc.functions.FunctionsManagementAsyncClient;
 import com.oracle.bmc.functions.FunctionsManagementClient;
 import com.oracle.bmc.healthchecks.HealthChecksAsyncClient;
 import com.oracle.bmc.healthchecks.HealthChecksClient;
+import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.bmc.identity.IdentityAsyncClient;
 import com.oracle.bmc.identity.IdentityClient;
 import com.oracle.bmc.integration.IntegrationInstanceAsyncClient;
@@ -117,12 +118,10 @@ import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinitionReference;
 import org.graalvm.nativeimage.hosted.Feature;
+import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 import javax.inject.Singleton;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.*;
 
 
@@ -280,6 +279,7 @@ final class SdkAutomaticFeature implements Feature {
 
         if (annotationMetadata != null) {
             Set<Class<?>> reflectiveAccess = new HashSet<>();
+            populateReflectionData(reflectiveAccess, ResponseHelper.ErrorCodeAndMessage.class);
             String[] classes = annotationMetadata.stringValues(SdkClients.class);
             for (String aClass : classes) {
                 final String packageName = NameUtils.getPackageName(aClass);
@@ -299,38 +299,46 @@ final class SdkAutomaticFeature implements Feature {
             }
 
             for (Class<?> type : reflectiveAccess) {
-                JsonDeserialize deser = type.getAnnotation(JsonDeserialize.class);
-                if (deser != null) {
-                    Class<?> builder = deser.builder();
-                    if (builder != null && builder != Void.class) {
-                        AutomaticFeatureUtils.registerAllForRuntimeReflection(access, builder.getName());
-                    }
-                    AutomaticFeatureUtils.registerMethodsForRuntimeReflection(access, type.getName());
-                    AutomaticFeatureUtils.registerFieldsForRuntimeReflection(access, type.getName());
-                } else if (type.isEnum() || type.isInterface()) {
-                    AutomaticFeatureUtils.registerMethodsForRuntimeReflection(access, type.getName());
-                    AutomaticFeatureUtils.registerFieldsForRuntimeReflection(access, type.getName());
-                } else {
-                    Constructor<?>[] declaredConstructors = type.getDeclaredConstructors();
-                    boolean hasNoArgsConstructor = false;
-                    for (Constructor<?> declaredConstructor : declaredConstructors) {
-                        if (declaredConstructor.getParameterCount() == 0) {
-                            hasNoArgsConstructor = true;
-                            break;
-                        }
-                    }
-                    if (!hasNoArgsConstructor) {
-                        AutomaticFeatureUtils.registerMethodsForRuntimeReflection(access, type.getName());
-                        AutomaticFeatureUtils.registerFieldsForRuntimeReflection(access, type.getName());
-                    } else {
-                        AutomaticFeatureUtils.registerAllForRuntimeReflection(access, type.getName());
+                boolean hasNoArgsConstructor = !type.isEnum() &&
+                        !type.isInterface() &&
+                        hasNoArgsConstructor(type.getDeclaredConstructors());
+
+                RuntimeReflection.register(type);
+                if (hasNoArgsConstructor) {
+                    RuntimeReflection.registerForReflectiveInstantiation(type);
+                }
+                for (Method declaredMethod : type.getDeclaredMethods()) {
+                    RuntimeReflection.register(declaredMethod);
+                }
+                if (!type.isInterface()) {
+                    for (Field declaredField : type.getDeclaredFields()) {
+                        RuntimeReflection.register(declaredField);
                     }
                 }
             }
         }
     }
 
-    private void populateReflectionData(Set<Class<?>> reflectiveAccess, Class<?> type) {
+    private boolean hasNoArgsConstructor(Constructor<?>[] declaredConstructors) {
+        boolean hasNoArgsConstructor = false;
+        for (Constructor<?> declaredConstructor : declaredConstructors) {
+            if (declaredConstructor.getParameterCount() == 0) {
+                hasNoArgsConstructor = true;
+                break;
+            }
+        }
+        return hasNoArgsConstructor;
+    }
+
+    static void populateReflectionData(Set<Class<?>> reflectiveAccess, Class<?> type) {
+        JsonDeserialize deser = type.getAnnotation(JsonDeserialize.class);
+        if (deser != null) {
+            Class<?> builder = deser.builder();
+            if (builder != Void.class && includeInReflectiveData(reflectiveAccess, builder)) {
+                reflectiveAccess.add(builder);
+                populateReflectionData(reflectiveAccess, builder);
+            }
+        }
         Method[] methods = type.getDeclaredMethods();
         for (Method m : methods) {
             Class<?> rt = m.getReturnType();
@@ -355,7 +363,7 @@ final class SdkAutomaticFeature implements Feature {
             }
             Class<?>[] parameterTypes = m.getParameterTypes();
             for (Class<?> pt : parameterTypes) {
-                if (includeInReflectiveData(reflectiveAccess, rt)) {
+                if (includeInReflectiveData(reflectiveAccess, pt)) {
                     reflectiveAccess.add(pt);
                     populateReflectionData(reflectiveAccess, pt);
                 }
@@ -363,8 +371,8 @@ final class SdkAutomaticFeature implements Feature {
         }
     }
 
-    private boolean includeInReflectiveData(Set<Class<?>> reflectiveAccess, Type rt) {
-        return rt.getTypeName().startsWith("com.oracle.bmc") && !rt.getTypeName().endsWith("$Builder") && !reflectiveAccess.contains(rt);
+    static boolean includeInReflectiveData(Set<Class<?>> reflectiveAccess, Type rt) {
+        return rt.getTypeName().startsWith("com.oracle.bmc") && !reflectiveAccess.contains(rt);
     }
 
     private AnnotationMetadata getAnnotationMetadata(BeforeAnalysisAccess access) {

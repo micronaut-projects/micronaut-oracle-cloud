@@ -17,9 +17,16 @@ package example;
 
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest;
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import com.oracle.bmc.objectstorage.responses.CreateBucketResponse;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Post;
 import io.micronaut.oci.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.reactivex.Single;
 
@@ -27,7 +34,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller("/os")
-public class BucketController {
+public class BucketController implements BucketOperations {
     private final ObjectStorageRxClient objectStorage;
     private final AuthenticationDetailsProvider detailsProvider;
 
@@ -36,15 +43,56 @@ public class BucketController {
         this.detailsProvider = detailsProvider;
     }
 
+    @Override
     @Get("/buckets")
-    Single<List<String>> listBuckets() {
-        final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-        builder.namespaceName("kg");
-        builder.compartmentId(detailsProvider.getTenantId());
-        return objectStorage.listBuckets(builder.build())
+    public Single<List<String>> listBuckets() {
+        GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+                .compartmentId(detailsProvider.getTenantId()).build();
+        return objectStorage.getNamespace(getNamespaceRequest).flatMap(getNamespaceResponse -> {
+            final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+            builder.namespaceName(getNamespaceResponse.getValue());
+            builder.compartmentId(detailsProvider.getTenantId());
+            return objectStorage.listBuckets(builder.build())
                     .map(listBucketsResponse -> listBucketsResponse.getItems()
                             .stream()
                             .map(BucketSummary::getName)
                             .collect(Collectors.toList()));
+        });
+
+    }
+
+    @Override
+    @Post(value = "/buckets/{name}")
+    public Single<String> createBucket(String name) {
+        GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+                .compartmentId(detailsProvider.getTenantId()).build();
+        return objectStorage.getNamespace(getNamespaceRequest).flatMap(getNamespaceResponse -> {
+            CreateBucketRequest.Builder builder = CreateBucketRequest.builder()
+                    .namespaceName(getNamespaceResponse.getValue())
+                    .createBucketDetails(CreateBucketDetails.builder()
+                            .compartmentId(detailsProvider.getTenantId())
+                            .name(name)
+                            .build());
+
+            return objectStorage.createBucket(builder.build())
+                    .map(CreateBucketResponse::getLocation);
+        });
+
+    }
+
+    @Override
+    @Delete(value = "/buckets/{name}")
+    public Single<Boolean> deleteBucket(String name) {
+        GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+                .compartmentId(detailsProvider.getTenantId()).build();
+        return objectStorage.getNamespace(getNamespaceRequest).flatMap(getNamespaceResponse -> {
+            DeleteBucketRequest.Builder builder = DeleteBucketRequest.builder()
+                    .namespaceName(getNamespaceResponse.getValue())
+                    .bucketName(name);
+
+            return objectStorage.deleteBucket(builder.build())
+                    .map(response -> Boolean.TRUE);
+        });
+
     }
 }
