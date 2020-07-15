@@ -16,3 +16,7 @@ dependencies {
 }
 
 mainClassName = "example.Application"
+
+nativeImage {
+    args('--report-unsupported-elements-at-runtime', '--no-fallback', '--no-server')
+}

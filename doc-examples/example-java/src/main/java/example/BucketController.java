@@ -16,48 +16,35 @@
 package example;
 
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import com.oracle.bmc.objectstorage.ObjectStorageAsync;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
-import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
-import com.oracle.bmc.responses.AsyncHandler;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
+import io.micronaut.oci.clients.rxjava2.objectstorage.ObjectStorageRxClient;
+import io.reactivex.Single;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller("/os")
 public class BucketController {
-    private final ObjectStorageAsync objectStorage;
+    private final ObjectStorageRxClient objectStorage;
     private final AuthenticationDetailsProvider detailsProvider;
 
-    public BucketController(ObjectStorageAsync objectStorage, AuthenticationDetailsProvider detailsProvider) {
+    public BucketController(ObjectStorageRxClient objectStorage, AuthenticationDetailsProvider detailsProvider) {
         this.objectStorage = objectStorage;
         this.detailsProvider = detailsProvider;
     }
 
     @Get("/buckets")
-    Flowable<String> listBuckets() {
-        return Flowable.create(emitter -> {
-            final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-            builder.namespaceName("kg");
-            builder.compartmentId(detailsProvider.getTenantId());
-            objectStorage.listBuckets(builder.build(), new AsyncHandler<ListBucketsRequest, ListBucketsResponse>() {
-                @Override
-                public void onSuccess(
-                        ListBucketsRequest request,
-                        ListBucketsResponse response) {
-                    response.getItems().stream()
+    Single<List<String>> listBuckets() {
+        final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+        builder.namespaceName("kg");
+        builder.compartmentId(detailsProvider.getTenantId());
+        return objectStorage.listBuckets(builder.build())
+                    .map(listBucketsResponse -> listBucketsResponse.getItems()
+                            .stream()
                             .map(BucketSummary::getName)
-                            .forEach(emitter::onNext);
-                    emitter.onComplete();
-                }
-
-                @Override
-                public void onError(ListBucketsRequest request, Throwable error) {
-                    emitter.onError(error);
-                }
-            });
-        }, BackpressureStrategy.BUFFER);
+                            .collect(Collectors.toList()));
     }
 }
