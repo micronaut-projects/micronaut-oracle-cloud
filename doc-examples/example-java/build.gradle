@@ -3,7 +3,6 @@ plugins {
 }
 
 dependencies {
-    implementation "io.micronaut.security:micronaut-security-jwt"
     implementation "io.micronaut:micronaut-http-server-netty"
     implementation project(":oci-sdk")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"

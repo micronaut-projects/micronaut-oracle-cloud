@@ -107,22 +107,28 @@ import com.oracle.bmc.waas.RedirectAsyncClient;
 import com.oracle.bmc.waas.RedirectClient;
 import com.oracle.bmc.waas.WaasAsyncClient;
 import com.oracle.bmc.waas.WaasClient;
-import com.oracle.svm.core.annotate.AutomaticFeature;
+import com.oracle.svm.core.annotate.*;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.graal.AutomaticFeatureUtils;
 import io.micronaut.core.naming.NameUtils;
+import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.InstantiationUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanDefinitionReference;
+import net.minidev.json.JSONStyle;
+import net.minidev.json.reader.BeansWriter;
+import net.minidev.json.reader.JsonWriterI;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 import javax.inject.Singleton;
+import java.io.IOException;
 import java.lang.reflect.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 
 @Internal
@@ -398,3 +404,31 @@ final class SdkAutomaticFeature implements Feature {
         return Optional.empty();
     }
 }
+//CHECKSTYLE:OFF
+@SuppressWarnings("unused")
+@Internal
+@TargetClass(className = "net.minidev.json.reader.JsonWriter", onlyWith = JwtNotPresent.class)
+final class JsonWriterReplacement {
+    @RecomputeFieldValue(kind = RecomputeFieldValue.Kind.FromAlias)
+    @Alias
+    public static JsonWriterI<Object> beansWriterASM = new BeansWriter();
+}
+
+@SuppressWarnings("unused")
+@Internal
+@TargetClass(className = "net.minidev.json.reader.BeansWriterASM", onlyWith = JwtNotPresent.class)
+final class BeansWriterASMReplacement {
+    @Substitute
+    public <E> void writeJSONString(E value, Appendable out, JSONStyle compression) throws IOException {
+        new BeansWriter().writeJSONString(value, out, compression);
+    }
+}
+
+// condition that is checks if JWT is not present
+final class JwtNotPresent implements Predicate<String> {
+    @Override
+    public boolean test(String s) {
+        return !ClassUtils.isPresent("io.micronaut.security.token.jwt.config.JwtConfiguration", getClass().getClassLoader());
+    }
+}
+//CHECKSTYLE:ON
