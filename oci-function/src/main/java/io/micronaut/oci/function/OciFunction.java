@@ -25,6 +25,8 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.ReflectiveAccess;
 
+import java.util.function.Consumer;
+
 
 /**
  * Parent class that can be used for Oracle Cloud functions.
@@ -66,9 +68,11 @@ public abstract class OciFunction implements AutoCloseable {
         }
         applicationContext.inject(this);
         if (enableSharedJackson()) {
-            ctx.setAttribute(
+            applicationContext.findBean(ObjectMapper.class).ifPresent(
+                    objectMapper -> ctx.setAttribute(
                     "com.fnproject.fn.runtime.coercion.jackson.JacksonCoercion.om",
-                    applicationContext.getBean(ObjectMapper.class));
+                    objectMapper));
+
         }
         setup(ctx);
     }
@@ -85,7 +89,7 @@ public abstract class OciFunction implements AutoCloseable {
      * @return Whether Micronaut's shared Jackson object mapper should be used.
      */
     protected boolean enableSharedJackson() {
-        return false;
+        return true;
     }
 
     /**
