@@ -1,16 +1,22 @@
 plugins {
-    id "io.micronaut.application"
+    id "io.micronaut.application" version "1.0.0.M9"
 }
 
 repositories {
+    jcenter()
     maven {
         url("https://dl.bintray.com/fnproject/fnproject")
     }
+    mavenLocal()
+}
+
+micronaut {
+    version "2.0.0"
 }
 
 dependencies {
-    implementation project(":oci-sdk")
-    implementation project(":oci-function")
+    implementation("io.micronaut.oci:micronaut-oci-sdk:1.0.0.BUILD-SNAPSHOT")
+    implementation("io.micronaut.oci:micronaut-oci-function:1.0.0.BUILD-SNAPSHOT")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
     testImplementation 'com.fnproject.fn:testing-junit4:1.0.109'

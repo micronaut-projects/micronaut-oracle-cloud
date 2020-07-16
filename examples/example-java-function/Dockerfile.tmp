@@ -1,0 +1,6 @@
+FROM fnproject/fn-java-fdk:1.0.109
+WORKDIR /function
+COPY build/layers/libs /function/build/deps
+COPY build/layers/resources /function/build/deps
+COPY build/layers/application.jar /function/build/deps
+CMD ["example.ListBucketsFunction::handleRequest"]
