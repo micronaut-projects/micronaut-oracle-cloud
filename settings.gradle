@@ -10,3 +10,4 @@ include 'oci-sdk-processor'
 
 // doc examples
 include 'doc-examples:example-java'
+include 'doc-examples:example-java-function'

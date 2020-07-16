@@ -1,0 +1,26 @@
+plugins {
+    id "io.micronaut.application"
+}
+
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}
+
+dependencies {
+    implementation project(":oci-sdk")
+    implementation project(":oci-function")
+    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
+    runtimeOnly("ch.qos.logback:logback-classic")
+    testImplementation 'com.fnproject.fn:testing-junit4:1.0.109'
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+}
+
+mainClassName = "com.fnproject.fn.runtime.EntryPoint"
+
+run {
+    args("example.ListBucketsFunction::handleRequest")
+}
