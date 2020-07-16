@@ -18,7 +18,10 @@ subprojects { Project subproject ->
         apply plugin: "java-platform"
         version projectVersion
     } else if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
-        dependencyUpdates.enabled = false
+        repositories {
+            jcenter()
+            mavenCentral()
+        }
         return
     } else {
         apply plugin: "io.micronaut.build.common"

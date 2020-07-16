@@ -41,6 +41,7 @@ public class BucketController implements BucketOperations {
     public BucketController(ObjectStorageRxClient objectStorage, AuthenticationDetailsProvider detailsProvider) {
         this.objectStorage = objectStorage;
         this.detailsProvider = detailsProvider;
+
     }
 
     @Override
