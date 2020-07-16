@@ -1,8 +1,8 @@
 schema_version: 20180708
 name: example-java
-version: 0.0.9
+version: 0.0.15
 runtime: java
 build_image: fnproject/fn-java-fdk-build:jdk11-1.0.109
 run_image: fnproject/fn-java-fdk:jre11-1.0.109
 cmd: example.ListBucketsFunction::handleRequest
-timeout: 60
+timeout: 120
