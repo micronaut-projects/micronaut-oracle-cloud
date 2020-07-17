@@ -15,6 +15,7 @@
  */
 package example;
 
+// tag::imports[]
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
@@ -22,20 +23,24 @@ import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import io.micronaut.oci.core.TenancyIdProvider;
 import io.micronaut.oci.function.OciFunction;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import javax.inject.*;
 import java.util.List;
 import java.util.stream.Collectors;
+// end::imports[]
 
+// tag::class[]
 @Singleton
-public class ListBucketsFunction extends OciFunction {
+public class ListBucketsFunction extends OciFunction { // <1>
 
     @Inject
-    ObjectStorageClient objectStorageClient;
+    ObjectStorageClient objectStorageClient; // <2>
 
     @Inject
     TenancyIdProvider tenantIdProvider;
 
+// end::class[]
+
+    // tag::method[]
     public List<String> handleRequest() {
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenantIdProvider.getTenancyId()).build();
@@ -47,4 +52,8 @@ public class ListBucketsFunction extends OciFunction {
                 .getItems().stream().map(BucketSummary::getName)
                 .collect(Collectors.toList());
     }
+    // end::method[]
+
+// tag::class[]
 }
+// end::class[]

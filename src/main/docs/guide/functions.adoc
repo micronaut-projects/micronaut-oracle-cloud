@@ -1,0 +1,21 @@
+Oracle Cloud Functions are based on https://fnproject.io/[Project.fn]. You can write simple functions targeting the Oracle Cloud Function environment by extending from the api:oci.function.OciFunction[] super class.
+
+This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:
+
+* The class must have a public no arguments constructor
+* A public method that executes the function must be defined
+* The class must be annotated with `@Singleton`
+
+The following provides an example that uses the Object Storage API to list the available buckets:
+
+snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="imports,class"]
+
+<1> A public class with a no argument constructor annotated with `@Singleton` and extending from api:oci.function.OciFunction[]
+<2> You can use the `@Inject` annotation to inject SDK components
+
+Once you have correctly defined the function you should define a public method that is the function handler. For example:
+
+snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="method", indent="0"]
+
+The above example uses the Object Storage API to list the available buckets.
+
