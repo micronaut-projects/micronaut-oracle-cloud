@@ -2,6 +2,7 @@ package example;
 
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.annotation.MicronautTest;
+import io.reactivex.Single;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -31,5 +32,10 @@ public class BucketControllerTest {
 
     @Client("/os")
     interface BucketClient extends BucketOperations {
+        @Override
+        Single<String> createBucket(String name);
+
+        @Override
+        Single<Boolean> deleteBucket(String name);
     }
 }

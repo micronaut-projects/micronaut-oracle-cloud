@@ -16,9 +16,7 @@
 package io.micronaut.oci.core;
 
 import com.oracle.bmc.ClientConfiguration;
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
-import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.*;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
@@ -114,14 +112,27 @@ public class OracleCloudCoreFactory {
         return props.getClientBuilder();
     }
 
-    /**
+    @Singleton
+    @Primary
+    protected TenantIdProvider tenantIdProvider(BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
+        return () -> {
+            if (authenticationDetailsProvider instanceof AuthenticationDetailsProvider) {
+                return ((AuthenticationDetailsProvider) authenticationDetailsProvider).getTenantId();
+            } else if (authenticationDetailsProvider instanceof ResourcePrincipalAuthenticationDetailsProvider) {
+                return ((ResourcePrincipalAuthenticationDetailsProvider) authenticationDetailsProvider).getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
+            }
+            return null;
+        };
+    }
+
+                                                /**
      * Configures the default {@link ClientConfiguration} if no other configuration is present.
      * @param builder The builder
      * @return The default client configuration.
      */
-    @Singleton
-    @Requires(missingBeans = ClientConfiguration.class)
-    @Primary
+                                                @Singleton
+                                                @Requires(missingBeans = ClientConfiguration.class)
+                                                @Primary
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }
