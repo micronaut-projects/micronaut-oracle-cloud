@@ -30,11 +30,16 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class ListBucketsFunction extends OciFunction {
+
     @Inject
     ObjectStorageClient objectStorageClient;
 
     @Inject
     TenancyIdProvider tenantIdProvider;
+
+    @ReflectiveAccess
+    public ListBucketsFunction() {
+    }
 
     @ReflectiveAccess
     public List<String> handleRequest() {
