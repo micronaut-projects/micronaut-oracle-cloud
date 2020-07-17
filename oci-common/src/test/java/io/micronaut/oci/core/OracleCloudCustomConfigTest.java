@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @MicronautTest
 @Property(name = "oci.client.readTimeoutMillis", value = "25000")
-@Property(name = "oci.config.profile", value = "ADMIN_USER")
 public class OracleCloudCustomConfigTest {
 
     @Test
@@ -18,10 +17,5 @@ public class OracleCloudCustomConfigTest {
             OracleCloudCoreFactory factory) {
         assertNotNull(clientConfiguration);
         assertEquals(clientConfiguration.getReadTimeoutMillis(), 25000);
-        assertTrue(factory.getProfile().isPresent());
-        assertEquals(
-                "ADMIN_USER",
-                factory.getProfile().get()
-        );
     }
 }

@@ -18,10 +18,8 @@ package io.micronaut.oci.core;
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.*;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.annotation.Primary;
-import io.micronaut.context.annotation.Property;
-import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.*;
+import io.micronaut.context.exceptions.ConfigurationException;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -114,7 +112,11 @@ public class OracleCloudCoreFactory {
 
     @Singleton
     @Primary
-    protected TenancyIdProvider tenantIdProvider(BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
+    @Context
+    protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
+        if (authenticationDetailsProvider == null) {
+            throw new ConfigurationException("Invalid Oracle Cloud Configuration. If you are running locally ensure the CLI is configured by running: oci setup config");
+        }
         return () -> {
             if (authenticationDetailsProvider instanceof AuthenticationDetailsProvider) {
                 return ((AuthenticationDetailsProvider) authenticationDetailsProvider).getTenantId();
