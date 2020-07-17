@@ -114,7 +114,7 @@ public class OracleCloudCoreFactory {
 
     @Singleton
     @Primary
-    protected TenantIdProvider tenantIdProvider(BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
+    protected TenancyIdProvider tenantIdProvider(BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
         return () -> {
             if (authenticationDetailsProvider instanceof AuthenticationDetailsProvider) {
                 return ((AuthenticationDetailsProvider) authenticationDetailsProvider).getTenantId();

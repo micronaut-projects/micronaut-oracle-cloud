@@ -25,10 +25,10 @@ import edu.umd.cs.findbugs.annotations.Nullable;
  * @since 1.0.0
  */
 @FunctionalInterface
-public interface TenantIdProvider {
+public interface TenancyIdProvider {
     /**
      * @return Returns the configured tenant id.
      */
     @Nullable
-    String getTenantId();
+    String getTenancyId();
 }

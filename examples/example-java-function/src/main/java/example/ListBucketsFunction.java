@@ -1,7 +1,5 @@
 package example;
 
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
@@ -22,12 +20,12 @@ public class ListBucketsFunction extends OciFunction {
     ObjectStorageClient objectStorageClient;
 
     @Inject
-    ResourcePrincipalAuthenticationDetailsProvider detailsProvider;
+    TenantIdProvider tenantIdProvider;
 
     @ReflectiveAccess
     public List<String> handleRequest() {
         try {
-            String tenancyId = detailsProvider.getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
+            String tenancyId = tenantIdProvider.getTenantId();
 
             GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyId).build();
