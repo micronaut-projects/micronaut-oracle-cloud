@@ -23,6 +23,8 @@ import io.micronaut.http.annotation.*;
 import io.micronaut.oci.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.micronaut.oci.core.TenancyIdProvider;
 import io.reactivex.Single;
+
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 // end::imports[]
@@ -42,15 +44,15 @@ public class BucketController implements BucketOperations {
 // end::class[]
 
     @Override
-    @Get("/buckets")
-    public Single<List<String>> listBuckets() {
-        String tenancyId = tenancyIdProvider.getTenancyId();
+    @Get("/buckets{/compartmentId}")
+    public Single<List<String>> listBuckets(@PathVariable @Nullable String compartmentId) {
+        String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
-                .compartmentId(tenancyId).build();
+                .compartmentId(compartmentOcid).build();
         return objectStorage.getNamespace(getNamespaceRequest).flatMap(namespaceResponse -> {
             final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
             builder.namespaceName(namespaceResponse.getValue());
-            builder.compartmentId(tenancyId);
+            builder.compartmentId(compartmentOcid);
             return objectStorage.listBuckets(builder.build())
                     .map(listBucketsResponse -> listBucketsResponse.getItems()
                             .stream()

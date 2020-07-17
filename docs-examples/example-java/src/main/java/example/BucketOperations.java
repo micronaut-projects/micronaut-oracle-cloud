@@ -20,11 +20,12 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.reactivex.Single;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface BucketOperations {
-    @Get("/buckets")
-    Single<List<String>> listBuckets();
+    @Get("/buckets{/compartmentId}")
+    Single<List<String>> listBuckets(@Nullable String compartmentId);
 
     @Post("/buckets/{name}")
     Single<String> createBucket(String name);

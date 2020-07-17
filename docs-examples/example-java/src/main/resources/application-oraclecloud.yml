@@ -1,0 +1,3 @@
+oci:
+  config:
+    use-instance-principal: true
