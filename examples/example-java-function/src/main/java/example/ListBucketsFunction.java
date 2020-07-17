@@ -1,6 +1,7 @@
 package example;
 
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
@@ -21,20 +22,22 @@ public class ListBucketsFunction extends OciFunction {
     ObjectStorageClient objectStorageClient;
 
     @Inject
-    AuthenticationDetailsProvider detailsProvider;
+    ResourcePrincipalAuthenticationDetailsProvider detailsProvider;
 
     @ReflectiveAccess
     public List<String> handleRequest() {
         try {
+            String tenancyId = detailsProvider.getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
+
             GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
-            .compartmentId(detailsProvider.getTenantId()).build();
-    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
-    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-    builder.namespaceName(namespace);
-    builder.compartmentId(detailsProvider.getTenantId());
-    return objectStorageClient.listBuckets(builder.build())
-            .getItems().stream().map(BucketSummary::getName)
-            .collect(Collectors.toList());            
+                .compartmentId(tenancyId).build();
+            String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
+            final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+            builder.namespaceName(namespace);
+            builder.compartmentId(tenancyId);
+            return objectStorageClient.listBuckets(builder.build())
+                    .getItems().stream().map(BucketSummary::getName)
+                    .collect(Collectors.toList());
         } catch (Throwable e) {
             System.out.println("Error occurred: " + e.getMessage());
             e.printStackTrace();
