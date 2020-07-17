@@ -431,7 +431,86 @@ public Single&lt;String&gt; createBucket(String name) {
 </div>
 
 
+<div class="paragraph">
+<p>Oracle Cloud Functions are based on <a href="https://fnproject.io/">Project.fn</a>. You can write simple functions targeting the Oracle Cloud Function environment by extending from the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> super class.</p>
+</div>
+<div class="paragraph">
+<p>This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The class must have a public no arguments constructor</p>
+</li>
+<li>
+<p>A public method that executes the function must be defined</p>
+</li>
+<li>
+<p>The class must be annotated with <code>@Singleton</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following provides an example that uses the Object Storage API to list the available buckets:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import io.micronaut.oci.core.TenancyIdProvider;
+import io.micronaut.oci.function.OciFunction;
 
+import javax.inject.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Singleton
+public class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
+
+    @Inject
+    ObjectStorageClient objectStorageClient; <b class="conum">(2)</b>
+
+    @Inject
+    TenancyIdProvider tenantIdProvider;
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A public class with a no argument constructor annotated with <code>@Singleton</code> and extending from <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>You can use the <code>@Inject</code> annotation to inject SDK components</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once you have correctly defined the function you should define a public method that is the function handler. For example:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;String&gt; handleRequest() {
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenantIdProvider.getTenancyId()).build();
+    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
+    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+    builder.namespaceName(namespace);
+    builder.compartmentId(tenantIdProvider.getTenancyId());
+    return objectStorageClient.listBuckets(builder.build())
+            .getItems().stream().map(BucketSummary::getName)
+            .collect(Collectors.toList());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example uses the Object Storage API to list the available buckets.</p>
+</div>
 
     </div>
 </div>
