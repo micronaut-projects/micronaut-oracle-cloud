@@ -19,6 +19,7 @@ import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.core.jni.JNIRuntimeAccess;
 import io.micronaut.core.annotation.Internal;
 import org.graalvm.nativeimage.hosted.Feature;
+import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 
 /**
  * An automatic feature for native functions.
@@ -39,6 +40,7 @@ final class OciFunctionFeature implements Feature {
         if (t != null) {
             JNIRuntimeAccess.register(t);
             JNIRuntimeAccess.register(t.getDeclaredMethods());
+            RuntimeClassInitialization.initializeAtRunTime(t);
         }
     }
 }
