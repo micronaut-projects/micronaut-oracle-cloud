@@ -1,7 +1,8 @@
-introduction:
-  title: Introduction
-  releaseHistory: Release History
-quickStart:
-  title: Quick Start
+introduction: Introduction
+quickStart: Quick Start
+modules: Available Modules
+rxjava: RxJava 2 Support
+functions: Oracle Cloud Function
+
 
 

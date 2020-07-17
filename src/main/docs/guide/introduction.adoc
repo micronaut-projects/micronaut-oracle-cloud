@@ -1,1 +1,2 @@
-TODO
+This module provides integration between Micronaut and the Oracle Cloud SDK including support for Oracle Cloud Function.
+
