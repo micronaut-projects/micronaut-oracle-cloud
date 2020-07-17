@@ -90,16 +90,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             ClassName cn = ClassName.get(rxPackageName, rx);
             TypeSpec.Builder builder = TypeSpec.classBuilder(cn);
 
-            ClassName single = ClassName.get("io.reactivex", "Single");
+            ClassName clientType = ClassName.get(packageName, simpleName);
+            ClassName rxSingleType = ClassName.get("io.reactivex", "Single");
             final AnnotationSpec.Builder requiresSpec =
                     AnnotationSpec.builder(Requires.class)
-                            .addMember("classes", simpleName + ".class");
+                            .addMember("classes", "{$T.class, $T.class}", clientType, rxSingleType);
             builder.addAnnotation(requiresSpec.build());
-            builder.addAnnotation(
-                    AnnotationSpec.builder(Requires.class)
-                            .addMember("classes", single.reflectionName() + ".class").build());
             builder.addAnnotation(Singleton.class);
-            ClassName clientType = ClassName.get(packageName, simpleName);
             builder.addModifiers(Modifier.PUBLIC);
             builder.addField(clientType, "client");
             builder.addMethod(MethodSpec.constructorBuilder()
@@ -139,13 +136,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                                                 )
                                                 .returns(
                                                         ParameterizedTypeName.get(
-                                                                single,
+                                                                rxSingleType,
                                                                 responseType
                                                         )
                                                 );
 
                                         methodBuilder.addCode(CodeBlock.builder()
-                                                .addStatement("return Single.create((emitter) -> {")
+                                                .addStatement("return $T.create((emitter) -> {", rxSingleType)
                                                 .add("this.client." + methodName + "(" + parameterName + ",")
                                                 .add("new $T<" + requestType + "," + responseType + ">(emitter)", ClassName.get("io.micronaut.oci.clients.rxjava", "AsyncHandlerEmitter"))
                                                 .addStatement(")")
