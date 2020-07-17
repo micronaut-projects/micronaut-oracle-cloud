@@ -374,7 +374,9 @@ protected&nbsp;com.oracle.bmc.ClientConfiguration.ClientConfigurationBuilder&nbs
 <h4>tenantIdProvider</h4>
 <pre>@Singleton
  @Primary
-protected&nbsp;<a href="../../../../io/micronaut/oci/core/TenancyIdProvider.html" title="interface in io.micronaut.oci.core">TenancyIdProvider</a>&nbsp;tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</pre>
+ @Context
+protected&nbsp;<a href="../../../../io/micronaut/oci/core/TenancyIdProvider.html" title="interface in io.micronaut.oci.core">TenancyIdProvider</a>&nbsp;tenantIdProvider(@Nullable
+                                                                            com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</pre>
 </li>
 </ul>
 <a name="clientConfiguration-com.oracle.bmc.ClientConfiguration.ClientConfigurationBuilder-">
