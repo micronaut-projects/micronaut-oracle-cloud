@@ -19,7 +19,6 @@ import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
-import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.oci.core.TenancyIdProvider;
 import io.micronaut.oci.function.OciFunction;
 
@@ -37,11 +36,6 @@ public class ListBucketsFunction extends OciFunction {
     @Inject
     TenancyIdProvider tenantIdProvider;
 
-    @ReflectiveAccess
-    public ListBucketsFunction() {
-    }
-
-    @ReflectiveAccess
     public List<String> handleRequest() {
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenantIdProvider.getTenancyId()).build();

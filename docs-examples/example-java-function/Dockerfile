@@ -11,6 +11,7 @@ RUN native-image --static \
                  --report-unsupported-elements-at-runtime \
                  --no-server \
                  --no-fallback \
+                 -Dfn.handler="example.ListBucketsFunction::handleRequest" \
                  -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
                  com.fnproject.fn.runtime.EntryPoint
 

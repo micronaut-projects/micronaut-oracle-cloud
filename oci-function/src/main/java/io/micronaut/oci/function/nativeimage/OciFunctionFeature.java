@@ -15,11 +15,16 @@
  */
 package io.micronaut.oci.function.nativeimage;
 
+import com.fnproject.fn.api.FnConfiguration;
 import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.core.jni.JNIRuntimeAccess;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.reflect.ReflectionUtils;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
+import org.graalvm.nativeimage.hosted.RuntimeReflection;
+
+import java.lang.reflect.Method;
 
 /**
  * An automatic feature for native functions.
@@ -33,6 +38,7 @@ import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 final class OciFunctionFeature implements Feature {
 
     private static final String UNIX_SOCKET_NATIVE = "com.fnproject.fn.runtime.ntv.UnixSocketNative";
+    private static final String FN_HANDLER = "fn.handler";
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
@@ -41,6 +47,27 @@ final class OciFunctionFeature implements Feature {
             JNIRuntimeAccess.register(t);
             JNIRuntimeAccess.register(t.getDeclaredMethods());
             RuntimeClassInitialization.initializeAtRunTime(t);
+        }
+
+        String handler = System.getProperty(FN_HANDLER);
+        if (handler != null) {
+            String[] s = handler.split("::");
+            if (s.length == 2) {
+                Class<?> c = access.findClassByName(s[0]);
+                if (c != null) {
+
+                    RuntimeReflection.register(c);
+                    RuntimeReflection.registerForReflectiveInstantiation(c);
+                    ReflectionUtils.findMethod(c, s[1])
+                            .ifPresent(RuntimeReflection::register);
+                    Method[] declaredMethods = c.getDeclaredMethods();
+                    for (Method declaredMethod : declaredMethods) {
+                        if (declaredMethod.getAnnotation(FnConfiguration.class) != null) {
+                            RuntimeReflection.register(declaredMethod);
+                        }
+                    }
+                }
+            }
         }
     }
 }
