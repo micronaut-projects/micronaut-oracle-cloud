@@ -65,9 +65,9 @@ public class OracleCloudCoreFactory {
      * @see ConfigFileAuthenticationDetailsProvider
      */
     @Singleton
-    @Requires(notEquals = ORACLE_CLOUD + ".config.use-instance-principal")
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
+    @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Primary
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
         return new ConfigFileAuthenticationDetailsProvider(
@@ -82,7 +82,7 @@ public class OracleCloudCoreFactory {
      * @see SimpleAuthenticationDetailsProvider
      */
     @Singleton
-    @Requires(notEquals = ORACLE_CLOUD + ".config.use-instance-principal")
+    @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     protected SimpleAuthenticationDetailsProvider simpleAuthenticationDetailsProvider(
@@ -98,7 +98,7 @@ public class OracleCloudCoreFactory {
      * @see com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider
      */
     @Singleton
-    @Requires(notEquals = ORACLE_CLOUD + ".config.use-instance-principal")
+    @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
     @Primary
     protected ResourcePrincipalAuthenticationDetailsProvider resourcePrincipalAuthenticationDetailsProvider() {
@@ -109,15 +109,15 @@ public class OracleCloudCoreFactory {
      * Configures a {@link com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present and
      * the specified by the user with {@code oci.config.use-instance-principal}.
      *
+     * @param instancePrincipalConfiguration  The configuration
      * @return The {@link InstancePrincipalsAuthenticationDetailsProvider}.
      * @see com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider
      */
     @Singleton
-    @Requires(property = ORACLE_CLOUD + ".config.use-instance-principal")
-    @Requires(condition = OracleCloudInstancePrincipalCondition.class)
+    @Requires(beans = InstancePrincipalConfiguration.class)
     @Primary
-    protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider() {
-        return InstancePrincipalsAuthenticationDetailsProvider.builder().build();
+    protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
+        return instancePrincipalConfiguration.getBuilder().build();
     }
 
     /**
@@ -145,8 +145,8 @@ public class OracleCloudCoreFactory {
             } else if (authenticationDetailsProvider instanceof ResourcePrincipalAuthenticationDetailsProvider) {
                 return ((ResourcePrincipalAuthenticationDetailsProvider) authenticationDetailsProvider).getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
             } else if (authenticationDetailsProvider instanceof InstancePrincipalsAuthenticationDetailsProvider) {
-                URLBasedX509CertificateSupplier urlBasedX509CertificateSupplier = null;
-                String tenantId = null;
+                URLBasedX509CertificateSupplier urlBasedX509CertificateSupplier;
+                String tenantId;
                 try {
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
                             new URL(METADATA_SERVICE_URL + "identity/cert.pem"),

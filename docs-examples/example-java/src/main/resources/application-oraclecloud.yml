@@ -1,3 +1,4 @@
 oci:
   config:
-    use-instance-principal: true
+    instance-principal:
+      enabled: true
