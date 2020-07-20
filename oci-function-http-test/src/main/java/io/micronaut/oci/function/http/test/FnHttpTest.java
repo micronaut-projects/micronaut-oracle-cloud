@@ -65,6 +65,18 @@ public final class FnHttpTest {
      * @return The response
      */
     public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request, Class<O> resultType) {
+        return invoke(request, Argument.of(resultType));
+    }
+
+    /**
+     * Invoke a function via HTTP
+     * @param request The request
+     * @param resultType The result type
+     * @param <I> The input type
+     * @param <O> The output type
+     * @return The response
+     */
+    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request, Argument<O> resultType) {
         Objects.requireNonNull(request, "The request cannot be null");
         Objects.requireNonNull(resultType, "The result type cannot be null");
         FnTestingRule fn = FnTestingRule.createDefault();
@@ -109,10 +121,10 @@ public final class FnHttpTest {
     private static final class FnHttpResponse<B> implements HttpResponse<B> {
         private final FnResult outputEvent;
         private final FnHeaders fnHeaders;
-        private final Class<B> resultType;
+        private final Argument<B> resultType;
         private MutableConvertibleValues<Object> attributes;
 
-        public FnHttpResponse(FnResult outputEvent, Class<B> resultType) {
+        public FnHttpResponse(FnResult outputEvent, Argument<B> resultType) {
             this.outputEvent = outputEvent;
             this.resultType = resultType;
             Map<String, List<String>> headers = new LinkedHashMap<>();
@@ -166,7 +178,7 @@ public final class FnHttpTest {
         @NonNull
         @Override
         public Optional<B> getBody() {
-            if (CharSequence.class.isAssignableFrom(resultType)) {
+            if (CharSequence.class.isAssignableFrom(resultType.getType())) {
                 return (Optional<B>) Optional.of(outputEvent.getBodyAsString());
             } else {
                 return ConversionService.SHARED.convert(
