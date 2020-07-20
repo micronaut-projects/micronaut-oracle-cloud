@@ -15,21 +15,15 @@
  */
 package example;
 
-import io.micronaut.http.annotation.Delete;
+import com.oracle.bmc.database.responses.GetDatabaseResponse;
 import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.PathVariable;
 import io.reactivex.Single;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface BucketOperations {
-    @Get("/buckets{/compartmentId}")
-    Single<List<String>> listBuckets(@Nullable String compartmentId);
-
-    @Post("/buckets/{name}")
-    Single<String> createBucket(String name);
-
-    @Delete("/buckets/{name}")
-    Single<Boolean> deleteBucket(String name);
+public interface DatabaseOperations {
+    @Get("/list{/compartmentId}")
+    Single<List<String>> listDatabases(@PathVariable @Nullable String compartmentId);
 }

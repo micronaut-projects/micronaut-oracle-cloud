@@ -19,7 +19,7 @@ public class BucketControllerTest {
 
     @Test
     void testBuckets() {
-        List<String> names = client.listBuckets().blockingGet();
+        List<String> names = client.listBuckets(null).blockingGet();
         assertFalse(names.isEmpty());
 
         String location = client.createBucket("test-bucket").blockingGet();
