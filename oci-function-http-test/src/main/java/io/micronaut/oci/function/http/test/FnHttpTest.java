@@ -57,7 +57,7 @@ public final class FnHttpTest {
     }
 
     /**
-     * Invoke a function via HTTP
+     * Invoke a function via HTTP.
      * @param request The request
      * @param resultType The result type
      * @param <I> The input type
@@ -69,7 +69,7 @@ public final class FnHttpTest {
     }
 
     /**
-     * Invoke a function via HTTP
+     * Invoke a function via HTTP.
      * @param request The request
      * @param resultType The result type
      * @param <I> The input type
