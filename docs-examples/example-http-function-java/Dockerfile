@@ -8,6 +8,7 @@ COPY build/layers/application.jar /home/app/application.jar
 RUN native-image --static \
                  -H:Name=func \
                  --report-unsupported-elements-at-runtime \
+                 --initialize-at-build-time=example \
                  --no-server \
                  --no-fallback \
                  -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
