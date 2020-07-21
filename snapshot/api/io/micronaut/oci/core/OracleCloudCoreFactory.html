@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -143,6 +143,10 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#METADATA_SERVICE_URL">METADATA_SERVICE_URL</a></span></code>&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static java.lang.String</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#ORACLE_CLOUD">ORACLE_CLOUD</a></span></code>&nbsp;</td>
 </tr>
 </table>
@@ -203,19 +207,26 @@ extends java.lang.Object</pre>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#getProfile--">getProfile</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>protected com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#instancePrincipalAuthenticationDetailsProvider-io.micronaut.oci.core.InstancePrincipalConfiguration-">instancePrincipalAuthenticationDetailsProvider</a></span>(<a href="../../../../io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a>&nbsp;instancePrincipalConfiguration)</code>
+<div class="block">Configures a <code>InstancePrincipalsAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ the specified by the user with <code>oci.config.use-instance-principal</code>.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#resourcePrincipalAuthenticationDetailsProvider--">resourcePrincipalAuthenticationDetailsProvider</a></span>()</code>
 <div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
  the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#simpleAuthenticationDetailsProvider-io.micronaut.oci.core.OracleCloudAuthConfigurationProperties-">simpleAuthenticationDetailsProvider</a></span>(<a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</code>
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected <a href="../../../../io/micronaut/oci/core/TenancyIdProvider.html" title="interface in io.micronaut.oci.core">TenancyIdProvider</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../io/micronaut/oci/core/OracleCloudCoreFactory.html#tenantIdProvider-com.oracle.bmc.auth.BasicAuthenticationDetailsProvider-">tenantIdProvider</a></span>(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code>&nbsp;</td>
 </tr>
@@ -244,13 +255,26 @@ extends java.lang.Object</pre>
 <a name="ORACLE_CLOUD">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ORACLE_CLOUD</h4>
 <pre>public static final&nbsp;java.lang.String ORACLE_CLOUD</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../../../constant-values.html#io.micronaut.oci.core.OracleCloudCoreFactory.ORACLE_CLOUD">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a name="METADATA_SERVICE_URL">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>METADATA_SERVICE_URL</h4>
+<pre>public static final&nbsp;java.lang.String METADATA_SERVICE_URL</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../../../constant-values.html#io.micronaut.oci.core.OracleCloudCoreFactory.METADATA_SERVICE_URL">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -291,10 +315,10 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>configFileAuthenticationDetailsProvider</h4>
 <pre>@Singleton
- @Requires(condition=io.micronaut.oci.core.OracleCloudConfigCondition.class) @Requires(missingProperty="oci.tenant-id")
+ @Requires(condition=io.micronaut.oci.core.OracleCloudConfigCondition.class) @Requires(missingProperty="oci.tenant-id") @Requires(missingProperty="oci.config.instance-principal")
  @Primary
 protected&nbsp;com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider&nbsp;configFileAuthenticationDetailsProvider()
-                                                                                                                                                                                                                                                    throws java.io.IOException</pre>
+                                                                                                                                                                                                                                                                                                               throws java.io.IOException</pre>
 <div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
  a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config</code>.</div>
 <dl>
@@ -314,7 +338,7 @@ protected&nbsp;com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider&nbsp;
 <li class="blockList">
 <h4>simpleAuthenticationDetailsProvider</h4>
 <pre>@Singleton
- @Requires(property="oci.tenant-id")
+ @Requires(missingProperty="oci.config.instance-principal") @Requires(property="oci.tenant-id")
  @Primary
 protected&nbsp;com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider&nbsp;simpleAuthenticationDetailsProvider(<a href="../../../../io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</pre>
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
@@ -335,7 +359,7 @@ protected&nbsp;com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider&nbsp;simp
 <li class="blockList">
 <h4>resourcePrincipalAuthenticationDetailsProvider</h4>
 <pre>@Singleton
- @Requires(property="OCI_RESOURCE_PRINCIPAL_VERSION")
+ @Requires(missingProperty="oci.config.instance-principal") @Requires(property="OCI_RESOURCE_PRINCIPAL_VERSION")
  @Primary
 protected&nbsp;com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider&nbsp;resourcePrincipalAuthenticationDetailsProvider()</pre>
 <div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
@@ -345,6 +369,28 @@ protected&nbsp;com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvide
 <dd>The <code>ResourcePrincipalAuthenticationDetailsProvider</code>.</dd>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><code>ResourcePrincipalAuthenticationDetailsProvider</code></dd>
+</dl>
+</li>
+</ul>
+<a name="instancePrincipalAuthenticationDetailsProvider-io.micronaut.oci.core.InstancePrincipalConfiguration-">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>instancePrincipalAuthenticationDetailsProvider</h4>
+<pre>@Singleton
+ @Requires(beans=<a href="../../../../io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration.class</a>)
+ @Primary
+protected&nbsp;com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider&nbsp;instancePrincipalAuthenticationDetailsProvider(<a href="../../../../io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a>&nbsp;instancePrincipalConfiguration)</pre>
+<div class="block">Configures a <code>InstancePrincipalsAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ the specified by the user with <code>oci.config.use-instance-principal</code>.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>instancePrincipalConfiguration</code> - The configuration</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The <code>InstancePrincipalsAuthenticationDetailsProvider</code>.</dd>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><code>InstancePrincipalsAuthenticationDetailsProvider</code></dd>
 </dl>
 </li>
 </ul>

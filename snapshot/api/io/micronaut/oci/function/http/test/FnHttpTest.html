@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":9,"i1":9,"i2":9};
+var methods = {"i0":9,"i1":9,"i2":9,"i3":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,9 +160,16 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>static &lt;I,O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/micronaut/oci/function/http/test/FnHttpTest.html#invoke-io.micronaut.http.HttpRequest-io.micronaut.core.type.Argument-">invoke</a></span>(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+      io.micronaut.core.type.Argument&lt;O&gt;&nbsp;resultType)</code>
+<div class="block">Invoke a function via HTTP.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>static &lt;I,O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../../../../io/micronaut/oci/function/http/test/FnHttpTest.html#invoke-io.micronaut.http.HttpRequest-java.lang.Class-">invoke</a></span>(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
       java.lang.Class&lt;O&gt;&nbsp;resultType)</code>
-<div class="block">Invoke a function via HTTP</div>
+<div class="block">Invoke a function via HTTP.</div>
 </td>
 </tr>
 </table>
@@ -245,12 +252,33 @@ extends java.lang.Object</pre>
 <a name="invoke-io.micronaut.http.HttpRequest-java.lang.Class-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>invoke</h4>
 <pre>public static&nbsp;&lt;I,O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;&nbsp;invoke(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
                                                              java.lang.Class&lt;O&gt;&nbsp;resultType)</pre>
-<div class="block">Invoke a function via HTTP</div>
+<div class="block">Invoke a function via HTTP.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>I</code> - The input type</dd>
+<dd><code>O</code> - The output type</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>request</code> - The request</dd>
+<dd><code>resultType</code> - The result type</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response</dd>
+</dl>
+</li>
+</ul>
+<a name="invoke-io.micronaut.http.HttpRequest-io.micronaut.core.type.Argument-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>invoke</h4>
+<pre>public static&nbsp;&lt;I,O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;&nbsp;invoke(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+                                                             io.micronaut.core.type.Argument&lt;O&gt;&nbsp;resultType)</pre>
+<div class="block">Invoke a function via HTTP.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>I</code> - The input type</dd>

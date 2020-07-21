@@ -67,7 +67,7 @@
 <!--   -->
 </a></div>
 <!-- ========= END OF TOP NAVBAR ========= -->
-<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a name="I:A">
+<div class="contentContainer"><a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;<a name="I:A">
 <!--   -->
 </a>
 <h2 class="title">A</h2>
@@ -161,6 +161,8 @@
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/function/OciFunction.html#getApplicationContext--">getApplicationContext()</a></span> - Method in class io.micronaut.oci.function.<a href="io/micronaut/oci/function/OciFunction.html" title="class in io.micronaut.oci.function">OciFunction</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html#getBuilder--">getBuilder()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#getBuilder--">getBuilder()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html#getBuilder--">getBuilder()</a></span> - Method in class io.micronaut.oci.core.sdk.<a href="io/micronaut/oci/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oci.core.sdk">AbstractSdkClientFactory</a></dt>
@@ -207,6 +209,17 @@
 <dl>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html#init-javax.annotation.processing.ProcessingEnvironment-">init(ProcessingEnvironment)</a></span> - Method in class io.micronaut.oci.clients.processor.<a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oci.clients.processor">OracleCloudSdkProcessor</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#instancePrincipalAuthenticationDetailsProvider-io.micronaut.oci.core.InstancePrincipalConfiguration-">instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
+<dd>
+<div class="block">Configures a <code>InstancePrincipalsAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
+ the specified by the user with <code>oci.config.use-instance-principal</code>.</div>
+</dd>
+<dt><a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core"><span class="typeNameLink">InstancePrincipalConfiguration</span></a> - Class in <a href="io/micronaut/oci/core/package-summary.html">io.micronaut.oci.core</a></dt>
+<dd>
+<div class="block">Allows configuration of the <code>InstancePrincipalsAuthenticationDetailsProvider</code>.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html#InstancePrincipalConfiguration--">InstancePrincipalConfiguration()</a></span> - Constructor for class io.micronaut.oci.core.<a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/function/http/test/FnHttpTest.html#invoke-io.micronaut.http.HttpRequest-">invoke(HttpRequest&lt;I&gt;)</a></span> - Static method in class io.micronaut.oci.function.http.test.<a href="io/micronaut/oci/function/http/test/FnHttpTest.html" title="class in io.micronaut.oci.function.http.test">FnHttpTest</a></dt>
 <dd>
 <div class="block">Invoke a function via HTTP.</div>
@@ -217,7 +230,11 @@
 </dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/function/http/test/FnHttpTest.html#invoke-io.micronaut.http.HttpRequest-java.lang.Class-">invoke(HttpRequest&lt;I&gt;, Class&lt;O&gt;)</a></span> - Static method in class io.micronaut.oci.function.http.test.<a href="io/micronaut/oci/function/http/test/FnHttpTest.html" title="class in io.micronaut.oci.function.http.test">FnHttpTest</a></dt>
 <dd>
-<div class="block">Invoke a function via HTTP</div>
+<div class="block">Invoke a function via HTTP.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/function/http/test/FnHttpTest.html#invoke-io.micronaut.http.HttpRequest-io.micronaut.core.type.Argument-">invoke(HttpRequest&lt;I&gt;, Argument&lt;O&gt;)</a></span> - Static method in class io.micronaut.oci.function.http.test.<a href="io/micronaut/oci/function/http/test/FnHttpTest.html" title="class in io.micronaut.oci.function.http.test">FnHttpTest</a></dt>
+<dd>
+<div class="block">Invoke a function via HTTP.</div>
 </dd>
 <dt><a href="io/micronaut/oci/clients/package-summary.html">io.micronaut.oci.clients</a> - package io.micronaut.oci.clients</dt>
 <dd>&nbsp;</dd>
@@ -234,6 +251,16 @@
 <dt><a href="io/micronaut/oci/function/http/package-summary.html">io.micronaut.oci.function.http</a> - package io.micronaut.oci.function.http</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oci/function/http/test/package-summary.html">io.micronaut.oci.function.http.test</a> - package io.micronaut.oci.function.http.test</dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html#isEnabled--">isEnabled()</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a></dt>
+<dd>&nbsp;</dd>
+</dl>
+<a name="I:M">
+<!--   -->
+</a>
+<h2 class="title">M</h2>
+<dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudCoreFactory.html#METADATA_SERVICE_URL">METADATA_SERVICE_URL</a></span> - Static variable in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oci.core">OracleCloudCoreFactory</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a name="I:N">
@@ -302,6 +329,8 @@
 </a>
 <h2 class="title">P</h2>
 <dl>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html#PREFIX">PREFIX</a></span> - Static variable in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html#process-java.util.Set-javax.annotation.processing.RoundEnvironment-">process(Set&lt;? extends TypeElement&gt;, RoundEnvironment)</a></span> - Method in class io.micronaut.oci.clients.processor.<a href="io/micronaut/oci/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oci.clients.processor">OracleCloudSdkProcessor</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -322,6 +351,8 @@
 <h2 class="title">S</h2>
 <dl>
 <dt><a href="io/micronaut/oci/clients/SdkClients.html" title="annotation in io.micronaut.oci.clients"><span class="typeNameLink">SdkClients</span></a> - Annotation Type in <a href="io/micronaut/oci/clients/package-summary.html">io.micronaut.oci.clients</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html#setEnabled-boolean-">setEnabled(boolean)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oci.core">InstancePrincipalConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html#setPassphrase-java.lang.String-">setPassphrase(String)</a></span> - Method in class io.micronaut.oci.core.<a href="io/micronaut/oci/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oci.core">OracleCloudAuthConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
@@ -370,7 +401,7 @@
 <dt><span class="memberNameLink"><a href="io/micronaut/oci/function/http/FnMultiValueMap.html#values--">values()</a></span> - Method in class io.micronaut.oci.function.http.<a href="io/micronaut/oci/function/http/FnMultiValueMap.html" title="class in io.micronaut.oci.function.http">FnMultiValueMap</a></dt>
 <dd>&nbsp;</dd>
 </dl>
-<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;</div>
+<a href="#I:A">A</a>&nbsp;<a href="#I:B">B</a>&nbsp;<a href="#I:C">C</a>&nbsp;<a href="#I:E">E</a>&nbsp;<a href="#I:F">F</a>&nbsp;<a href="#I:G">G</a>&nbsp;<a href="#I:H">H</a>&nbsp;<a href="#I:I">I</a>&nbsp;<a href="#I:M">M</a>&nbsp;<a href="#I:N">N</a>&nbsp;<a href="#I:O">O</a>&nbsp;<a href="#I:P">P</a>&nbsp;<a href="#I:R">R</a>&nbsp;<a href="#I:S">S</a>&nbsp;<a href="#I:T">T</a>&nbsp;<a href="#I:V">V</a>&nbsp;</div>
 <!-- ======= START OF BOTTOM NAVBAR ====== -->
 <div class="bottomNav"><a name="navbar.bottom">
 <!--   -->
