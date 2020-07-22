@@ -11,7 +11,7 @@
 
         gtag('config', 'UA-82213539-2');
     </script>
-    <title>3 Available Modules 1.0.0.BUILD-SNAPSHOT</title>
+    <title>4 Available Modules 1.0.0.BUILD-SNAPSHOT</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
     <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
@@ -44,13 +44,19 @@ function addJsClass() {
                         <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>2</strong><span>Quick Start</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/modules.html"><strong>3</strong><span>Available Modules</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/authentication.html"><strong>3</strong><span>Authentication</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/rxjava.html"><strong>4</strong><span>RxJava 2 Support</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/modules.html"><strong>4</strong><span>Available Modules</span></a>
                         </div>
                         
-                        <div class="toc-item" style="margin-left:0"><a href="../guide/functions.html"><strong>5</strong><span>Oracle Cloud Function</span></a>
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rxjava.html"><strong>5</strong><span>RxJava 2 Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/functions.html"><strong>6</strong><span>Oracle Functions (Serverless)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/httpFunctions.html"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a>
                         </div>
                         
                     </div>
@@ -71,18 +77,18 @@ function addJsClass() {
             <div id="main" class="corner-all">
 
                 
-                    <div class="toc-item prev-left"><a href="../guide/quickStart.html">&lt;&lt; <strong>2</strong><span>Quick Start</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/authentication.html">&lt;&lt; <strong>3</strong><span>Authentication</span></a></div>
                 
 
                 <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
 
                 
-                    <div class="toc-item next-right"><a href="../guide/rxjava.html"><strong>4</strong><span>RxJava 2 Support</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/rxjava.html"><strong>5</strong><span>RxJava 2 Support</span> >></a></div>
                 
 
 
                 <div class="project">
-                    <h1>3 Available Modules</h1>
+                    <h1>4 Available Modules</h1>
 
                     <p><strong>Version:</strong> 1.0.0.BUILD-SNAPSHOT</p>
                 </div>
@@ -90,7 +96,7 @@ function addJsClass() {
                 
 
                 
-<h1 id="modules"><a class="anchor" href="#modules"></a>3 Available Modules</h1>
+<h1 id="modules"><a class="anchor" href="#modules"></a>4 Available Modules</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/modules.adoc"'>
@@ -122,7 +128,7 @@ function addJsClass() {
 </p>
 </div>
 <div class="paragraph">
-<p>Provides the common functional and sets up the following beans:</p>
+<p>Provides the common functionality and sets up the following beans:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -167,7 +173,7 @@ function addJsClass() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module does not have a dependency on any one module and you should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -176,15 +182,14 @@ This module does not have a dependency on any one module and you should add thes
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut:com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
-    &lt;artifactId&gt;com.oracle.oci.sdk&lt;/artifactId&gt;
-    &lt;version&gt;oci-java-sdk-objectstorage&lt;/version&gt;
+    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
+    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -241,9 +246,9 @@ This module does not have a dependency on any one module and you should add thes
 
                 <div style="clear:both;margin-top:15px;"></div>
                 
-                    <div class="toc-item prev-left"><a href="../guide/quickStart.html">&lt;&lt; <strong>2</strong><span>Quick Start</span></a></div>
+                    <div class="toc-item prev-left"><a href="../guide/authentication.html">&lt;&lt; <strong>3</strong><span>Authentication</span></a></div>
                 
-                    <div class="toc-item next-right"><a href="../guide/rxjava.html"><strong>4</strong><span>RxJava 2 Support</span> >></a></div>
+                    <div class="toc-item next-right"><a href="../guide/rxjava.html"><strong>5</strong><span>RxJava 2 Support</span> >></a></div>
                 
                 <div style="clear:both"></div>
             </div>
