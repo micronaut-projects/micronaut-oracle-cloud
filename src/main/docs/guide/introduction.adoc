@@ -1,2 +1,1 @@
-This module provides integration between Micronaut and the Oracle Cloud SDK including support for Oracle Cloud Function.
-
+This module provides integration between Micronaut and the Oracle Cloud SDK by giving you the ability to easily inject SDK clients into your Micronaut services and controllers. In addition to supporting the SDK's blocking clients, the module provides reactive clients that use RxJava to provide async alternatives to the blocking clients in the SDK (an improvement upon the SDK's 'out-of-the-box' aysnc clients). This module also includes support for Oracle Cloud (serverless) Functions.

@@ -1,8 +1,10 @@
 introduction: Introduction
 quickStart: Quick Start
+authentication: Authentication
 modules: Available Modules
 rxjava: RxJava 2 Support
-functions: Oracle Cloud Function
+functions: Oracle Functions (Serverless)
+httpFunctions: Oracle Functions HTTP (Serverless)
 
 
 

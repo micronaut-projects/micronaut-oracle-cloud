@@ -1,0 +1,53 @@
+The following authentication providers are supported in this module:
+
+* <<config-auth, ConfigFileAuthenticationDetailsProvider>>
+* <<simple-auth, SimpleAuthenticationDetailsProvider>>
+* <<instance-principals, InstancePrincipalsAuthenticationDetailsProvider>>
+* <<resource-principals, ResourcePrincipalAuthenticationDetailsProvider>>
+
+[#config-auth]
+== ConfigFileAuthenticationDetailsProvider
+
+The {ocidocs}/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html[ConfigFileAuthenticationDetailsProvider] uses a config file located at `$USER_HOME/.oci/config`. Specify a profile within the config file via your `application.yml`:
+
+[source, yaml]
+----
+oci:
+  config:
+    profile: DEFAULT
+----
+
+[#simple-auth]
+== SimpleAuthenticationDetailsProvider
+
+The {ocidocs}/com/oracle/bmc/auth/SimpleAuthenticationDetailsProvider.html[SimpleAuthenticationDetailsProvider] allows you to provide config details via standard Micronaut configuration files (`application.yml`).
+
+[source, yaml]
+----
+oci:
+  fingerprint: [String. The private key fingerprint]
+  passphrase: [String. The private key passphrase]
+  private-key: [String. The contents of your private key. Optionally, pass a path with private-key-file (see below).]
+  private-key-file: [String. The path to the private key file (used in place of private-key above)]
+  region: [String. Ex: us-phoenix-1]
+  tenant-id: [String. The tenancy OCID]
+  user-id: [String. The user OCID]
+----
+
+[#instance-principals]
+== InstancePrincipalsAuthenticationDetailsProvider
+
+If your application is running in the Oracle Cloud, you can authorize the {ocidocs}/com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider.html[InstancePrincipalsAuthenticationDetailsProvider] to make SDK calls and utilize Instance Principal authentication. See the https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm[documentation] to enable this via dynamic groups and policies, and then enable it for the Oracle Cloud environment via `application-oraclecloud.yml` with:
+
+[source, yaml]
+----
+oci:
+  config:
+    instance-principal:
+        enabled: true
+----
+
+[#resource-principals]
+== ResourcePrincipalAuthenticationDetailsProvider
+
+{ocidocs}/com/oracle/bmc/auth/ResourcePrincipalAuthenticationDetailsProvider.html[ResourcePrincipalAuthenticationDetailsProvider] is similar to <<instance-principals, instance principals>>, but used for Oracle Functions (serverless). See the https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm[documentation] for instructions on how to configure the necessary dynamic group rules and policies to use Resource Principal auth with your serverless functions. Once the proper configuration is complete, your Micronaut driven serverless functions will be able to use the OCI SDKs with no futher configuration needed.

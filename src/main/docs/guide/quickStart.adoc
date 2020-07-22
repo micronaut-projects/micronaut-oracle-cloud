@@ -4,6 +4,8 @@ Then add a dependency on the `micronaut-oci-sdk` module:
 
 dependency:io.micronaut.oci:micronaut-oci-sdk[version={version}]
 
-Followed by a dependency on the SDK client you wish to use, for example for Object Store:
+Followed by a dependency on the OCI SDK client you wish to use, for example for Object Store:
 
 dependency::com.oracle.oci.sdk:oci-java-sdk-objectstorage[]
+
+All OCI SDK clients are supported.
