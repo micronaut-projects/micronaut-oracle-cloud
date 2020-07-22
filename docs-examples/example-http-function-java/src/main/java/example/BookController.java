@@ -1,9 +1,12 @@
 package example;
 
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Status;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -26,7 +29,8 @@ public class BookController {
     }
 
     @Post("/")
-    Book save(@Valid Book book) {
+    @Status(HttpStatus.CREATED)
+    Book save(@Valid @Body Book book) {
         this.books.put(book.getName(), book);
         return book;
     }

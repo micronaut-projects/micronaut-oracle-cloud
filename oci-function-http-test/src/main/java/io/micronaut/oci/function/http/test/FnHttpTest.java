@@ -20,15 +20,19 @@ import com.fnproject.fn.testing.FnEventBuilder;
 import com.fnproject.fn.testing.FnResult;
 import com.fnproject.fn.testing.FnTestingRule;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.*;
+import io.micronaut.http.codec.MediaTypeCodec;
+import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.micronaut.oci.function.http.FnMultiValueMap;
 import io.micronaut.oci.function.http.HttpFunction;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Testing support for functions.
@@ -77,41 +81,49 @@ public final class FnHttpTest {
      * @return The response
      */
     public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request, Argument<O> resultType) {
-        Objects.requireNonNull(request, "The request cannot be null");
-        Objects.requireNonNull(resultType, "The result type cannot be null");
-        FnTestingRule fn = FnTestingRule.createDefault();
-        fn.addSharedClassPrefix("org.slf4j.");
-        fn.addSharedClassPrefix("com.sun.");
-        FnEventBuilder<FnTestingRule> eventBuilder = fn.givenEvent()
-                .withHeader("Fn-Http-Request-Url", request.getUri().toString())
-                .withHeader("Fn-Http-Method", request.getMethodName());
+        try (ApplicationContext ctx = ApplicationContext.run()) {
+            final MediaTypeCodecRegistry codecRegistry = ctx.getBean(MediaTypeCodecRegistry.class);
+            Objects.requireNonNull(request, "The request cannot be null");
+            Objects.requireNonNull(resultType, "The result type cannot be null");
+            FnTestingRule fn = FnTestingRule.createDefault();
+            fn.addSharedClassPrefix("org.slf4j.");
+            fn.addSharedClassPrefix("com.sun.");
+            FnEventBuilder<FnTestingRule> eventBuilder = fn.givenEvent()
+                    .withHeader("Fn-Http-Request-Url", request.getUri().toString())
+                    .withHeader("Fn-Http-Method", request.getMethodName());
 
-        request.getHeaders().forEach((s, values) -> {
-            for (String v : values) {
-                eventBuilder.withHeader("Fn-Http-H-" + s, v);
+            request.getHeaders().forEach((s, values) -> {
+                for (String v : values) {
+                    eventBuilder.withHeader("Fn-Http-H-" + s, v);
+                }
+            });
+            I b = request.getBody().orElse(null);
+            if (b instanceof byte[]) {
+                eventBuilder.withBody((byte[]) b);
+            } else if (b instanceof CharSequence)  {
+                eventBuilder.withBody(
+                        b.toString().getBytes(request.getCharacterEncoding())
+                );
+            } else if (b != null) {
+                final MediaTypeCodec codec = request.getContentType().flatMap(codecRegistry::findCodec).orElse(null);
+                if (codec != null) {
+                    eventBuilder.withBody(codec.encode(b));
+                } else {
+                    eventBuilder.withBody(
+                            ConversionService.SHARED.convertRequired(
+                                    b,
+                                    byte[].class
+                            )
+                    );
+                }
             }
-        });
-        I b = request.getBody().orElse(null);
-        if (b instanceof byte[]) {
-            eventBuilder.withBody((byte[]) b);
-        } else if (b instanceof CharSequence)  {
-            eventBuilder.withBody(
-                    b.toString().getBytes(request.getCharacterEncoding())
-            );
-        } else if (b != null) {
-            eventBuilder.withBody(
-                    ConversionService.SHARED.convertRequired(
-                            b,
-                            byte[].class
-                    )
-            );
+
+            eventBuilder.enqueue();
+            fn.thenRun(HttpFunction.class, "handleRequest");
+            FnResult fnResult = fn.getOnlyResult();
+
+            return new FnHttpResponse<>(fnResult, resultType, codecRegistry);
         }
-
-        eventBuilder.enqueue();
-        fn.thenRun(HttpFunction.class, "handleRequest");
-        FnResult fnResult = fn.getOnlyResult();
-
-        return new FnHttpResponse<>(fnResult, resultType);
     }
 
     /**
@@ -122,11 +134,13 @@ public final class FnHttpTest {
         private final FnResult outputEvent;
         private final FnHeaders fnHeaders;
         private final Argument<B> resultType;
+        private final MediaTypeCodecRegistry codecRegistry;
         private MutableConvertibleValues<Object> attributes;
 
-        public FnHttpResponse(FnResult outputEvent, Argument<B> resultType) {
+        public FnHttpResponse(FnResult outputEvent, Argument<B> resultType, MediaTypeCodecRegistry codecRegistry) {
             this.outputEvent = outputEvent;
             this.resultType = resultType;
+            this.codecRegistry = codecRegistry;
             Map<String, List<String>> headers = new LinkedHashMap<>();
             outputEvent.getHeaders().asMap().forEach((key, strings) -> {
                 if (key.startsWith("Fn-Http-H-")) {
@@ -181,10 +195,17 @@ public final class FnHttpTest {
             if (CharSequence.class.isAssignableFrom(resultType.getType())) {
                 return (Optional<B>) Optional.of(outputEvent.getBodyAsString());
             } else {
-                return ConversionService.SHARED.convert(
-                        outputEvent.getBodyAsBytes(), resultType
+                final MediaTypeCodec codec = getContentType().flatMap(codecRegistry::findCodec).orElse(null);
+                final byte[] bodyAsBytes = outputEvent.getBodyAsBytes();
+                if (codec != null) {
+                    final B result = codec.decode(resultType, bodyAsBytes);
+                    return Optional.ofNullable(result);
+                } else {
+                    return ConversionService.SHARED.convert(
+                            bodyAsBytes, resultType
 
-                );
+                    );
+                }
             }
         }
 
