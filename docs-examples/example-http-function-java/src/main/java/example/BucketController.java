@@ -23,12 +23,12 @@ import com.oracle.bmc.objectstorage.model.ListObjects;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
 import com.oracle.bmc.objectstorage.requests.*;
 import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
+import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import io.micronaut.oci.core.TenancyIdProvider;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -103,7 +103,7 @@ public class BucketController {
                 .stream()
                 .map(ObjectSummary::getName)
                 .collect(Collectors.toList());
-        return Map.of(
+        return CollectionUtils.mapOf(
                 "nextStart", next != null ? next : "",
                 "objects", objects
         );
