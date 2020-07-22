@@ -1,3 +1,4 @@
+# tag::dockerfile[]
 FROM oracle/graalvm-ce:20.1.0-java11 as graalvm
 RUN gu install native-image
 
@@ -14,7 +15,6 @@ RUN native-image --static \
                  -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
                  com.fnproject.fn.runtime.EntryPoint
 
-
 # need socket library from Fn FDK
 FROM fnproject/fn-java-fdk:1.0.105 as fnfdk
 
@@ -27,3 +27,4 @@ COPY --from=graalvm /home/app/func func
 COPY --from=fnfdk /function/runtime/lib/* .
 ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80"]
 CMD [ "example.ListBucketsFunction::handleRequest" ]
+# end::dockerfile[]

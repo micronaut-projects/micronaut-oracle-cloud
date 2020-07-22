@@ -1,4 +1,4 @@
 schema_version: 20180708
 name: example-java-http-native
-version: 0.0.24
+version: 0.0.48
 timeout: 120

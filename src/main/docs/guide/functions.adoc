@@ -1,4 +1,6 @@
-Oracle Cloud Functions are based on https://fnproject.io/[Project.fn]. You can write simple functions targeting the Oracle Cloud Function environment by extending from the api:oci.function.OciFunction[] super class.
+Oracle Functions are based on https://fnproject.io/[Project.fn]. You can write simple functions targeting the Oracle Function environment by extending from the api:oci.function.OciFunction[] super class.
+
+NOTE: Micronaut's Oracle Function support will produce a Docker container that uses GraalVM `native-image`. This will result in extremely responsive serverless functions utilizing very few resources.
 
 This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:
 
@@ -6,16 +8,53 @@ This super class enables dependency injection for the function. Note that the th
 * A public method that executes the function must be defined
 * The class must be annotated with `@Singleton`
 
-The following provides an example that uses the Object Storage API to list the available buckets:
+Micronaut support for Oracle Functions can be combined with the OCI SDK support to give your serverless functions accesss to the OCI SDKs as needed.
+
+NOTE: You must have <<resource-principals, resource principal authentication>> properly configured in order for this example to work.
+
+=== Dependencies
+
+Oracle Function support requires the Micronaut OCI Functions module:
+
+dependency:io.micronaut.oci:micronaut-oci-function[version={ociVersion}]
+
+Optionally, to use the OCI SDK module from within your function, include the `micronaut-oci-sdk`:
+
+dependency:io.micronaut.oci:micronaut-oci-sdk[]
+
+In addition, your function will need the necessary OCI SDK dependency/dependencies. For example, the object storage module:
+
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+
+[#functions-build]
+=== Build
+
+The following provides a serverless function example that uses the Object Storage API to list the available buckets:
 
 snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="imports,class"]
 
 <1> A public class with a no argument constructor annotated with `@Singleton` and extending from api:oci.function.OciFunction[]
 <2> You can use the `@Inject` annotation to inject SDK components
 
-Once you have correctly defined the function you should define a public method that is the function handler. For example:
+Once you have defined the function you should define a public method that is the function handler. For example:
 
 snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="method", indent="0"]
 
 The above example uses the Object Storage API to list the available buckets.
 
+[#functions-dockerfile]
+=== Dockerfile
+
+Since Micronaut's support for Oracle Functions depends upon the GraalVM `native-image` plugin, you will need to include the following `Dockerfile` in your function's root directory.
+
+[source,Dockerfile]
+----
+include::docs-examples/example-function-java/Dockerfile[tags=dockerfile]
+----
+
+[#functions-deploy]
+=== Deploy
+
+To deploy your function, first use `./gradlew buildLayers` to build the necessary artifacts that the `Dockerfile` needs to generate the `native-image`. Then deploy per the normal Oracle Functions method (IE: `fn deploy --app [your app name]`).
+
+WARNING: Deploying your function with Micronaut will take longer than deploying without because of the `native-image` support. Runtime performance will greatly make up for the slow deployment.

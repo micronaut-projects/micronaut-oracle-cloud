@@ -17,14 +17,21 @@ package example;
 
 // tag::imports[]
 import com.oracle.bmc.objectstorage.ObjectStorage;
-import com.oracle.bmc.objectstorage.model.*;
+import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
+import com.oracle.bmc.objectstorage.model.ListObjects;
+import com.oracle.bmc.objectstorage.model.ObjectSummary;
 import com.oracle.bmc.objectstorage.requests.*;
-import com.oracle.bmc.objectstorage.responses.*;
+import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
+import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
 import io.micronaut.oci.core.TenancyIdProvider;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.Path;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 // end::imports[]
 
@@ -42,6 +49,7 @@ public class BucketController {
     }
 // end::class[]
 
+    // tag::listBuckets[]
     @Get("/buckets{/compartmentId}")
     public List<String> listBuckets(@PathVariable @Nullable String compartmentId) {
         String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
@@ -56,12 +64,54 @@ public class BucketController {
                         .stream()
                         .map(BucketSummary::getName)
                         .collect(Collectors.toList());
+    }
+    // end::listBuckets[]
 
+    @Post(uri = "/echo/{name}", produces = MediaType.TEXT_PLAIN)
+    public String testPost(@PathVariable String name) {
+        System.out.println("/echo as POST");
+        return "Hello, " + name;
+    }
+
+    @Get(uri = "/echo/{name}", produces = MediaType.TEXT_PLAIN)
+    public String testGet(@PathVariable String name) {
+        System.out.println("/echo as GET");
+        return "Hello, " + name;
+    }
+
+    @Get("/objects/{bucketName}{/start}")
+    public Map<String, Object> listObjects(
+            @PathVariable String bucketName,
+            @PathVariable @Nullable String start,
+            @QueryValue Optional<Integer> limit
+            ) {
+        GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+                .compartmentId(tenancyIdProvider.getTenancyId()).build();
+        final GetNamespaceResponse namespaceResponse = objectStorage.getNamespace(getNamespaceRequest);
+        ListObjectsRequest.Builder listObjectsRequestBuilder = ListObjectsRequest.builder()
+                .bucketName(bucketName)
+                .limit(limit.orElse(25))
+                .namespaceName(namespaceResponse.getValue());
+        if(start != null) {
+            listObjectsRequestBuilder.start(start);
+        }
+        ListObjects listObjects = objectStorage.listObjects(listObjectsRequestBuilder.build())
+                .getListObjects();
+        String next = listObjects.getNextStartWith();
+        List<String> objects = listObjects
+                .getObjects()
+                .stream()
+                .map(ObjectSummary::getName)
+                .collect(Collectors.toList());
+        return Map.of(
+                "nextStart", next != null ? next : "",
+                "objects", objects
+        );
     }
 
     // tag::method[]
     @Post(value = "/buckets/{name}")
-    public String createBucket(String name) {
+    public String createBucket(@PathVariable String name) {
         String tenancyId = tenancyIdProvider.getTenancyId();
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyIdProvider.getTenancyId()).build();
@@ -76,12 +126,12 @@ public class BucketController {
                         .build());
 
         return objectStorage.createBucket(builder.build()) // <2>
-                            .getLocation(); // <3>
+                .getLocation(); // <3>
     }
     // end::method[]
 
     @Delete(value = "/buckets/{name}")
-    public boolean deleteBucket(String name) {
+    public boolean deleteBucket(@PathVariable String name) {
         String tenancyId = tenancyIdProvider.getTenancyId();
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyIdProvider.getTenancyId()).build();
