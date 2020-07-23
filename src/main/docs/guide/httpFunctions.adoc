@@ -10,6 +10,16 @@ Next, add a controller method to list all of the buckets in a compartment:
 
 snippet::example.BucketController[project-base="docs-examples/example-http-function", source="main", tags="listBuckets", indent="0"]
 
+[#http-functions-dockerfile]
+=== Dockerfile
+
+Since Micronaut's support for Oracle Functions depends upon the GraalVM `native-image` plugin, you will need to include the following `Dockerfile` in your function's root directory.
+
+[source,Dockerfile]
+----
+include::docs-examples/example-http-function-java/Dockerfile[]
+----
+
 === Build & Deploy
 
 Build your application with `./gradlew buildLayers` and deploy with `fn deploy --app [your app name]`.
