@@ -841,6 +841,45 @@ public List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartment
 </div>
 </div>
 <div class="sect2">
+<h3 id="http-functions-dockerfile">Dockerfile</h3>
+<div class="paragraph">
+<p>Since Micronaut&#8217;s support for Oracle Functions depends upon the GraalVM <code>native-image</code> plugin, you will need to include the following <code>Dockerfile</code> in your function&#8217;s root directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-lang="Dockerfile">FROM oracle/graalvm-ce:20.1.0-java11 as graalvm
+RUN gu install native-image
+
+WORKDIR /home/app
+COPY build/layers/libs /home/app/libs
+COPY build/layers/application.jar /home/app/application.jar
+
+RUN native-image --static \
+                 -H:Name=func \
+                 --report-unsupported-elements-at-runtime \
+                 --initialize-at-build-time=example \
+                 --no-server \
+                 --no-fallback \
+                 -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
+                 com.fnproject.fn.runtime.EntryPoint
+
+
+# need socket library from Fn FDK
+FROM fnproject/fn-java-fdk:1.0.105 as fnfdk
+
+# Package native binary in minimal container image
+FROM oraclelinux:7-slim
+WORKDIR /function
+RUN groupadd -g 1000 fn &amp;&amp; useradd --uid 1000 -g fn fn
+COPY --from=graalvm /home/app/func func
+# get unix socket libraries from FDK container image
+COPY --from=fnfdk /function/runtime/lib/* .
+ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80"]
+CMD [ "io.micronaut.oci.function.http.HttpFunction::handleRequest" ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_build_deploy">Build &amp; Deploy</h3>
 <div class="paragraph">
 <p>Build your application with <code>./gradlew buildLayers</code> and deploy with <code>fn deploy --app [your app name]</code>.</p>
