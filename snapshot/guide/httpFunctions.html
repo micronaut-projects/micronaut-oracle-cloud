@@ -185,6 +185,7 @@ RUN gu install native-image
 
 WORKDIR /home/app
 COPY build/layers/libs /home/app/libs
+COPY build/layers/resources /home/app/resources
 COPY build/layers/application.jar /home/app/application.jar
 
 RUN native-image --static \
@@ -192,6 +193,7 @@ RUN native-image --static \
                  --report-unsupported-elements-at-runtime \
                  --initialize-at-build-time=example \
                  --no-server \
+                 -H:IncludeResources=simplelogger.properties \
                  --no-fallback \
                  -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
                  com.fnproject.fn.runtime.EntryPoint
