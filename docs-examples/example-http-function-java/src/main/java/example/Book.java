@@ -8,17 +8,17 @@ import javax.validation.constraints.NotBlank;
 @Introspected
 public class Book {
     @NotBlank
-    private final String name;
+    private final String title;
     @Min(100)
     private final int pages;
 
-    public Book(String name, int pages) {
-        this.name = name;
+    public Book(String title, int pages) {
+        this.title = title;
         this.pages = pages;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public int getPages() {

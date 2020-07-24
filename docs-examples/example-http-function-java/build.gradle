@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
+    annotationProcessor "io.micronaut:micronaut-graal"
     implementation project(":oci-sdk")
     implementation project(":oci-function-http")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"

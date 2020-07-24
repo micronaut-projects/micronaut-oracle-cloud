@@ -10,6 +10,8 @@ import io.micronaut.http.annotation.Status;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,8 +32,8 @@ public class BookController {
 
     @Post("/")
     @Status(HttpStatus.CREATED)
-    Book save(@Valid @Body Book book) {
-        this.books.put(book.getName(), book);
+    Book save(@Valid @NotNull @Body Book book) {
+        this.books.put(book.getTitle(), book);
         return book;
     }
 
