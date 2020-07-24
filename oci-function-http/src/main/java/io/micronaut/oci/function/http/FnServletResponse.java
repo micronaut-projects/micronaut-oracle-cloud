@@ -57,7 +57,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     public OutputEvent getNativeResponse() {
         return OutputEvent.fromBytes(
                 body.toByteArray(),
-                status.getCode() < 400 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
+                status.getCode() <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
                 getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString(),
                 toFnHeaders()
         );
