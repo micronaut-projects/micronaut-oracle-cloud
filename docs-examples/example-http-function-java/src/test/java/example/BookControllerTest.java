@@ -16,6 +16,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class BookControllerTest {
 
     @Test
+    void testValidation() {
+        final HttpResponse<Book> response = FnHttpTest
+                .invoke(HttpRequest.POST("/books", new Book("", 400))
+                                .contentType(MediaType.APPLICATION_JSON_TYPE), Book.class);
+
+        assertEquals(
+                HttpStatus.BAD_REQUEST,
+                response.status()
+        );
+    }
+
+    @Test
     void testListBooks() {
         final HttpResponse<Book> postBookResponse = FnHttpTest
                 .invoke(HttpRequest.POST("/books", new Book("Along Came a Spider", 400))

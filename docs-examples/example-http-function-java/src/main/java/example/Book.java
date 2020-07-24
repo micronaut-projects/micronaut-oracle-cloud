@@ -4,10 +4,12 @@ import io.micronaut.core.annotation.Introspected;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Introspected
 public class Book {
     @NotBlank
+    @NotNull
     private final String title;
     @Min(100)
     private final int pages;
