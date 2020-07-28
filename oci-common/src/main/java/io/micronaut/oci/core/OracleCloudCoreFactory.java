@@ -17,12 +17,15 @@ package io.micronaut.oci.core;
 
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.*;
+import com.oracle.bmc.auth.internal.AuthUtils;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
 
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 
 /**
@@ -42,6 +45,7 @@ import java.util.Optional;
 public class OracleCloudCoreFactory {
 
     public static final String ORACLE_CLOUD = "oci";
+    public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
 
     private final String profile;
 
@@ -63,6 +67,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
+    @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Primary
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
         return new ConfigFileAuthenticationDetailsProvider(
@@ -77,6 +82,7 @@ public class OracleCloudCoreFactory {
      * @see SimpleAuthenticationDetailsProvider
      */
     @Singleton
+    @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     protected SimpleAuthenticationDetailsProvider simpleAuthenticationDetailsProvider(
@@ -92,10 +98,26 @@ public class OracleCloudCoreFactory {
      * @see com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider
      */
     @Singleton
+    @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
     @Primary
     protected ResourcePrincipalAuthenticationDetailsProvider resourcePrincipalAuthenticationDetailsProvider() {
         return ResourcePrincipalAuthenticationDetailsProvider.builder().build();
+    }
+
+    /**
+     * Configures a {@link com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present and
+     * the specified by the user with {@code oci.config.use-instance-principal}.
+     *
+     * @param instancePrincipalConfiguration  The configuration
+     * @return The {@link InstancePrincipalsAuthenticationDetailsProvider}.
+     * @see com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider
+     */
+    @Singleton
+    @Requires(beans = InstancePrincipalConfiguration.class)
+    @Primary
+    protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
+        return instancePrincipalConfiguration.getBuilder().build();
     }
 
     /**
@@ -122,6 +144,21 @@ public class OracleCloudCoreFactory {
                 return ((AuthenticationDetailsProvider) authenticationDetailsProvider).getTenantId();
             } else if (authenticationDetailsProvider instanceof ResourcePrincipalAuthenticationDetailsProvider) {
                 return ((ResourcePrincipalAuthenticationDetailsProvider) authenticationDetailsProvider).getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
+            } else if (authenticationDetailsProvider instanceof InstancePrincipalsAuthenticationDetailsProvider) {
+                URLBasedX509CertificateSupplier urlBasedX509CertificateSupplier;
+                String tenantId;
+                try {
+                    urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
+                            new URL(METADATA_SERVICE_URL + "identity/cert.pem"),
+                            new URL(METADATA_SERVICE_URL + "identity/key.pem"),
+                            (char[]) null);
+                    tenantId = AuthUtils.getTenantIdFromCertificate(
+                            urlBasedX509CertificateSupplier.getCertificateAndKeyPair().getCertificate()
+                    );
+                } catch (MalformedURLException e) {
+                    throw new ConfigurationException("Unable to retrieve tenancy ID from metadata.");
+                }
+                return tenantId;
             }
             return null;
         };

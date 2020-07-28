@@ -1,0 +1,77 @@
+The `micronaut-oci-function-http` module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.
+
+Create your controller just as you would a normal Micronaut controller.
+
+snippet::example.BucketController[project-base="docs-examples/example-http-function", source="main", tags="imports,class"]
+
+<1> This example uses the `micronaut-oci-sdk` module to perform Object Storage operations, so the `ObjectStorage` client and `TenancyIdProvider` are injected.
+
+Next, add a controller method to list all of the buckets in a compartment:
+
+snippet::example.BucketController[project-base="docs-examples/example-http-function", source="main", tags="listBuckets", indent="0"]
+
+[#http-functions-dockerfile]
+=== Dockerfile
+
+Since Micronaut's support for Oracle Functions depends upon the GraalVM `native-image` plugin, you will need to include the following `Dockerfile` in your function's root directory.
+
+[source,Dockerfile]
+----
+include::docs-examples/example-http-function-java/Dockerfile[]
+----
+
+=== Build & Deploy
+
+Build your application with `./gradlew buildLayers` and deploy with `fn deploy --app [your app name]`.
+
+=== API Gateway
+
+You'll need to create an API Gateway to route requests to your serverless deployment. The Micronaut router will call the proper controller function based on the incoming HTTP Request Method and the path.
+
+First, create an API Gateway by selecting 'Developer Services', then 'API Gateway' from the Oracle Cloud console dashboard.
+
+image::api-gateway-menu.png[API Gateway Menu]
+
+Click on 'Create Gateway'.
+
+image::create-gateway.png[Create Gateway Button]
+
+Enter a name for the gateway, choose the compartment it is stored in and the network and subnet.
+
+image::gateway-details.png[Create Gateway Button]
+
+When the gateway is ‘Active’, click ‘Deployments’, then ‘Create Deployment’.
+
+image::create-deployment-button.png[Create Gateway Button]
+
+Provide a name for the deployment and enter a “Path Prefix”. If necessary, configure any Authentication, CORS or Rate Limiting and click ’Next’.
+
+NOTE: The path prefix must match the path you used in your controller (IE: `@Controller("/os")`).
+
+image::deployment-details-basic.png[Create Gateway Button]
+
+Enter route information.
+
+1. Enter `/{path*}` as the Path. This will capture all incoming requests and the Micronaut router will match the incoming path and request method with the proper controller method.
+2. Choose `ANY` for methods. Optionally, choose the necessary methods individually.
+3. Choose 'Oracle Functions' as the type.
+4. Choose the appropriate Oracle Functions application.
+5. Choose the function name that you used. This can be found in your function's `func.yaml` file.
+
+image::deployment-routes.png[Create Gateway Button]
+
+Click 'Next', then review the deployment details and click 'Create'.
+
+image::deployment-review.png[Review Deployment Details]
+
+Your new deployment will be listed in 'Creating' state.
+
+image::deployment-creating.png[Deployment Creating]
+
+When your new deployment becomes 'Active', click on the deployment to view the deployment details. Copy the 'Endpoint' - this is the base URL that you'll use for your function invocations.
+
+image::deployment-details.png[Create Gateway Button]
+
+Test your functions by appending the proper controller path and one of your controller endpoints.
+
+image::deployment-invocation.png[Create Gateway Button]

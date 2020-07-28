@@ -1,4 +1,4 @@
 schema_version: 20180708
 name: example-java-native
-version: 0.0.12
+version: 0.0.17
 timeout: 120

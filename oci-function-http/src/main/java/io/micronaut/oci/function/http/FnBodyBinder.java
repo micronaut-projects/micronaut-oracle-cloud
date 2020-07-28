@@ -27,10 +27,13 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.bind.binders.AnnotatedRequestArgumentBinder;
 import io.micronaut.http.bind.binders.DefaultBodyAnnotationBinder;
+import io.micronaut.http.codec.CodecException;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,6 +50,7 @@ import java.util.Optional;
  */
 @Internal
 final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
+    private static final Logger LOG = LoggerFactory.getLogger(FnBodyBinder.class);
     private final MediaTypeCodecRegistry mediaTypeCodeRegistry;
 
     /**
@@ -78,8 +82,14 @@ final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements An
                 return servletHttpRequest.getNativeRequest().consumeBody(inputStream -> {
                     try {
                         final String content = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream, source.getCharacterEncoding())));
+                        if (LOG.isTraceEnabled()) {
+                            LOG.trace("Read content of length {} from function body", content.length());
+                        }
                         return () -> (Optional<T>) Optional.of(content);
                     } catch (IOException e) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Error occurred reading function body: " + e.getMessage(), e);
+                        }
                         return new BindingResult<T>() {
                             @Override
                             public Optional<T> getValue() {
@@ -103,37 +113,74 @@ final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements An
                         .orElse(null);
 
                 if (codec != null) {
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Decoding function body with codec: {}", codec.getClass().getSimpleName());
+                    }
                     return servletHttpRequest.getNativeRequest().consumeBody(inputStream -> {
-                        if (Publishers.isConvertibleToPublisher(type)) {
-                            final Argument<?> typeArg = argument.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
-                            if (Publishers.isSingle(type)) {
-                                T content = (T) codec.decode(typeArg, inputStream);
-                                final Publisher<T> publisher = Publishers.just(content);
-                                final T converted = conversionService.convertRequired(publisher, type);
-                                return () -> Optional.of(converted);
+                        try {
+                            if (Publishers.isConvertibleToPublisher(type)) {
+                                final Argument<?> typeArg = argument.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
+                                if (Publishers.isSingle(type)) {
+                                    T content = (T) codec.decode(typeArg, inputStream);
+                                    final Publisher<T> publisher = Publishers.just(content);
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace("Decoded object from function body: {}", content);
+                                    }
+                                    final T converted = conversionService.convertRequired(publisher, type);
+                                    return () -> Optional.of(converted);
+                                } else {
+                                    final Argument<? extends List<?>> containerType = Argument.listOf(typeArg.getType());
+                                    T content = (T) codec.decode(containerType, inputStream);
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace("Decoded object from function body: {}", content);
+                                    }
+                                    final Flowable flowable = Flowable.fromIterable((Iterable) content);
+                                    final T converted = conversionService.convertRequired(flowable, type);
+                                    return () -> Optional.of(converted);
+                                }
                             } else {
-                                final Argument<? extends List<?>> containerType = Argument.listOf(typeArg.getType());
-                                T content = (T) codec.decode(containerType, inputStream);
-                                final Flowable flowable = Flowable.fromIterable((Iterable) content);
-                                final T converted = conversionService.convertRequired(flowable, type);
-                                return () -> Optional.of(converted);
+                                if (type.isArray()) {
+                                    Class<?> componentType = type.getComponentType();
+                                    List<T> content = (List<T>) codec.decode(Argument.listOf(componentType), inputStream);
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace("Decoded object from function body: {}", content);
+                                    }
+                                    Object[] array = content.toArray((Object[]) Array.newInstance(componentType, 0));
+                                    return () -> Optional.of((T) array);
+                                } else {
+                                    T content = codec.decode(argument, inputStream);
+                                    if (LOG.isTraceEnabled()) {
+                                        LOG.trace("Decoded object from function body: {}", content);
+                                    }
+                                    return () -> Optional.of(content);
+                                }
                             }
-                        } else {
-                            if (type.isArray()) {
-                                Class<?> componentType = type.getComponentType();
-                                List<T> content = (List<T>) codec.decode(Argument.listOf(componentType), inputStream);
-                                Object[] array = content.toArray((Object[]) Array.newInstance(componentType, 0));
-                                return () -> Optional.of((T) array);
-                            } else {
-                                T content = codec.decode(argument, inputStream);
-                                return () -> Optional.of(content);
+                        } catch (CodecException e) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.trace("Error occurred decoding function body: " + e.getMessage(), e);
                             }
+                            return new BindingResult<T>() {
+                                @Override
+                                public Optional<T> getValue() {
+                                    return Optional.empty();
+                                }
+
+                                @Override
+                                public List<ConversionError> getConversionErrors() {
+                                    return Collections.singletonList(
+                                            () -> e
+                                    );
+                                }
+                            };
                         }
                     });
 
                 }
 
             }
+        }
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("Not a function request, falling back to default body decoding");
         }
         return super.bind(context, source);
     }
