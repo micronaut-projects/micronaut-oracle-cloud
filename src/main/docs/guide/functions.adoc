@@ -1,6 +1,6 @@
 Oracle Functions are based on https://fnproject.io/[Project.fn]. You can write simple functions targeting the Oracle Function environment by extending from the api:oci.function.OciFunction[] super class.
 
-NOTE: Micronaut's Oracle Function support will produce a Docker container that uses GraalVM `native-image`. This will result in extremely responsive serverless functions utilizing very few resources.
+NOTE: Micronaut's Oracle Function support can utilize GraalVM `native-image` running within a Docker container. This will result in extremely responsive serverless functions utilizing very few Cloud resources.
 
 This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:
 
@@ -13,6 +13,25 @@ Micronaut support for Oracle Functions can be combined with the OCI SDK support 
 NOTE: You must have <<resource-principals, resource principal authentication>> properly configured in order for this example to work.
 
 === Dependencies
+
+To get started with Gradle as a build tool you should add the Project.fn repository and the Micronaut Gradle plugin:
+
+[source,groovy]
+----
+plugins {
+    id "io.micronaut.application", version "1.0.0.M9"
+}
+
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}
+----
+
+And include a runtime dependency on Project.fn:
+
+dependency:com.fnproject.fn:runtime[version="1.0.109",scope="runtimeOnly"]
 
 Oracle Function support requires the Micronaut OCI Functions module:
 
@@ -28,6 +47,7 @@ dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
 
 [#functions-build]
 === Build
+
 
 The following provides a serverless function example that uses the Object Storage API to list the available buckets:
 
@@ -45,7 +65,7 @@ The above example uses the Object Storage API to list the available buckets.
 [#functions-dockerfile]
 === Dockerfile
 
-Since Micronaut's support for Oracle Functions depends upon the GraalVM `native-image` plugin, you will need to include the following `Dockerfile` in your function's root directory.
+To build a Oracle Cloud Function into a GraalVM `native-image` plugin, you will need to include the following `Dockerfile` in your function's root directory.
 
 [source,Dockerfile]
 ----
