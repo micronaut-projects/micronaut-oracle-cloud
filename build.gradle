@@ -34,10 +34,6 @@ subprojects { Project subproject ->
             testAnnotationProcessor "io.micronaut:micronaut-inject-java"
         }
 
-        test {
-            useJUnitPlatform()
-        }
-
          tasks.withType(JavaCompile) {
              options.encoding = "UTF-8"
              options.compilerArgs.addAll([
@@ -59,4 +55,4 @@ subprojects { Project subproject ->
 }
 
 apply plugin: "io.micronaut.build.docs"
-
+apply plugin: "io.micronaut.build.dependency-updates"
