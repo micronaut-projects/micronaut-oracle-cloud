@@ -9,6 +9,7 @@ Provides the common functionality and sets up the following beans:
 * link:{ocidocs}/com/oracle/bmc/auth/BasicAuthenticationDetailsProvider.html[BasicAuthenticationDetailsProvider] - Authentication details auto-detected from local `$USER/.oci/config` or environment
 * link:{ocidocs}/com/oracle/bmc/ClientConfiguration.html[ClientConfiguration] - Common configuration for all clients
 * api:oci.core.TenancyIdProvider[] - Interface to resolve current tenancy
+* link:{ocidocs}/com/oracle/bmc/auth/RegionProvider.html[RegionProvider] - Provides access to the current link:{ocidocs}/com/oracle/bmc/Region.html[Region]
 
 === micronaut-oci-sdk
 
