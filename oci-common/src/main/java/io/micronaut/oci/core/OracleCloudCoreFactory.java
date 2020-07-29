@@ -169,9 +169,9 @@ public class OracleCloudCoreFactory {
      * @param builder The builder
      * @return The default client configuration.
      */
-                                                @Singleton
-                                                @Requires(missingBeans = ClientConfiguration.class)
-                                                @Primary
+    @Singleton
+    @Requires(missingBeans = ClientConfiguration.class)
+    @Primary
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }
