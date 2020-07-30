@@ -6,6 +6,7 @@ include 'oci-function'
 include 'oci-function-http'
 include 'oci-function-http-test'
 include 'oci-sdk'
+include 'oci-streaming'
 include 'oci-sdk-processor'
 
 // doc examples
