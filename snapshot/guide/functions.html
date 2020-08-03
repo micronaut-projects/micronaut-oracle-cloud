@@ -115,7 +115,7 @@ function addJsClass() {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Micronaut&#8217;s Oracle Function support will produce a Docker container that uses GraalVM <code>native-image</code>. This will result in extremely responsive serverless functions utilizing very few resources.
+Micronaut&#8217;s Oracle Function support can utilize GraalVM <code>native-image</code> running within a Docker container. This will result in extremely responsive serverless functions utilizing very few Cloud resources.
 </td>
 </tr>
 </table>
@@ -153,6 +153,44 @@ You must have <a href="#resource-principals">resource principal authentication</
 </div>
 <div class="sect2">
 <h3 id="_dependencies">Dependencies</h3>
+<div class="paragraph">
+<p>To get started with Gradle as a build tool you should add the Project.fn repository and the Micronaut Gradle plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">plugins {
+    id "io.micronaut.application", version "1.0.0.M9"
+}
+
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And include a runtime dependency on Project.fn:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtimeOnly(<span class="hljs-string">"com.fnproject.fn:runtime:1.0.109")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.fnproject.fn&lt;/groupId&gt;
+    &lt;artifactId&gt;runtime&lt;/artifactId&gt;
+    &lt;version&gt;1.0.109&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
 <div class="paragraph">
 <p>Oracle Function support requires the Micronaut OCI Functions module:</p>
 </div>
@@ -281,7 +319,7 @@ public class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
 <div class="sect2">
 <h3 id="functions-dockerfile">Dockerfile</h3>
 <div class="paragraph">
-<p>Since Micronaut&#8217;s support for Oracle Functions depends upon the GraalVM <code>native-image</code> plugin, you will need to include the following <code>Dockerfile</code> in your function&#8217;s root directory.</p>
+<p>To build a Oracle Cloud Function into a GraalVM <code>native-image</code> plugin, you will need to include the following <code>Dockerfile</code> in your function&#8217;s root directory.</p>
 </div>
 <div class="listingblock">
 <div class="content">
