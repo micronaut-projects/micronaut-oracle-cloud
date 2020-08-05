@@ -7,6 +7,7 @@ dependencies {
     implementation project(":oci-sdk")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     implementation "com.oracle.oci.sdk:oci-java-sdk-database"
+    compileOnly "org.graalvm.nativeimage:svm:20.1.0"
     runtimeOnly("ch.qos.logback:logback-classic")
 
     testImplementation "io.micronaut:micronaut-http-client"
@@ -18,5 +19,5 @@ dependencies {
 mainClassName = "example.Application"
 
 nativeImage {
-    args('--report-unsupported-elements-at-runtime', '--no-fallback', '--no-server')
+    args('--report-unsupported-elements-at-runtime', '--no-fallback', '--no-server', '--rerun-class-initialization-at-runtime=org.bouncycastle.jcajce.provider.drbg.DRBG$Default,org.bouncycastle.jcajce.provider.drbg.DRBG$NonceAndIV')
 }
