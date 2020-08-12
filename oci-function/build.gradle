@@ -10,7 +10,7 @@ dependencies {
 
     api "io.micronaut:micronaut-function"
     api project(":oci-common")
-    api 'com.fnproject.fn:api:1.0.109'
+    api 'com.fnproject.fn:api:1.0.110'
 
     compileOnly("org.graalvm.nativeimage:svm")
 
