@@ -2,6 +2,7 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
+    compileOnly("org.graalvm.nativeimage:svm")
     api "io.micronaut:micronaut-inject"
     api 'com.oracle.oci.sdk:oci-java-sdk-common'
     testImplementation("org.spockframework:spock-core:${spockVersion}") {

@@ -27,3 +27,7 @@ mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 run {
     args("io.micronaut.oci.function.http.HttpFunction::handleRequest")
 }
+
+nativeImage {
+    args('--report-unsupported-elements-at-runtime', '--initialize-at-build-time=example')
+}
