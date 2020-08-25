@@ -180,7 +180,7 @@ public List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartment
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-lang="Dockerfile">FROM oracle/graalvm-ce:20.1.0-java11 as graalvm
+<pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-lang="Dockerfile">FROM oracle/graalvm-ce:20.2.0-java11 as graalvm
 RUN gu install native-image
 
 WORKDIR /home/app
