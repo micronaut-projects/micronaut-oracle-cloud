@@ -1,0 +1,1053 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>Micronaut Oracle Cloud</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+    <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8" />
+    <link rel="stylesheet" href="../css/highlight/agate.css">
+    <script src="../js/highlight.pack.js"></script>
+    <script src="../js/guide.js"></script>
+    <script src="../js/multi-language-sample.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="../css/multi-language-sample.css"/>
+    <script src="../js/docs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script type="text/javascript">
+        function addJsClass(el) {
+            var classes = document.body.className.split(" ");
+            classes.push("js");
+            document.body.className = classes.join(" ");
+        }
+    </script>
+
+</head>
+
+<body class="body" id="docs" onload="addJsClass();" onhashchange="highlightMenu()">
+
+<div id="table-of-content-nav-link" class="desktop">
+    <a id="theme-switcher" title="Switch to dark theme" href="javascript:switchTheme(true)"><i class="fa fa-moon-o"></i></a>
+    <a title="Collapse/Open Table of contents" title="Hide Table of Contents" href="javascript:hideTableOfContents();" class="button">[ + ]</a>
+</div>
+
+<div id="main">
+    <div id="navigation" class="no-print">
+        <div class="navTitle">
+            <span id="logo"><a href="http://micronaut.io" title="Go to Micronaut Website"><img src="../img/micronaut-logo-white.svg" alt="Micronaut"/></a></span>
+        </div>
+        <div class="navLinks">
+            <ul>
+                    <li><div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)" class="desktop">
+                            <a href="../guide/index.html" class="button">Table of contents</a>
+                            <div id="nav-summary-childs" style="display:none;">
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#quickStart"><strong>2</strong><span>Quick Start</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#authentication"><strong>3</strong><span>Authentication</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#modules"><strong>4</strong><span>Available Modules</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#rxjava"><strong>5</strong><span>RxJava 2 Support</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#functions"><strong>6</strong><span>Oracle Functions (Serverless)</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#httpFunctions"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
+                                
+                            </div>
+                        </div>
+                    </li>
+
+                <li id="table-of-content-nav-link-mobile" class="mobile">
+                    <a title="Scroll to Table of contents" href="javascript:scrollToTop();" class="button">Toc</a>
+                </li>
+                <li class="desktop">
+                    <a title="Go to API documentation" href="../api/index.html" class="button">API Reference</a>
+                </li>
+                <li class="mobile">
+                    <a title="Go to API documentation" href="../api/index.html" class="button">API</a>
+                </li>
+                <li class="desktop">
+                    <a title="Go to Configuration Reference documentation" href="../guide/configurationreference.html" class="button">Configuration Reference</a>
+                </li>
+                <li class="mobile">
+                    <a title="Go to Configuration Reference documentation" href="../guide/configurationreference.html" class="button">Conf</a>
+                </li>
+            </ul>
+
+        </div>
+    </div>
+    
+    <div id="table-of-content">
+        <div class="toc-content">
+
+        <h2>Table of Contents</h2>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-introduction"><a href="#introduction"><strong>1</strong><span>Introduction</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-quickStart"><a href="#quickStart"><strong>2</strong><span>Quick Start</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-authentication"><a href="#authentication"><strong>3</strong><span>Authentication</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-modules"><a href="#modules"><strong>4</strong><span>Available Modules</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-rxjava"><a href="#rxjava"><strong>5</strong><span>RxJava 2 Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-functions"><a href="#functions"><strong>6</strong><span>Oracle Functions (Serverless)</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-httpFunctions"><a href="#httpFunctions"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
+        
+        </div>
+    </div>
+    
+    <div class="docs-content">
+    <div class="project">
+        <h1>Micronaut Oracle Cloud</h1>
+        <p></p>
+        <p>Provides integration between Micronaut and Oracle Cloud</p>
+        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/index.html'>SNAPSHOT</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.0.0.M1/guide/index.html'>1.0.0.M1</option></select></p>
+    </div>
+    
+<h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/introduction.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This module provides integration between Micronaut and the Oracle Cloud SDK by giving you the ability to easily inject SDK clients into your Micronaut services and controllers. In addition to supporting the SDK&#8217;s blocking clients, the module provides reactive clients that use RxJava to provide async alternatives to the blocking clients in the SDK (an improvement upon the SDK&#8217;s 'out-of-the-box' aysnc clients). This module also includes support for Oracle Cloud (serverless) Functions.</p>
+</div>
+
+<h1 id="quickStart"><a class="anchor" href="#quickStart"></a>2 Quick Start</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/quickStart.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To get started quickly <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm">Setup the Oracle Cloud CLI</a> making sure you have run <code>oci setup config</code> to configure local access to Oracle Cloud.</p>
+</div>
+<div class="paragraph">
+<p>Then add a dependency on the <code>micronaut-oci-sdk</code> module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Followed by a dependency on the OCI SDK client you wish to use, for example for Object Store:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut:com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
+    &lt;artifactId&gt;com.oracle.oci.sdk&lt;/artifactId&gt;
+    &lt;version&gt;oci-java-sdk-objectstorage&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>All OCI SDK clients are supported.</p>
+</div>
+
+<h1 id="authentication"><a class="anchor" href="#authentication"></a>3 Authentication</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/authentication.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The following authentication providers are supported in this module:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#config-auth">ConfigFileAuthenticationDetailsProvider</a></p>
+</li>
+<li>
+<p><a href="#simple-auth">SimpleAuthenticationDetailsProvider</a></p>
+</li>
+<li>
+<p><a href="#instance-principals">InstancePrincipalsAuthenticationDetailsProvider</a></p>
+</li>
+<li>
+<p><a href="#resource-principals">ResourcePrincipalAuthenticationDetailsProvider</a></p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="config-auth">ConfigFileAuthenticationDetailsProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html">ConfigFileAuthenticationDetailsProvider</a> uses a config file located at <code>$USER_HOME/.oci/config</code>. Specify a profile within the config file via your <code>application.yml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  config:
+    profile: DEFAULT</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="simple-auth">SimpleAuthenticationDetailsProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/SimpleAuthenticationDetailsProvider.html">SimpleAuthenticationDetailsProvider</a> allows you to provide config details via standard Micronaut configuration files (<code>application.yml</code>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  fingerprint: [String. The private key fingerprint]
+  passphrase: [String. The private key passphrase]
+  private-key: [String. The contents of your private key. Optionally, pass a path with private-key-file (see below).]
+  private-key-file: [String. The path to the private key file (used in place of private-key above)]
+  region: [String. Ex: us-phoenix-1]
+  tenant-id: [String. The tenancy OCID]
+  user-id: [String. The user OCID]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="instance-principals">InstancePrincipalsAuthenticationDetailsProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If your application is running in the Oracle Cloud, you can authorize the <a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider.html">InstancePrincipalsAuthenticationDetailsProvider</a> to make SDK calls and utilize Instance Principal authentication. See the <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm">documentation</a> to enable this via dynamic groups and policies, and then enable it for the Oracle Cloud environment via <code>application-oraclecloud.yml</code> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  config:
+    instance-principal:
+        enabled: true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="resource-principals">ResourcePrincipalAuthenticationDetailsProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/ResourcePrincipalAuthenticationDetailsProvider.html">ResourcePrincipalAuthenticationDetailsProvider</a> is similar to <a href="#instance-principals">instance principals</a>, but used for Oracle Functions (serverless). See the <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm">documentation</a> for instructions on how to configure the necessary dynamic group rules and policies to use Resource Principal auth with your serverless functions. Once the proper configuration is complete, your Micronaut driven serverless functions will be able to use the OCI SDKs with no futher configuration needed.</p>
+</div>
+</div>
+</div>
+
+<h1 id="modules"><a class="anchor" href="#modules"></a>4 Available Modules</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/modules.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The following modules are provided.</p>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oci_common">micronaut-oci-common</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-common")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-common&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides the common functionality and sets up the following beans:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/BasicAuthenticationDetailsProvider.html">BasicAuthenticationDetailsProvider</a> - Authentication details auto-detected from local <code>$USER/.oci/config</code> or environment</p>
+</li>
+<li>
+<p><a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/ClientConfiguration.html">ClientConfiguration</a> - Common configuration for all clients</p>
+</li>
+<li>
+<p><a href="../api/io/micronaut/oci/core/TenancyIdProvider.html">TenancyIdProvider</a> - Interface to resolve current tenancy</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oci_sdk">micronaut-oci-sdk</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides support for injecting any of the available SDK client interfaces.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
+    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oci_function">micronaut-oci-function</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-function&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> super class that you can subclass to enable the ability to write Oracle Cloud Functions in Micronaut that can utilize Micronaut dependency injection services.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oci_function_http">micronaut-oci-function-http</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function-http")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-function-http&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides the <a href="../api/io/micronaut/oci/function/http/HttpFunction.html">HttpFunction</a> class that can be used as a handler to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
+</div>
+</div>
+
+<h1 id="rxjava"><a class="anchor" href="#rxjava"></a>5 RxJava 2 Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/rxjava.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>In addition to the blocking clients, this module provides clients that use RxJava to allow reactive programming with Micronaut for each SDK.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You need to add the relevant OCI SDK dependency to use these clients.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For example, instead of <code>ObjectStorageClient</code>, you can inject <code>ObjectStorageRxClient</code> to use the Object Storage API:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.oracle.bmc.objectstorage.model.*;
+import com.oracle.bmc.objectstorage.requests.*;
+import com.oracle.bmc.objectstorage.responses.*;
+import io.micronaut.http.annotation.*;
+import io.micronaut.oci.clients.rxjava2.objectstorage.ObjectStorageRxClient;
+import io.micronaut.oci.core.TenancyIdProvider;
+import io.reactivex.Single;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Controller("/os")
+public class BucketController implements BucketOperations {
+    private final ObjectStorageRxClient objectStorage;
+    private final TenancyIdProvider tenancyIdProvider;
+
+    public BucketController(
+            ObjectStorageRxClient objectStorage,
+            TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
+        this.objectStorage = objectStorage;
+        this.tenancyIdProvider = tenancyIdProvider;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>ObjectStorageRxClient</code> is injected into the constructor.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once you have a reference to the relevant RxJava 2 client it is easier to compose non-blocking operations, the following example creates a bucket:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Override
+@Post(value = "/buckets/{name}")
+public Single&lt;String&gt; createBucket(String name) {
+    String tenancyId = tenancyIdProvider.getTenancyId();
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenancyId).build();
+    return objectStorage.getNamespace(getNamespaceRequest) <b class="conum">(1)</b>
+            .flatMap(namespaceResponse -&gt; {
+        CreateBucketRequest.Builder builder = CreateBucketRequest.builder()
+                .namespaceName(namespaceResponse.getValue())
+                .createBucketDetails(CreateBucketDetails.builder()
+                        .compartmentId(tenancyId)
+                        .name(name)
+                        .build());
+
+        return objectStorage.createBucket(builder.build()) <b class="conum">(2)</b>
+                .map(CreateBucketResponse::getLocation); <b class="conum">(3)</b>
+    });
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>First a request to obtain the namespace is sent</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Then with the response the <code>flatMap</code> operator is used to send another request to create a bucket</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Finally the location of the bucket is returned in the response</td>
+</tr>
+</table>
+</div>
+
+<h1 id="functions"><a class="anchor" href="#functions"></a>6 Oracle Functions (Serverless)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/functions.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Oracle Functions are based on <a href="https://fnproject.io/">Project.fn</a>. You can write simple functions targeting the Oracle Function environment by extending from the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> super class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Micronaut&#8217;s Oracle Function support can utilize GraalVM <code>native-image</code> running within a Docker container. This will result in extremely responsive serverless functions utilizing very few Cloud resources.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The class must have a public no arguments constructor</p>
+</li>
+<li>
+<p>A public method that executes the function must be defined</p>
+</li>
+<li>
+<p>The class must be annotated with <code>@Singleton</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Micronaut support for Oracle Functions can be combined with the OCI SDK support to give your serverless functions accesss to the OCI SDKs as needed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You must have <a href="#resource-principals">resource principal authentication</a> properly configured in order for this example to work.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_dependencies">Dependencies</h3>
+<div class="paragraph">
+<p>To get started with Gradle as a build tool you should add the Project.fn repository and the Micronaut Gradle plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">plugins {
+    id "io.micronaut.application", version "1.0.0.M9"
+}
+
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And include a runtime dependency on Project.fn:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtimeOnly(<span class="hljs-string">"com.fnproject.fn:runtime:1.0.109")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.fnproject.fn&lt;/groupId&gt;
+    &lt;artifactId&gt;runtime&lt;/artifactId&gt;
+    &lt;version&gt;1.0.109&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Oracle Function support requires the Micronaut OCI Functions module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-function&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Optionally, to use the OCI SDK module from within your function, include the <code>micronaut-oci-sdk</code>:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>In addition, your function will need the necessary OCI SDK dependency/dependencies. For example, the object storage module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
+    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="functions-build">Build</h3>
+<div class="paragraph">
+<p>The following provides a serverless function example that uses the Object Storage API to list the available buckets:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import io.micronaut.oci.core.TenancyIdProvider;
+import io.micronaut.oci.function.OciFunction;
+
+import javax.inject.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Singleton
+public class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
+
+    @Inject
+    ObjectStorageClient objectStorageClient; <b class="conum">(2)</b>
+
+    @Inject
+    TenancyIdProvider tenantIdProvider;
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A public class with a no argument constructor annotated with <code>@Singleton</code> and extending from <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>You can use the <code>@Inject</code> annotation to inject SDK components</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once you have defined the function you should define a public method that is the function handler. For example:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;String&gt; handleRequest() {
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenantIdProvider.getTenancyId()).build();
+    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
+    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+    builder.namespaceName(namespace);
+    builder.compartmentId(tenantIdProvider.getTenancyId());
+    return objectStorageClient.listBuckets(builder.build())
+            .getItems().stream().map(BucketSummary::getName)
+            .collect(Collectors.toList());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example uses the Object Storage API to list the available buckets.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="functions-dockerfile">Dockerfile</h3>
+<div class="paragraph">
+<p>To build a Oracle Cloud Function into a GraalVM <code>native-image</code> plugin, you will need to include the following <code>Dockerfile</code> in your function&#8217;s root directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-lang="Dockerfile">FROM oracle/graalvm-ce:20.1.0-java11 as graalvm
+RUN gu install native-image
+
+WORKDIR /home/app
+COPY build/layers/libs /home/app/libs
+COPY build/layers/application.jar /home/app/application.jar
+
+RUN native-image --static \
+                 -H:Name=func \
+                 --report-unsupported-elements-at-runtime \
+                 --no-server \
+                 --no-fallback \
+                 -Dfn.handler="example.ListBucketsFunction::handleRequest" \
+                 -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
+                 com.fnproject.fn.runtime.EntryPoint
+
+# need socket library from Fn FDK
+FROM fnproject/fn-java-fdk:1.0.105 as fnfdk
+
+# Package native binary in minimal container image
+FROM oraclelinux:7-slim
+WORKDIR /function
+RUN groupadd -g 1000 fn &amp;&amp; useradd --uid 1000 -g fn fn
+COPY --from=graalvm /home/app/func func
+# get unix socket libraries from FDK container image
+COPY --from=fnfdk /function/runtime/lib/* .
+ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80"]
+CMD [ "example.ListBucketsFunction::handleRequest" ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="functions-deploy">Deploy</h3>
+<div class="paragraph">
+<p>To deploy your function, first use <code>./gradlew buildLayers</code> to build the necessary artifacts that the <code>Dockerfile</code> needs to generate the <code>native-image</code>. Then deploy per the normal Oracle Functions method (IE: <code>fn deploy --app [your app name]</code>).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Deploying your function with Micronaut will take longer than deploying without because of the <code>native-image</code> support. Runtime performance will greatly make up for the slow deployment.
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+<h1 id="httpFunctions"><a class="anchor" href="#httpFunctions"></a>7 Oracle Functions HTTP (Serverless)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/httpFunctions.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The <code>micronaut-oci-function-http</code> module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
+</div>
+<div class="paragraph">
+<p>Create your controller just as you would a normal Micronaut controller.</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.oracle.bmc.objectstorage.ObjectStorage;
+import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
+import com.oracle.bmc.objectstorage.model.ListObjects;
+import com.oracle.bmc.objectstorage.model.ObjectSummary;
+import com.oracle.bmc.objectstorage.requests.*;
+import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
+import io.micronaut.core.util.CollectionUtils;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.annotation.*;
+import io.micronaut.oci.core.TenancyIdProvider;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Controller("/os")
+public class BucketController {
+    private final ObjectStorage objectStorage;
+    private final TenancyIdProvider tenancyIdProvider;
+
+    public BucketController(
+            ObjectStorage objectStorage,
+            TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
+        this.objectStorage = objectStorage;
+        this.tenancyIdProvider = tenancyIdProvider;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This example uses the <code>micronaut-oci-sdk</code> module to perform Object Storage operations, so the <code>ObjectStorage</code> client and <code>TenancyIdProvider</code> are injected.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Next, add a controller method to list all of the buckets in a compartment:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Get("/buckets{/compartmentId}")
+public List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartmentId) {
+    String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(compartmentOcid).build();
+    final GetNamespaceResponse namespaceResponse = objectStorage.getNamespace(getNamespaceRequest);
+    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+    builder.namespaceName(namespaceResponse.getValue());
+    builder.compartmentId(compartmentOcid);
+    return objectStorage.listBuckets(builder.build())
+                    .getItems()
+                    .stream()
+                    .map(BucketSummary::getName)
+                    .collect(Collectors.toList());
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="http-functions-dockerfile">Dockerfile</h3>
+<div class="paragraph">
+<p>Since Micronaut&#8217;s support for Oracle Functions depends upon the GraalVM <code>native-image</code> plugin, you will need to include the following <code>Dockerfile</code> in your function&#8217;s root directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-lang="Dockerfile">FROM oracle/graalvm-ce:20.2.0-java11 as graalvm
+RUN gu install native-image
+
+WORKDIR /home/app
+COPY build/layers/libs /home/app/libs
+COPY build/layers/resources /home/app/resources
+COPY build/layers/application.jar /home/app/application.jar
+
+RUN native-image --static \
+                 -H:Name=func \
+                 --report-unsupported-elements-at-runtime \
+                 --initialize-at-build-time=example \
+                 --no-server \
+                 -H:IncludeResources=simplelogger.properties \
+                 --no-fallback \
+                 -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
+                 com.fnproject.fn.runtime.EntryPoint
+
+
+# need socket library from Fn FDK
+FROM fnproject/fn-java-fdk:1.0.105 as fnfdk
+
+# Package native binary in minimal container image
+FROM oraclelinux:7-slim
+WORKDIR /function
+RUN groupadd -g 1000 fn &amp;&amp; useradd --uid 1000 -g fn fn
+COPY --from=graalvm /home/app/func func
+# get unix socket libraries from FDK container image
+COPY --from=fnfdk /function/runtime/lib/* .
+ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80"]
+CMD [ "io.micronaut.oci.function.http.HttpFunction::handleRequest" ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_build_deploy">Build &amp; Deploy</h3>
+<div class="paragraph">
+<p>Build your application with <code>./gradlew buildLayers</code> and deploy with <code>fn deploy --app [your app name]</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_api_gateway">API Gateway</h3>
+<div class="paragraph">
+<p>You&#8217;ll need to create an API Gateway to route requests to your serverless deployment. The Micronaut router will call the proper controller function based on the incoming HTTP Request Method and the path.</p>
+</div>
+<div class="paragraph">
+<p>First, create an API Gateway by selecting 'Developer Services', then 'API Gateway' from the Oracle Cloud console dashboard.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/api-gateway-menu.png" alt="API Gateway Menu">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on 'Create Gateway'.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/create-gateway.png" alt="Create Gateway Button">
+</div>
+</div>
+<div class="paragraph">
+<p>Enter a name for the gateway, choose the compartment it is stored in and the network and subnet.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/gateway-details.png" alt="Create Gateway Button">
+</div>
+</div>
+<div class="paragraph">
+<p>When the gateway is ‘Active’, click ‘Deployments’, then ‘Create Deployment’.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/create-deployment-button.png" alt="Create Gateway Button">
+</div>
+</div>
+<div class="paragraph">
+<p>Provide a name for the deployment and enter a “Path Prefix”. If necessary, configure any Authentication, CORS or Rate Limiting and click ’Next’.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The path prefix must match the path you used in your controller (IE: <code>@Controller("/os")</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/deployment-details-basic.png" alt="Create Gateway Button">
+</div>
+</div>
+<div class="paragraph">
+<p>Enter route information.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Enter <code>/{path*}</code> as the Path. This will capture all incoming requests and the Micronaut router will match the incoming path and request method with the proper controller method.</p>
+</li>
+<li>
+<p>Choose <code>ANY</code> for methods. Optionally, choose the necessary methods individually.</p>
+</li>
+<li>
+<p>Choose 'Oracle Functions' as the type.</p>
+</li>
+<li>
+<p>Choose the appropriate Oracle Functions application.</p>
+</li>
+<li>
+<p>Choose the function name that you used. This can be found in your function&#8217;s <code>func.yaml</code> file.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/deployment-routes.png" alt="Create Gateway Button">
+</div>
+</div>
+<div class="paragraph">
+<p>Click 'Next', then review the deployment details and click 'Create'.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/deployment-review.png" alt="Review Deployment Details">
+</div>
+</div>
+<div class="paragraph">
+<p>Your new deployment will be listed in 'Creating' state.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/deployment-creating.png" alt="Deployment Creating">
+</div>
+</div>
+<div class="paragraph">
+<p>When your new deployment becomes 'Active', click on the deployment to view the deployment details. Copy the 'Endpoint' - this is the base URL that you&#8217;ll use for your function invocations.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/deployment-details.png" alt="Create Gateway Button">
+</div>
+</div>
+<div class="paragraph">
+<p>Test your functions by appending the proper controller path and one of your controller endpoints.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/deployment-invocation.png" alt="Create Gateway Button">
+</div>
+</div>
+</div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

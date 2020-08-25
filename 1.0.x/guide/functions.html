@@ -1,0 +1,408 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+                      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="/cdn-cgi/apps/head/3cOPSgo5Omz84ycX7CvigfX4cpw.js"></script><script async src="https://www.googletagmanager.com/gtag/js?id=UA-82213539-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-82213539-2');
+    </script>
+    <title>6 Oracle Functions (Serverless) 1.0.0.M1</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8"/>
+    <link rel="stylesheet" href="../css/pdf.css" type="text/css" media="print" title="PDF" charset="utf-8"/>
+    <script type="text/javascript">
+function addJsClass() {
+    var classes = document.body.className.split(" ");
+    classes.push("js");
+    document.body.className = classes.join(" ");
+}
+    </script>
+</head>
+
+<body class="body" onload="addJsClass();">
+<div id="navigation">
+    <div class="navTitle">
+        
+        Micronaut Oracle Cloud
+    </div>
+    <div class="navLinks">
+        <ul>
+            <li>
+                <div id="nav-summary" onmouseover="toggleNavSummary(false)" onmouseout="toggleNavSummary(true)">
+                    <a href="../guide/index.html" class="button">Table of contents</a>
+
+                    <div id="nav-summary-childs" style="display:none;">
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/introduction.html"><strong>1</strong><span>Introduction</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/quickStart.html"><strong>2</strong><span>Quick Start</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/authentication.html"><strong>3</strong><span>Authentication</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/modules.html"><strong>4</strong><span>Available Modules</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/rxjava.html"><strong>5</strong><span>RxJava 2 Support</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/functions.html"><strong>6</strong><span>Oracle Functions (Serverless)</span></a>
+                        </div>
+                        
+                        <div class="toc-item" style="margin-left:0"><a href="../guide/httpFunctions.html"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a>
+                        </div>
+                        
+                    </div>
+                </div>
+            </li>
+            <li class="separator selected">
+                <a id="ref-button" onclick="localToggle(); return false;" href="#">Quick Reference</a>
+            </li>
+        </ul>
+    </div>
+
+
+</div>
+
+<table id="colset" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <td id="col1">
+            <div id="main" class="corner-all">
+
+                
+                    <div class="toc-item prev-left"><a href="../guide/rxjava.html">&lt;&lt; <strong>5</strong><span>RxJava 2 Support</span></a></div>
+                
+
+                <span id='toggle-col1' class="toggle">(<a href="#" onclick="localToggle(); return false;">Quick Reference</a>)</span>
+
+                
+                    <div class="toc-item next-right"><a href="../guide/httpFunctions.html"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span> >></a></div>
+                
+
+
+                <div class="project">
+                    <h1>6 Oracle Functions (Serverless)</h1>
+
+                    <p><strong>Version:</strong> 1.0.0.M1</p>
+                </div>
+
+                
+
+                
+<h1 id="functions"><a class="anchor" href="#functions"></a>6 Oracle Functions (Serverless)</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/functions.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Oracle Functions are based on <a href="https://fnproject.io/">Project.fn</a>. You can write simple functions targeting the Oracle Function environment by extending from the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> super class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Micronaut&#8217;s Oracle Function support can utilize GraalVM <code>native-image</code> running within a Docker container. This will result in extremely responsive serverless functions utilizing very few Cloud resources.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The class must have a public no arguments constructor</p>
+</li>
+<li>
+<p>A public method that executes the function must be defined</p>
+</li>
+<li>
+<p>The class must be annotated with <code>@Singleton</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Micronaut support for Oracle Functions can be combined with the OCI SDK support to give your serverless functions accesss to the OCI SDKs as needed.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You must have <a href="#resource-principals">resource principal authentication</a> properly configured in order for this example to work.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_dependencies">Dependencies</h3>
+<div class="paragraph">
+<p>To get started with Gradle as a build tool you should add the Project.fn repository and the Micronaut Gradle plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">plugins {
+    id "io.micronaut.application", version "1.0.0.M9"
+}
+
+repositories {
+    maven {
+        url("https://dl.bintray.com/fnproject/fnproject")
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And include a runtime dependency on Project.fn:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtimeOnly(<span class="hljs-string">"com.fnproject.fn:runtime:1.0.109")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.fnproject.fn&lt;/groupId&gt;
+    &lt;artifactId&gt;runtime&lt;/artifactId&gt;
+    &lt;version&gt;1.0.109&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Oracle Function support requires the Micronaut OCI Functions module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-function&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Optionally, to use the OCI SDK module from within your function, include the <code>micronaut-oci-sdk</code>:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>In addition, your function will need the necessary OCI SDK dependency/dependencies. For example, the object storage module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
+    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="functions-build">Build</h3>
+<div class="paragraph">
+<p>The following provides a serverless function example that uses the Object Storage API to list the available buckets:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import com.oracle.bmc.objectstorage.ObjectStorageClient;
+import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import io.micronaut.oci.core.TenancyIdProvider;
+import io.micronaut.oci.function.OciFunction;
+
+import javax.inject.*;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Singleton
+public class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
+
+    @Inject
+    ObjectStorageClient objectStorageClient; <b class="conum">(2)</b>
+
+    @Inject
+    TenancyIdProvider tenantIdProvider;
+
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A public class with a no argument constructor annotated with <code>@Singleton</code> and extending from <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>You can use the <code>@Inject</code> annotation to inject SDK components</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once you have defined the function you should define a public method that is the function handler. For example:</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;String&gt; handleRequest() {
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenantIdProvider.getTenancyId()).build();
+    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
+    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
+    builder.namespaceName(namespace);
+    builder.compartmentId(tenantIdProvider.getTenancyId());
+    return objectStorageClient.listBuckets(builder.build())
+            .getItems().stream().map(BucketSummary::getName)
+            .collect(Collectors.toList());
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above example uses the Object Storage API to list the available buckets.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="functions-dockerfile">Dockerfile</h3>
+<div class="paragraph">
+<p>To build a Oracle Cloud Function into a GraalVM <code>native-image</code> plugin, you will need to include the following <code>Dockerfile</code> in your function&#8217;s root directory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-Dockerfile hljs" data-lang="Dockerfile">FROM oracle/graalvm-ce:20.1.0-java11 as graalvm
+RUN gu install native-image
+
+WORKDIR /home/app
+COPY build/layers/libs /home/app/libs
+COPY build/layers/application.jar /home/app/application.jar
+
+RUN native-image --static \
+                 -H:Name=func \
+                 --report-unsupported-elements-at-runtime \
+                 --no-server \
+                 --no-fallback \
+                 -Dfn.handler="example.ListBucketsFunction::handleRequest" \
+                 -cp /home/app/libs/*.jar:/home/app/resources:/home/app/application.jar \
+                 com.fnproject.fn.runtime.EntryPoint
+
+# need socket library from Fn FDK
+FROM fnproject/fn-java-fdk:1.0.105 as fnfdk
+
+# Package native binary in minimal container image
+FROM oraclelinux:7-slim
+WORKDIR /function
+RUN groupadd -g 1000 fn &amp;&amp; useradd --uid 1000 -g fn fn
+COPY --from=graalvm /home/app/func func
+# get unix socket libraries from FDK container image
+COPY --from=fnfdk /function/runtime/lib/* .
+ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80"]
+CMD [ "example.ListBucketsFunction::handleRequest" ]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="functions-deploy">Deploy</h3>
+<div class="paragraph">
+<p>To deploy your function, first use <code>./gradlew buildLayers</code> to build the necessary artifacts that the <code>Dockerfile</code> needs to generate the <code>native-image</code>. Then deploy per the normal Oracle Functions method (IE: <code>fn deploy --app [your app name]</code>).</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Deploying your function with Micronaut will take longer than deploying without because of the <code>native-image</code> support. Runtime performance will greatly make up for the slow deployment.
+</td>
+</tr>
+</table>
+</div>
+</div>
+
+
+                <div style="clear:both;margin-top:15px;"></div>
+                
+                    <div class="toc-item prev-left"><a href="../guide/rxjava.html">&lt;&lt; <strong>5</strong><span>RxJava 2 Support</span></a></div>
+                
+                    <div class="toc-item next-right"><a href="../guide/httpFunctions.html"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span> >></a></div>
+                
+                <div style="clear:both"></div>
+            </div>
+        </td>
+        <td id="col2">
+            <div class="local clearfix">
+                <div class="local-title">
+                    <a href="../guide/index.html" target="mainFrame">Quick Reference</a>
+                    <span class="toggle">(<a href="#" onclick="localToggle(); return false;">hide</a>)</span>
+                </div>
+                <div class="menu">
+                    
+                </div>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<div id="footer">
+    
+    
+</div>
+
+<script type="text/javascript" src="../js/docs.js"></script>
+
+</body>
+</html>

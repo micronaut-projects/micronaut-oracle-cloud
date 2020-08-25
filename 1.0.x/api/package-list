@@ -1,0 +1,8 @@
+io.micronaut.oci.clients
+io.micronaut.oci.clients.processor
+io.micronaut.oci.clients.rxjava
+io.micronaut.oci.core
+io.micronaut.oci.core.sdk
+io.micronaut.oci.function
+io.micronaut.oci.function.http
+io.micronaut.oci.function.http.test
