@@ -9,5 +9,5 @@ dependencies {
         exclude module:'groovy-all'
     }
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation 'org.mockito:mockito-core:3.5.5'
+    testImplementation 'org.mockito:mockito-core:3.5.6'
 }
