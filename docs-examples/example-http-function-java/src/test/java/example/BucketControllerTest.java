@@ -7,9 +7,14 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.oci.function.http.test.FnHttpTest;
 import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.DisabledForJreRange;
+import org.junit.jupiter.api.condition.JRE;
 
 @MicronautTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+// avoid running this test in parallel as the interactions with Object Storage
+// can step on each other causing issues
+@DisabledForJreRange(max = JRE.JAVA_9)
 public class BucketControllerTest {
 
     private final String testBucket = "__mn_oci_test_bucket";
