@@ -1,19 +1,29 @@
 package io.micronaut.oci.function.http
 
 import io.micronaut.http.HttpHeaders
-import io.micronaut.http.HttpMethod
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.MediaType
+import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.oci.function.http.test.FnHttpTest
+import io.micronaut.test.annotation.MicronautTest
 import spock.lang.Specification
 
+import javax.inject.Inject
+
+@MicronautTest
 class ParameterBindingSpec extends Specification {
+
+    @Inject
+    @Client("/")
+    RxHttpClient client
 
     void "test URI parameters"() {
 
         given:
-        def response = FnHttpTest.invoke(HttpMethod.GET, "/parameters/uri/Foo")
+        def response = client.exchange(HttpRequest.GET("/parameters/uri/Foo"), String.class).blockingFirst()
 
         expect:
         response.status == HttpStatus.OK
@@ -22,10 +32,12 @@ class ParameterBindingSpec extends Specification {
     }
 
     void "test invalid HTTP method"() {
-        given:
-        def response = FnHttpTest.invoke(HttpMethod.POST, "/parameters/uri/Foo")
+        when:
+        client.exchange(HttpRequest.POST("/parameters/uri/Foo", ""), String.class).blockingFirst()
 
-        expect:
+        then:
+        def e = thrown(HttpClientResponseException)
+        def response = e.response
         response.status() == HttpStatus.METHOD_NOT_ALLOWED
         def allow = response.headers.getAll(HttpHeaders.ALLOW)
         allow == ["HEAD,GET"]
@@ -34,7 +46,7 @@ class ParameterBindingSpec extends Specification {
     void "test query value"() {
 
         given:
-        def response = FnHttpTest.invoke(HttpMethod.GET, "/parameters/query?q=Foo")
+        def response = client.exchange(HttpRequest.GET("/parameters/query?q=Foo"), String.class).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -45,7 +57,7 @@ class ParameterBindingSpec extends Specification {
     void "test all parameters"() {
 
         given:
-        def response = FnHttpTest.invoke(HttpMethod.GET, "/parameters/allParams?name=Foo&age=20")
+        def response = client.exchange(HttpRequest.GET("/parameters/allParams?name=Foo&age=20"), String.class).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -56,7 +68,7 @@ class ParameterBindingSpec extends Specification {
     void "test header value"() {
 
         given:
-        def response = FnHttpTest.invoke(HttpRequest.GET("/parameters/header").header(HttpHeaders.CONTENT_TYPE, "text/plain;q=1.0"))
+        def response = client.exchange(HttpRequest.GET("/parameters/header").header(HttpHeaders.CONTENT_TYPE, "text/plain;q=1.0"), String.class).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -81,7 +93,7 @@ class ParameterBindingSpec extends Specification {
     void "test string body"() {
 
         given:
-        def response = FnHttpTest.invoke(HttpRequest.POST( "/parameters/stringBody", "Foo").header(HttpHeaders.CONTENT_TYPE, "text/plain"))
+        def response = client.exchange(HttpRequest.POST( "/parameters/stringBody", "Foo").header(HttpHeaders.CONTENT_TYPE, "text/plain"), String.class).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -93,8 +105,9 @@ class ParameterBindingSpec extends Specification {
     void "test writable"() {
 
         given:
-        def response = FnHttpTest.invoke(HttpRequest.POST("/parameters/writable", "Foo")
-                .header(HttpHeaders.CONTENT_TYPE, "text/plain"))
+        def response = client.exchange(HttpRequest.POST("/parameters/writable", "Foo")
+                .header(HttpHeaders.CONTENT_TYPE, "text/plain"), String)
+                .blockingFirst()
 
         expect:
         response.status() == HttpStatus.CREATED
@@ -105,14 +118,13 @@ class ParameterBindingSpec extends Specification {
 
 
     void "test JSON POJO body"() {
-
         given:
         def json = '{"name":"bar","age":30}'
-        def response = FnHttpTest.invoke(HttpRequest.POST(
+        def response = client.exchange(HttpRequest.POST(
                 "/parameters/jsonBody",
                 json
-        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
-
+        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON), String)
+                .blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -121,15 +133,17 @@ class ParameterBindingSpec extends Specification {
     }
 
     void "test JSON POJO body - invalid JSON"() {
-
-        given:
+        when:
         def json = '{"name":"bar","age":30'
-        def response = FnHttpTest.invoke(HttpRequest.POST(
+        client.exchange(HttpRequest.POST(
                 "/parameters/jsonBody",
                 json
-        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON), String)
+                .blockingFirst()
 
-        expect:
+        then:
+        def e = thrown(HttpClientResponseException)
+        def response = e.response
         response.status() == HttpStatus.BAD_REQUEST
         response.body().contains("Error decoding JSON stream for type")
     }
@@ -138,10 +152,11 @@ class ParameterBindingSpec extends Specification {
     void "test JSON POJO body with no @Body binds to arguments"() {
         given:
         def json = '{"name":"bar","age":30}'
-        def response = FnHttpTest.invoke(HttpRequest.POST(
+        def response = client.exchange(HttpRequest.POST(
                 "/parameters/jsonBodySpread",
                 json
-        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON), String)
+                .blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -152,10 +167,11 @@ class ParameterBindingSpec extends Specification {
     void "full Micronaut request and response"() {
         given:
         def json = '{"name":"bar","age":30}'
-        def response = FnHttpTest.invoke(HttpRequest.POST(
+        def response = client.exchange(HttpRequest.POST(
                 "/parameters/fullRequest",
                 json
-        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON), String)
+                .blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -166,15 +182,17 @@ class ParameterBindingSpec extends Specification {
 
 
     void "full Micronaut request and response - invalid JSON"() {
-        given:
+        when:
         def json = '{"name":"bar","age":30'
-        def response = FnHttpTest.invoke(HttpRequest.POST(
+        client.exchange(HttpRequest.POST(
                 "/parameters/fullRequest",
                 json
-        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON))
+        ).header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON), String)
+                .blockingFirst()
 
-
-        expect:
+        then:
+        def e = thrown(HttpClientResponseException)
+        def response = e.response
         response.status() == HttpStatus.BAD_REQUEST
         response.body().contains("Error decoding JSON stream for type")
     }
