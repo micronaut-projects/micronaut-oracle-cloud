@@ -1,8 +1,8 @@
-io.micronaut.oci.clients
-io.micronaut.oci.clients.processor
-io.micronaut.oci.clients.rxjava
-io.micronaut.oci.core
-io.micronaut.oci.core.sdk
-io.micronaut.oci.function
-io.micronaut.oci.function.http
-io.micronaut.oci.function.http.test
+io.micronaut.oraclecloud.clients
+io.micronaut.oraclecloud.clients.processor
+io.micronaut.oraclecloud.clients.rxjava
+io.micronaut.oraclecloud.core
+io.micronaut.oraclecloud.core.sdk
+io.micronaut.oraclecloud.function
+io.micronaut.oraclecloud.function.http
+io.micronaut.oraclecloud.function.http.test
