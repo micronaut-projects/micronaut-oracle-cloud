@@ -6,7 +6,7 @@ dependencies {
 
 	constraints {
        for (Project p : rootProject.subprojects) {
-            if (p.name.contains("bom")) continue
+            if (p.name.contains("bom") || p.name.contains('docs') || p.name.contains('example')) continue
          
             api "$p.group:micronaut-$p.name:$p.version"
         }		
