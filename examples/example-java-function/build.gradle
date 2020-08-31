@@ -15,8 +15,8 @@ micronaut {
 }
 
 dependencies {
-    implementation("io.micronaut.oci:micronaut-oraclecloud-sdk:1.0.0.BUILD-SNAPSHOT")
-    implementation("io.micronaut.oci:micronaut-oraclecloud-function:1.0.0.BUILD-SNAPSHOT")
+    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:1.0.0.BUILD-SNAPSHOT")
+    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-function:1.0.0.BUILD-SNAPSHOT")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
     testImplementation 'com.fnproject.fn:testing-junit4:1.0.109'

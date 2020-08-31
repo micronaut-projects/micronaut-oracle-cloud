@@ -60,13 +60,13 @@
       <version>1.0.109</version>
     </dependency>    
     <dependency>
-      <groupId>io.micronaut.oci</groupId>
+      <groupId>io.micronaut.oraclecloud</groupId>
       <artifactId>micronaut-oraclecloud-sdk</artifactId>
       <scope>compile</scope>
       <version>1.0.0.BUILD-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>io.micronaut.oci</groupId>
+      <groupId>io.micronaut.oraclecloud</groupId>
       <artifactId>micronaut-oraclecloud-function</artifactId>
       <scope>compile</scope>
       <version>1.0.0.BUILD-SNAPSHOT</version>

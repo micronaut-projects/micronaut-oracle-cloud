@@ -44,11 +44,11 @@ import java.util.Set;
  * @author graemerocher
  * @since 1.0.0
  */
-@SupportedAnnotationTypes("io.micronaut.oci.clients.SdkClients")
+@SupportedAnnotationTypes("io.micronaut.oraclecloud.clients.SdkClients")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class OracleCloudSdkProcessor extends AbstractProcessor {
 
-    public static final String CLIENT_PACKAGE = "io.micronaut.oci.clients";
+    public static final String CLIENT_PACKAGE = "io.micronaut.oraclecloud.clients";
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -144,7 +144,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                                         methodBuilder.addCode(CodeBlock.builder()
                                                 .addStatement("return $T.create((emitter) -> {", rxSingleType)
                                                 .add("this.client." + methodName + "(" + parameterName + ",")
-                                                .add("new $T<" + requestType + "," + responseType + ">(emitter)", ClassName.get("io.micronaut.oci.clients.rxjava", "AsyncHandlerEmitter"))
+                                                .add("new $T<" + requestType + "," + responseType + ">(emitter)", ClassName.get("io.micronaut.oraclecloud.clients.rxjava", "AsyncHandlerEmitter"))
                                                 .addStatement(")")
                                                 .addStatement("})")
                                         .build());
@@ -215,7 +215,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     private TypeSpec.Builder defineSuperclass(String packageName, String simpleName, String factoryName) {
         final TypeSpec.Builder builder = TypeSpec.classBuilder(factoryName);
         builder.superclass(ParameterizedTypeName.get(
-                ClassName.get("io.micronaut.oci.core.sdk", "AbstractSdkClientFactory"),
+                ClassName.get("io.micronaut.oraclecloud.core.sdk", "AbstractSdkClientFactory"),
                 ClassName.get(packageName, simpleName + ".Builder"),
                 ClassName.get(packageName, simpleName))
         );

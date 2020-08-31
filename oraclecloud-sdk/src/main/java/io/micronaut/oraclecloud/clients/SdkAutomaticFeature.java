@@ -290,7 +290,7 @@ final class SdkAutomaticFeature implements Feature {
             for (String aClass : classes) {
                 final String packageName = NameUtils.getPackageName(aClass);
                 final String simpleName = NameUtils.getSimpleName(aClass);
-                final String factoryName = packageName.replace("com.oracle.bmc", "io.micronaut.oci.clients") + "." + simpleName + "Factory";
+                final String factoryName = packageName.replace("com.oracle.bmc", "io.micronaut.oraclecloud.clients") + "." + simpleName + "Factory";
                 AutomaticFeatureUtils.initializeAtRunTime(access, factoryName);
                 Class<?> c = access.findClassByName(aClass);
                 if (c != null) {

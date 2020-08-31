@@ -26,7 +26,7 @@ dependencies {
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 
 run {
-    args("io.micronaut.oci.function.http.HttpFunction::handleRequest")
+    args("io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest")
 }
 
 nativeImage {

@@ -40,7 +40,7 @@ subprojects { Project subproject ->
                      '-parameters',
                      // enables incremental compilation
                      '-Amicronaut.processing.incremental=true',
-                     '-Amicronaut.processing.annotations=io.micronaut.oci.*',
+                     '-Amicronaut.processing.annotations=io.micronaut.oraclecloud.*',
                      "-Amicronaut.processing.group=$project.group",
                      "-Amicronaut.processing.module=$project.name",
              ])
