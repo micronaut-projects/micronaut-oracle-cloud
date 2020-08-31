@@ -137,20 +137,20 @@
 <p>To get started quickly <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm">Setup the Oracle Cloud CLI</a> making sure you have run <code>oci setup config</code> to configure local access to Oracle Cloud.</p>
 </div>
 <div class="paragraph">
-<p>Then add a dependency on the <code>micronaut-oci-sdk</code> module:</p>
+<p>Then add a dependency on the <code>micronaut-oraclecloud-sdk</code> module:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-sdk")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -163,7 +163,7 @@
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut:com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut:com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -171,7 +171,7 @@
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
     &lt;artifactId&gt;com.oracle.oci.sdk&lt;/artifactId&gt;
-    &lt;version&gt;oci-java-sdk-objectstorage&lt;/version&gt;
+    &lt;version&gt;oraclecloud-java-sdk-objectstorage&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -282,19 +282,19 @@
 <p>The following modules are provided.</p>
 </div>
 <div class="sect2">
-<h3 id="_micronaut_oci_common">micronaut-oci-common</h3>
+<h3 id="_micronaut_oraclecloud_common">micronaut-oraclecloud-common</h3>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-common")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-common")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-common&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-common&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -318,19 +318,19 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_micronaut_oci_sdk">micronaut-oci-sdk</h3>
+<h3 id="_micronaut_oraclecloud_sdk">micronaut-oraclecloud-sdk</h3>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-sdk")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -355,14 +355,14 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
-    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
+    &lt;artifactId&gt;oraclecloud-java-sdk-objectstorage&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -370,19 +370,19 @@ This module does not have a dependency on any one module. You should add these t
 </div>
 </div>
 <div class="sect2">
-<h3 id="_micronaut_oci_function">micronaut-oci-function</h3>
+<h3 id="_micronaut_oraclecloud_function">micronaut-oraclecloud-function</h3>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-function")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-function&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-function&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -393,19 +393,19 @@ This module does not have a dependency on any one module. You should add these t
 </div>
 </div>
 <div class="sect2">
-<h3 id="_micronaut_oci_function_http">micronaut-oci-function-http</h3>
+<h3 id="_micronaut_oraclecloud_function_http">micronaut-oraclecloud-function-http</h3>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function-http")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-function-http")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-function-http&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-function-http&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -624,34 +624,34 @@ repositories {
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-function")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-function")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-function&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-function&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </p>
 </div>
 <div class="paragraph">
-<p>Optionally, to use the OCI SDK module from within your function, include the <code>micronaut-oci-sdk</code>:</p>
+<p>Optionally, to use the OCI SDK module from within your function, include the <code>micronaut-oraclecloud-sdk</code>:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oci-sdk")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oci:micronaut-oraclecloud-sdk")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oci&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oci-sdk&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -664,14 +664,14 @@ repositories {
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
-    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
+    &lt;artifactId&gt;oraclecloud-java-sdk-objectstorage&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -809,7 +809,7 @@ Deploying your function with Micronaut will take longer than deploying without b
 
 
 <div class="paragraph">
-<p>The <code>micronaut-oci-function-http</code> module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
+<p>The <code>micronaut-oraclecloud-function-http</code> module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
 </div>
 <div class="paragraph">
 <p>Create your controller just as you would a normal Micronaut controller.</p>
@@ -852,7 +852,7 @@ public class BucketController {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>This example uses the <code>micronaut-oci-sdk</code> module to perform Object Storage operations, so the <code>ObjectStorage</code> client and <code>TenancyIdProvider</code> are injected.</td>
+<td>This example uses the <code>micronaut-oraclecloud-sdk</code> module to perform Object Storage operations, so the <code>ObjectStorage</code> client and <code>TenancyIdProvider</code> are injected.</td>
 </tr>
 </table>
 </div>
