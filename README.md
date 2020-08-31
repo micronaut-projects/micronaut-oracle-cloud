@@ -5,11 +5,9 @@
 
 Micronaut Oracle Cloud provides integration between Micronaut and Oracle Cloud Infrastructure (OCI).
 
-NOTE: WIP PROJECT AND NOT YET RELEASED
-
 ## Documentation
 
-<!-- See the [Documentation](https://micronaut-projects.github.io/micronaut-oracle-cloud/latest/guide/) for more information.  -->
+See the [Documentation](https://micronaut-projects.github.io/micronaut-oracle-cloud/1.0.x/guide/) for more information. 
 
 See the [Snapshot Documentation](https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/) for the current development docs.
 

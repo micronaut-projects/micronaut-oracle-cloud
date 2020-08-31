@@ -15,7 +15,7 @@ dependencies {
     implementation project(":oci-function-http")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
-    runtimeOnly 'com.fnproject.fn:runtime:1.0.109'
+    runtimeOnly 'com.fnproject.fn:runtime:1.0.110'
     testImplementation project(":oci-function-http-test")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -26,4 +26,8 @@ mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 
 run {
     args("io.micronaut.oci.function.http.HttpFunction::handleRequest")
+}
+
+nativeImage {
+    args('--report-unsupported-elements-at-runtime', '--initialize-at-build-time=example')
 }
