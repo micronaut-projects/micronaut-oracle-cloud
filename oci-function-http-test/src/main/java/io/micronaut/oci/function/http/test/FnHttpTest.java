@@ -32,7 +32,6 @@ import io.micronaut.oci.function.http.FnMultiValueMap;
 import io.micronaut.oci.function.http.HttpFunction;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * Testing support for functions.
