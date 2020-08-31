@@ -1,12 +1,12 @@
 rootProject.name = 'oci'
 
-include 'oci-bom'
-include 'oci-common'
-include 'oci-function'
-include 'oci-function-http'
-include 'oci-function-http-test'
-include 'oci-sdk'
-include 'oci-sdk-processor'
+include 'oraclecloud-bom'
+include 'oraclecloud-common'
+include 'oraclecloud-function'
+include 'oraclecloud-function-http'
+include 'oraclecloud-function-http-test'
+include 'oraclecloud-sdk'
+include 'oraclecloud-sdk-processor'
 
 // doc examples
 include 'docs-examples:example-java'

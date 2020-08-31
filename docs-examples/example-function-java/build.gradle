@@ -9,8 +9,8 @@ repositories {
 }
 
 dependencies {
-    implementation project(":oci-sdk")
-    implementation project(":oci-function")
+    implementation project(":oraclecloud-sdk")
+    implementation project(":oraclecloud-function")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
     runtimeOnly 'com.fnproject.fn:runtime:1.0.110'

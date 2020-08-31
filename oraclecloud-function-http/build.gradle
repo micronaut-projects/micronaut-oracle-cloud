@@ -9,10 +9,10 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     api "io.micronaut.servlet:micronaut-servlet-core:1.0.2"
-    api project(":oci-function")
+    api project(":oraclecloud-function")
     implementation "io.micronaut:micronaut-http-netty"
     implementation "io.micronaut:micronaut-http-server"
-    testImplementation project(":oci-function-http-test")
+    testImplementation project(":oraclecloud-function-http-test")
     testImplementation "io.micronaut:micronaut-http-client"
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'

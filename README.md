@@ -1,6 +1,6 @@
 # Micronaut Oracle Cloud
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.micronaut.oci/micronaut-oci-common.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.micronaut.oci%22%20AND%20a:%22micronaut-oci-common%22)
+[![Maven Central](https://img.shields.io/maven-central/v/io.micronaut.oci/micronaut-oraclecloud-common.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22io.micronaut.oci%22%20AND%20a:%22micronaut-oraclecloud-common%22)
 [![Build Status](https://github.com/micronaut-projects/micronaut-oracle-cloud/workflows/Java%20CI/badge.svg)](https://github.com/micronaut-projects/micronaut-oracle-cloud/actions)
 
 Micronaut Oracle Cloud provides integration between Micronaut and Oracle Cloud Infrastructure (OCI).

@@ -1,10 +1,10 @@
-The `micronaut-oci-function-http` module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.
+The `micronaut-oraclecloud-function-http` module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.
 
 Create your controller just as you would a normal Micronaut controller.
 
 snippet::example.BucketController[project-base="docs-examples/example-http-function", source="main", tags="imports,class"]
 
-<1> This example uses the `micronaut-oci-sdk` module to perform Object Storage operations, so the `ObjectStorage` client and `TenancyIdProvider` are injected.
+<1> This example uses the `micronaut-oraclecloud-sdk` module to perform Object Storage operations, so the `ObjectStorage` client and `TenancyIdProvider` are injected.
 
 Next, add a controller method to list all of the buckets in a compartment:
 

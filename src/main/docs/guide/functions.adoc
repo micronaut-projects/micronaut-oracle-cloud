@@ -35,15 +35,15 @@ dependency:com.fnproject.fn:runtime[version="1.0.109",scope="runtimeOnly"]
 
 Oracle Function support requires the Micronaut OCI Functions module:
 
-dependency:io.micronaut.oci:micronaut-oci-function[version={ociVersion}]
+dependency:io.micronaut.oci:micronaut-oraclecloud-function[version={ociVersion}]
 
-Optionally, to use the OCI SDK module from within your function, include the `micronaut-oci-sdk`:
+Optionally, to use the OCI SDK module from within your function, include the `micronaut-oraclecloud-sdk`:
 
-dependency:io.micronaut.oci:micronaut-oci-sdk[]
+dependency:io.micronaut.oci:micronaut-oraclecloud-sdk[]
 
 In addition, your function will need the necessary OCI SDK dependency/dependencies. For example, the object storage module:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage[version={ociVersion}]
 
 [#functions-build]
 === Build

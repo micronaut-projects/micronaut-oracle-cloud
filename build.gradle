@@ -12,9 +12,9 @@ buildscript {
 }
 
 subprojects { Project subproject ->
-    group "io.micronaut.oci"
+    group "io.micronaut.oraclecloud"
 
-    if (subproject.name == 'oci-bom') {
+    if (subproject.name == 'oraclecloud-bom') {
         apply plugin: "java-platform"
         version projectVersion
     } else if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
@@ -49,7 +49,7 @@ subprojects { Project subproject ->
 
     
     apply plugin: "io.micronaut.build.dependency-updates"
-    if (subproject.name != 'oci-sdk-processor') {
+    if (subproject.name != 'oraclecloud-sdk-processor') {
         apply plugin: "io.micronaut.build.publishing"
     }
 }

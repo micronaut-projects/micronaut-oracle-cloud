@@ -1,9 +1,9 @@
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor project(":oci-sdk-processor")
+    annotationProcessor project(":oraclecloud-sdk-processor")
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
-    api project(":oci-common")
+    api project(":oraclecloud-common")
     compileOnly("org.graalvm.nativeimage:svm")
     compileOnly("io.reactivex.rxjava2:rxjava")
     // optional modules
