@@ -28,4 +28,4 @@ COPY --from=graalvm /home/app/func func
 # get unix socket libraries from FDK container image
 COPY --from=fnfdk /function/runtime/lib/* .
 ENTRYPOINT ["./func", "-XX:MaximumHeapSizePercent=80"]
-CMD [ "io.micronaut.oci.function.http.HttpFunction::handleRequest" ]
+CMD [ "io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest" ]

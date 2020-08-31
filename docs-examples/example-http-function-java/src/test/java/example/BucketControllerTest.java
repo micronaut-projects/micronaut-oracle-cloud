@@ -4,7 +4,7 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.oci.function.http.test.FnHttpTest;
+import io.micronaut.oraclecloud.function.http.test.FnHttpTest;
 import io.micronaut.test.annotation.MicronautTest;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.DisabledForJreRange;

@@ -26,7 +26,7 @@ import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.*;
-import io.micronaut.oci.core.TenancyIdProvider;
+import io.micronaut.oraclecloud.core.TenancyIdProvider;
 
 import javax.annotation.Nullable;
 import java.util.List;

@@ -5,8 +5,8 @@ import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import io.micronaut.core.annotation.ReflectiveAccess;
-import io.micronaut.oci.core.TenancyIdProvider;
-import io.micronaut.oci.function.OciFunction;
+import io.micronaut.oraclecloud.core.TenancyIdProvider;
+import io.micronaut.oraclecloud.function.OciFunction;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

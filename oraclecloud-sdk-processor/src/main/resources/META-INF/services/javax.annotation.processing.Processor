@@ -1,1 +1,1 @@
-io.micronaut.oci.clients.processor.OracleCloudSdkProcessor
+io.micronaut.oraclecloud.clients.processor.OracleCloudSdkProcessor

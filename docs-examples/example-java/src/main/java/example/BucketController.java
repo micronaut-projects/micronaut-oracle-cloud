@@ -20,8 +20,8 @@ import com.oracle.bmc.objectstorage.model.*;
 import com.oracle.bmc.objectstorage.requests.*;
 import com.oracle.bmc.objectstorage.responses.*;
 import io.micronaut.http.annotation.*;
-import io.micronaut.oci.clients.rxjava2.objectstorage.ObjectStorageRxClient;
-import io.micronaut.oci.core.TenancyIdProvider;
+import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient;
+import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.reactivex.Single;
 
 import javax.annotation.Nullable;

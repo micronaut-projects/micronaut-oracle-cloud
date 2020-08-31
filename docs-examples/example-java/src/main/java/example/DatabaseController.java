@@ -22,8 +22,8 @@ import com.oracle.bmc.database.requests.ListAutonomousDatabasesRequest;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.oci.clients.rxjava2.database.DatabaseRxClient;
-import io.micronaut.oci.core.TenancyIdProvider;
+import io.micronaut.oraclecloud.clients.rxjava2.database.DatabaseRxClient;
+import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.reactivex.Single;
 
 import javax.annotation.Nullable;
