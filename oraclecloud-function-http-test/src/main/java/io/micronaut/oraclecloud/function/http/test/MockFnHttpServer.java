@@ -33,12 +33,10 @@ import io.micronaut.http.server.exceptions.ServerStartupException;
 import io.micronaut.oraclecloud.function.http.HttpFunction;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
-import io.micronaut.scheduling.TaskExecutors;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -49,7 +47,6 @@ import java.io.OutputStream;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
