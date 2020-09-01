@@ -10,11 +10,11 @@ dependencies {
 
     api "io.micronaut:micronaut-function"
     api project(":oraclecloud-common")
-    api 'com.fnproject.fn:api:1.0.110'
+    api "com.fnproject.fn:api:$fnVersion"
 
     compileOnly("org.graalvm.nativeimage:svm")
 
-    testImplementation 'com.fnproject.fn:testing-junit4:1.0.110'
+    testImplementation "com.fnproject.fn:testing-junit4:$fnVersion"
     testImplementation(project(":oraclecloud-sdk"))
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'

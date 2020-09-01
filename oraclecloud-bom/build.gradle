@@ -9,6 +9,10 @@ dependencies {
             if (p.name.contains("bom") || p.name.contains('docs') || p.name.contains('example')) continue
          
             api "$p.group:micronaut-$p.name:$p.version"
-        }		
+       }
+
+        for (module in ['api', 'runtime', 'testing-junit4']) {
+            api "com.fnproject.fn:$module:$fnVersion"
+        }
 	}
 }
