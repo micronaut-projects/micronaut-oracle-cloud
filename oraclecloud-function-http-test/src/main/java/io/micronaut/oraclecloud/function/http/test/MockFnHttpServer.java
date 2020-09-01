@@ -63,19 +63,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Internal
 final class MockFnHttpServer implements EmbeddedServer {
     private final ApplicationContext applicationContext;
-    private final ExecutorService executorService;
-    private final HttpServerConfiguration httpServerConfiguration;
     private final boolean randomPort;
     private int port;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Server server;
 
     public MockFnHttpServer(
-            @Named(TaskExecutors.IO) ExecutorService executorService,
             ApplicationContext applicationContext,
             HttpServerConfiguration httpServerConfiguration) {
-        this.httpServerConfiguration = httpServerConfiguration;
-        this.executorService = executorService;
         this.applicationContext = applicationContext;
         Optional<Integer> port = httpServerConfiguration.getPort();
         if (port.isPresent()) {
