@@ -21,11 +21,13 @@ import com.fnproject.fn.testing.FnResult;
 import com.fnproject.fn.testing.FnTestingRule;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Secondary;
+import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.server.HttpServerConfiguration;
 import io.micronaut.http.server.exceptions.HttpServerException;
 import io.micronaut.http.server.exceptions.ServerStartupException;
 import io.micronaut.oraclecloud.function.http.HttpFunction;
@@ -46,6 +48,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -61,16 +64,37 @@ import java.util.concurrent.atomic.AtomicBoolean;
 final class MockFnHttpServer implements EmbeddedServer {
     private final ApplicationContext applicationContext;
     private final ExecutorService executorService;
+    private final HttpServerConfiguration httpServerConfiguration;
+    private final boolean randomPort;
     private int port;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Server server;
 
     public MockFnHttpServer(
             @Named(TaskExecutors.IO) ExecutorService executorService,
-            ApplicationContext applicationContext) {
+            ApplicationContext applicationContext,
+            HttpServerConfiguration httpServerConfiguration) {
+        this.httpServerConfiguration = httpServerConfiguration;
         this.executorService = executorService;
         this.applicationContext = applicationContext;
-        this.port = SocketUtils.findAvailableTcpPort();
+        Optional<Integer> port = httpServerConfiguration.getPort();
+        if (port.isPresent()) {
+            this.port = port.get();
+            if (this.port == -1) {
+                this.port = SocketUtils.findAvailableTcpPort();
+                this.randomPort = true;
+            } else {
+                this.randomPort = false;
+            }
+        } else {
+            if (applicationContext.getEnvironment().getActiveNames().contains(Environment.TEST)) {
+                this.randomPort = true;
+                this.port = SocketUtils.findAvailableTcpPort();
+            } else {
+                this.randomPort = false;
+                this.port = 8080;
+            }
+        }
     }
 
     @Override
@@ -84,8 +108,12 @@ final class MockFnHttpServer implements EmbeddedServer {
                     this.server.start();
                     break;
                 } catch (BindException e) {
-                    this.port = SocketUtils.findAvailableTcpPort();
-                    retryCount++;
+                    if (randomPort) {
+                        this.port = SocketUtils.findAvailableTcpPort();
+                        retryCount++;
+                    } else {
+                        throw new ServerStartupException(e.getMessage(), e);
+                    }
                 } catch (Exception e) {
                     throw new ServerStartupException(e.getMessage(), e);
                 }
