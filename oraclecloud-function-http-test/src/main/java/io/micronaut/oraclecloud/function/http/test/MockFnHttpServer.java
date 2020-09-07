@@ -178,9 +178,9 @@ final class MockFnHttpServer implements EmbeddedServer {
         return running.get();
     }
 
-    private class FnHandler extends AbstractHandler {
+    private static class FnHandler extends AbstractHandler {
 
-        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
             FnTestingRule fn = FnTestingRule.createDefault();
             fn.addSharedClassPrefix("org.slf4j.");
             fn.addSharedClassPrefix("com.sun.");
