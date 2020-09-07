@@ -88,6 +88,11 @@
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.circuit-breaker</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.circuitbreaker.JaxRsCircuitBreaker</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.retry.termination-strategy</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.waiter.TerminationStrategy</p></td>
 <td class="tableblock halign-left valign-top"></td>
@@ -144,12 +149,12 @@
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.circuit-breaker.record-http-statuses</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.google.common.collect.ImmutableSet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.circuit-breaker.record-exceptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.google.common.collect.ImmutableList</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -194,6 +199,11 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.instance-principal.tenancy-id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.instance-principal.circuit-breaker-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
