@@ -1,4 +1,4 @@
-rootProject.name = 'oci'
+rootProject.name = 'oraclecloud'
 
 include 'oraclecloud-bom'
 include 'oraclecloud-common'
