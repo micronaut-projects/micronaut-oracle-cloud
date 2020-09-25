@@ -1,25 +1,28 @@
 plugins {
-    id "io.micronaut.application" version "1.0.0.M9"
+  id "io.micronaut.application" version "1.0.0.RC12"
 }
-
 repositories {
+    mavenLocal()
     jcenter()
     maven {
         url("https://dl.bintray.com/fnproject/fnproject")
     }
-    mavenLocal()
+
 }
 
 micronaut {
-    version "2.0.0"
+    version "2.1.0.BUILD-SNAPSHOT"
 }
 
+version "0.0.2"
+
 dependencies {
-    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:1.0.0.BUILD-SNAPSHOT")
-    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-function:1.0.0.BUILD-SNAPSHOT")
+    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-sdk")
+    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-function")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
-    testImplementation 'com.fnproject.fn:testing-junit4:1.0.109'
+    runtimeOnly 'org.slf4j:slf4j-simple'
+    runtimeOnly 'com.fnproject.fn:runtime'
+    testImplementation 'com.fnproject.fn:testing-junit4'
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
@@ -27,6 +30,30 @@ dependencies {
 
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 
-run {
-    args("example.ListBucketsFunction::handleRequest")
+nativeImage {
+  args('--static',
+       '-Dfn.handler=example.ListBucketsFunction::handleRequest',
+       "--initialize-at-build-time=example")
+}
+
+dockerBuild {
+    images = ["us-ashburn-1.ocir.io/cloudnative-devrel/graemerocher/list-buckets:$project.version"]
+}
+
+dockerBuildNative {
+    images = ["us-ashburn-1.ocir.io/cloudnative-devrel/graemerocher/list-buckets-native:$project.version"]
+}
+
+// deploy with:
+// ./gradlew dockerPush
+// fn create function acme-func list-buckets us-ashburn-1.ocir.io/cloudnative-devrel/graemerocher/list-buckets:0.0.1 --memory 512 --timeout 120
+dockerfile {
+  buildStrategy = io.micronaut.gradle.docker.DockerBuildStrategy.ORACLE_FUNCTION
+  defaultCommand = "example.ListBucketsFunction::handleRequest"
+}
+
+dockerfileNative {
+  args('-XX:MaximumHeapSizePercent=80')
+  buildStrategy = io.micronaut.gradle.docker.DockerBuildStrategy.ORACLE_FUNCTION
+  defaultCommand = "example.ListBucketsFunction::handleRequest"
 }
