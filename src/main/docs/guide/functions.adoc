@@ -8,42 +8,31 @@ This super class enables dependency injection for the function. Note that the th
 * A public method that executes the function must be defined
 * The class must be annotated with `@Singleton`
 
-Micronaut support for Oracle Functions can be combined with the OCI SDK support to give your serverless functions accesss to the OCI SDKs as needed.
+Micronaut support for Oracle Functions can be combined with the OCI SDK support to give your serverless functions access to the OCI SDKs as needed.
 
 NOTE: You must have <<resource-principals, resource principal authentication>> properly configured in order for this example to work.
 
-=== Dependencies
+With Micronaut 2.1 and above you can create a new Oracle Function with the following command line command:
 
-To get started with Gradle as a build tool you should add the Project.fn repository and the Micronaut Gradle plugin:
-
-[source,groovy]
+[source,bash]
 ----
-plugins {
-    id "io.micronaut.application", version "1.0.0.M9"
-}
-
-repositories {
-    maven {
-        url("https://dl.bintray.com/fnproject/fnproject")
-    }
-}
+$ mn create-function-app myfunction --features oracle-function
 ----
 
-And include a runtime dependency on Project.fn:
+This will create a Gradle build that sets up the Micronaut Gradle plugin. The only changes you need to make are to modify the `build.gradle` and alter the `dockerBuild` and `dockerBuildNative` to point at the Oracle Cloud Registry you wish the publish the docker images for the function:
 
-dependency:com.fnproject.fn:runtime[version="1.0.109",scope="runtimeOnly"]
+[source,bash]
+----
+dockerBuild {
+    images = ["[REGION].ocir.io/[TENANCY_ID]/[REPOSITORY]/$project.name:$project.version"]
+}
 
-Oracle Function support requires the Micronaut OCI Functions module:
+dockerBuildNative {
+    images = ["[REGION].ocir.io/[TENANCY_ID]/[REPOSITORY]/$project.name:$project.version"]
+}
+----
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[version={ociVersion}]
-
-Optionally, to use the OCI SDK module from within your function, include the `micronaut-oraclecloud-sdk`:
-
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[]
-
-In addition, your function will need the necessary OCI SDK dependency/dependencies. For example, the object storage module:
-
-dependency:com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage[version={ociVersion}]
+The `REGION` should be altered to your region, the `TENANCY_ID` to your tenancy and the `REPOSITORY` to the Docker repository you wish to publish to.
 
 [#functions-build]
 === Build
@@ -63,18 +52,34 @@ snippet::example.ListBucketsFunction[project-base="docs-examples/example-functio
 The above example uses the Object Storage API to list the available buckets.
 
 [#functions-dockerfile]
-=== Dockerfile
+=== Docker Build
 
-To build a Oracle Cloud Function into a GraalVM `native-image` plugin, you will need to include the following `Dockerfile` in your function's root directory.
-
-[source,Dockerfile]
-----
-include::docs-examples/example-function-java/Dockerfile[tags=dockerfile]
-----
+To build the Oracle Function you can run the `./gradlew dockerBuild` command or to build the native version run `./gradlew dockerBuildNative`.
 
 [#functions-deploy]
 === Deploy
 
-To deploy your function, first use `./gradlew buildLayers` to build the necessary artifacts that the `Dockerfile` needs to generate the `native-image`. Then deploy per the normal Oracle Functions method (IE: `fn deploy --app [your app name]`).
+To deploy the Oracle Function as a Java function run `./gradlew dockerPush` which will push the function to Oracle Container Registry.
 
-WARNING: Deploying your function with Micronaut will take longer than deploying without because of the `native-image` support. Runtime performance will greatly make up for the slow deployment.
+To deploy the function as a native image you can run `./gradlew dockerPushNative` which will deploy the function as a GraalVM native image.
+
+Note that these commands will actually only publish the function to Oracle Container Registry, to make the function invokable you should use the Oracle Cloud UI to create the function or use the `fn` command line application to create the function from the container image:
+
+.Creating a Function from a Container Image
+[source,bash]
+----
+$ fn create function myapp myfunction [REGION].ocir.io/[TENANCY]/[REPOSITORY/[FUNCTION_NAME]:[FUNCTION_VERSION]
+
+## For example:
+$ fn create function myapp myfunction us-ashburn-1.ocir.io/mytenancy/myrepository/myfunction:1.0.0
+----
+
+NOTE: For Java functions that do not use Native Image you will need to pass `--memory 512 --timeout 120` as Java functions occupy more memory that native functions.
+
+If you publish a new image using `./gradlew dockerPush` or `./gradlerw dockerPushNative` for an existing function you can also update it with `fn update`:
+
+.Updating an existing Function from a Container Image
+[source,bash]
+----
+$ fn update function myapp myfunction [REGION].ocir.io/[TENANCY]/[REPOSITORY/[FUNCTION_NAME]:[FUNCTION_VERSION]
+----
