@@ -2,17 +2,24 @@ javaPlatform {
     allowDependencies()
 }
 dependencies {
-	api platform("com.oracle.oci.sdk:oci-java-sdk-bom:$ociVersion")
+    def ociBom = new XmlSlurper().parse(
+            "https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/$ociVersion/oci-java-sdk-bom-${ociVersion}.pom"
+    )
 
-	constraints {
-       for (Project p : rootProject.subprojects) {
+    constraints {
+        for (Project p : rootProject.subprojects) {
             if (p.name.contains("bom") || p.name.contains('docs') || p.name.contains('example')) continue
-         
+
             api "$p.group:micronaut-$p.name:$p.version"
-       }
+        }
+
+        for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+            api "com.oracle.oci.sdk:$name:$ociVersion"
+        }
+        
 
         for (module in ['api', 'runtime', 'testing-junit4']) {
             api "com.fnproject.fn:$module:$fnVersion"
         }
-	}
+    }
 }
