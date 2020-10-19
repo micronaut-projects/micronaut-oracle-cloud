@@ -39,6 +39,12 @@ jobs:
         run: ./gradlew dependencyUpdates check --parallel --continue
         env:
           TESTCONTAINERS_RYUK_DISABLED: true
+          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+          OCI_REGION: ${{ secrets.OCI_REGION }}
+          OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
+          OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
+          OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
       - name: Publish Test Report
         if: failure()
         uses: scacap/action-surefire-report@v1
