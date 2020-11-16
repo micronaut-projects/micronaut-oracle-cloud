@@ -18,7 +18,7 @@ Provides support for injecting any of the available SDK client interfaces.
 
 NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage[version={ociVersion}]
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
 
 === micronaut-oraclecloud-function
 
