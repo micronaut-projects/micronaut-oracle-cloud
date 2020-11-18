@@ -108,10 +108,9 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
             TypeElement typeElement = elements.getTypeElement(clientType.reflectionName());
             if (typeElement != null) {
-                ModelUtils modelUtils = new ModelUtils(elements, types) {};
-                GenericUtils genericUtils = new GenericUtils(elements, types, modelUtils) {};
-                AnnotationUtils annotationUtils = new AnnotationUtils(processingEnv, elements, messager, types, modelUtils, genericUtils, filer) {
-                };
+                ModelUtils modelUtils = new ModelUtils(elements, types) { };
+                GenericUtils genericUtils = new GenericUtils(elements, types, modelUtils) { };
+                AnnotationUtils annotationUtils = new AnnotationUtils(processingEnv, elements, messager, types, modelUtils, genericUtils, filer) { };
                 JavaVisitorContext visitorContext = new JavaVisitorContext(
                         processingEnv,
                         messager,
