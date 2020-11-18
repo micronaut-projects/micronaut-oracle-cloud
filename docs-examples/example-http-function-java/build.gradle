@@ -15,7 +15,7 @@ dependencies {
     implementation project(":oraclecloud-function-http")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
-    runtimeOnly 'com.fnproject.fn:runtime:1.0.110'
+    runtimeOnly 'com.fnproject.fn:runtime:1.0.116'
     testImplementation project(":oraclecloud-function-http-test")
     testImplementation 'io.micronaut:micronaut-http-client'
     testImplementation("io.micronaut.test:micronaut-test-junit5")
