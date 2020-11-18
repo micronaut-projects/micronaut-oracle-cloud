@@ -17,9 +17,14 @@ package io.micronaut.oraclecloud.clients.processor;
 
 import com.squareup.javapoet.*;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.annotation.processing.AnnotationUtils;
+import io.micronaut.annotation.processing.GenericUtils;
+import io.micronaut.annotation.processing.ModelUtils;
 import io.micronaut.annotation.processing.PublicMethodVisitor;
+import io.micronaut.annotation.processing.visitor.JavaVisitorContext;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
 
 import javax.annotation.processing.*;
@@ -32,10 +37,7 @@ import javax.tools.Diagnostic;
 import javax.tools.JavaFileObject;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An annotation processor that generates the Oracle Cloud SDK integration
@@ -106,7 +108,21 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
             TypeElement typeElement = elements.getTypeElement(clientType.reflectionName());
             if (typeElement != null) {
-                typeElement.asType().accept(new PublicMethodVisitor<Object, Object>(types) {
+                ModelUtils modelUtils = new ModelUtils(elements, types) { };
+                GenericUtils genericUtils = new GenericUtils(elements, types, modelUtils) { };
+                AnnotationUtils annotationUtils = new AnnotationUtils(processingEnv, elements, messager, types, modelUtils, genericUtils, filer) { };
+                JavaVisitorContext visitorContext = new JavaVisitorContext(
+                        processingEnv,
+                        messager,
+                        elements,
+                        annotationUtils,
+                        types,
+                        modelUtils,
+                        genericUtils,
+                        filer,
+                        MutableConvertibleValues.of(new LinkedHashMap<>())
+                );
+                typeElement.asType().accept(new PublicMethodVisitor<Object, Object>(visitorContext) {
                     @Override
                     protected void accept(DeclaredType type, Element element, Object o) {
                         ExecutableElement ee = (ExecutableElement) element;

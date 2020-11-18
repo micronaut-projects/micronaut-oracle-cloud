@@ -8,7 +8,7 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-graal"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
-    api "io.micronaut.servlet:micronaut-servlet-core:2.0.0"
+    api "io.micronaut.servlet:micronaut-servlet-core:2.0.5"
     api project(":oraclecloud-function")
     implementation "io.micronaut:micronaut-http-netty"
     implementation "io.micronaut:micronaut-http-server"
@@ -19,3 +19,6 @@ dependencies {
     }
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
 }
+
+//compileTestGroovy.groovyOptions.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']
+//compileTestGroovy.groovyOptions.fork = true
