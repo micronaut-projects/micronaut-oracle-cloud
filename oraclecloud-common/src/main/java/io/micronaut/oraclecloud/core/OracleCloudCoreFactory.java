@@ -132,6 +132,12 @@ public class OracleCloudCoreFactory {
         return props.getClientBuilder();
     }
 
+    /**
+     * Calculate the tenant provider id.
+     *
+     * @param authenticationDetailsProvider The basic auth details provider
+     * @return The TenantId provider.
+     */
     @Singleton
     @Primary
     @Context
