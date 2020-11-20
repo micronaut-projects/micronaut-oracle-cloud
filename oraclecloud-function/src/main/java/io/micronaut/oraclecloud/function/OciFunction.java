@@ -25,6 +25,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.ReflectiveAccess;
 
+import java.util.Map;
 
 /**
  * Parent class that can be used for Oracle Cloud functions.
@@ -60,7 +61,13 @@ public abstract class OciFunction implements AutoCloseable {
     @ReflectiveAccess
     public final void setupContext(RuntimeContext ctx) {
         if (applicationContext == null) {
+            Map configuration = ctx.getConfiguration();
+            PropertySource props = PropertySource.of("fnConfig",
+                    (Map<String, Object>) configuration, PropertySource.PropertyConvention.ENVIRONMENT_VARIABLE
+            );
             applicationContext = newApplicationContextBuilder(ctx)
+                    .propertySources(props)
+                    .singletons(ctx)
                     .build()
                     .start();
         }
