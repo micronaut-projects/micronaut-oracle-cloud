@@ -1,10 +1,14 @@
 package io.micronaut.oraclecloud.function.http;
 
 import com.fnproject.fn.api.OutputEvent;
+import com.fnproject.fn.api.RuntimeContext;
+import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.core.io.Writable;
 import io.micronaut.http.*;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.cookie.Cookie;
+import org.junit.jupiter.api.Assertions;
 
 import java.awt.event.InputEvent;
 import java.io.IOException;
@@ -12,10 +16,29 @@ import java.io.IOException;
 
 @Controller("/parameters")
 public class ParametersController {
+    private final RuntimeContext runtimeContext;
+    private final String fnAppId;
+    private final String another;
+
+    public ParametersController(
+            RuntimeContext runtimeContext,
+            @Nullable @Property(name="fn.app.id") String fnAppId,
+            @Nullable @Property(name="foo.bar") String another) {
+        this.runtimeContext = runtimeContext;
+        this.fnAppId = fnAppId;
+        this.another = another;
+    }
 
     @Get("/uri/{name}")
     String uriParam(String name) {
         return "Hello " + name;
+    }
+
+    @Get("/context")
+    String context(RuntimeContext runtimeContext) {
+        Assertions.assertEquals(this.runtimeContext, runtimeContext);
+        Assertions.assertNotNull(this.runtimeContext.getMethod());
+        return "Got " + another + " context: " + fnAppId;
     }
 
     @Get("/query")

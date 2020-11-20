@@ -20,10 +20,13 @@ import com.fnproject.fn.testing.FnEventBuilder;
 import com.fnproject.fn.testing.FnResult;
 import com.fnproject.fn.testing.FnTestingRule;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Secondary;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.convert.format.MapFormat;
 import io.micronaut.core.io.socket.SocketUtils;
+import io.micronaut.core.naming.conventions.StringConvention;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpStatus;
@@ -46,6 +49,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -61,14 +65,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
 final class MockFnHttpServer implements EmbeddedServer {
     private final ApplicationContext applicationContext;
     private final boolean randomPort;
+    private final Map<String, String> testConfig;
     private int port;
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Server server;
 
     public MockFnHttpServer(
             ApplicationContext applicationContext,
-            HttpServerConfiguration httpServerConfiguration) {
+            HttpServerConfiguration httpServerConfiguration,
+            @Property(name = "fn.test.config")
+            @MapFormat(transformation = MapFormat.MapTransformation.FLAT, keyFormat = StringConvention.UNDER_SCORE_SEPARATED)
+            Map<String, String> testConfig) {
         this.applicationContext = applicationContext;
+        this.testConfig = testConfig;
         Optional<Integer> port = httpServerConfiguration.getPort();
         if (port.isPresent()) {
             this.port = port.get();
@@ -96,7 +105,7 @@ final class MockFnHttpServer implements EmbeddedServer {
             while (retryCount <= 3) {
                 try {
                     this.server = new Server(port);
-                    this.server.setHandler(new FnHandler());
+                    this.server.setHandler(new FnHandler(this.testConfig));
                     this.server.start();
                     break;
                 } catch (BindException e) {
@@ -180,8 +189,15 @@ final class MockFnHttpServer implements EmbeddedServer {
 
     private static class FnHandler extends AbstractHandler {
 
+        final Map<String, String> testConfig;
+
+        FnHandler(Map<String, String> testConfig) {
+            this.testConfig = testConfig;
+        }
+
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
             FnTestingRule fn = FnTestingRule.createDefault();
+            this.testConfig.forEach(fn::setConfig);
             fn.addSharedClassPrefix("org.slf4j.");
             fn.addSharedClassPrefix("com.sun.");
             String queryString = request.getQueryString();
