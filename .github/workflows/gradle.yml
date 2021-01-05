@@ -45,12 +45,6 @@ jobs:
           OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
           OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
-      - name: Publish Test Report
-        if: failure()
-        uses: scacap/action-surefire-report@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          report_paths: '**/build/test-results/test/TEST-*.xml'
       - name: Publish to JFrog OSS
         if: success() && github.event_name == 'push' && matrix.java == '8'
         env:
@@ -70,6 +64,5 @@ jobs:
         env:
           TARGET_REPOSITORY: ${{ steps.docs_target.outputs.value }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          BASE_BRANCH: ${{ env.githubBranch }}
           BRANCH: gh-pages
           FOLDER: build/docs
