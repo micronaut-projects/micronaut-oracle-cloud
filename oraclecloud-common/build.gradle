@@ -9,6 +9,7 @@ dependencies {
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }
+    testImplementation "io.micronaut:micronaut-runtime"
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
     testImplementation 'org.mockito:mockito-core:3.7.0'
 }
