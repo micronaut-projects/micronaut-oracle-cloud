@@ -25,7 +25,3 @@ mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 run {
     args("example.ListBucketsFunction::handleRequest")
 }
-
-nativeImage {
-    args('--report-unsupported-elements-at-runtime')
-}
