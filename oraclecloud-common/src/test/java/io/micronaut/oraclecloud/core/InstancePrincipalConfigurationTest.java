@@ -2,10 +2,11 @@ package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
+import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.util.StringUtils;
-import io.micronaut.test.annotation.MicronautTest;
 import io.micronaut.test.annotation.MockBean;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -27,11 +28,13 @@ public class InstancePrincipalConfigurationTest {
     @Test
     void testConfig() {
         assertTrue(configuration.isEnabled());
-        assertTrue(detailsProvider.get() instanceof InstancePrincipalsAuthenticationDetailsProvider);
+        BasicAuthenticationDetailsProvider basicAuthenticationDetailsProvider = detailsProvider.get();
+        BasicAuthenticationDetailsProvider target = ((InterceptedProxy<BasicAuthenticationDetailsProvider>) basicAuthenticationDetailsProvider).interceptedTarget();
+        assertTrue(target instanceof InstancePrincipalsAuthenticationDetailsProvider);
     }
 
-    @MockBean(InstancePrincipalsAuthenticationDetailsProvider.class)
-    InstancePrincipalsAuthenticationDetailsProvider mockBean() {
+    @MockBean(BasicAuthenticationDetailsProvider.class)
+    BasicAuthenticationDetailsProvider mockBean() {
         return Mockito.mock(InstancePrincipalsAuthenticationDetailsProvider.class);
     }
 }
