@@ -388,20 +388,6 @@
     "allDeclaredMethods":true
   },
   {
-    "name":"org.glassfish.jersey.internal.util.collection.ConcurrentHashMapV8",
-    "fields":[
-      {"name":"baseCount", "allowUnsafeAccess":true},
-      {"name":"cellsBusy", "allowUnsafeAccess":true},
-      {"name":"sizeCtl", "allowUnsafeAccess":true},
-      {"name":"transferIndex", "allowUnsafeAccess":true},
-      {"name":"transferOrigin", "allowUnsafeAccess":true}
-    ]
-  },
-  {
-    "name":"org.glassfish.jersey.internal.util.collection.ConcurrentHashMapV8$CounterCell",
-    "fields":[{"name":"value", "allowUnsafeAccess":true}]
-  },
-  {
     "name":"org.glassfish.jersey.jackson.JacksonFeature",
     "allDeclaredFields":true,
     "allDeclaredMethods":true,
@@ -542,8 +528,7 @@
     "methods":[
       {"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] },
       {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] },
-      {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] },
-      {"name":"invokeCleaner","parameterTypes":["java.nio.ByteBuffer"] }
+      {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] }
     ]
   },
   {

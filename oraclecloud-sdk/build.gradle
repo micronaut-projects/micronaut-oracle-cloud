@@ -4,7 +4,7 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     api project(":oraclecloud-common")
-    compileOnly("org.graalvm.nativeimage:svm")
+    compileOnly("org.graalvm.nativeimage:svm:2.3.0")
     compileOnly("io.reactivex.rxjava2:rxjava")
     // optional modules
     compileOnly group: 'com.oracle.oci.sdk', name: 'oci-java-sdk-full', version: ociVersion
