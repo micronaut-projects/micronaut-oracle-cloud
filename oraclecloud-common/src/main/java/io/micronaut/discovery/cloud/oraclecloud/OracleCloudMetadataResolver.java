@@ -151,7 +151,7 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
             }
         } catch (IOException ioe) {
             if (LOG.isErrorEnabled()) {
-                LOG.error("Error connecting to" + configuration.getUrl() + "reading instance metadata", ioe);
+                LOG.error("Error connecting to " + configuration.getUrl() + " reading instance metadata", ioe);
             }
         }
 

@@ -132,6 +132,11 @@ public class OracleCloudCoreFactory {
         return props.getClientBuilder();
     }
 
+    /**
+     * Provides a {@link TenancyIdProvider} bean.
+     * @param authenticationDetailsProvider The authentication provider.
+     * @return The tenancy id provider
+     */
     @Singleton
     @Primary
     @Context

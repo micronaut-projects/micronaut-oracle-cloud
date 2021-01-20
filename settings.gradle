@@ -1,5 +1,8 @@
 rootProject.name = 'oci'
 
+include 'oraclecloud-atp'
+include 'oraclecloud-atp-hikari-test'
+include 'oraclecloud-atp-ucp-test'
 include 'oraclecloud-bom'
 include 'oraclecloud-common'
 include 'oraclecloud-function'
