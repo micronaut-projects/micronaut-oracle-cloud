@@ -1,0 +1,14 @@
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+
+    api "io.micronaut:micronaut-inject:$micronautVersion"
+
+    testImplementation "io.micronaut.sql:micronaut-jdbc-hikari:$micronautSqlVersion"
+    testImplementation project(":oraclecloud-atp")
+
+    testImplementation("org.spockframework:spock-core:${spockVersion}") {
+        exclude module:'groovy-all'
+    }
+    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+}
