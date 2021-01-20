@@ -5,7 +5,9 @@ dependencies {
     compileOnly("org.graalvm.nativeimage:svm")
     compileOnly "io.micronaut:micronaut-runtime"
     api "io.micronaut:micronaut-inject"
-    api 'com.oracle.oci.sdk:oci-java-sdk-common'
+    api 'com.oracle.oci.sdk:oci-java-sdk-common', {
+        exclude group:'org.javassist', module:'javassist'
+    }
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
         exclude module:'groovy-all'
     }

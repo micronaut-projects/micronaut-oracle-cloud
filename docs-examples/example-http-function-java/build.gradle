@@ -13,7 +13,9 @@ dependencies {
     implementation 'io.micronaut:micronaut-validation'
     implementation project(":oraclecloud-sdk")
     implementation project(":oraclecloud-function-http")
-    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage"
+    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+        exclude module:'javassist'
+    }
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
     runtimeOnly 'com.fnproject.fn:runtime:1.0.116'
     testImplementation project(":oraclecloud-function-http-test")
@@ -30,5 +32,5 @@ run {
 }
 
 nativeImage {
-    args('--report-unsupported-elements-at-runtime', '--initialize-at-build-time=example')
+    args('--initialize-at-build-time=example')
 }

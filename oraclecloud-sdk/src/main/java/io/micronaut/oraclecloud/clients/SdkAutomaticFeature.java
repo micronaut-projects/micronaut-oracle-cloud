@@ -31,9 +31,11 @@ import io.micronaut.inject.BeanDefinitionReference;
 import net.minidev.json.JSONStyle;
 import net.minidev.json.reader.BeansWriter;
 import net.minidev.json.reader.JsonWriterI;
+import org.glassfish.hk2.utilities.DescriptorImpl;
 import org.glassfish.jersey.internal.ServiceConfigurationError;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
+import org.jvnet.hk2.internal.SystemDescriptor;
 
 import java.io.IOException;
 import java.lang.reflect.*;
@@ -207,6 +209,30 @@ final class JwtNotPresent implements Predicate<String> {
     }
 }
 
+// disable javassist proxies
+@TargetClass(org.jvnet.hk2.internal.Utilities.class)
+final class HK2UtilsReplacements {
+    @Substitute
+    public synchronized static boolean proxiesAvailable() {
+        return false;
+    }
+}
+@TargetClass(SystemDescriptor.class)
+final class SystemDescriptorReplacements {
+    @Substitute
+    public Boolean isProxiable() {
+        return false;
+    }
+}
+@TargetClass(DescriptorImpl.class)
+final class DescriptorImplReplacements {
+    @Substitute
+    public Boolean isProxiable() {
+        return false;
+    }
+}
+
+// replace ServiceFinder to not use custom classloader and javassist
 @TargetClass(className = "org.glassfish.jersey.internal.ServiceFinder")
 final class ServiceFinderReplacement<T> implements Iterable<T> {
 

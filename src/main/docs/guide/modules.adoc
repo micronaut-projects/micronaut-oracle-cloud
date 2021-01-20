@@ -20,6 +20,16 @@ NOTE: This module does not have a dependency on any one module. You should add t
 
 dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
 
+It is important to note that if you plan to build native images you also need to ensure the transitive `javassist` dependency is not included when adding dependencies on SDK modules using dependency exclusions. For example with Gradle:
+
+.Excluding javassist
+[source,groovy]
+----
+implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+    exclude module:'javassist'
+}
+----
+
 === micronaut-oraclecloud-function
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[version={ociVersion}]
