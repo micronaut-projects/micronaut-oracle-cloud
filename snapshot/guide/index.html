@@ -371,6 +371,17 @@ This module does not have a dependency on any one module. You should add these t
 </div>
 </p>
 </div>
+<div class="paragraph">
+<p>It is important to note that if you plan to build native images you also need to ensure the transitive <code>javassist</code> dependency is not included when adding dependencies on SDK modules using dependency exclusions. For example with Gradle:</p>
+</div>
+<div class="listingblock">
+<div class="title">Excluding javassist</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+    exclude module:'javassist'
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_micronaut_oraclecloud_function">micronaut-oraclecloud-function</h3>
