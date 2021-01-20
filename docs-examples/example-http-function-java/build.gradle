@@ -30,5 +30,5 @@ run {
 }
 
 nativeImage {
-    args('--report-unsupported-elements-at-runtime', '--initialize-at-build-time=example', '--verbose')
+    args('--report-unsupported-elements-at-runtime', '--initialize-at-build-time=example')
 }

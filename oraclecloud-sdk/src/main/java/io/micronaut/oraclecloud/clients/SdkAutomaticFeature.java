@@ -21,6 +21,8 @@ import com.oracle.svm.core.annotate.*;
 import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.graal.AutomaticFeatureUtils;
+import io.micronaut.core.io.service.ServiceDefinition;
+import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.InstantiationUtils;
@@ -29,6 +31,7 @@ import io.micronaut.inject.BeanDefinitionReference;
 import net.minidev.json.JSONStyle;
 import net.minidev.json.reader.BeansWriter;
 import net.minidev.json.reader.JsonWriterI;
+import org.glassfish.jersey.internal.ServiceConfigurationError;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
@@ -201,6 +204,57 @@ final class JwtNotPresent implements Predicate<String> {
     @Override
     public boolean test(String s) {
         return !ClassUtils.isPresent("io.micronaut.security.token.jwt.config.JwtConfiguration", getClass().getClassLoader());
+    }
+}
+
+@TargetClass(className = "org.glassfish.jersey.internal.ServiceFinder")
+final class ServiceFinderReplacement<T> implements Iterable<T> {
+
+    @Alias
+    private Class<T> serviceClass;
+    @Alias
+    private String serviceName;
+    @Alias
+    private ClassLoader classLoader;
+    @Alias
+    private boolean ignoreOnClassNotFound;
+
+    @Substitute
+    private ServiceFinderReplacement(
+            final Class<T> service,
+            final ClassLoader loader,
+            final boolean ignoreOnClassNotFound) {
+        this(service, service.getName(), loader, ignoreOnClassNotFound);
+    }
+
+    @Substitute
+    private ServiceFinderReplacement(
+            final Class<T> service,
+            final String serviceName,
+            final ClassLoader loader,
+            final boolean ignoreOnClassNotFound) {
+        this.serviceClass = service;
+        this.serviceName = serviceName;
+        this.classLoader = loader;
+        this.ignoreOnClassNotFound = ignoreOnClassNotFound;
+    }
+
+    @Override
+    @Substitute
+    public Iterator<T> iterator() {
+        return ServiceLoader.load(serviceClass).iterator();
+    }
+
+    @Substitute
+    public Class<T>[] toClassArray() throws ServiceConfigurationError {
+        SoftServiceLoader<T> loader = SoftServiceLoader.load(serviceClass, classLoader);
+        List<Class<T>> classes = new ArrayList<>();
+        for (ServiceDefinition<T> definition : loader) {
+            Class aClass = ClassUtils.forName(definition.getName(), classLoader).orElse(null);
+            classes.add(aClass);
+        }
+        //noinspection unchecked
+        return classes.toArray(new Class[0]);
     }
 }
 //CHECKSTYLE:ON
