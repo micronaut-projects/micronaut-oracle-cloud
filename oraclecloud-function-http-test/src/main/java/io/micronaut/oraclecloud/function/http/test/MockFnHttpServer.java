@@ -48,6 +48,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -104,7 +105,9 @@ final class MockFnHttpServer implements EmbeddedServer {
             while (retryCount <= 3) {
                 try {
                     this.server = new Server(port);
-                    this.server.setHandler(new FnHandler(this.testConfig));
+                    this.server.setHandler(new FnHandler(
+                            this.testConfig,
+                            this.applicationContext.getEnvironment().getActiveNames()));
                     this.server.start();
                     break;
                 } catch (BindException e) {
@@ -189,9 +192,11 @@ final class MockFnHttpServer implements EmbeddedServer {
     private static class FnHandler extends AbstractHandler {
 
         final Map<String, String> testConfig;
+        final Set<String> environments;
 
-        FnHandler(Map<String, String> testConfig) {
+        FnHandler(Map<String, String> testConfig, Set<String> environments) {
             this.testConfig = testConfig;
+            this.environments = environments;
         }
 
         public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -226,7 +231,16 @@ final class MockFnHttpServer implements EmbeddedServer {
             }
 
             eventBuilder.enqueue();
+
+            // forward environments to function
+            final String envs = System.getProperty("micronaut.environments");
+            System.setProperty("micronaut.environments", String.join(",", environments));
             fn.thenRun(HttpFunction.class, "handleRequest");
+
+            // re-set environment to previous value
+            if (envs != null) {
+                System.setProperty("micronaut.environments", envs);
+            }
             FnResult outputEvent = fn.getOnlyResult();
             HttpStatus httpStatus = outputEvent.getHeaders().get("Fn-Http-Status").map(s ->
                     HttpStatus.valueOf(Integer.parseInt(s))).orElseGet(() ->
