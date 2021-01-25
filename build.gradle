@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath "io.micronaut.build:micronaut-gradle-plugins:2.0.15"
-        classpath "io.micronaut.gradle:micronaut-gradle-plugin:1.2.0"
+        classpath "io.micronaut.gradle:micronaut-gradle-plugin:1.3.2"
     }
 }
 
