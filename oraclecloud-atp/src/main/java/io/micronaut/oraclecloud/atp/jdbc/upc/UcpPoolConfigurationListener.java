@@ -20,12 +20,13 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanIdentifier;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
 import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider;
-import io.micronaut.oraclecloud.atp.wallet.WalletArchive;
+import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource;
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 import oracle.ucp.jdbc.PoolDataSource;
 import org.slf4j.Logger;
@@ -44,15 +45,21 @@ import java.sql.SQLException;
  */
 @Singleton
 @Requires(classes = PoolDataSource.class)
+@Internal
 public class UcpPoolConfigurationListener implements BeanCreatedEventListener<PoolDataSource> {
 
-    public static final String ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE = "oracle.jdbc.pool.OracleDataSource";
+    private static final String ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE = "oracle.jdbc.pool.OracleDataSource";
     private static final Logger LOG = LoggerFactory.getLogger(UcpPoolConfigurationListener.class);
 
     private final OracleWalletArchiveProvider walletArchiveProvider;
     private final BeanLocator beanLocator;
 
-    public UcpPoolConfigurationListener(OracleWalletArchiveProvider walletArchiveProvider, BeanLocator beanLocator) {
+    /**
+     * Default constructor.
+     * @param walletArchiveProvider The wallet archive provider
+     * @param beanLocator The bean locator
+     */
+    protected UcpPoolConfigurationListener(OracleWalletArchiveProvider walletArchiveProvider, BeanLocator beanLocator) {
         this.walletArchiveProvider = walletArchiveProvider;
         this.beanLocator = beanLocator;
     }
@@ -62,7 +69,8 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Po
         PoolDataSource bean = event.getBean();
 
         BeanIdentifier beanIdentifier = event.getBeanIdentifier();
-        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = beanLocator.findBean(AutonomousDatabaseConfiguration.class,
+        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = beanLocator
+                .findBean(AutonomousDatabaseConfiguration.class,
                 Qualifiers.byName(beanIdentifier.getName())).orElse(null);
 
         if (autonomousDatabaseConfiguration == null) {
@@ -71,10 +79,11 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Po
             }
         } else {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("AutonomousDatabaseConfiguration found for [" + beanIdentifier.getName() + "] datasource");
+                LOG.trace("Retrieving Oracle Wallet for DataSource [" + beanIdentifier.getName() + "]");
             }
 
-            WalletArchive walletArchive = walletArchiveProvider.loadWalletArchive(autonomousDatabaseConfiguration);
+            CanConfigureOracleDataSource walletArchive = walletArchiveProvider
+                                    .loadWalletArchive(autonomousDatabaseConfiguration);
 
             try {
                 if (StringUtils.isEmpty(bean.getConnectionFactoryClassName())) {

@@ -15,7 +15,10 @@
  */
 package io.micronaut.oraclecloud.atp.wallet.datasource;
 
+import oracle.jdbc.datasource.OracleCommonDataSource;
+
 import javax.net.ssl.SSLContext;
+import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
@@ -23,7 +26,7 @@ import java.util.Arrays;
  *
  * @param <T> The concrete sub-type of this type
  */
-public class OracleDataSourceAttributesBase<T extends OracleDataSourceAttributes>
+class OracleDataSourceAttributesBase<T extends OracleDataSourceAttributes>
         implements OracleDataSourceAttributes<T> {
     protected SSLContext sslContext;
     protected String url;
@@ -90,6 +93,33 @@ public class OracleDataSourceAttributesBase<T extends OracleDataSourceAttributes
     private void erase(char[] text) {
         if (text != null) {
             Arrays.fill(text, '*');
+        }
+    }
+
+    static class Configurator<T extends OracleCommonDataSource>
+            extends OracleDataSourceAttributesBase<Configurator<T>>
+            implements OracleDataSourceAttributes<Configurator<T>> {
+
+        private final T dataSource;
+
+        Configurator(final T dataSource) {
+            this.dataSource = dataSource;
+        }
+
+        public T configure() throws SQLException {
+            if (sslContext != null) {
+                dataSource.setSSLContext(sslContext);
+            }
+            if (url != null) {
+                dataSource.setURL(url);
+            }
+            if (user != null) {
+                dataSource.setUser(url);
+            }
+            if (password != null) {
+                dataSource.setPassword(new String(password));
+            }
+            return dataSource;
         }
     }
 }

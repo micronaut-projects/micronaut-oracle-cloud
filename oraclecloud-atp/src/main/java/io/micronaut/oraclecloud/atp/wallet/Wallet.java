@@ -33,7 +33,7 @@ import java.util.Enumeration;
 import java.util.Map;
 
 /** Represents an Oracle {@code cwallet.sso} or {@code ewallet.p12} wallet */
-public class Wallet implements CanConfigureOracleDataSource {
+final class Wallet implements CanConfigureOracleDataSource {
 
     private static final String TLS_PROTOCOL = "TLS";
     private static final String CONNECT_STRING = OracleKeyStoreSpi.CREDENTIAL_CONNECT_STRING;

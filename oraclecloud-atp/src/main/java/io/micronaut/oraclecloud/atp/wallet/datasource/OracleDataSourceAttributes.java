@@ -17,12 +17,15 @@ package io.micronaut.oraclecloud.atp.wallet.datasource;
 
 
 
+import io.micronaut.core.annotation.Internal;
+
 import javax.net.ssl.SSLContext;
 
 /**
  * Represents the attributes of a {@link javax.sql.DataSource} that a {@link io.micronaut.oraclecloud.atp.wallet.Wallet} can configure.
  * Only the attributes that a io.micronaut.oraclecloud.adb.wallet can influence are enumerated in this type.
  */
+@Internal
 public interface OracleDataSourceAttributes<T extends OracleDataSourceAttributes> {
     /**
      * The configured {@link SSLContext} if any
