@@ -15,28 +15,22 @@
  */
 package io.micronaut.oraclecloud.atp.wallet;
 
-
-import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSources;
-
 /**
  * Entrypoint to the Wallet related API
  *
  * @see #instance()
  * @see #wallets()
- * @see #oracleDataSources()
  */
 public class WalletModule {
     private static final WalletModule INSTANCE =
-            new WalletModule(new ByteStreams(), OracleDataSources.instance());
+            new WalletModule(new ByteStreams());
     private final ByteStreams streams;
     private final OracleWallets oracleWallets;
     private final ZipArchives zipArchives;
     private final Wallets wallets;
-    private final OracleDataSources oracleDataSources;
 
-    private WalletModule(final ByteStreams streams, final OracleDataSources oracleDataSources) {
+    private WalletModule(final ByteStreams streams) {
         this.streams = streams;
-        this.oracleDataSources = oracleDataSources;
         this.oracleWallets = new OracleWallets(streams());
         this.zipArchives = new ZipArchives(streams);
         this.wallets = new Wallets(streams(), oracleWallets(), zipArchives());
@@ -70,14 +64,5 @@ public class WalletModule {
      */
     public Wallets wallets() {
         return wallets;
-    }
-
-    /**
-     * Access the {@link OracleDataSources} service
-     *
-     * @return OracleDataSources instance
-     */
-    public OracleDataSources oracleDataSources() {
-        return oracleDataSources;
     }
 }

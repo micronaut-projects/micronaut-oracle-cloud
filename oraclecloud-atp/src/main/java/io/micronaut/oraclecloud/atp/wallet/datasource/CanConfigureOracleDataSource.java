@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.atp.wallet.datasource;
 
+import io.micronaut.core.annotation.Internal;
 import oracle.jdbc.datasource.OracleCommonDataSource;
 
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.sql.SQLException;
  * A trait interface for types that can contribute to the configuration of an {@link
  * OracleDataSourceAttributes} instance
  */
+@Internal
 public interface CanConfigureOracleDataSource {
 
     /**
@@ -34,7 +36,7 @@ public interface CanConfigureOracleDataSource {
      * @throws IOException if an error occurs reading the state embodied in this instance
      */
     default void configure(final OracleCommonDataSource ods) throws SQLException, IOException {
-        this.configure(OracleDataSources.instance().configurator(ods)).configure();
+        this.configure(new OracleDataSourceAttributesBase.Configurator<>(ods)).configure();
     }
 
     /**

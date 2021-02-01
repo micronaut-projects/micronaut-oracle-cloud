@@ -32,22 +32,16 @@ import javax.validation.constraints.NotBlank;
 @Context
 public class AutonomousDatabaseConfiguration {
 
-    String name;
+    @NotBlank
+    private String ocid;
 
     @NotBlank
-    String ocid;
+    private String walletPassword;
+
+    private GenerateAutonomousDatabaseWalletDetails.GenerateType walletType;
 
     @NotBlank
-    String walletPassword;
-
-    GenerateAutonomousDatabaseWalletDetails.GenerateType walletType;
-
-    @NotBlank
-    String serviceAlias;
-
-    public AutonomousDatabaseConfiguration(@Parameter String name) {
-        this.name = name;
-    }
+    private String serviceAlias;
 
     /**
      * @return autonomous database ocid
@@ -104,20 +98,5 @@ public class AutonomousDatabaseConfiguration {
      */
     public void setServiceAlias(String serviceAlias) {
         this.serviceAlias = serviceAlias;
-    }
-
-    /**
-     *
-     * @return A user provided name to identify the datasource
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name A user provided name to identify the datasource
-     */
-    public void setName(String name) {
-        this.name = name;
     }
 }
