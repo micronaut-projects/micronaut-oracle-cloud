@@ -3,6 +3,7 @@ package io.micronaut.oraclecloud.atp.jdbc.hikari
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
+import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -10,28 +11,30 @@ import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.ResultSet
 
+@Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") &&
+        System.getenv("ATP_SERVICE_ALIAS") && System.getenv("ATP_OCID") })
 class HikariPoolConfigurationListenerSpec extends Specification {
 
     @Shared
-    String userName = "mnuser0"
+    String userName = "${System.getenv("ATP_USER")}"
 
     @Shared
-    String password = "0xSc6eNP2ByomnlcHpqN1"
+    String password = "${System.getenv("ATP_PASS")}"
 
     @Shared
-    String serviceAlias = "PROJECTOR8534_LOW"
+    String serviceAlias = "${System.getenv("ATP_SERVICE_ALIAS")}"
 
     @Shared
-    String atpId = "ocid1.autonomousdatabase.oc1.phx.abyhqljtjfv7x4przibqqapvr4snlafaw5k3w6gsk5wjotjnqnmdgi6an2hq"
+    String atpId = "${System.getenv("ATP_OCID")}"
 
     def "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "datasources.default.ocid"           : atpId,
-                "datasources.default.username"       : "mnuser0",
+                "datasources.default.username"       : userName,
                 "datasources.default.password"       : password,
                 "datasources.default.serviceAlias"   : serviceAlias,
-                "datasources.default.walletPassword" : "Vajco.123"
+                "datasources.default.walletPassword" : "FooBar.123"
         ], Environment.ORACLE_CLOUD)
 
 
