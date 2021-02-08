@@ -45,3 +45,6 @@ jobs:
           OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
           OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
+          ATP_OCID: ${{ secrets.ATP_OCID }}
+          ATP_USER: ${{ secrets.ATP_USER }}
+          ATP_PASS: ${{ secrets.ATP_PASS }}
