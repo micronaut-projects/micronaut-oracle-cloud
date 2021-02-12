@@ -10,7 +10,7 @@ import com.oracle.bmc.filestorage.FileStorageAsyncClient;
 import com.oracle.bmc.filestorage.FileStorageClient;
 import com.oracle.bmc.functions.FunctionsInvokeAsyncClient;
 import com.oracle.bmc.functions.FunctionsInvokeClient;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
