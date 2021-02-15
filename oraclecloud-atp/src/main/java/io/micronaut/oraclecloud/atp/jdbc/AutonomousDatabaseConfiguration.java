@@ -40,7 +40,6 @@ public class AutonomousDatabaseConfiguration {
 
     private GenerateAutonomousDatabaseWalletDetails.GenerateType walletType;
 
-    @NotBlank
     private String serviceAlias;
 
     /**

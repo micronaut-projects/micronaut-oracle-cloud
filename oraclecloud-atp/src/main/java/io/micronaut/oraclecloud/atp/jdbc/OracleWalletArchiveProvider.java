@@ -18,10 +18,15 @@ package io.micronaut.oraclecloud.atp.jdbc;
 import com.oracle.bmc.database.Database;
 import com.oracle.bmc.database.model.GenerateAutonomousDatabaseWalletDetails;
 import com.oracle.bmc.database.requests.GenerateAutonomousDatabaseWalletRequest;
+import com.oracle.bmc.database.requests.GetAutonomousDatabaseRequest;
 import com.oracle.bmc.database.responses.GenerateAutonomousDatabaseWalletResponse;
+import com.oracle.bmc.database.responses.GetAutonomousDatabaseResponse;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.atp.wallet.WalletModule;
 import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -34,6 +39,8 @@ import java.io.IOException;
  */
 @Singleton
 public class OracleWalletArchiveProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(OracleWalletArchiveProvider.class);
 
     private final Database databaseClient;
 
@@ -62,13 +69,26 @@ public class OracleWalletArchiveProvider {
                         .build()
         );
 
-
         try {
+            String serviceAlias = autonomousDatabaseConfiguration.getServiceAlias();
+            if (StringUtils.isEmpty(serviceAlias)) {
+                final GetAutonomousDatabaseResponse getAutonomousDatabaseResponse = databaseClient.getAutonomousDatabase(
+                        GetAutonomousDatabaseRequest.builder()
+                                .autonomousDatabaseId(autonomousDatabaseConfiguration.getOcid())
+                                .build()
+                );
+                final String dbName = getAutonomousDatabaseResponse.getAutonomousDatabase().getDbName();
+                serviceAlias = String.format("%s_high", dbName);
+                if (LOG.isInfoEnabled()) {
+                    LOG.info("Using default serviceAlias: " + serviceAlias);
+                }
+            }
+
             return WalletModule.instance()
                     .wallets()
                     .archives()
                     .read(walletResponse.getInputStream())
-                    .with(autonomousDatabaseConfiguration.getServiceAlias());
+                    .with(serviceAlias);
         } catch (IOException e) {
             throw new ConfigurationException("Error creating Oracle Wallet from the response: " + e.getMessage(), e);
         }
