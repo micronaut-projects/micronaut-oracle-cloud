@@ -43,6 +43,7 @@ import java.util.Properties;
  */
 @Singleton
 @Requires(classes = DatasourceConfiguration.class)
+@Requires(sdk = Requires.Sdk.JAVA, value = "11")
 @Internal
 public class HikariPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration> {
 

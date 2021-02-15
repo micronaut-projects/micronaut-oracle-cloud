@@ -45,6 +45,7 @@ import java.sql.SQLException;
  */
 @Singleton
 @Requires(classes = PoolDataSource.class)
+@Requires(sdk = Requires.Sdk.JAVA, value = "11")
 @Internal
 public class UcpPoolConfigurationListener implements BeanCreatedEventListener<PoolDataSource> {
 
