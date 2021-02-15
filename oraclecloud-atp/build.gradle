@@ -10,7 +10,7 @@ dependencies {
     compileOnly "io.micronaut.sql:micronaut-jdbc-ucp:$micronautSqlVersion"
 
     api "com.oracle.database.jdbc:ojdbc11:$ojdbcVersion"
-    api "com.oracle.oci.sdk:oci-java-sdk-database"
+    api "com.oracle.oci.sdk:oci-java-sdk-database:$ociVersion"
     api "com.oracle.database.xml:xdb6:18.3.0.0"
     implementation "com.oracle.database.security:oraclepki:$ojdbcVersion"
     implementation "com.oracle.database.security:osdt_core:$ojdbcVersion"
