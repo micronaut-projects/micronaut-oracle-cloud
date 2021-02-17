@@ -10,6 +10,7 @@ include 'oraclecloud-common'
 include 'oraclecloud-function'
 include 'oraclecloud-function-http'
 include 'oraclecloud-function-http-test'
+include 'oraclecloud-monitoring'
 include 'oraclecloud-sdk'
 include 'oraclecloud-sdk-processor'
 
