@@ -57,6 +57,8 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#httpFunctions"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
                                 
+                                <div class="toc-item" style="margin-left:0"><a href="#autonomousDatabase"><strong>8</strong><span>Oracle Autonomous Database</span></a></div>
+                                
                             </div>
                         </div>
                     </li>
@@ -100,6 +102,8 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-httpFunctions"><a href="#httpFunctions"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
         
+        <div class="toc-item" style="margin-left:0px" id="toc-item-autonomousDatabase"><a href="#autonomousDatabase"><strong>8</strong><span>Oracle Autonomous Database</span></a></div>
+        
         </div>
     </div>
     
@@ -122,7 +126,7 @@
 
 
 <div class="paragraph">
-<p>This module provides integration between Micronaut and the Oracle Cloud SDK by giving you the ability to easily inject SDK clients into your Micronaut services and controllers. In addition to supporting the SDK&#8217;s blocking clients, the module provides reactive clients that use RxJava to provide async alternatives to the blocking clients in the SDK (an improvement upon the SDK&#8217;s 'out-of-the-box' aysnc clients). This module also includes support for Oracle Cloud (serverless) Functions.</p>
+<p>This module provides integration between Micronaut and the Oracle Cloud SDK by giving you the ability to easily inject SDK clients into your Micronaut services and controllers. In addition to supporting the SDK&#8217;s blocking clients, the module provides reactive clients that use RxJava to provide async alternatives to the blocking clients in the SDK (an improvement upon the SDK&#8217;s 'out-of-the-box' aysnc clients). This module also includes support for Oracle Cloud (serverless) Functions and Oracle Cloud Autonomous Database.</p>
 </div>
 
 <h1 id="quickStart"><a class="anchor" href="#quickStart"></a>2 Quick Start</h1>
@@ -427,6 +431,41 @@ This module does not have a dependency on any one module. You should add these t
 </div>
 <div class="paragraph">
 <p>Provides the <a href="../api/io/micronaut/oci/function/http/HttpFunction.html">HttpFunction</a> class that can be used as a handler to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oraclecloud_atp">micronaut-oraclecloud-atp</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides support for configuring the data source connection for the UCP and HikariCP connection pools by specifying Oracle Cloud Autonomous Database configuration.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The module generates the OracleWallet on startup.
+</td>
+</tr>
+</table>
 </div>
 </div>
 
@@ -948,6 +987,141 @@ The path prefix must match the path you used in your controller (IE: <code>@Cont
 <img src="../img/deployment-invocation.png" alt="Create Gateway Button">
 </div>
 </div>
+</div>
+
+<h1 id="autonomousDatabase"><a class="anchor" href="#autonomousDatabase"></a>8 Oracle Autonomous Database</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master
+/src/main/docs/guide/autonomousDatabase.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Oracle Cloud Autonomous Database connection information and credentials are stored in the <a href="https://docs.oracle.com/en-us/iaas/Content/Database/Tasks/adbconnecting.htm">Oracle Wallet</a>.</p>
+</div>
+<div class="paragraph">
+<p>Micronaut can automatically generate and download the Wallet and configure the data source.</p>
+</div>
+<div class="paragraph">
+<p>First you must configure the <a href="#authentication">authentication provider</a>.</p>
+</div>
+<div class="paragraph">
+<p>Then simply add a dependency to one of the Micronaut connection pool implementation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Automated configuration is currently supported only for the HikariCP and UCP connection pool.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtime(<span class="hljs-string">"io.micronaut.sql:micronaut-jdbc-ucp")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.sql&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-jdbc-ucp&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtime(<span class="hljs-string">"io.micronaut.sql:micronaut-jdbc-hikari")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.sql&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-jdbc-hikari&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Note that <code>oraclecloud-atp</code> module is compatible with Java 11+.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To use automated data source configuration from the Wallet, provide a configuration similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="title">application.yaml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">datasources:
+  default:
+    ocid: ocid1.autonomousdatabase.oc1..... <i class="conum" data-value="1"></i><b>(1)</b>
+    walletPassword: micronaut.1 <i class="conum" data-value="2"></i><b>(2)</b>
+    username: foo <i class="conum" data-value="3"></i><b>(3)</b>
+    password: bar <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>autonomous database id</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>password to encrypt the keys inside the wallet, that  must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>database username</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>database password</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>username</code> and <code>password</code> are not automatically generated and must be created in advance.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Module uses <code>&lt;db_name&gt;_high</code> as a default service alias. This can be overriden by <code>serviceAlias</code> property.</p>
+</div>
+<div class="paragraph">
+<p>The wallet is of type <code>SINGLE</code>. Use <code>walletType</code> property to configure different type. See other valid options at <a href="https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails" class="bare">https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails</a>.</p>
 </div>
 
     </div>
