@@ -36,6 +36,7 @@ import static io.micronaut.oraclecloud.core.InstancePrincipalConfiguration.PREFI
 public class InstancePrincipalConfiguration implements Toggleable {
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.instance-principal";
     private boolean enabled = true;
+    private String metadataBaseUrl;
 
     @ConfigurationBuilder(prefixes = "")
     private final InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder builder =
@@ -54,9 +55,30 @@ public class InstancePrincipalConfiguration implements Toggleable {
     }
 
     /**
+     * Get custom metadata base url.
+     *
+     * @return metadata base url
+     */
+    public String getMetadataBaseUrl() {
+        return metadataBaseUrl;
+    }
+
+    /**
+     * Sets custom metadata base url.
+     *
+     * @param metadataBaseUrl custom metadata url
+     */
+    public void setMetadataBaseUrl(String metadataBaseUrl) {
+        this.metadataBaseUrl = metadataBaseUrl;
+    }
+
+    /**
      * @return The builder
      */
     public InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder getBuilder() {
+        if (metadataBaseUrl != null) {
+            builder.metadataBaseUrl(metadataBaseUrl);
+        }
         return builder;
     }
 }

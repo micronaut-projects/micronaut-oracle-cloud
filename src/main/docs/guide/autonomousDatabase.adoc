@@ -1,0 +1,37 @@
+Oracle Cloud Autonomous Database connection information and credentials are stored in the https://docs.oracle.com/en-us/iaas/Content/Database/Tasks/adbconnecting.htm[Oracle Wallet].
+
+Micronaut can automatically generate and download the Wallet and configure the data source.
+
+First you must configure the <<authentication, authentication provider>>.
+
+Then simply add a dependency to one of the Micronaut connection pool implementation.
+
+NOTE: Automated configuration is currently supported only for the HikariCP and UCP connection pool.
+
+dependency:micronaut-jdbc-ucp[groupId="io.micronaut.sql", scope="runtime"]
+
+dependency:micronaut-jdbc-hikari[groupId="io.micronaut.sql", scope="runtime"]
+
+NOTE: Note that `oraclecloud-atp` module is compatible with Java 11+.
+
+To use automated data source configuration from the Wallet, provide a configuration similar to the following:
+[source,yaml]
+.application.yaml
+----
+datasources:
+  default:
+    ocid: ocid1.autonomousdatabase.oc1..... // <1>
+    walletPassword: micronaut.1 // <2>
+    username: foo // <3>
+    password: bar // <4>
+----
+<1> autonomous database id
+<2> password to encrypt the keys inside the wallet, that  must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character
+<3> database username
+<4> database password
+
+NOTE: The `username` and `password` are not automatically generated and must be created in advance.
+
+Module uses `<db_name>_high` as a default service alias. This can be overriden by `serviceAlias` property.
+
+The wallet is of type `SINGLE`. Use `walletType` property to configure different type. See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].

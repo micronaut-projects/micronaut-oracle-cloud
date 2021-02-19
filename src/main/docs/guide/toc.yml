@@ -5,6 +5,7 @@ modules: Available Modules
 rxjava: RxJava 2 Support
 functions: Oracle Functions (Serverless)
 httpFunctions: Oracle Functions HTTP (Serverless)
+autonomousDatabase: Oracle Autonomous Database
 
 
 

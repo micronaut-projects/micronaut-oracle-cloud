@@ -19,4 +19,8 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 }
 
+test {
+    exclude '**/*Test$Intercepted*'
+}
+
 mainClassName = "example.Application"

@@ -1,5 +1,10 @@
 rootProject.name = 'oci'
 
+if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
+    include 'oraclecloud-atp'
+    include 'oraclecloud-atp-hikari-test'
+    include 'oraclecloud-atp-ucp-test'
+}
 include 'oraclecloud-bom'
 include 'oraclecloud-common'
 include 'oraclecloud-function'

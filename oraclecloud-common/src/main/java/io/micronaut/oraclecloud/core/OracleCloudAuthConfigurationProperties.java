@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.core;
 
+import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
@@ -75,6 +76,15 @@ public class OracleCloudAuthConfigurationProperties {
     public void setPassphrase(String passphrase) {
         if (passphrase != null) {
             this.builder.passPhrase(passphrase);
+        }
+    }
+
+    /**
+     * @param region Sets the region
+     */
+    public void setRegion(String region) {
+        if (region != null) {
+            this.builder.region(Region.fromRegionCode(region));
         }
     }
 }
