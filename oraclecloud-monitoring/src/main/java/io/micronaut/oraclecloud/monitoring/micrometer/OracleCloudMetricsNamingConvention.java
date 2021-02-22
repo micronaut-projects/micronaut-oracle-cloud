@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  *
  * @author Pavol Gressa
  * @see <a href="https://docs.oracle.com/en-us/iaas/tools/java/1.32.0/com/oracle/bmc/monitoring/model/MetricDataDetails.html">MetricDataDetails</a>
- * @since 2.3
+ * @since 1.2
  */
 public class OracleCloudMetricsNamingConvention implements NamingConvention {
 

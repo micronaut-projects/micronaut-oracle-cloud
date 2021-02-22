@@ -32,6 +32,11 @@ class OracleCloudMeterRegistrySpec extends Specification {
         }
 
         @Override
+        String applicationName() {
+            return "appName"
+        }
+
+        @Override
         String get(String key) {
             return null
         }

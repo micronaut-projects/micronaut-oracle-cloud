@@ -24,9 +24,9 @@ import java.util.List;
  * {@link AbstractPartition} for {@link MetricDataDetails}.
  *
  * @author Pavol Gressa
- * @since 2.3
+ * @since 1.2
  */
-public class MetricDataDetailsPartition extends AbstractPartition<MetricDataDetails> {
+class MetricDataDetailsPartition extends AbstractPartition<MetricDataDetails> {
 
     MetricDataDetailsPartition(List<MetricDataDetails> list, int partitionSize) {
         super(list, partitionSize);
@@ -35,5 +35,4 @@ public class MetricDataDetailsPartition extends AbstractPartition<MetricDataDeta
     static List<List<MetricDataDetails>> partition(List<MetricDataDetails> list, int partitionSize) {
         return new MetricDataDetailsPartition(list, partitionSize);
     }
-
 }

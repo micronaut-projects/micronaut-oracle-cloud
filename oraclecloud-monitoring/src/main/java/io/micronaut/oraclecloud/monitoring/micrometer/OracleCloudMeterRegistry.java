@@ -41,7 +41,7 @@ import static java.util.stream.StreamSupport.stream;
  * {@link StepMeterRegistry} for Oracle Cloud Monitoring.
  *
  * @author Pavol Gressa
- * @since 2.5
+ * @since 1.2
  */
 public class OracleCloudMeterRegistry extends StepMeterRegistry {
 
@@ -66,7 +66,7 @@ public class OracleCloudMeterRegistry extends StepMeterRegistry {
         this.oracleCloudConfig = oracleCloudConfig;
 
         config().namingConvention(new OracleCloudMetricsNamingConvention());
-        config().commonTags("application", "micronaut");
+        config().commonTags("application", oracleCloudConfig.applicationName());
         start(threadFactory);
     }
 
@@ -76,7 +76,7 @@ public class OracleCloudMeterRegistry extends StepMeterRegistry {
             final PostMetricDataDetails.Builder builder = PostMetricDataDetails.builder()
                     .metricData(batch);
             if (oracleCloudConfig.batchAtomicity() != null) {
-                builder.batchAtomicity(PostMetricDataDetails.BatchAtomicity.create(oracleCloudConfig.batchAtomicity()));
+                builder.batchAtomicity(oracleCloudConfig.batchAtomicity());
             }
 
             try {

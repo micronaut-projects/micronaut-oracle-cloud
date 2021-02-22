@@ -2,40 +2,58 @@ package io.micronaut.oraclecloud.monitoring
 
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import io.micrometer.core.instrument.Counter
+import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
+import io.micronaut.context.env.Environment
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
-import spock.lang.AutoCleanup
 import spock.lang.Specification
 
-import javax.inject.Inject
 
-@MicronautTest
+@MicronautTest(startApplication = false)
+@Property(name = "micronaut.metrics.export.oraclecloudmonitoring.enabled", value = "false")
 @Requires(beans = AuthenticationDetailsProvider.class)
-@Property(name="micronaut.metrics.enabled", value = "true")
-@Property(name="micronaut.metrics.export.oraclecloudmonitoring.enabled", value = "true")
-@Property(name="micronaut.metrics.export.oraclecloudmonitoring.namespace", value = "micronaut_test")
-@Property(name="micronaut.metrics.export.oraclecloudmonitoring.step", value = "1s")
 class OracleCloudMeterRegistryFactoryTest extends Specification {
 
-    @AutoCleanup
-    @Inject
-    OracleCloudMeterRegistry cloudMeterRegistry
-
-    def "test it publish metrics to ingestion telemetry endpoint"(){
+    def "test it not loads when disabled"() {
         given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloudmonitoring.enabled": "false",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        !context.containsBean(OracleCloudMeterRegistry.class)
+    }
+
+    def "test it loads by default"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloudmonitoring.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloudmonitoring.applicationName": "micronaut_test"
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        context.containsBean(OracleCloudMeterRegistry.class)
+    }
+
+    def "test it publish metrics to ingestion telemetry endpoint"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloudmonitoring.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloudmonitoring.applicationName": "micronaut_test"
+        ], Environment.ORACLE_CLOUD)
+        OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class)
+
+        when:
         Counter counter = Counter.builder("micronaut.test.counter").
                 tag("test", "test").
                 description("Testing of micronaut-oraclecloud-monitoring module").
                 register(cloudMeterRegistry)
-
-        when:
         counter.increment(5.0)
         sleep(2000)
 
         then:
         noExceptionThrown()
     }
-
 }
