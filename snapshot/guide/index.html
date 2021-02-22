@@ -439,14 +439,14 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-atp")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
-    &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-atp&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -1006,7 +1006,54 @@ The path prefix must match the path you used in your controller (IE: <code>@Cont
 <p>Micronaut can automatically generate and download the Wallet and configure the data source.</p>
 </div>
 <div class="paragraph">
-<p>First you must configure the <a href="#authentication">authentication provider</a>.</p>
+<p>First you need the correct version of the Oracle Database driver and required modules. To ensure you are using the right version apply the 21.1.0.0 or above Oracle Database BOM with Gradle:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">implementation platform("com.oracle.database.jdbc:ojdbc-bom:21.1.0.0")</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">  &lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;
+        &lt;groupId&gt;com.oracle.database.jdbc&lt;/groupId&gt;
+        &lt;artifactId&gt;ojdbc-bom&lt;/artifactId&gt;
+        &lt;version&gt;21.1.0.0&lt;/version&gt;
+        &lt;type&gt;pom&lt;/type&gt;
+        &lt;scope&gt;import&lt;/scope&gt;
+      &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+  &lt;/dependencyManagement&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Secondly you need to add a dependency on the <code>micronaut-oraclecloud-atp</code> module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtime(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-atp")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-atp&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Then you must configure the <a href="#authentication">authentication provider</a>.</p>
 </div>
 <div class="paragraph">
 <p>Then simply add a dependency to one of the Micronaut connection pool implementation.</p>
@@ -1042,6 +1089,9 @@ Automated configuration is currently supported only for the HikariCP and UCP con
 </p>
 </div>
 <div class="paragraph">
+<p>Or:</p>
+</div>
+<div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
@@ -1066,7 +1116,7 @@ Automated configuration is currently supported only for the HikariCP and UCP con
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Note that <code>oraclecloud-atp</code> module is compatible with Java 11+.
+Note that <code>micronaut-oraclecloud-atp</code> module is compatible with Java 11+.
 </td>
 </tr>
 </table>
