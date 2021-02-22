@@ -31,7 +31,7 @@ jobs:
         run: gu install native-image
       - name: Build with Gradle
         run: |
-          if ./gradlew tasks --all | grep -w "testNativeImage"
+          if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
           then
             ./gradlew check testNativeImage --continue --no-daemon
           else
