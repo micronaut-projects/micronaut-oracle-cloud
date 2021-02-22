@@ -32,19 +32,19 @@ implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
 
 === micronaut-oraclecloud-function
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[]
 
 Provides the api:oci.function.OciFunction[] super class that you can subclass to enable the ability to write Oracle Cloud Functions in Micronaut that can utilize Micronaut dependency injection services.
 
 === micronaut-oraclecloud-function-http
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-http[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-http[]
 
 Provides the api:oci.function.http.HttpFunction[] class that can be used as a handler to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.
 
 === micronaut-oraclecloud-atp
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-atp[]
 
 Provides support for configuring the data source connection for the UCP and HikariCP connection pools by specifying Oracle Cloud Autonomous Database configuration.
 

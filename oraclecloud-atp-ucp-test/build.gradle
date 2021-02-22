@@ -4,6 +4,7 @@ dependencies {
 
     api "io.micronaut:micronaut-inject:$micronautVersion"
 
+    testImplementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
     testImplementation "io.micronaut.sql:micronaut-jdbc-ucp:$micronautSqlVersion"
     testImplementation project(":oraclecloud-atp")
 
