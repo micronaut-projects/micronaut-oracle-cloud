@@ -2,7 +2,35 @@ Oracle Cloud Autonomous Database connection information and credentials are stor
 
 Micronaut can automatically generate and download the Wallet and configure the data source.
 
-First you must configure the <<authentication, authentication provider>>.
+First you need the correct version of the Oracle Database driver and required modules. To ensure you are using the right version apply the 21.1.0.0 or above Oracle Database BOM with Gradle:
+
+[source,groovy]
+----
+implementation platform("com.oracle.database.jdbc:ojdbc-bom:21.1.0.0")
+----
+
+Or with Maven:
+
+[source,xml]
+----
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc-bom</artifactId>
+        <version>21.1.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+----
+
+Secondly you need to add a dependency on the `micronaut-oraclecloud-atp` module:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-atp[scope="runtime"]
+
+Then you must configure the <<authentication, authentication provider>>.
 
 Then simply add a dependency to one of the Micronaut connection pool implementation.
 
@@ -10,9 +38,11 @@ NOTE: Automated configuration is currently supported only for the HikariCP and U
 
 dependency:micronaut-jdbc-ucp[groupId="io.micronaut.sql", scope="runtime"]
 
+Or:
+
 dependency:micronaut-jdbc-hikari[groupId="io.micronaut.sql", scope="runtime"]
 
-NOTE: Note that `oraclecloud-atp` module is compatible with Java 11+.
+NOTE: Note that `micronaut-oraclecloud-atp` module is compatible with Java 11+.
 
 To use automated data source configuration from the Wallet, provide a configuration similar to the following:
 [source,yaml]

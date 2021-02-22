@@ -1,7 +1,7 @@
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
-
+    implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
     api "io.micronaut:micronaut-inject:$micronautVersion"
     api "io.micronaut:micronaut-validation"
 
@@ -9,12 +9,12 @@ dependencies {
     compileOnly "io.micronaut.sql:micronaut-jdbc-hikari:$micronautSqlVersion"
     compileOnly "io.micronaut.sql:micronaut-jdbc-ucp:$micronautSqlVersion"
 
-    api "com.oracle.database.jdbc:ojdbc11:$ojdbcVersion"
+    api "com.oracle.database.jdbc:ojdbc11"
     api "com.oracle.oci.sdk:oci-java-sdk-database:$ociVersion"
-    api "com.oracle.database.xml:xdb6:18.3.0.0"
-    implementation "com.oracle.database.security:oraclepki:$ojdbcVersion"
-    implementation "com.oracle.database.security:osdt_core:$ojdbcVersion"
-    implementation "com.oracle.database.security:osdt_cert:$ojdbcVersion"
+    implementation "com.oracle.database.xml:xdb"
+    implementation "com.oracle.database.security:oraclepki"
+    implementation "com.oracle.database.security:osdt_core"
+    implementation "com.oracle.database.security:osdt_cert"
 
     implementation project(":oraclecloud-sdk")
 }
