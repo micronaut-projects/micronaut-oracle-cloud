@@ -31,7 +31,7 @@ jobs:
         run: gu install native-image
       - name: Build with Gradle
         run: |
-          if ./gradlew tasks --all | grep -w "testNativeImage"
+          if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
           then
             ./gradlew check testNativeImage --continue --no-daemon
           else
@@ -39,4 +39,12 @@ jobs:
           fi
         env:
           TESTCONTAINERS_RYUK_DISABLED: true
-
+          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
+          OCI_REGION: ${{ secrets.OCI_REGION }}
+          OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
+          OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
+          OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
+          ATP_OCID: ${{ secrets.ATP_OCID }}
+          ATP_USER: ${{ secrets.ATP_USER }}
+          ATP_PASS: ${{ secrets.ATP_PASS }}
