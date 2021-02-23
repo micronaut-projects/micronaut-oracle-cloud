@@ -1,0 +1,14 @@
+io.micronaut.discovery.cloud.oraclecloud
+io.micronaut.oraclecloud.atp.jdbc
+io.micronaut.oraclecloud.atp.jdbc.hikari
+io.micronaut.oraclecloud.atp.jdbc.upc
+io.micronaut.oraclecloud.atp.wallet
+io.micronaut.oraclecloud.atp.wallet.datasource
+io.micronaut.oraclecloud.clients
+io.micronaut.oraclecloud.clients.processor
+io.micronaut.oraclecloud.clients.rxjava
+io.micronaut.oraclecloud.core
+io.micronaut.oraclecloud.core.sdk
+io.micronaut.oraclecloud.function
+io.micronaut.oraclecloud.function.http
+io.micronaut.oraclecloud.function.http.test
