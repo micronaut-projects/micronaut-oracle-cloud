@@ -12,14 +12,14 @@ import spock.lang.Specification
 
 
 @MicronautTest(startApplication = false)
-@Property(name = "micronaut.metrics.export.oraclecloudmonitoring.enabled", value = "false")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 @Requires(beans = AuthenticationDetailsProvider.class)
 class OracleCloudMeterRegistryFactoryTest extends Specification {
 
     def "test it not loads when disabled"() {
         given:
         ApplicationContext context = ApplicationContext.run([
-                "micronaut.metrics.export.oraclecloudmonitoring.enabled": "false",
+                "micronaut.metrics.export.oraclecloud.enabled": "false",
         ], Environment.ORACLE_CLOUD)
 
         expect:
@@ -29,8 +29,8 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
     def "test it loads by default"() {
         given:
         ApplicationContext context = ApplicationContext.run([
-                "micronaut.metrics.export.oraclecloudmonitoring.namespace"      : "micronaut_test",
-                "micronaut.metrics.export.oraclecloudmonitoring.applicationName": "micronaut_test"
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test"
         ], Environment.ORACLE_CLOUD)
 
         expect:
@@ -40,8 +40,8 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
     def "test it publish metrics to ingestion telemetry endpoint"() {
         given:
         ApplicationContext context = ApplicationContext.run([
-                "micronaut.metrics.export.oraclecloudmonitoring.namespace"      : "micronaut_test",
-                "micronaut.metrics.export.oraclecloudmonitoring.applicationName": "micronaut_test"
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test"
         ], Environment.ORACLE_CLOUD)
         OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class)
 

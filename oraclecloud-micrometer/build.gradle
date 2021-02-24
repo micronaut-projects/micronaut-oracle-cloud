@@ -4,7 +4,6 @@ dependencies {
 
     api "io.micronaut:micronaut-inject:$micronautVersion"
     api "io.micronaut:micronaut-runtime"
-    api "io.micronaut:micronaut-validation"
     api "io.micronaut.micrometer:micronaut-micrometer-core"
     api "io.micrometer:micrometer-core"
 

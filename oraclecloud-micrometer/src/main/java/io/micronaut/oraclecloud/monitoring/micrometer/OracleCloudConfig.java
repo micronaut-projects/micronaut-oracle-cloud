@@ -34,7 +34,7 @@ import static io.micrometer.core.instrument.config.validate.PropertyValidator.*;
  */
 public interface OracleCloudConfig extends StepRegistryConfig {
 
-    String PREFIX = "oraclecloudmonitoring";
+    String PREFIX = "oraclecloud";
     String NAMESPACE_REGEX = "^[a-z][a-z0-9_]*[a-z0-9]$";
     Pattern NAMESPACE_PATTERN = Pattern.compile(NAMESPACE_REGEX);
 
@@ -52,7 +52,7 @@ public interface OracleCloudConfig extends StepRegistryConfig {
     }
 
     /**
-     * Application anme used as a default dimension for {@link com.oracle.bmc.monitoring.model.MetricDataDetails}.
+     * Application name used as a default dimension for {@link com.oracle.bmc.monitoring.model.MetricDataDetails}.
      *
      * @return application name
      */
@@ -81,6 +81,15 @@ public interface OracleCloudConfig extends StepRegistryConfig {
      */
     default String resourceGroup() {
         return getString(this, "resourceGroup").orElse(null);
+    }
+
+    /**
+     * Flag whether meter description should be sent to monitoring service.
+     *
+     * @return description flag
+     */
+    default boolean description() {
+        return getBoolean(this, "description").orElse(true);
     }
 
     /**

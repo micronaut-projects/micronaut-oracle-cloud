@@ -15,13 +15,7 @@
  */
 package io.micronaut.oraclecloud.monitoring;
 
-import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
-import com.oracle.bmc.auth.RegionProvider;
-import com.oracle.bmc.http.ClientConfigurator;
-import com.oracle.bmc.http.signing.RequestSignerFactory;
-import com.oracle.bmc.monitoring.MonitoringClient;
-import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micrometer.core.instrument.Clock;
 import io.micronaut.configuration.metrics.micrometer.ExportConfigurationProperties;
 import io.micronaut.context.annotation.Bean;
@@ -35,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
-import java.util.Objects;
 import java.util.Properties;
 
 import static io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory.MICRONAUT_METRICS_EXPORT;
@@ -54,41 +47,18 @@ public class OracleCloudMeterRegistryFactory {
     public static final String ORACLECLOUD_METRICS_ENABLED = ORACLECLOUD_METRICS_CONFIG + ".enabled";
 
     private final AuthenticationDetailsProvider authenticationDetailsProvider;
-    private final RegionProvider regionProvider;
     private final ApplicationConfiguration applicationConfiguration;
 
     /**
      * Creates OracleCloudMeterRegistryFactory.
      *
      * @param authenticationDetailsProvider oci sdk authentication details provider
-     * @param regionProvider                oci sdk region provider
      * @param applicationConfiguration      micronaut application configuration
      */
     public OracleCloudMeterRegistryFactory(AuthenticationDetailsProvider authenticationDetailsProvider,
-                                           RegionProvider regionProvider,
                                            ApplicationConfiguration applicationConfiguration) {
         this.authenticationDetailsProvider = authenticationDetailsProvider;
-        this.regionProvider = regionProvider;
         this.applicationConfiguration = applicationConfiguration;
-    }
-
-    private MonitoringClient buildIngestionMonitoringClient(ClientConfiguration clientConfiguration,
-                                                            @Nullable ClientConfigurator clientConfigurator,
-                                                            @Nullable RequestSignerFactory requestSignerFactory) {
-
-        String ingestionEndpoint = String.format("https://telemetry-ingestion.%s.oraclecloud.com", regionProvider.getRegion().getRegionId());
-        MonitoringClient.Builder builder = MonitoringClient.builder().
-                endpoint(ingestionEndpoint);
-
-        builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
-        if (clientConfigurator != null) {
-            builder.clientConfigurator(clientConfigurator);
-        }
-        if (requestSignerFactory != null) {
-            builder.requestSignerFactory(requestSignerFactory);
-        }
-
-        return builder.build(authenticationDetailsProvider);
     }
 
     /**
@@ -97,20 +67,14 @@ public class OracleCloudMeterRegistryFactory {
      * configuration is included in project.
      *
      * @param exportConfigurationProperties the export configuration
-     * @param clientConfiguration client configuration
-     * @param clientConfigurator client configurator
-     * @param requestSignerFactory request signer factory
+     * @param monitoringIngestionClient     the monitoring ingestion client
      * @return A OracleCloudMeterRegistry
      */
     @Singleton
     @Bean(preDestroy = "close")
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     OracleCloudMeterRegistry oracleCloudMeterRegistry(ExportConfigurationProperties exportConfigurationProperties,
-                                                      ClientConfiguration clientConfiguration,
-                                                      @Nullable ClientConfigurator clientConfigurator,
-                                                      @Nullable RequestSignerFactory requestSignerFactory) {
-
-        final MonitoringClient monitoringClient = buildIngestionMonitoringClient(clientConfiguration, clientConfigurator, requestSignerFactory);
+                                                      MonitoringIngestionClient monitoringIngestionClient) {
 
         exportConfigurationProperties.getExport().computeIfAbsent(OracleCloudConfig.PREFIX + ".applicationName",
                 x -> applicationConfiguration.getName().orElse(null));
@@ -123,6 +87,6 @@ public class OracleCloudMeterRegistryFactory {
         });
 
         Properties exportConfig = exportConfigurationProperties.getExport();
-        return new OracleCloudMeterRegistry(exportConfig::getProperty, Clock.SYSTEM, monitoringClient);
+        return new OracleCloudMeterRegistry(exportConfig::getProperty, Clock.SYSTEM, monitoringIngestionClient.getDelegate());
     }
 }

@@ -1,0 +1,36 @@
+The https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm[Oracle Cloud Infrastructure Monitoring service] enables you to actively and passively monitor your cloud resources using the Metrics and Alarms features.
+
+The module `micronaut-oraclecloud-micrometer` integrates https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/[Micronaut's Micrometer support] with the Oracle Cloud Infrastructure Monitoring service.
+
+First you need add a dependency on the `micronaut-oraclecloud-micrometer` module:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer[scope="runtime"]
+
+Then you must configure the <<authentication, authentication provider>>.
+
+You can configure this micrometer reporter using `micronaut.metrics.export.oraclecloud`. The most commonly changed configuration properties are listed below:
+
+|=======
+|*Name* |*Description*
+|enabled | Whether to enable the reporter. Could disable to local dev for example. Default: `true`.
+|applicationName | Application name used as a common dimension. Default: `${micronaut.application.name}`.
+|namespace | Metrics namespace. Required.
+|resourceGroup | Metrics resource group.
+|compartmentId | Oracle Cloud compartment id. Default: the Oracle SDK tenantId.
+|step |How frequently to report metrics. Default: `PT1M` (1 min).  See `java.time.Duration#parse(CharSequence)`.
+|batchSize |How many metrics send in one batch. Default: `50` (Max allowed number of metrics for current API).
+|descriptions | Boolean if meter descriptions should be sent to InfluxDB. Turn this off to minimize the amount of data sent on each scrape. Default: `true`
+|=======
+
+.Example Oracle Cloud Config
+[source,yml]
+----
+micronaut:
+  metrics:
+    enabled: true
+    export:
+      oraclecloud:
+        enabled: true
+        namespace: test
+        resourceGroup: foo
+----

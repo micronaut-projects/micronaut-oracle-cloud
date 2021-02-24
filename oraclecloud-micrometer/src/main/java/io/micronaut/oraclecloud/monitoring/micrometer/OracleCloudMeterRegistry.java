@@ -84,7 +84,7 @@ public class OracleCloudMeterRegistry extends StepMeterRegistry {
                         .postMetricDataDetails(builder.build())
                         .build());
             } catch (Throwable e) {
-                logger.error("failed to post metrics in oraclecloud monitor: " + e.getMessage(), e);
+                logger.error("failed to post metrics to oracle cloud infrastructure monitoring: " + e.getMessage(), e);
             }
         }
     }
@@ -245,7 +245,8 @@ public class OracleCloudMeterRegistry extends StepMeterRegistry {
                 .name(getMetricName(id, suffix))
                 .namespace(oracleCloudConfig.namespace())
                 .resourceGroup(oracleCloudConfig.resourceGroup())
-                .metadata(id.getDescription() != null ? Collections.singletonMap("description", id.getDescription()) : null)
+                .metadata(oracleCloudConfig.description() && id.getDescription() != null
+                        ? Collections.singletonMap("description", id.getDescription()) : null)
                 .datapoints(Collections.singletonList(
                         Datapoint.builder()
                                 .value(value)
