@@ -1,0 +1,21 @@
+dependencies {
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+
+    api "io.micronaut:micronaut-inject:$micronautVersion"
+    api "io.micronaut:micronaut-runtime"
+    api "io.micronaut.micrometer:micronaut-micrometer-core"
+    api "io.micrometer:micrometer-core"
+
+    api "com.oracle.oci.sdk:oci-java-sdk-monitoring:$ociVersion"
+
+    implementation project(":oraclecloud-sdk")
+
+    testRuntimeOnly "io.micronaut:micronaut-http-server-netty"
+    testImplementation "io.micronaut:micronaut-http-client"
+    testImplementation "io.micronaut:micronaut-management"
+    testImplementation("org.spockframework:spock-core:${spockVersion}") {
+        exclude module:'groovy-all'
+    }
+    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
+}

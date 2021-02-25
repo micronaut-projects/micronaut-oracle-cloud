@@ -49,3 +49,9 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-atp[]
 Provides support for configuring the data source connection for the UCP and HikariCP connection pools by specifying Oracle Cloud Autonomous Database configuration.
 
 NOTE: The module generates the OracleWallet on startup.
+
+=== micronaut-oraclecloud-micrometer
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer[]
+
+Provides support for sending the https://micrometer.io[Micrometer] metrics to the https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm[Oracle Cloud Infrastructure Monitoring] service.
