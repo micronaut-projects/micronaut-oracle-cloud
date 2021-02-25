@@ -48,17 +48,21 @@ public class OracleCloudCoreFactory {
     public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
 
     private final String profile;
+    private final String configPath;
 
     /**
      * @param profile The configured profile
+     * @param configPath The configuration file path
      */
-    protected OracleCloudCoreFactory(@Nullable @Property(name = ORACLE_CLOUD + ".config.profile") String profile) {
+    protected OracleCloudCoreFactory(@Nullable @Property(name = ORACLE_CLOUD + ".config.profile") String profile,
+                                     @Nullable @Property(name = ORACLE_CLOUD + ".config.path") String configPath) {
         this.profile = profile;
+        this.configPath = configPath;
     }
 
     /**
      * Configures a {@link ConfigFileAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present and
-     * a file is found at {@code $USER_HOME/.oci/config} or specified by the user with {@code oci.config}.
+     * a file is found at {@code $USER_HOME/.oci/config} or specified by the user with {@code oci.config.path}.
      *
      * @return The {@link ConfigFileAuthenticationDetailsProvider}.
      * @throws IOException If an exception occurs reading configuration.
@@ -70,13 +74,21 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Primary
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
-        return new ConfigFileAuthenticationDetailsProvider(
-                profile
-        );
+        if (getConfigPath().isPresent()) {
+            return new ConfigFileAuthenticationDetailsProvider(
+                    configPath,
+                    profile
+            );
+        } else {
+            return new ConfigFileAuthenticationDetailsProvider(
+                    profile
+            );
+        }
     }
 
     /**
      * Configures a {@link SimpleAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present.
+     *
      * @param config The config to use
      * @return The {@link SimpleAuthenticationDetailsProvider}.
      * @see SimpleAuthenticationDetailsProvider
@@ -109,7 +121,7 @@ public class OracleCloudCoreFactory {
      * Configures a {@link com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present and
      * the specified by the user with {@code oci.config.use-instance-principal}.
      *
-     * @param instancePrincipalConfiguration  The configuration
+     * @param instancePrincipalConfiguration The configuration
      * @return The {@link InstancePrincipalsAuthenticationDetailsProvider}.
      * @see com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider
      */
@@ -122,6 +134,7 @@ public class OracleCloudCoreFactory {
 
     /**
      * Produces a {@link com.oracle.bmc.ClientConfiguration.ClientConfigurationBuilder} bean for the given properties.
+     *
      * @param props The props
      * @return The builder
      */
@@ -134,6 +147,7 @@ public class OracleCloudCoreFactory {
 
     /**
      * Provides a {@link TenancyIdProvider} bean.
+     *
      * @param authenticationDetailsProvider The authentication provider.
      * @return The tenancy id provider
      */
@@ -169,14 +183,15 @@ public class OracleCloudCoreFactory {
         };
     }
 
-                                                /**
+    /**
      * Configures the default {@link ClientConfiguration} if no other configuration is present.
+     *
      * @param builder The builder
      * @return The default client configuration.
      */
-                                                @Singleton
-                                                @Requires(missingBeans = ClientConfiguration.class)
-                                                @Primary
+    @Singleton
+    @Requires(missingBeans = ClientConfiguration.class)
+    @Primary
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }
@@ -186,5 +201,12 @@ public class OracleCloudCoreFactory {
      */
     public Optional<String> getProfile() {
         return Optional.ofNullable(profile);
+    }
+
+    /**
+     * @return The configured config path.
+     */
+    public Optional<String> getConfigPath() {
+        return Optional.ofNullable(configPath);
     }
 }
