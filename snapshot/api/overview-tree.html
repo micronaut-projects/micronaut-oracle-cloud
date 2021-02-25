@@ -108,7 +108,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="io/micronaut/oraclecloud/core/sdk/package-tree.html">io.micronaut.oraclecloud.core.sdk</a>, </li>
 <li><a href="io/micronaut/oraclecloud/function/package-tree.html">io.micronaut.oraclecloud.function</a>, </li>
 <li><a href="io/micronaut/oraclecloud/function/http/package-tree.html">io.micronaut.oraclecloud.function.http</a>, </li>
-<li><a href="io/micronaut/oraclecloud/function/http/test/package-tree.html">io.micronaut.oraclecloud.function.http.test</a></li>
+<li><a href="io/micronaut/oraclecloud/function/http/test/package-tree.html">io.micronaut.oraclecloud.function.http.test</a>, </li>
+<li><a href="io/micronaut/oraclecloud/monitoring/package-tree.html">io.micronaut.oraclecloud.monitoring</a>, </li>
+<li><a href="io/micronaut/oraclecloud/monitoring/micrometer/package-tree.html">io.micronaut.oraclecloud.monitoring.micrometer</a></li>
 </ul>
 </div>
 <div class="contentContainer">
@@ -134,6 +136,20 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.micronaut.oraclecloud.function.http.<a href="io/micronaut/oraclecloud/function/http/FnMultiValueMap.html" title="class in io.micronaut.oraclecloud.function.http"><span class="typeNameLink">FnMultiValueMap</span></a> (implements io.micronaut.core.convert.value.ConvertibleMultiValues&lt;V&gt;)</li>
 <li class="circle">io.micronaut.oraclecloud.atp.jdbc.hikari.<a href="io/micronaut/oraclecloud/atp/jdbc/hikari/HikariPoolConfigurationListener.html" title="class in io.micronaut.oraclecloud.atp.jdbc.hikari"><span class="typeNameLink">HikariPoolConfigurationListener</span></a> (implements io.micronaut.context.event.BeanInitializedEventListener&lt;T&gt;)</li>
 <li class="circle">io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oraclecloud.core"><span class="typeNameLink">InstancePrincipalConfiguration</span></a> (implements io.micronaut.core.util.Toggleable)</li>
+<li class="circle">io.micrometer.core.instrument.MeterRegistry
+<ul>
+<li class="circle">io.micrometer.core.instrument.push.PushMeterRegistry
+<ul>
+<li class="circle">io.micrometer.core.instrument.step.StepMeterRegistry
+<ul>
+<li class="circle">io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer"><span class="typeNameLink">OracleCloudMeterRegistry</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">io.micronaut.oraclecloud.monitoring.<a href="io/micronaut/oraclecloud/monitoring/MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring"><span class="typeNameLink">MonitoringIngestionClient</span></a></li>
 <li class="circle">io.micronaut.oraclecloud.function.<a href="io/micronaut/oraclecloud/function/OciFunction.html" title="class in io.micronaut.oraclecloud.function"><span class="typeNameLink">OciFunction</span></a> (implements java.lang.AutoCloseable)
 <ul>
 <li class="circle">io.micronaut.oraclecloud.function.http.<a href="io/micronaut/oraclecloud/function/http/HttpFunction.html" title="class in io.micronaut.oraclecloud.function.http"><span class="typeNameLink">HttpFunction</span></a></li>
@@ -144,6 +160,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oraclecloud.core"><span class="typeNameLink">OracleCloudCoreFactory</span></a></li>
 <li class="circle">io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud"><span class="typeNameLink">OracleCloudMetadataConfiguration</span></a> (implements io.micronaut.core.util.Toggleable)</li>
 <li class="circle">io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataResolver.html" title="class in io.micronaut.discovery.cloud.oraclecloud"><span class="typeNameLink">OracleCloudMetadataResolver</span></a> (implements io.micronaut.discovery.cloud.ComputeInstanceMetadataResolver)</li>
+<li class="circle">io.micronaut.oraclecloud.monitoring.<a href="io/micronaut/oraclecloud/monitoring/OracleCloudMeterRegistryFactory.html" title="class in io.micronaut.oraclecloud.monitoring"><span class="typeNameLink">OracleCloudMeterRegistryFactory</span></a></li>
+<li class="circle">io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMetricsNamingConvention.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer"><span class="typeNameLink">OracleCloudMetricsNamingConvention</span></a> (implements io.micrometer.core.instrument.config.NamingConvention)</li>
 <li class="circle">io.micronaut.oraclecloud.atp.jdbc.<a href="io/micronaut/oraclecloud/atp/jdbc/OracleWalletArchiveProvider.html" title="class in io.micronaut.oraclecloud.atp.jdbc"><span class="typeNameLink">OracleWalletArchiveProvider</span></a></li>
 <li class="circle">java.lang.Throwable (implements java.io.Serializable)
 <ul>
@@ -171,6 +189,19 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <h2 title="Interface Hierarchy">Interface Hierarchy</h2>
 <ul>
 <li class="circle">io.micronaut.oraclecloud.atp.wallet.datasource.<a href="io/micronaut/oraclecloud/atp/wallet/datasource/CanConfigureOracleDataSource.html" title="interface in io.micronaut.oraclecloud.atp.wallet.datasource"><span class="typeNameLink">CanConfigureOracleDataSource</span></a></li>
+<li class="circle">io.micrometer.core.instrument.config.MeterRegistryConfig
+<ul>
+<li class="circle">io.micrometer.core.instrument.push.PushRegistryConfig
+<ul>
+<li class="circle">io.micrometer.core.instrument.step.StepRegistryConfig
+<ul>
+<li class="circle">io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer"><span class="typeNameLink">OracleCloudConfig</span></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="circle">io.micronaut.oraclecloud.atp.wallet.datasource.<a href="io/micronaut/oraclecloud/atp/wallet/datasource/OracleDataSourceAttributes.html" title="interface in io.micronaut.oraclecloud.atp.wallet.datasource"><span class="typeNameLink">OracleDataSourceAttributes</span></a>&lt;T&gt;</li>
 <li class="circle">io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core"><span class="typeNameLink">TenancyIdProvider</span></a></li>
 </ul>

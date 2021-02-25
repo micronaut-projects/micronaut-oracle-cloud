@@ -59,6 +59,8 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#autonomousDatabase"><strong>8</strong><span>Oracle Autonomous Database</span></a></div>
                                 
+                                <div class="toc-item" style="margin-left:0"><a href="#micrometer"><strong>9</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
+                                
                             </div>
                         </div>
                     </li>
@@ -103,6 +105,8 @@
         <div class="toc-item" style="margin-left:0px" id="toc-item-httpFunctions"><a href="#httpFunctions"><strong>7</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-autonomousDatabase"><a href="#autonomousDatabase"><strong>8</strong><span>Oracle Autonomous Database</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-micrometer"><a href="#micrometer"><strong>9</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
         
         </div>
     </div>
@@ -466,6 +470,29 @@ The module generates the OracleWallet on startup.
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oraclecloud_micrometer">micronaut-oraclecloud-micrometer</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-micrometer&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides support for sending the <a href="https://micrometer.io">Micrometer</a> metrics to the <a href="https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm">Oracle Cloud Infrastructure Monitoring</a> service.</p>
 </div>
 </div>
 
@@ -1172,6 +1199,107 @@ The <code>username</code> and <code>password</code> are not automatically genera
 </div>
 <div class="paragraph">
 <p>The wallet is of type <code>SINGLE</code>. Use <code>walletType</code> property to configure different type. See other valid options at <a href="https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails" class="bare">https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails</a>.</p>
+</div>
+
+<h1 id="micrometer"><a class="anchor" href="#micrometer"></a>9 Micrometer Support For Oracle Monitoring</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master
+/src/main/docs/guide/micrometer.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The <a href="https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm">Oracle Cloud Infrastructure Monitoring service</a> enables you to actively and passively monitor your cloud resources using the Metrics and Alarms features.</p>
+</div>
+<div class="paragraph">
+<p>The module <code>micronaut-oraclecloud-micrometer</code> integrates <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/">Micronaut&#8217;s Micrometer support</a> with the Oracle Cloud Infrastructure Monitoring service.</p>
+</div>
+<div class="paragraph">
+<p>First you need add a dependency on the <code>micronaut-oraclecloud-micrometer</code> module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtime(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-micrometer&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Then you must configure the <a href="#authentication">authentication provider</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can configure this micrometer reporter using <code>micronaut.metrics.export.oraclecloud</code>. The most commonly changed configuration properties are listed below:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the reporter. Could disable to local dev for example. Default: <code>true</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">applicationName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Application name used as a common dimension. Default: <code>${micronaut.application.name}</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">namespace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Metrics namespace. Required.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resourceGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Metrics resource group.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compartmentId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle Cloud compartment id. Default: the Oracle SDK tenantId.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">step</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How frequently to report metrics. Default: <code>PT1M</code> (1 min).  See <code>java.time.Duration#parse(CharSequence)</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">batchSize</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How many metrics send in one batch. Default: <code>50</code> (Max allowed number of metrics for current API).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">descriptions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean if meter descriptions should be sent to InfluxDB. Turn this off to minimize the amount of data sent on each scrape. Default: <code>true</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">Example Oracle Cloud Config</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">micronaut:
+  metrics:
+    enabled: true
+    export:
+      oraclecloud:
+        enabled: true
+        namespace: test
+        resourceGroup: foo</code></pre>
+</div>
 </div>
 
     </div>

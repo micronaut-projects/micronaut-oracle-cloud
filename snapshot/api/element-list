@@ -12,3 +12,5 @@ io.micronaut.oraclecloud.core.sdk
 io.micronaut.oraclecloud.function
 io.micronaut.oraclecloud.function.http
 io.micronaut.oraclecloud.function.http.test
+io.micronaut.oraclecloud.monitoring
+io.micronaut.oraclecloud.monitoring.micrometer
