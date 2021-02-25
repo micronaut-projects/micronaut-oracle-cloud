@@ -223,14 +223,27 @@
 <h2 id="config-auth">ConfigFileAuthenticationDetailsProvider</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html">ConfigFileAuthenticationDetailsProvider</a> uses a config file located at <code>$USER_HOME/.oci/config</code>. Specify a profile within the config file via your <code>application.yml</code>:</p>
+<p>The <a href="https://docs.cloud.oracle.com/en-us/iaas/tools/java/1.19.3/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html">ConfigFileAuthenticationDetailsProvider</a> uses a config file located at <code>$USER_HOME/.oci/config</code>. Specify a profile or config file path within the config file via your <code>application.yml</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
   config:
-    profile: DEFAULT</code></pre>
+    profile: DEFAULT
+    path: /custom/path/to/config/file</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the Oracle Java SDK the environment variable <code>OCI_CONFIG_FILE</code> doesn&#8217;t take precedence over the <code>~/.oci/config</code> if the file exists. Assign the <code>OCI_CONFIG_FILE</code> to <code>oci.config.path</code>. To change the order: <code>oci.config.path: ${OCI_CONFIG_FILE}</code>,
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>

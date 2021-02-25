@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -195,7 +195,8 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="altColor">
 <td class="colFirst"><code>protected </code></td>
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String)">OracleCloudCoreFactory</a></span>&#8203;(java.lang.String&nbsp;profile)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,java.lang.String)">OracleCloudCoreFactory</a></span>&#8203;(java.lang.String&nbsp;profile,
+                      java.lang.String&nbsp;configPath)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -228,7 +229,7 @@ extends java.lang.Object</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configFileAuthenticationDetailsProvider()">configFileAuthenticationDetailsProvider</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
- a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config</code>.</div>
+ a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config.path</code>.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
@@ -240,10 +241,15 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;java.lang.String&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProfile()">getProfile</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getConfigPath()">getConfigPath</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>java.util.Optional&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getProfile()">getProfile</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>protected com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#instancePrincipalAuthenticationDetailsProvider(io.micronaut.oraclecloud.core.InstancePrincipalConfiguration)">instancePrincipalAuthenticationDetailsProvider</a></span>&#8203;(<a href="InstancePrincipalConfiguration.html" title="class in io.micronaut.oraclecloud.core">InstancePrincipalConfiguration</a>&nbsp;instancePrincipalConfiguration)</code></th>
 <td class="colLast">
@@ -251,7 +257,7 @@ extends java.lang.Object</pre>
  the specified by the user with <code>oci.config.use-instance-principal</code>.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>protected com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resourcePrincipalAuthenticationDetailsProvider()">resourcePrincipalAuthenticationDetailsProvider</a></span>()</code></th>
 <td class="colLast">
@@ -259,14 +265,14 @@ extends java.lang.Object</pre>
  the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>protected com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#simpleAuthenticationDetailsProvider(io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties)">simpleAuthenticationDetailsProvider</a></span>&#8203;(<a href="OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</code></th>
 <td class="colLast">
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>protected <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)">tenantIdProvider</a></span>&#8203;(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></th>
 <td class="colLast">
@@ -333,17 +339,20 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(java.lang.String)">
+<a id="&lt;init&gt;(java.lang.String,java.lang.String)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>OracleCloudCoreFactory</h4>
 <pre>protected&nbsp;OracleCloudCoreFactory&#8203;(@Nullable @Property(name="oci.config.profile")
-                                 java.lang.String&nbsp;profile)</pre>
+                                 java.lang.String&nbsp;profile,
+                                 @Nullable @Property(name="oci.config.path")
+                                 java.lang.String&nbsp;configPath)</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>profile</code> - The configured profile</dd>
+<dd><code>configPath</code> - The configuration file path</dd>
 </dl>
 </li>
 </ul>
@@ -369,7 +378,7 @@ extends java.lang.Object</pre>
 protected&nbsp;com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider&nbsp;configFileAuthenticationDetailsProvider()
                                                                                                        throws java.io.IOException</pre>
 <div class="block">Configures a <code>ConfigFileAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
- a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config</code>.</div>
+ a file is found at <code>$USER_HOME/.oci/config</code> or specified by the user with <code>oci.config.path</code>.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The <code>ConfigFileAuthenticationDetailsProvider</code>.</dd>
@@ -503,13 +512,26 @@ protected&nbsp;com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration&#8203
 <a id="getProfile()">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>getProfile</h4>
 <pre class="methodSignature">public&nbsp;java.util.Optional&lt;java.lang.String&gt;&nbsp;getProfile()</pre>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The configured profile.</dd>
+</dl>
+</li>
+</ul>
+<a id="getConfigPath()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>getConfigPath</h4>
+<pre class="methodSignature">public&nbsp;java.util.Optional&lt;java.lang.String&gt;&nbsp;getConfigPath()</pre>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The configured config path.</dd>
 </dl>
 </li>
 </ul>
