@@ -4,7 +4,7 @@ buildscript {
     }
     dependencies {
         classpath "io.micronaut.build.internal:micronaut-gradle-plugins:3.0.1"
-        classpath "io.micronaut.gradle:micronaut-gradle-plugin:1.3.4"
+        classpath "io.micronaut.gradle:micronaut-gradle-plugin:1.4.0"
     }
 }
 
