@@ -1,0 +1,110 @@
+You can use Oracle Cloud Infrastructure Application Performance Monitoring (APM) as a drop-in replacement for Tracing in your Micronaut Applications.
+
+OCI Application Performance Monitoring (APM) is a suite of services that give you insight into your applications and servers running in OCI via a small agent that runs on the machine and aggregates and reports metric data.
+It’s a nice service to monitor and diagnose performance issues.
+It also includes a Trace Explorer that is Zipkin (and Jaeger) compatible and we can use that Trace Explorer from our Micronaut applications (even without taking full advantage of APM via the Java Agent).
+
+=== Add Dependencies
+
+.Micronaut Management
+dependency:io.micronaut:micronaut-management[scope="implementation"]
+
+.Micronaut Tracing
+dependency:io.micronaut:micronaut-tracing[scope="implementation"]
+
+.Brave Instrumentation
+dependency:io.zipkin.brave:brave-instrumentation-http[scope="runtime"]
+
+.Zipkin Reporter
+dependency:io.zipkin.reporter2:zipkin-reporter[scope="runtime"]
+
+.Open Tracing
+dependency:io.opentracing.brave:brave-opentracing[scope="compile"]
+
+=== Create APM Domain
+
+Now, in the OCI console, create an APM domain.
+We’ll share a single domain to group and trace all of our services.
+I know that may seem a bit confusing given the name ‘domain’, but think of it more like a “project group” or an “environment” (you may want to create separate domains for QA, Test, Prod, etc).
+Search for ‘Application Performance Monitoring’ and click on ‘Administration’.
+
+image::oci_console_apm_admin.png[APM Adinistration]
+
+In the left sidebar, click on ‘APM Domains’.
+
+image::oci_console_apm_domains.png[APM Domains]
+
+Click on ‘Create APM Domain’.
+
+image::oci_console_create_apm_domain.png[Create APM Domain]
+
+Name it, choose a compartment and enter a description.
+
+image::oci_console_create_apm_domain_details.png[Create APM Domain Details]
+
+Once the domain is created, view the domain details.
+Here you’ll need to grab a few values, so copy the data upload endpoint (#1), private key (#2), and public key (#3).
+
+image::oci_console_apm_domain_details.png[Create APM Domain]
+
+Now we have what we need to construct a URL to plug in to our application config files.
+The ‘Collector URL’ format requires us to construct a URL by using the `data upload endpoint` as our base URL and generate the path based on some choices including values from our private or public key.
+The format is https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html#APMGN-GUID-B5EDE254-C854-436D-B844-B986A4E077AA[documented here].
+Once we’ve constructed the URL path, we can plug it in to our `application-oraclecloud.yml` config.
+
+.Example Oracle Cloud Config
+[source,yml]
+----
+micronaut:
+  application:
+    name: demo2
+tracing:
+  zipkin:
+    enabled: true
+    sampler:
+      probability: 1
+    http:
+      url: https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com
+      path: /20200101/observations/public-span?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]
+    supportsJoin: false
+----
+
+If you want to keep these values out of the config file, you could set them as environment variables on the server like so:
+
+.Set ENV vars
+[source,bash]
+----
+export TRACING_ZIPKIN_HTTP_URL="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com" export TRACING_ZIPKIN_HTTP_PATH="/20200101/observations/public-span?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]"
+----
+
+Your application will now send trace information to APM.
+
+=== View Trace Data in APM
+
+Go to the APM Trace Explorer in the OCI console.
+
+image::oci_console_trace_explorer.png[APM Trace Explorer]
+
+Choose your APM domain in the top right and the time period that you’d like to view/search.
+
+image::oci_console_trace_explorer_choose_domain.png[APM Trace Explorer Choose Domain]
+
+Choose one of the available pre-configured queries across the top.
+
+image::oci_console_trace_explorer_choose_query.png[APM Trace Explorer Choose Query]
+
+View traces and spans:
+
+image::oci_console_trace_explorer_traces.png[APM Trace Explorer Traces]
+
+Click on a trace to view detailed info.
+
+image::oci_console_trace_explorer_trace_details.png[APM Trace Explorer Trace Details]
+
+Click on a span inside a trace to view detailed info and tagged values.
+
+image::oci_console_span_details.png[APM Trace Explorer Span Details]
+
+For more info, please see https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices[Adding Tracing to Your Distributed Cloud Native Microservices].
+
+Read more about the Trace Explorer in the https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html[documentation].
