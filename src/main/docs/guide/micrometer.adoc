@@ -1,10 +1,16 @@
 The https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm[Oracle Cloud Infrastructure Monitoring service] enables you to actively and passively monitor your cloud resources using the Metrics and Alarms features.
 
-The module `micronaut-oraclecloud-micrometer` integrates https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/[Micronaut's Micrometer support] with the Oracle Cloud Infrastructure Monitoring service.
+The module `micronaut-oraclecloud-micrometer` integrates https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/[Micronaut's Micrometer support] with the Oracle Cloud Infrastructure Monitoring service. 
 
-First you need add a dependency on the `micronaut-oraclecloud-micrometer` module:
+To begin, first add the standard dependencies for the Micronaut Micromter module per the https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#_configuration[documentation].
+
+Next, you need add a dependency on the `micronaut-oraclecloud-micrometer` module:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer[scope="runtime"]
+
+Don't forget to add a dependency for the OCI SDK Monitoring module:
+
+dependency:com.oracle.oci.sdk:oci-java-sdk-monitoring[scope="implementation"]
 
 Then you must configure the <<authentication, authentication provider>>.
 
