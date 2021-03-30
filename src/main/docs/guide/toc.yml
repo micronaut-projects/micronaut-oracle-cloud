@@ -7,6 +7,6 @@ functions: Oracle Functions (Serverless)
 httpFunctions: Oracle Functions HTTP (Serverless)
 autonomousDatabase: Oracle Autonomous Database
 micrometer: Micrometer Support For Oracle Monitoring
-
+tracing: OCI Application Peformance Monitoring as a Tracing Endpoint
 
 
