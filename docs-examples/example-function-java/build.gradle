@@ -23,7 +23,7 @@ dependencies {
 }
 
 nativeImage {
-  args("-J-Xmx8g")
+  args("-J-Xmx6g")
 }
 
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"

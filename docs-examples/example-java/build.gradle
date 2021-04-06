@@ -20,7 +20,7 @@ dependencies {
 }
 
 nativeImage {
-  args("-J-Xmx8g")
+  args("-J-Xmx6g")
 }
 
 test {
