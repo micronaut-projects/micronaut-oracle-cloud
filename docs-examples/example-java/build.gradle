@@ -19,6 +19,10 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 }
 
+nativeImage {
+  args("-J-Xmx8g")
+}
+
 test {
     exclude '**/*Test$Intercepted*'
 }

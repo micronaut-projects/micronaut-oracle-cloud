@@ -32,5 +32,7 @@ run {
 }
 
 nativeImage {
-    args('--initialize-at-build-time=example')
+  args("--initialize-at-build-time=example",
+       "-J-Xmx8g")
 }
+

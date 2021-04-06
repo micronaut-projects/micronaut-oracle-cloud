@@ -33,7 +33,8 @@ mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 nativeImage {
   args('--static',
        '-Dfn.handler=example.ListBucketsFunction::handleRequest',
-       "--initialize-at-build-time=example")
+       "--initialize-at-build-time=example",
+       "-J-Xmx8g")
 }
 
 dockerBuild {
