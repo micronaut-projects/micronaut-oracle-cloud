@@ -36,6 +36,7 @@ jobs:
         run: gu install native-image
       - name: Build with Gradle
         run: |
+          export MICRONAUT_ENV_DEDUCTION=false
           if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
           then
             ./gradlew check testNativeImage --continue --no-daemon
