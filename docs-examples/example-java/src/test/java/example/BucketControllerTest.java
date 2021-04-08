@@ -1,7 +1,7 @@
 package example;
 
 import io.micronaut.http.client.annotation.Client;
-import io.micronaut.test.annotation.MicronautTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.reactivex.Single;
 import org.junit.jupiter.api.Test;
 

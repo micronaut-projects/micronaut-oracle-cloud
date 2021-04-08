@@ -15,7 +15,7 @@ dependencies {
         exclude module:'javassist'
     }
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
-    runtimeOnly 'com.fnproject.fn:runtime:1.0.123'
+    runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
     testImplementation 'com.fnproject.fn:testing-junit4:1.0.119'
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
@@ -25,6 +25,8 @@ dependencies {
 nativeImage {
   args("-J-Xmx6g")
 }
+
+testNativeImage.enabled=false
 
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 
