@@ -31,7 +31,7 @@ class MockFnHttpServerSpec extends Specification {
         expect:
         response.status == HttpStatus.OK
 
-        ["function","oraclecloud", "test", "custom-env"].stream().allMatch(it -> response.body().contains(it))
+        ["function","oraclecloud", "custom-env"].stream().allMatch(it -> response.body().contains(it))
     }
 
 }
