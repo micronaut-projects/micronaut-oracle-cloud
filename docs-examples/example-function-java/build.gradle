@@ -22,10 +22,6 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 }
 
-nativeImage {
-  args("-J-Xmx6g")
-}
-
 testNativeImage.enabled=false
 
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"
