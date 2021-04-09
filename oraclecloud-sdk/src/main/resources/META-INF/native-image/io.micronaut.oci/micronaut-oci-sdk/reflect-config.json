@@ -352,6 +352,10 @@
     "allDeclaredMethods":true
   },
   {
+    "name":"org.glassfish.jersey.client.JerseyClientBuilder",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
     "name":"org.glassfish.jersey.inject.hk2.ContextInjectionResolverImpl",
     "allDeclaredFields":true,
     "allDeclaredMethods":true,
@@ -379,6 +383,22 @@
   },
   {
     "name":"org.glassfish.jersey.inject.hk2.RequestContext",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
+    "name":"org.glassfish.jersey.internal.RuntimeDelegateImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"org.glassfish.jersey.internal.config.ExternalPropertiesAutoDiscoverable",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
+    "name":"org.glassfish.jersey.internal.config.ExternalPropertiesConfigurationFeature",
     "allDeclaredFields":true,
     "allDeclaredMethods":true,
     "allDeclaredConstructors":true
@@ -548,5 +568,17 @@
   },
   {
     "name":"java.net.InetAddress[]"
+  },
+  {
+    "name":"javax.xml.transform.Source"
+  },
+  {
+    "name":"javax.xml.transform.dom.DOMSource"
+  },
+  {
+    "name":"javax.xml.transform.sax.SAXSource"
+  },
+  {
+    "name":"javax.xml.transform.stream.StreamSource"
   }
 ]
