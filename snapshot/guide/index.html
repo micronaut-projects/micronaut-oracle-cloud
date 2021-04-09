@@ -61,6 +61,8 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#micrometer"><strong>9</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
                                 
+                                <div class="toc-item" style="margin-left:0"><a href="#tracing"><strong>10</strong><span>OCI Application Peformance Monitoring as a Tracing Endpoint</span></a></div>
+                                
                             </div>
                         </div>
                     </li>
@@ -107,6 +109,8 @@
         <div class="toc-item" style="margin-left:0px" id="toc-item-autonomousDatabase"><a href="#autonomousDatabase"><strong>8</strong><span>Oracle Autonomous Database</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-micrometer"><a href="#micrometer"><strong>9</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-tracing"><a href="#tracing"><strong>10</strong><span>OCI Application Peformance Monitoring as a Tracing Endpoint</span></a></div>
         
         </div>
     </div>
@@ -1312,6 +1316,259 @@ The <code>username</code> and <code>password</code> are not automatically genera
         enabled: true
         namespace: test
         resourceGroup: foo</code></pre>
+</div>
+</div>
+
+<h1 id="tracing"><a class="anchor" href="#tracing"></a>10 OCI Application Peformance Monitoring as a Tracing Endpoint</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master
+/src/main/docs/guide/tracing.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>You can use Oracle Cloud Infrastructure Application Performance Monitoring (APM) as a drop-in replacement for Tracing in your Micronaut Applications.</p>
+</div>
+<div class="paragraph">
+<p>OCI Application Performance Monitoring (APM) is a suite of services that give you insight into your applications and servers running in OCI via a small agent that runs on the machine and aggregates and reports metric data.
+It’s a nice service to monitor and diagnose performance issues.
+It also includes a Trace Explorer that is Zipkin (and Jaeger) compatible and we can use that Trace Explorer from our Micronaut applications (even without taking full advantage of APM via the Java Agent).</p>
+</div>
+<div class="sect2">
+<h3 id="_add_dependencies">Add Dependencies</h3>
+<div class="paragraph">
+<div class="title">Micronaut Management</div>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut:micronaut-management")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-management&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<div class="title">Micronaut Tracing</div>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut:micronaut-tracing")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-tracing&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<div class="title">Brave Instrumentation</div>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtime(<span class="hljs-string">"io.zipkin.brave:brave-instrumentation-http")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.zipkin.brave&lt;/groupId&gt;
+    &lt;artifactId&gt;brave-instrumentation-http&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<div class="title">Zipkin Reporter</div>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtime(<span class="hljs-string">"io.zipkin.reporter2:zipkin-reporter")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.zipkin.reporter2&lt;/groupId&gt;
+    &lt;artifactId&gt;zipkin-reporter&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<div class="title">Open Tracing</div>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.opentracing.brave:brave-opentracing")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.opentracing.brave&lt;/groupId&gt;
+    &lt;artifactId&gt;brave-opentracing&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_apm_domain">Create APM Domain</h3>
+<div class="paragraph">
+<p>Now, in the OCI console, create an APM domain.
+We’ll share a single domain to group and trace all of our services.
+I know that may seem a bit confusing given the name ‘domain’, but think of it more like a “project group” or an “environment” (you may want to create separate domains for QA, Test, Prod, etc).
+Search for ‘Application Performance Monitoring’ and click on ‘Administration’.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_apm_admin.png" alt="APM Adinistration">
+</div>
+</div>
+<div class="paragraph">
+<p>In the left sidebar, click on ‘APM Domains’.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_apm_domains.png" alt="APM Domains">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on ‘Create APM Domain’.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_create_apm_domain.png" alt="Create APM Domain">
+</div>
+</div>
+<div class="paragraph">
+<p>Name it, choose a compartment and enter a description.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_create_apm_domain_details.png" alt="Create APM Domain Details">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the domain is created, view the domain details.
+Here you’ll need to grab a few values, so copy the data upload endpoint (#1), private key (#2), and public key (#3).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_apm_domain_details.png" alt="Create APM Domain">
+</div>
+</div>
+<div class="paragraph">
+<p>Now we have what we need to construct a URL to plug in to our application config files.
+The ‘Collector URL’ format requires us to construct a URL by using the <code>data upload endpoint</code> as our base URL and generate the path based on some choices including values from our private or public key.
+The format is <a href="https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html#APMGN-GUID-B5EDE254-C854-436D-B844-B986A4E077AA">documented here</a>.
+Once we’ve constructed the URL path, we can plug it in to our <code>application-oraclecloud.yml</code> config.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example Oracle Cloud Config</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yml hljs" data-lang="yml">micronaut:
+  application:
+    name: demo2
+tracing:
+  zipkin:
+    enabled: true
+    sampler:
+      probability: 1
+    http:
+      url: https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com
+      path: /20200101/observations/public-span?dataFormat=zipkin&amp;dataFormatVersion=2&amp;dataKey=[public key]
+    supportsJoin: false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to keep these values out of the config file, you could set them as environment variables on the server like so:</p>
+</div>
+<div class="listingblock">
+<div class="title">Set ENV vars</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export TRACING_ZIPKIN_HTTP_URL="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com" export TRACING_ZIPKIN_HTTP_PATH="/20200101/observations/public-span?dataFormat=zipkin&amp;dataFormatVersion=2&amp;dataKey=[public key]"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your application will now send trace information to APM.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_view_trace_data_in_apm">View Trace Data in APM</h3>
+<div class="paragraph">
+<p>Go to the APM Trace Explorer in the OCI console.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_trace_explorer.png" alt="APM Trace Explorer">
+</div>
+</div>
+<div class="paragraph">
+<p>Choose your APM domain in the top right and the time period that you’d like to view/search.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_trace_explorer_choose_domain.png" alt="APM Trace Explorer Choose Domain">
+</div>
+</div>
+<div class="paragraph">
+<p>Choose one of the available pre-configured queries across the top.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_trace_explorer_choose_query.png" alt="APM Trace Explorer Choose Query">
+</div>
+</div>
+<div class="paragraph">
+<p>View traces and spans:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_trace_explorer_traces.png" alt="APM Trace Explorer Traces">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on a trace to view detailed info.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_trace_explorer_trace_details.png" alt="APM Trace Explorer Trace Details">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on a span inside a trace to view detailed info and tagged values.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_console_span_details.png" alt="APM Trace Explorer Span Details">
+</div>
+</div>
+<div class="paragraph">
+<p>For more info, please see <a href="https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices">Adding Tracing to Your Distributed Cloud Native Microservices</a>.</p>
+</div>
+<div class="paragraph">
+<p>Read more about the Trace Explorer in the <a href="https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html">documentation</a>.</p>
 </div>
 </div>
 
