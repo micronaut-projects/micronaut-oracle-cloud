@@ -1235,7 +1235,10 @@ The <code>username</code> and <code>password</code> are not automatically genera
 <p>The module <code>micronaut-oraclecloud-micrometer</code> integrates <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/">Micronaut&#8217;s Micrometer support</a> with the Oracle Cloud Infrastructure Monitoring service.</p>
 </div>
 <div class="paragraph">
-<p>First you need add a dependency on the <code>micronaut-oraclecloud-micrometer</code> module:</p>
+<p>To begin, first add the standard dependencies for the Micronaut Micrometer module per the <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#_configuration">documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>Next, you need add a dependency on the <code>micronaut-oraclecloud-micrometer</code> module:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -1250,6 +1253,26 @@ The <code>username</code> and <code>password</code> are not automatically genera
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-micrometer&lt;/artifactId&gt;
     &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Don&#8217;t forget to add a dependency for the OCI SDK Monitoring module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-monitoring")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
+    &lt;artifactId&gt;oci-java-sdk-monitoring&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
