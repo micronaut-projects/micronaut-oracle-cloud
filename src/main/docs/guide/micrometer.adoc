@@ -2,7 +2,7 @@ The https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringove
 
 The module `micronaut-oraclecloud-micrometer` integrates https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/[Micronaut's Micrometer support] with the Oracle Cloud Infrastructure Monitoring service. 
 
-To begin, first add the standard dependencies for the Micronaut Micromter module per the https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#_configuration[documentation].
+To begin, first add the standard dependencies for the Micronaut Micrometer module per the https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#_configuration[documentation].
 
 Next, you need add a dependency on the `micronaut-oraclecloud-micrometer` module:
 
