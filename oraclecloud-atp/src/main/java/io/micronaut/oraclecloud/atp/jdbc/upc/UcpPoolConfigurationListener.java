@@ -78,6 +78,11 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Po
             if (LOG.isTraceEnabled()) {
                 LOG.trace("No AutonomousDatabaseConfiguration for [" + beanIdentifier.getName() + "] datasource");
             }
+        } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
+                        "AutonomousDatabaseConfiguration for [" + beanIdentifier.getName() + "] datasource");
+            }
         } else {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Retrieving Oracle Wallet for DataSource [" + beanIdentifier.getName() + "]");

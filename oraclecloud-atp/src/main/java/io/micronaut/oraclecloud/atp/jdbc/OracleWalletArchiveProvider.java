@@ -16,11 +16,13 @@
 package io.micronaut.oraclecloud.atp.jdbc;
 
 import com.oracle.bmc.database.Database;
+import com.oracle.bmc.database.DatabaseClient;
 import com.oracle.bmc.database.model.GenerateAutonomousDatabaseWalletDetails;
 import com.oracle.bmc.database.requests.GenerateAutonomousDatabaseWalletRequest;
 import com.oracle.bmc.database.requests.GetAutonomousDatabaseRequest;
 import com.oracle.bmc.database.responses.GenerateAutonomousDatabaseWalletResponse;
 import com.oracle.bmc.database.responses.GetAutonomousDatabaseResponse;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.atp.wallet.WalletModule;
@@ -38,6 +40,7 @@ import java.io.IOException;
  * @since 2.5
  */
 @Singleton
+@Requires(beans = DatabaseClient.class)
 public class OracleWalletArchiveProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleWalletArchiveProvider.class);

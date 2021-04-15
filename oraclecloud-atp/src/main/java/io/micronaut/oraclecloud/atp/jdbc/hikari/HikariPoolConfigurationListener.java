@@ -44,6 +44,7 @@ import java.util.Properties;
 @Singleton
 @Requires(classes = DatasourceConfiguration.class)
 @Requires(sdk = Requires.Sdk.JAVA, value = "11")
+@Requires(beans = OracleWalletArchiveProvider.class)
 @Internal
 public class HikariPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration> {
 
@@ -55,8 +56,9 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
 
     /**
      * Default constructor.
+     *
      * @param walletArchiveProvider The wallet archive provider
-     * @param beanLocator The bean locator
+     * @param beanLocator           The bean locator
      */
     protected HikariPoolConfigurationListener(OracleWalletArchiveProvider walletArchiveProvider, BeanLocator beanLocator) {
         this.walletArchiveProvider = walletArchiveProvider;
@@ -73,6 +75,11 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
         if (autonomousDatabaseConfiguration == null) {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("No AutonomousDatabaseConfiguration for [" + bean.getName() + "] datasource");
+            }
+        } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
+                        "AutonomousDatabaseConfiguration for [" + bean.getName() + "] datasource");
             }
         } else {
             if (LOG.isTraceEnabled()) {
