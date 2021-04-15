@@ -8,6 +8,7 @@ import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
 
+import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.ResultSet
 
@@ -26,10 +27,10 @@ class UcpPoolConfigurationListenerSpec extends Specification {
     def "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
-                "datasources.default.ocid"           : atpId,
-                "datasources.default.username"       : userName,
-                "datasources.default.password"       : password,
-                "datasources.default.walletPassword" : "FooBar.123"
+                "datasources.default.ocid"          : atpId,
+                "datasources.default.username"      : userName,
+                "datasources.default.password"      : password,
+                "datasources.default.walletPassword": "FooBar.123"
         ], Environment.ORACLE_CLOUD)
 
 
@@ -41,5 +42,27 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL")
         resultSet.next()
         resultSet.getString(1) == "X"
+    }
+
+    def "test it skips datasource without ocid field"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "datasources.default.url"                       : "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                "datasources.default.username"                  : userName,
+                "datasources.default.password"                  : password,
+                "datasources.default.connectionFactoryClassName": "oracle.jdbc.pool.OracleDataSource",
+                "datasources.default.driverClassName"           : "org.h2.Driver",
+                "datasources.default.maxPoolSize"               : 1,
+                "datasources.default.minPoolSize"               : 1
+        ], Environment.ORACLE_CLOUD)
+
+        when:
+        DataSource dataSource = context.getBean(DataSource.class)
+
+        then:
+        Connection connection = dataSource.getConnection()
+        ResultSet resultSet = connection.createStatement().executeQuery("SELECT 1")
+        resultSet.next()
+        resultSet.getString(1) == "1"
     }
 }

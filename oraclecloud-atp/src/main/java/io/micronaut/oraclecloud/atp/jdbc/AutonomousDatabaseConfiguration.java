@@ -20,7 +20,6 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.jdbc.BasicJdbcConfiguration;
 
-import javax.validation.constraints.NotBlank;
 
 /**
  * Configuration properties for the automated oracle wallet download and configuration.
@@ -32,10 +31,8 @@ import javax.validation.constraints.NotBlank;
 @Context
 public class AutonomousDatabaseConfiguration {
 
-    @NotBlank
     private String ocid;
 
-    @NotBlank
     private String walletPassword;
 
     private GenerateAutonomousDatabaseWalletDetails.GenerateType walletType;
@@ -64,7 +61,6 @@ public class AutonomousDatabaseConfiguration {
     }
 
     /**
-     *
      * @param walletPassword wallet password
      */
     public void setWalletPassword(String walletPassword) {
