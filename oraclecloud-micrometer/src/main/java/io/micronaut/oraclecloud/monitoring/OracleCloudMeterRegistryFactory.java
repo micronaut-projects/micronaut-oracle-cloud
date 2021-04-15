@@ -18,6 +18,7 @@ package io.micronaut.oraclecloud.monitoring;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import io.micrometer.core.instrument.Clock;
 import io.micronaut.configuration.metrics.micrometer.ExportConfigurationProperties;
+import io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
@@ -72,6 +73,7 @@ public class OracleCloudMeterRegistryFactory {
      */
     @Singleton
     @Bean(preDestroy = "close")
+    @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     OracleCloudMeterRegistry oracleCloudMeterRegistry(ExportConfigurationProperties exportConfigurationProperties,
                                                       MonitoringIngestionClient monitoringIngestionClient) {

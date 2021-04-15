@@ -16,6 +16,16 @@ import spock.lang.Specification
 @Requires(beans = AuthenticationDetailsProvider.class)
 class OracleCloudMeterRegistryFactoryTest extends Specification {
 
+    def "test it not loads when globally disabled"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.enabled": "false",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        !context.containsBean(OracleCloudMeterRegistry.class)
+    }
+
     def "test it not loads when disabled"() {
         given:
         ApplicationContext context = ApplicationContext.run([
