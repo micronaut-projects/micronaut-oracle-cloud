@@ -15,12 +15,11 @@
  */
 package example;
 
-import com.oracle.bmc.database.responses.GetDatabaseResponse;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.reactivex.Single;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public interface DatabaseOperations {

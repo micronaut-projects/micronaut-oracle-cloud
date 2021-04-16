@@ -19,6 +19,7 @@ package example;
 
 import com.oracle.bmc.database.model.AutonomousDatabaseSummary;
 import com.oracle.bmc.database.requests.ListAutonomousDatabasesRequest;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
@@ -26,7 +27,6 @@ import io.micronaut.oraclecloud.clients.rxjava2.database.DatabaseRxClient;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.reactivex.Single;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 // end::imports[]

@@ -19,12 +19,12 @@ package example;
 import com.oracle.bmc.objectstorage.model.*;
 import com.oracle.bmc.objectstorage.requests.*;
 import com.oracle.bmc.objectstorage.responses.*;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.*;
 import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.reactivex.Single;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 // end::imports[]
