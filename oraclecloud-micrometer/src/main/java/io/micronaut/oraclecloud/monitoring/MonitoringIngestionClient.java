@@ -16,7 +16,7 @@
 package io.micronaut.oraclecloud.monitoring;
 
 import com.oracle.bmc.ClientConfiguration;
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
@@ -45,7 +45,7 @@ public class MonitoringIngestionClient {
     private final ClientConfigurator clientConfigurator;
     private final RequestSignerFactory requestSignerFactory;
     private final RegionProvider regionProvider;
-    private final AuthenticationDetailsProvider authenticationDetailsProvider;
+    private final AbstractAuthenticationDetailsProvider authenticationDetailsProvider;
 
     private MonitoringClient delegate;
 
@@ -62,7 +62,7 @@ public class MonitoringIngestionClient {
                                      @Nullable ClientConfigurator clientConfigurator,
                                      @Nullable RequestSignerFactory requestSignerFactory,
                                      RegionProvider regionProvider,
-                                     AuthenticationDetailsProvider authenticationDetailsProvider) {
+                                     AbstractAuthenticationDetailsProvider authenticationDetailsProvider) {
         this.clientConfiguration = clientConfiguration;
         this.clientConfigurator = clientConfigurator;
         this.requestSignerFactory = requestSignerFactory;

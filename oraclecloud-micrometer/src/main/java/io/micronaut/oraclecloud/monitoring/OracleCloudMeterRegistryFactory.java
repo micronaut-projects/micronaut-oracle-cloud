@@ -15,7 +15,6 @@
  */
 package io.micronaut.oraclecloud.monitoring;
 
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import io.micrometer.core.instrument.Clock;
 import io.micronaut.configuration.metrics.micrometer.ExportConfigurationProperties;
 import io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory;
@@ -23,6 +22,7 @@ import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
+import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
 import io.micronaut.runtime.ApplicationConfiguration;
@@ -47,18 +47,18 @@ public class OracleCloudMeterRegistryFactory {
     public static final String ORACLECLOUD_METRICS_CONFIG = MICRONAUT_METRICS_EXPORT + "." + OracleCloudConfig.PREFIX;
     public static final String ORACLECLOUD_METRICS_ENABLED = ORACLECLOUD_METRICS_CONFIG + ".enabled";
 
-    private final AuthenticationDetailsProvider authenticationDetailsProvider;
+    private final TenancyIdProvider tenancyIdProvider;
     private final ApplicationConfiguration applicationConfiguration;
 
     /**
      * Creates OracleCloudMeterRegistryFactory.
      *
-     * @param authenticationDetailsProvider oci sdk authentication details provider
+     * @param tenancyIdProvider             tenancy id provider
      * @param applicationConfiguration      micronaut application configuration
      */
-    public OracleCloudMeterRegistryFactory(AuthenticationDetailsProvider authenticationDetailsProvider,
+    public OracleCloudMeterRegistryFactory(TenancyIdProvider tenancyIdProvider,
                                            ApplicationConfiguration applicationConfiguration) {
-        this.authenticationDetailsProvider = authenticationDetailsProvider;
+        this.tenancyIdProvider = tenancyIdProvider;
         this.applicationConfiguration = applicationConfiguration;
     }
 
@@ -83,9 +83,9 @@ public class OracleCloudMeterRegistryFactory {
 
         exportConfigurationProperties.getExport().computeIfAbsent(OracleCloudConfig.PREFIX + ".compartmentId", x -> {
             if (LOG.isInfoEnabled()) {
-                LOG.info("Default compartmentId set to " + authenticationDetailsProvider.getTenantId());
+                LOG.info("Default compartmentId set to " + tenancyIdProvider.getTenancyId());
             }
-            return authenticationDetailsProvider.getTenantId();
+            return tenancyIdProvider.getTenancyId();
         });
 
         Properties exportConfig = exportConfigurationProperties.getExport();
