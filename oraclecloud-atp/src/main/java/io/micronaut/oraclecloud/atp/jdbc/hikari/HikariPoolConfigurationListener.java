@@ -22,6 +22,7 @@ import io.micronaut.context.event.BeanInitializedEventListener;
 import io.micronaut.context.event.BeanInitializingEvent;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.order.Ordered;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
 import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider;
@@ -46,8 +47,8 @@ import java.util.Properties;
 @Requires(sdk = Requires.Sdk.JAVA, value = "11")
 @Requires(beans = OracleWalletArchiveProvider.class)
 @Internal
-public class HikariPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration> {
-
+public class HikariPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration>, Ordered {
+    public static final int POSITION = Ordered.HIGHEST_PRECEDENCE + 100;
     public static final String ORACLE_JDBC_ORACLE_DRIVER = "oracle.jdbc.OracleDriver";
     private static final Logger LOG = LoggerFactory.getLogger(HikariPoolConfigurationListener.class);
 
@@ -63,6 +64,11 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
     protected HikariPoolConfigurationListener(OracleWalletArchiveProvider walletArchiveProvider, BeanLocator beanLocator) {
         this.walletArchiveProvider = walletArchiveProvider;
         this.beanLocator = beanLocator;
+    }
+
+    @Override
+    public int getOrder() {
+        return POSITION;
     }
 
     @Override
