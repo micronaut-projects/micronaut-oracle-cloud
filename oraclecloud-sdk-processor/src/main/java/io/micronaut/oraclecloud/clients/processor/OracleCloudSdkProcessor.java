@@ -94,11 +94,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
             ClassName clientType = ClassName.get(packageName, simpleName);
             ClassName rxSingleType = ClassName.get("io.reactivex", "Single");
-            ClassName authProvideType = ClassName.get("io.reactivex", "Single");
+            final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
             final AnnotationSpec.Builder requiresSpec =
                     AnnotationSpec.builder(Requires.class)
                             .addMember("classes", "{$T.class, $T.class}", clientType, rxSingleType)
-                            .addMember("beans", "{$T.class}", authProvideType);
+                            .addMember("beans", "{$T.class}", authProviderType);
             builder.addAnnotation(requiresSpec.build());
             builder.addAnnotation(Singleton.class);
             builder.addModifiers(Modifier.PUBLIC);
