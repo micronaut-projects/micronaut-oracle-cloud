@@ -94,9 +94,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
             ClassName clientType = ClassName.get(packageName, simpleName);
             ClassName rxSingleType = ClassName.get("io.reactivex", "Single");
+            ClassName authProvideType = ClassName.get("io.reactivex", "Single");
             final AnnotationSpec.Builder requiresSpec =
                     AnnotationSpec.builder(Requires.class)
-                            .addMember("classes", "{$T.class, $T.class}", clientType, rxSingleType);
+                            .addMember("classes", "{$T.class, $T.class}", clientType, rxSingleType)
+                            .addMember("beans", "{$T.class}", authProvideType);
             builder.addAnnotation(requiresSpec.build());
             builder.addAnnotation(Singleton.class);
             builder.addModifiers(Modifier.PUBLIC);
@@ -195,7 +197,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final ClassName builderType = ClassName.get(packageName, simpleName + ".Builder");
         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
         builder.addAnnotation(Factory.class);
-        final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class).addMember("classes", simpleName + ".class");
+        final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
+        final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class)
+                .addMember("classes", simpleName + ".class")
+                .addMember("beans", authProviderType.canonicalName() + ".class");
+
         builder.addAnnotation(requiresSpec.build());
         builder.addMethod(constructor.build());
 
@@ -208,8 +214,9 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         builder.addMethod(getBuilder.build());
 
         final MethodSpec.Builder buildMethod = MethodSpec.methodBuilder("build");
+
         buildMethod.returns(ClassName.get(packageName, simpleName))
-                .addParameter(ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider"), "authenticationDetailsProvider")
+                .addParameter(authProviderType, "authenticationDetailsProvider")
                 .addAnnotation(Singleton.class)
                 .addAnnotation(requiresSpec.build())
                 .addModifiers(Modifier.PROTECTED)
