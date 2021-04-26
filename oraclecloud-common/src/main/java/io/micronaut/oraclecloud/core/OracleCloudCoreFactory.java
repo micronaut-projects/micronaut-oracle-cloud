@@ -21,6 +21,7 @@ import com.oracle.bmc.auth.internal.AuthUtils;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.*;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.context.exceptions.DisabledBeanException;
 
 import javax.inject.Singleton;
 import java.io.IOException;
@@ -156,7 +157,7 @@ public class OracleCloudCoreFactory {
     @Context
     protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
         if (authenticationDetailsProvider == null) {
-            throw new ConfigurationException("Invalid Oracle Cloud Configuration. If you are running locally ensure the CLI is configured by running: oci setup config");
+            throw new DisabledBeanException("Invalid Oracle Cloud Configuration. If you are running locally ensure the CLI is configured by running: oci setup config");
         }
         return () -> {
             if (authenticationDetailsProvider instanceof AuthenticationDetailsProvider) {
@@ -170,7 +171,8 @@ public class OracleCloudCoreFactory {
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
                             new URL(METADATA_SERVICE_URL + "identity/cert.pem"),
                             new URL(METADATA_SERVICE_URL + "identity/key.pem"),
-                            (char[]) null);
+                            (char[]) null
+                    );
                     tenantId = AuthUtils.getTenantIdFromCertificate(
                             urlBasedX509CertificateSupplier.getCertificateAndKeyPair().getCertificate()
                     );
