@@ -135,7 +135,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>@Singleton
-@Requires(classes=oracle.ucp.jdbc.PoolDataSource.class) @Requires(sdk=JAVA,value="11")
+@Requires(sdk=JAVA,value="11") @Requires(classes=oracle.ucp.jdbc.PoolDataSource.class) @Requires(beans=<a href="../OracleWalletArchiveProvider.html" title="class in io.micronaut.oraclecloud.atp.jdbc">OracleWalletArchiveProvider.class</a>)
 @Internal
 public class <span class="typeNameLabel">UcpPoolConfigurationListener</span>
 extends java.lang.Object
