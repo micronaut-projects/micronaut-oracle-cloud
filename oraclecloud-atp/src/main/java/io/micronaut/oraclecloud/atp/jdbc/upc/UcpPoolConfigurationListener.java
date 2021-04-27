@@ -46,8 +46,9 @@ import java.sql.SQLException;
  * @since 2.5
  */
 @Singleton
-@Requires(classes = PoolDataSource.class)
 @Requires(sdk = Requires.Sdk.JAVA, value = "11")
+@Requires(classes = PoolDataSource.class)
+@Requires(beans = OracleWalletArchiveProvider.class)
 @Internal
 public class UcpPoolConfigurationListener implements BeanCreatedEventListener<DataSource>, Ordered {
 
