@@ -173,9 +173,13 @@ final class SdkAutomaticFeature implements Feature {
         String className = targetClass + ".$" + SdkAutomaticFeatureMetadata.class.getSimpleName() + "DefinitionClass";
         Class<?> featureClass = access.findClassByName(className);
         if (featureClass != null) {
-            Object o = InstantiationUtils.instantiate(featureClass);
-            if (o instanceof BeanDefinitionReference) {
-                return Optional.ofNullable((BeanDefinitionReference<?>) o);
+            try {
+                Object o = featureClass.getDeclaredConstructor().newInstance();
+                if (o instanceof BeanDefinitionReference) {
+                    return Optional.ofNullable((BeanDefinitionReference<?>) o);
+                }
+            } catch (Throwable e) {
+                return Optional.empty();
             }
         }
         return Optional.empty();
