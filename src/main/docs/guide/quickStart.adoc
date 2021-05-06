@@ -6,6 +6,6 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={version}]
 
 Followed by a dependency on the OCI SDK client you wish to use, for example for Object Store:
 
-dependency:com.oracle.oci.sdk:oraclecloud-java-sdk-objectstorage[version={ociVersion}]
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
 
 All OCI SDK clients are supported.
