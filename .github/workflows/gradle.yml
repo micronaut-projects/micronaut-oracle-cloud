@@ -29,15 +29,16 @@ jobs:
          sudo apt-get clean
          df -h
       - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.4
+      - uses: actions/cache@v2.1.5
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v2
         with:
+          distribution: 'adopt'
           java-version: ${{ matrix.java }}
       - name: Optional setup step
         run: |
@@ -45,18 +46,9 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew dependencyUpdates check --no-daemon --parallel --continue
         env:
-          TESTCONTAINERS_RYUK_DISABLED: true
-          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
-          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
-          OCI_REGION: ${{ secrets.OCI_REGION }}
-          OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
-          OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
-          OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
-          ATP_OCID: ${{ secrets.ATP_OCID }}
-          ATP_USER: ${{ secrets.ATP_USER }}
-          ATP_PASS: ${{ secrets.ATP_PASS }}
+           TESTCONTAINERS_RYUK_DISABLED: true        
       - name: Publish to Sonatype Snapshots
-        if: success() && github.event_name == 'push' && matrix.java == '11'
+        if: success() && github.event_name == 'push' && matrix.java == '8'
         env:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
@@ -69,7 +61,7 @@ jobs:
           if_true: "micronaut-projects/micronaut-docs"
           if_false: ${{ github.repository }}
       - name: Publish to Github Pages
-        if: success() && github.event_name == 'push' && matrix.java == '11'
+        if: success() && github.event_name == 'push' && matrix.java == '8'
         uses: micronaut-projects/github-pages-deploy-action@master
         env:
           TARGET_REPOSITORY: ${{ steps.docs_target.outputs.value }}

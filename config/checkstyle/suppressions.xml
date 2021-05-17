@@ -9,5 +9,4 @@
               <!-- files="DefaultBeanContext.java|BeanDefinitionWriter.java|DefaultHttpClient.java"/> -->
 
     <suppress checks="MissingJavadocType" files=".*doc-examples.*" />
-    <suppress checks="[a-zA-Z0-9]*" files="io[\\/]micronaut[\\/]oraclecloud[\\/]atp[\\/]wallet" />
 </suppressions>
