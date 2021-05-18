@@ -68,53 +68,6 @@
     "allDeclaredConstructors":true
   },
   {
-    "name":"com.oracle.bmc.monitoring.model.Datapoint",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.Datapoint$Builder",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.FailedMetricRecord$Builder",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.MetricDataDetails",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.MetricDataDetails$Builder",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.PostMetricDataDetails",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.PostMetricDataDetails$BatchAtomicity",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true
-  },
-  {
-    "name":"com.oracle.bmc.monitoring.model.PostMetricDataResponseDetails$Builder",
-    "allDeclaredFields":true,
-    "allDeclaredMethods":true,
-    "allDeclaredConstructors":true
-  },
-  {
     "name":"org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
