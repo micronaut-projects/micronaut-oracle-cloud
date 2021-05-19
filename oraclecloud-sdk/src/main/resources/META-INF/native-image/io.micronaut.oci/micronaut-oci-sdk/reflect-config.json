@@ -1,5 +1,73 @@
 [
   {
+    "name":"com.fasterxml.jackson.databind.JsonDeserializer[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.JsonSerializer[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.KeyDeserializer[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.Module[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.deser.BeanDeserializerModifier[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.deser.Deserializers[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.deser.KeyDeserializers[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.deser.ValueInstantiators[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.ext.Java7HandlersImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.ext.Java7SupportImpl",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.ser.BeanSerializerModifier[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.databind.ser.Serializers[]"
+  },
+  {
+    "name":"com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.fasterxml.jackson.module.jaxb.deser.DataHandlerJsonDeserializer",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.fasterxml.jackson.module.jaxb.ser.DataHandlerJsonSerializer",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"com.oracle.bmc.auth.internal.JWK",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
+    "name":"com.oracle.bmc.auth.internal.X509FederationClient$SecurityToken",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
+    "name":"com.oracle.bmc.auth.internal.X509FederationClient$X509FederationRequest",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
     "name":"org.bouncycastle.jcajce.provider.asymmetric.DH$Mappings",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
@@ -352,6 +420,14 @@
     "allDeclaredMethods":true
   },
   {
+    "name":"org.glassfish.jersey.client.DefaultClientAsyncExecutorProvider",
+    "allDeclaredMethods":true
+  },
+  {
+    "name":"org.glassfish.jersey.client.DefaultClientBackgroundSchedulerProvider",
+    "allDeclaredMethods":true
+  },
+  {
     "name":"org.glassfish.jersey.client.JerseyClientBuilder",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
@@ -388,6 +464,12 @@
     "allDeclaredConstructors":true
   },
   {
+    "name":"org.glassfish.jersey.internal.JaxrsProviders",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
     "name":"org.glassfish.jersey.internal.RuntimeDelegateImpl",
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
@@ -414,10 +496,31 @@
     "allDeclaredConstructors":true
   },
   {
+    "name":"org.glassfish.jersey.jackson.internal.DefaultJacksonJaxbJsonProvider",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true,
+    "allDeclaredConstructors":true
+  },
+  {
     "name":"org.glassfish.jersey.jackson.internal.JacksonAutoDiscoverable",
     "allDeclaredFields":true,
     "allDeclaredMethods":true,
     "allDeclaredConstructors":true
+  },
+  {
+    "name":"org.glassfish.jersey.jackson.internal.jackson.jaxrs.base.ProviderBase",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true
+  },
+  {
+    "name":"org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJaxbJsonProvider",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true
+  },
+  {
+    "name":"org.glassfish.jersey.jackson.internal.jackson.jaxrs.json.JacksonJsonProvider",
+    "allDeclaredFields":true,
+    "allDeclaredMethods":true
   },
   {
     "name":"org.glassfish.jersey.logging.LoggingFeatureAutoDiscoverable",
@@ -528,6 +631,18 @@
   {
     "name":"org.glassfish.jersey.process.internal.RequestScope",
     "allDeclaredFields":true,
+    "allDeclaredMethods":true
+  },
+  {
+    "name":"org.glassfish.jersey.spi.AbstractThreadPoolProvider",
+    "allDeclaredMethods":true
+  },
+  {
+    "name":"org.glassfish.jersey.spi.ScheduledThreadPoolExecutorProvider",
+    "allDeclaredMethods":true
+  },
+  {
+    "name":"org.glassfish.jersey.spi.ThreadPoolExecutorProvider",
     "allDeclaredMethods":true
   },
   {

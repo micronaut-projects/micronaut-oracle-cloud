@@ -2,12 +2,6 @@ plugins {
     id "io.micronaut.application"
 }
 
-repositories {
-    maven {
-        url("https://dl.bintray.com/fnproject/fnproject")
-    }
-}
-
 dependencies {
     implementation project(":oraclecloud-sdk")
     implementation project(":oraclecloud-function")

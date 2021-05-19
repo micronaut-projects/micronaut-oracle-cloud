@@ -1,8 +1,3 @@
-repositories {
-    maven {
-        url("https://dl.bintray.com/fnproject/fnproject")
-    }
-}
 dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut:micronaut-graal"

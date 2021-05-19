@@ -26,20 +26,6 @@
 
   <repositories>
     <repository>
-      <id>jcenter.bintray.com</id>
-      <url>https://jcenter.bintray.com</url>
-    </repository>
-    <repository>
-        <id>fn-release-repo</id>
-        <url>https://dl.bintray.com/fnproject/fnproject</url>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>    
-    <repository>
         <id>jfrog-snapshots</id>
         <url>https://oss.jfrog.org/oss-snapshot-local</url>
         <releases>
