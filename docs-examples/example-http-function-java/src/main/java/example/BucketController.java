@@ -101,7 +101,7 @@ public class BucketController {
                 .bucketName(bucketName)
                 .limit(limit.orElse(25))
                 .namespaceName(namespaceResponse.getValue());
-        if(start != null) {
+        if (start != null) {
             listObjectsRequestBuilder.start(start);
         }
         ListObjects listObjects = objectStorage.listObjects(listObjectsRequestBuilder.build())
