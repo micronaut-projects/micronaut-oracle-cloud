@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.atp.jdbc.hikari
 
-
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import spock.lang.Requires

@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
@@ -34,12 +35,14 @@ import static io.micronaut.oraclecloud.core.InstancePrincipalConfiguration.PREFI
 @ConfigurationProperties(PREFIX)
 @Requires(property = PREFIX + ".enabled", value = StringUtils.TRUE)
 public class InstancePrincipalConfiguration implements Toggleable {
+
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.instance-principal";
+
     private boolean enabled = true;
     private String metadataBaseUrl;
 
     @ConfigurationBuilder(prefixes = "")
-    private final InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder builder =
+    private final InstancePrincipalsAuthenticationDetailsProviderBuilder builder =
             InstancePrincipalsAuthenticationDetailsProvider.builder();
 
     @Override
@@ -75,7 +78,7 @@ public class InstancePrincipalConfiguration implements Toggleable {
     /**
      * @return The builder
      */
-    public InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder getBuilder() {
+    public InstancePrincipalsAuthenticationDetailsProviderBuilder getBuilder() {
         if (metadataBaseUrl != null) {
             builder.metadataBaseUrl(metadataBaseUrl);
         }

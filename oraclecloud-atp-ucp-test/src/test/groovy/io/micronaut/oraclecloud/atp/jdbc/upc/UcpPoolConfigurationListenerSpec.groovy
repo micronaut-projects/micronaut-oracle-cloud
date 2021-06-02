@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.atp.jdbc.upc
 
-
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import oracle.ucp.jdbc.PoolDataSource
@@ -32,7 +31,6 @@ class UcpPoolConfigurationListenerSpec extends Specification {
                 "datasources.default.password"      : password,
                 "datasources.default.walletPassword": "FooBar.123"
         ], Environment.ORACLE_CLOUD)
-
 
         when:
         PoolDataSource poolDataSource = context.getBean(PoolDataSource.class)

@@ -22,7 +22,11 @@ import oracle.net.jdbc.nl.NVPair;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Represents the contents of a {@code TNSNAMES.ORA} file */
 final class TNSNames {

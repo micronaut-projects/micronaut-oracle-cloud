@@ -5,14 +5,25 @@ import com.fnproject.fn.api.RuntimeContext;
 import edu.umd.cs.findbugs.annotations.Nullable;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.io.Writable;
-import io.micronaut.http.*;
-import io.micronaut.http.annotation.*;
+import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.HttpParameters;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MediaType;
+import io.micronaut.http.MutableHttpResponse;
+import io.micronaut.http.annotation.Body;
+import io.micronaut.http.annotation.Consumes;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.CookieValue;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Header;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.Status;
 import io.micronaut.http.cookie.Cookie;
 import org.junit.jupiter.api.Assertions;
 
 import java.awt.event.InputEvent;
 import java.io.IOException;
-
 
 @Controller("/parameters")
 public class ParametersController {
@@ -124,4 +135,3 @@ public class ParametersController {
 //    }
 
 }
-

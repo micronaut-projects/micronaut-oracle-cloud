@@ -15,8 +15,6 @@
  */
 package io.micronaut.oraclecloud.atp.wallet;
 
-
-
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 
 import java.io.IOException;

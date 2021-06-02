@@ -15,8 +15,6 @@
  */
 package io.micronaut.oraclecloud.atp.wallet.datasource;
 
-
-
 import io.micronaut.core.annotation.Internal;
 
 import javax.net.ssl.SSLContext;
