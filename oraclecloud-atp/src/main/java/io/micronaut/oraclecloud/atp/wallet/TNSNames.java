@@ -28,7 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-/** Represents the contents of a {@code TNSNAMES.ORA} file */
+/** Represents the contents of a {@code TNSNAMES.ORA} file. */
 final class TNSNames {
     static final String NAME = "tnsnames.ora";
 
@@ -75,7 +75,7 @@ final class TNSNames {
     }
 
     /**
-     * Find the corresponding {@link ConnectionDescriptor} for the specified service alias
+     * Find the corresponding {@link ConnectionDescriptor} for the specified service alias.
      *
      * @param serviceAlias The alias for the {@link ConnectionDescriptor} to find
      * @return {@link ConnectionDescriptor} instance or null if no match found

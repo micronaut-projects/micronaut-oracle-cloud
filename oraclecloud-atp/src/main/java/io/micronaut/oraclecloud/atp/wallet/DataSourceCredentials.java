@@ -24,8 +24,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Holds the database credentials and possibly the URL for the data source */
-class DataSourceCredentials {
+/** Holds the database credentials and possibly the URL for the data source. */
+final class DataSourceCredentials {
     private static final String ORACLE_THIN_JDBC_PREFIX = "jdbc:oracle:thin:";
     private static final String PASSWORD = OracleKeyStoreSpi.CREDENTIAL_PASSWORD;
     private static final String SERVICE_NAME_SYNTAX_PREFIX = "@//";

@@ -17,7 +17,7 @@ package io.micronaut.oraclecloud.atp.wallet;
 
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 
-/** Represents an entry in a TNSNAMES.ORA file */
+/** Represents an entry in a TNSNAMES.ORA file. */
 class ConnectionDescriptor {
 
     private static final String ORACLE_JDBC_THIN_CONNECTION_DESCRIPTOR_PREFIX =

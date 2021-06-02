@@ -29,11 +29,11 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 
-/** Utility methods for working with {@link InputStream} and {@link OutputStream} */
+/** Utility methods for working with {@link InputStream} and {@link OutputStream}. */
 class ByteStreams {
     private static final int BUFFER_SIZE = 65536;
 
-    ByteStreams() {}
+    ByteStreams() { }
 
     static Reader reader(InputStream content) {
         return new InputStreamReader(content, StandardCharsets.UTF_8);
@@ -100,6 +100,6 @@ class ByteStreams {
         }
 
         @Override
-        public void close() {}
+        public void close() { }
     }
 }

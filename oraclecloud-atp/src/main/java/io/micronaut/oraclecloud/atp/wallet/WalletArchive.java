@@ -74,6 +74,7 @@ public class WalletArchive implements CanConfigureOracleDataSource {
      * configure a TLS connection for the data source.
      *
      * @param dataSource The data source to be configured by this io.micronaut.oraclecloud.adb.wallet
+     * @param <T> the data source generic type
      * @return The supplied data source
      * @throws WalletException if an error occurs accessing the io.micronaut.oraclecloud.adb.wallet
      */

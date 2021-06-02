@@ -16,12 +16,12 @@
 package io.micronaut.oraclecloud.atp.wallet;
 
 /**
- * Entrypoint to the Wallet related API
+ * Entrypoint to the Wallet related API.
  *
  * @see #instance()
  * @see #wallets()
  */
-public class WalletModule {
+public final class WalletModule {
     private static final WalletModule INSTANCE =
             new WalletModule(new ByteStreams());
     private final ByteStreams streams;
@@ -37,7 +37,7 @@ public class WalletModule {
     }
 
     /**
-     * Retrieve the singleton instance of {@link WalletModule}
+     * Retrieve the singleton instance of {@link WalletModule}.
      *
      * @return WalletModule instance
      */
@@ -58,7 +58,7 @@ public class WalletModule {
     }
 
     /**
-     * Access the {@link Wallets} service
+     * Access the {@link Wallets} service.
      *
      * @return Wallets instance
      */

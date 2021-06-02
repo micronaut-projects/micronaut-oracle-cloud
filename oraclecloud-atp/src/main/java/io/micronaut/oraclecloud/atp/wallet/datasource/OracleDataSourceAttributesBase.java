@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 
 /**
- * Base class implementation of {@link OracleDataSourceAttributes}
+ * Base class implementation of {@link OracleDataSourceAttributes}.
  *
  * @param <T> The concrete sub-type of this type
  */
