@@ -23,7 +23,8 @@ import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.function.OciFunction;
 
-import javax.inject.*;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 // end::imports[]

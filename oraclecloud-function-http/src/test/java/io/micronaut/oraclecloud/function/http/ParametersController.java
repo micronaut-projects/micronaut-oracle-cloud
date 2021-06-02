@@ -20,13 +20,16 @@ import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.http.annotation.Status;
 import io.micronaut.http.cookie.Cookie;
-import org.junit.jupiter.api.Assertions;
 
 import java.awt.event.InputEvent;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @Controller("/parameters")
 public class ParametersController {
+
     private final RuntimeContext runtimeContext;
     private final String fnAppId;
     private final String another;
@@ -47,8 +50,8 @@ public class ParametersController {
 
     @Get("/context")
     String context(RuntimeContext runtimeContext) {
-        Assertions.assertEquals(this.runtimeContext, runtimeContext);
-        Assertions.assertNotNull(this.runtimeContext.getMethod());
+        assertEquals(this.runtimeContext, runtimeContext);
+        assertNotNull(this.runtimeContext.getMethod());
         return "Got " + another + " context: " + fnAppId;
     }
 
