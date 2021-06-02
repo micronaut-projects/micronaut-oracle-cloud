@@ -164,13 +164,9 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
             return Optional.of(instanceMetadata);
 
         } catch (MalformedURLException mue) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Oracle Cloud metadataUrl value is invalid!: " + configuration.getUrl(), mue);
-            }
+            LOG.error("Oracle Cloud metadataUrl value is invalid!: {}", configuration.getUrl(), mue);
         } catch (IOException ioe) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Error connecting to " + configuration.getUrl() + " reading instance metadata", ioe);
-            }
+            LOG.error("Error connecting to {} reading instance metadata", configuration.getUrl(), ioe);
         }
 
         return Optional.empty();

@@ -82,9 +82,7 @@ public class OracleCloudMeterRegistryFactory {
                 x -> applicationConfiguration.getName().orElse(null));
 
         exportConfigurationProperties.getExport().computeIfAbsent(OracleCloudConfig.PREFIX + ".compartmentId", x -> {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Default compartmentId set to " + tenancyIdProvider.getTenancyId());
-            }
+            LOG.info("Default compartmentId set to {}", tenancyIdProvider.getTenancyId());
             return tenancyIdProvider.getTenancyId();
         });
 

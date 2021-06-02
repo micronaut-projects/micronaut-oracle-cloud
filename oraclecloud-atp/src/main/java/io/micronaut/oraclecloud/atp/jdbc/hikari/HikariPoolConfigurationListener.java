@@ -79,18 +79,12 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
                 Qualifiers.byName(bean.getName())).orElse(null);
 
         if (autonomousDatabaseConfiguration == null) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("No AutonomousDatabaseConfiguration for [" + bean.getName() + "] datasource");
-            }
+            LOG.trace("No AutonomousDatabaseConfiguration for [{}] datasource", bean.getName());
         } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
-                        "AutonomousDatabaseConfiguration for [" + bean.getName() + "] datasource");
-            }
+            LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
+                    "AutonomousDatabaseConfiguration for [{}] datasource", bean.getName());
         } else {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Retrieving Oracle Wallet for DataSource [" + bean.getName() + "]");
-            }
+            LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", bean.getName());
 
             final CanConfigureOracleDataSource walletArchive = walletArchiveProvider
                     .loadWalletArchive(autonomousDatabaseConfiguration);
