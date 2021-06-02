@@ -15,12 +15,12 @@
  */
 package io.micronaut.oraclecloud.atp.wallet;
 
-
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 import oracle.security.pki.OracleKeyStoreSpi;
 import oracle.security.pki.OracleSecretStore;
 import oracle.security.pki.OracleSecretStoreException;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -75,11 +75,7 @@ class DataSourceCredentials {
             String url = null;
             String user = new String(store.getSecret(USER + index));
             if (serviceAlias.startsWith(SERVICE_NAME_SYNTAX_PREFIX)) {
-
-                final StringBuilder text = new StringBuilder();
-                text.append(ORACLE_THIN_JDBC_PREFIX);
-                text.append(serviceAlias);
-                url = text.toString();
+                url = ORACLE_THIN_JDBC_PREFIX + serviceAlias;
             }
             // We do not materialize the password eagerly since it is a sensitive value
             return new DataSourceCredentials(store, index, url, user);
@@ -104,9 +100,7 @@ class DataSourceCredentials {
 
     private void erase(char[] password) {
         if (password != null) {
-            for (int i = 0; i < password.length; ++i) {
-                password[i] = '*';
-            }
+            Arrays.fill(password, '*');
         }
     }
 

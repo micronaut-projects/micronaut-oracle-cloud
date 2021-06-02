@@ -50,7 +50,7 @@ final class TNSNames {
      * @return {@link TNSNames} instance
      * @throws IOException if an error occurs reading or parsing the TNSNAMES.ora resource
      */
-    static final TNSNames read(final InputStream content) throws IOException {
+    static TNSNames read(final InputStream content) throws IOException {
         try (Reader r = ByteStreams.reader(content)) {
             Map<String, ConnectionDescriptor> connectionDescriptors = new LinkedHashMap<>();
             final NLParamParser parser = new NLParamParser(r);

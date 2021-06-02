@@ -33,7 +33,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         when:
-        PoolDataSource poolDataSource = context.getBean(PoolDataSource.class)
+        PoolDataSource poolDataSource = context.getBean(PoolDataSource)
 
         then:
         Connection connection = poolDataSource.getConnection()
@@ -55,7 +55,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         when:
-        DataSource dataSource = context.getBean(DataSource.class)
+        DataSource dataSource = context.getBean(DataSource)
 
         then:
         Connection connection = dataSource.getConnection()

@@ -22,7 +22,7 @@ class MockFnHttpServerSpec extends Specification {
 
     void "test env forwarded"() {
         given:
-        def response = client.exchange(HttpRequest.GET("/"), Set<String>.class).blockingFirst()
+        def response = client.exchange(HttpRequest.GET("/"), Set<String>).blockingFirst()
 
         expect:
         response.status == HttpStatus.OK

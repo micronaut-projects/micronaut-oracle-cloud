@@ -43,7 +43,7 @@ class OracleCloudMeterRegistrySpec extends Specification {
     }
 
     @Shared
-    private MonitoringClient monitoringClient = Mock(MonitoringClient.class)
+    private MonitoringClient monitoringClient = Mock(MonitoringClient)
 
     @AutoCleanup
     @Shared

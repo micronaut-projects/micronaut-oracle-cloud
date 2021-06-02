@@ -17,8 +17,6 @@ package io.micronaut.oraclecloud.atp.wallet;
 
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 
-import java.io.IOException;
-
 /** Represents an entry in a TNSNAMES.ORA file */
 class ConnectionDescriptor {
 
@@ -30,11 +28,9 @@ class ConnectionDescriptor {
         this.connectionDescriptor = connectionDescriptor;
     }
 
-    <T extends OracleDataSourceAttributes> T configure(T dataSource) throws IOException {
-        final StringBuilder url = new StringBuilder();
-        url.append(ORACLE_JDBC_THIN_CONNECTION_DESCRIPTOR_PREFIX);
-        url.append(connectionDescriptor);
-        dataSource.url(url.toString());
+    <T extends OracleDataSourceAttributes> T configure(T dataSource) {
+        String url = ORACLE_JDBC_THIN_CONNECTION_DESCRIPTOR_PREFIX + connectionDescriptor;
+        dataSource.url(url);
         return dataSource;
     }
 }
