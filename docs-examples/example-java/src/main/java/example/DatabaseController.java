@@ -16,7 +16,6 @@
 package example;
 
 // tag::imports[]
-
 import com.oracle.bmc.database.model.AutonomousDatabaseSummary;
 import com.oracle.bmc.database.requests.ListAutonomousDatabasesRequest;
 import io.micronaut.core.annotation.Nullable;

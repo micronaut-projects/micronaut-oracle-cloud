@@ -2,12 +2,6 @@ plugins {
     id "io.micronaut.application"
 }
 
-repositories {
-    maven {
-        url("https://dl.bintray.com/fnproject/fnproject")
-    }
-}
-
 dependencies {
     annotationProcessor "io.micronaut:micronaut-graal"
     implementation 'io.micronaut:micronaut-validation'

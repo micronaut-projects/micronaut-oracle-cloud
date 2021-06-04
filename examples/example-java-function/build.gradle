@@ -4,10 +4,6 @@ plugins {
 repositories {
     mavenLocal()
     jcenter()
-    maven {
-        url("https://dl.bintray.com/fnproject/fnproject")
-    }
-
 }
 
 micronaut {

@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.atp.jdbc.hikari
 
-
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import spock.lang.Requires
@@ -34,7 +33,7 @@ class HikariPoolConfigurationListenerSpec extends Specification {
 
 
         when:
-        DataSource dataSource = context.getBean(DataSource.class)
+        DataSource dataSource = context.getBean(DataSource)
 
         then:
         Connection connection = dataSource.getConnection()
@@ -52,7 +51,7 @@ class HikariPoolConfigurationListenerSpec extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         when:
-        DataSource dataSource = context.getBean(DataSource.class)
+        DataSource dataSource = context.getBean(DataSource)
 
         then:
         Connection connection = dataSource.getConnection()

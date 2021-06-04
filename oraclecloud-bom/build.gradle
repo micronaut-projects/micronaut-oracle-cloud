@@ -18,7 +18,6 @@ dependencies {
             api "com.oracle.oci.sdk:$name:$ociVersion"
         }
 
-
         for (module in ['api', 'runtime', 'testing-junit4']) {
             api "com.fnproject.fn:$module:$fnVersion"
         }

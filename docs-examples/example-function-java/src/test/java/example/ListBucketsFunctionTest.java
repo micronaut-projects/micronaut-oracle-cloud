@@ -1,10 +1,11 @@
 package example;
 
 import com.fnproject.fn.testing.FnTestingRule;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ListBucketsFunctionTest {
 
@@ -15,7 +16,7 @@ public class ListBucketsFunctionTest {
         fn.givenEvent().enqueue();
         fn.thenRun(ListBucketsFunction.class, "handleRequest");
         String result = fn.getOnlyResult().getBodyAsString();
-        Assertions.assertTrue(result.contains("\"kg\""));
+        assertTrue(result.contains("\"kg\""));
     }
 
     private FnTestingRule newFnRule() {

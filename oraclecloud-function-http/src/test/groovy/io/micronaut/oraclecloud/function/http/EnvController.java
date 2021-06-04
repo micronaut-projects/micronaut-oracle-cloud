@@ -6,7 +6,6 @@ import io.micronaut.http.annotation.Get;
 
 import java.util.Set;
 
-
 @Controller("/env")
 public class EnvController {
     private final Environment environment;

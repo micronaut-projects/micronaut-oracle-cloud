@@ -41,7 +41,6 @@ class OracleCloudMetadataResolverSpec extends Specification {
         computeInstanceMetadata.get().region == "us-phoenix-1"
     }
 
-
     private OracleCloudMetadataResolver buildResolver() {
         def configuration = new OracleCloudMetadataConfiguration()
         String currentPath = Paths.get("").toAbsolutePath().toString()

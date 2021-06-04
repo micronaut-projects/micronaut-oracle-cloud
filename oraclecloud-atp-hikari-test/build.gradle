@@ -12,5 +12,5 @@ dependencies {
         exclude module:'groovy-all'
     }
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testRuntime("com.h2database:h2")
+    testRuntimeOnly("com.h2database:h2")
 }

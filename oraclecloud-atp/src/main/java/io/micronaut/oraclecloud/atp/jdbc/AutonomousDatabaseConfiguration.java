@@ -20,7 +20,6 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.jdbc.BasicJdbcConfiguration;
 
-
 /**
  * Configuration properties for the automated oracle wallet download and configuration.
  *

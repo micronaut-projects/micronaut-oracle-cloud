@@ -2,8 +2,9 @@ package io.micronaut.oraclecloud.function;
 
 import com.fnproject.fn.testing.FnTestingRule;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ObjectStorageFunctionTest {
 
@@ -13,7 +14,7 @@ public class ObjectStorageFunctionTest {
         fn.givenEvent().enqueue();
         fn.thenRun(ObjectStorageFunction.class, "handleRequest");
         String result = fn.getOnlyResult().getBodyAsString();
-        Assertions.assertEquals("ok", result);
+        assertEquals("ok", result);
     }
 
     @NotNull
