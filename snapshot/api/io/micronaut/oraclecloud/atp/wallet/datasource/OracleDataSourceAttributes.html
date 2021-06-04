@@ -121,6 +121,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="description">
 <ul class="blockList">
 <li class="blockList">
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>T</code> - the data source generic type</dd>
+</dl>
 <hr>
 <pre>@Internal
 public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T extends OracleDataSourceAttributes&gt;</span></pre>
@@ -157,49 +161,49 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <td class="colFirst"><code><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#password(char%5B%5D)">password</a></span>&#8203;(char[]&nbsp;password)</code></th>
 <td class="colLast">
-<div class="block">Configure the database password to use to connect to the database</div>
+<div class="block">Configure the database password to use to connect to the database.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code>javax.net.ssl.SSLContext</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sslContext()">sslContext</a></span>()</code></th>
 <td class="colLast">
-<div class="block">The configured <code>SSLContext</code> if any</div>
+<div class="block">The configured <code>SSLContext</code> if any.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#sslContext(javax.net.ssl.SSLContext)">sslContext</a></span>&#8203;(javax.net.ssl.SSLContext&nbsp;sslContext)</code></th>
 <td class="colLast">
-<div class="block">Configure the <code>SSLContext</code> used to create TLS connections to the database</div>
+<div class="block">Configure the <code>SSLContext</code> used to create TLS connections to the database.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#url()">url</a></span>()</code></th>
 <td class="colLast">
-<div class="block">The configured JDBC URL if any</div>
+<div class="block">The configured JDBC URL if any.</div>
 </td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#url(java.lang.String)">url</a></span>&#8203;(java.lang.String&nbsp;url)</code></th>
 <td class="colLast">
-<div class="block">Configure the JDBC url to use to connect to the database</div>
+<div class="block">Configure the JDBC url to use to connect to the database.</div>
 </td>
 </tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#user()">user</a></span>()</code></th>
 <td class="colLast">
-<div class="block">The configured database user if any</div>
+<div class="block">The configured database user if any.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#user(java.lang.String)">user</a></span>&#8203;(java.lang.String&nbsp;user)</code></th>
 <td class="colLast">
-<div class="block">Configure the database user to connect to</div>
+<div class="block">Configure the database user to connect to.</div>
 </td>
 </tr>
 </table>
@@ -226,7 +230,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>sslContext</h4>
 <pre class="methodSignature">javax.net.ssl.SSLContext&nbsp;sslContext()</pre>
-<div class="block">The configured <code>SSLContext</code> if any</div>
+<div class="block">The configured <code>SSLContext</code> if any.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>SSLContext instance, or null if no instance configured</dd>
@@ -240,7 +244,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>sslContext</h4>
 <pre class="methodSignature"><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a>&nbsp;sslContext&#8203;(javax.net.ssl.SSLContext&nbsp;sslContext)</pre>
-<div class="block">Configure the <code>SSLContext</code> used to create TLS connections to the database</div>
+<div class="block">Configure the <code>SSLContext</code> used to create TLS connections to the database.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>sslContext</code> - The <code>SSLContext</code> holding the certificates used to secure access to
@@ -257,7 +261,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>url</h4>
 <pre class="methodSignature">java.lang.String&nbsp;url()</pre>
-<div class="block">The configured JDBC URL if any</div>
+<div class="block">The configured JDBC URL if any.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>String instance or null if no JDBC url configured</dd>
@@ -271,7 +275,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>url</h4>
 <pre class="methodSignature"><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a>&nbsp;url&#8203;(java.lang.String&nbsp;url)</pre>
-<div class="block">Configure the JDBC url to use to connect to the database</div>
+<div class="block">Configure the JDBC url to use to connect to the database.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>url</code> - The JDBC url of the database</dd>
@@ -287,7 +291,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>user</h4>
 <pre class="methodSignature">java.lang.String&nbsp;user()</pre>
-<div class="block">The configured database user if any</div>
+<div class="block">The configured database user if any.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>Database user name, or null if no username configured</dd>
@@ -301,7 +305,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>user</h4>
 <pre class="methodSignature"><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a>&nbsp;user&#8203;(java.lang.String&nbsp;user)</pre>
-<div class="block">Configure the database user to connect to</div>
+<div class="block">Configure the database user to connect to.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user</code> - The database username</dd>
@@ -333,7 +337,7 @@ public interface <span class="typeNameLabel">OracleDataSourceAttributes&lt;T ext
 <li class="blockList">
 <h4>password</h4>
 <pre class="methodSignature"><a href="OracleDataSourceAttributes.html" title="type parameter in OracleDataSourceAttributes">T</a>&nbsp;password&#8203;(char[]&nbsp;password)</pre>
-<div class="block">Configure the database password to use to connect to the database</div>
+<div class="block">Configure the database password to use to connect to the database.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>password</code> - The password to use to connect to the database. The caller should zero out
