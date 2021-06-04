@@ -22,7 +22,7 @@ class ParameterBindingSpec extends Specification {
     void "test URI parameters"() {
 
         given:
-        def response = client.exchange(HttpRequest.GET("/parameters/uri/Foo"), String.class).blockingFirst()
+        def response = client.exchange(HttpRequest.GET("/parameters/uri/Foo"), String).blockingFirst()
 
         expect:
         response.status == HttpStatus.OK
@@ -32,7 +32,7 @@ class ParameterBindingSpec extends Specification {
 
     void "test invalid HTTP method"() {
         when:
-        client.exchange(HttpRequest.POST("/parameters/uri/Foo", ""), String.class).blockingFirst()
+        client.exchange(HttpRequest.POST("/parameters/uri/Foo", ""), String).blockingFirst()
 
         then:
         def e = thrown(HttpClientResponseException)
@@ -45,7 +45,7 @@ class ParameterBindingSpec extends Specification {
     void "test query value"() {
 
         given:
-        def response = client.exchange(HttpRequest.GET("/parameters/query?q=Foo"), String.class).blockingFirst()
+        def response = client.exchange(HttpRequest.GET("/parameters/query?q=Foo"), String).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -56,7 +56,7 @@ class ParameterBindingSpec extends Specification {
     void "test all parameters"() {
 
         given:
-        def response = client.exchange(HttpRequest.GET("/parameters/allParams?name=Foo&age=20"), String.class).blockingFirst()
+        def response = client.exchange(HttpRequest.GET("/parameters/allParams?name=Foo&age=20"), String).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -67,7 +67,7 @@ class ParameterBindingSpec extends Specification {
     void "test header value"() {
 
         given:
-        def response = client.exchange(HttpRequest.GET("/parameters/header").header(HttpHeaders.CONTENT_TYPE, "text/plain;q=1.0"), String.class).blockingFirst()
+        def response = client.exchange(HttpRequest.GET("/parameters/header").header(HttpHeaders.CONTENT_TYPE, "text/plain;q=1.0"), String).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
@@ -92,14 +92,13 @@ class ParameterBindingSpec extends Specification {
     void "test string body"() {
 
         given:
-        def response = client.exchange(HttpRequest.POST( "/parameters/stringBody", "Foo").header(HttpHeaders.CONTENT_TYPE, "text/plain"), String.class).blockingFirst()
+        def response = client.exchange(HttpRequest.POST( "/parameters/stringBody", "Foo").header(HttpHeaders.CONTENT_TYPE, "text/plain"), String).blockingFirst()
 
         expect:
         response.status() == HttpStatus.OK
         response.contentType.get() == MediaType.TEXT_PLAIN_TYPE
         response.body() == 'Hello Foo'
     }
-
 
     void "test writable"() {
 
@@ -114,7 +113,6 @@ class ParameterBindingSpec extends Specification {
         response.body() == 'Hello Foo'
         response.headers.getAll("Foo") == ['Bar']
     }
-
 
     void "test JSON POJO body"() {
         given:
@@ -147,7 +145,6 @@ class ParameterBindingSpec extends Specification {
         response.body().contains("Error decoding JSON stream for type")
     }
 
-
     void "test JSON POJO body with no @Body binds to arguments"() {
         given:
         def json = '{"name":"bar","age":30}'
@@ -178,7 +175,6 @@ class ParameterBindingSpec extends Specification {
         response.body() == json
         response.headers.getAll("Foo") == ['Bar']
     }
-
 
     void "full Micronaut request and response - invalid JSON"() {
         when:

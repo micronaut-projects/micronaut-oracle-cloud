@@ -10,10 +10,9 @@ import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 
-
 @MicronautTest(startApplication = false)
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
-@Requires(beans = AuthenticationDetailsProvider.class)
+@Requires(beans = AuthenticationDetailsProvider)
 class OracleCloudMeterRegistryFactoryTest extends Specification {
 
     def "test it not loads when globally disabled"() {
@@ -23,7 +22,7 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         expect:
-        !context.containsBean(OracleCloudMeterRegistry.class)
+        !context.containsBean(OracleCloudMeterRegistry)
     }
 
     def "test it not loads when disabled"() {
@@ -33,7 +32,7 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         expect:
-        !context.containsBean(OracleCloudMeterRegistry.class)
+        !context.containsBean(OracleCloudMeterRegistry)
     }
 
     def "test it loads by default"() {
@@ -44,7 +43,7 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         expect:
-        context.containsBean(OracleCloudMeterRegistry.class)
+        context.containsBean(OracleCloudMeterRegistry)
     }
 
     def "test it publish metrics to ingestion telemetry endpoint"() {
@@ -53,7 +52,7 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
                 "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
                 "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test"
         ], Environment.ORACLE_CLOUD)
-        OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class)
+        OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry)
 
         when:
         Counter counter = Counter.builder("micronaut.test.counter").

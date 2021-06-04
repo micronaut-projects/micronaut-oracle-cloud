@@ -53,6 +53,7 @@ import java.sql.SQLException;
 public class UcpPoolConfigurationListener implements BeanCreatedEventListener<DataSource>, Ordered {
 
     public static final int POSITION = Ordered.HIGHEST_PRECEDENCE + 100;
+
     private static final String ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE = "oracle.jdbc.pool.OracleDataSource";
     private static final Logger LOG = LoggerFactory.getLogger(UcpPoolConfigurationListener.class);
 
@@ -81,32 +82,26 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
             PoolDataSource bean = (PoolDataSource) dataSource;
 
             BeanIdentifier beanIdentifier = event.getBeanIdentifier();
+            String beanName = beanIdentifier.getName();
             AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = beanLocator
                     .findBean(AutonomousDatabaseConfiguration.class,
-                            Qualifiers.byName(beanIdentifier.getName())).orElse(null);
+                            Qualifiers.byName(beanName)).orElse(null);
 
             if (autonomousDatabaseConfiguration == null) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("No AutonomousDatabaseConfiguration for [" + beanIdentifier.getName() + "] datasource");
-                }
+                LOG.trace("No AutonomousDatabaseConfiguration for [{}] datasource", beanName);
             } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
-                            "AutonomousDatabaseConfiguration for [" + beanIdentifier.getName() + "] datasource");
-                }
+                LOG.trace("Skipping configuration of Oracle Wallet due to missing ocid or wallet password in " +
+                        "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
             } else {
-                if (LOG.isTraceEnabled()) {
-                    LOG.trace("Retrieving Oracle Wallet for DataSource [" + beanIdentifier.getName() + "]");
-                }
+                LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", beanName);
 
                 CanConfigureOracleDataSource walletArchive = walletArchiveProvider
                         .loadWalletArchive(autonomousDatabaseConfiguration);
 
                 try {
                     if (StringUtils.isEmpty(bean.getConnectionFactoryClassName())) {
-                        if (LOG.isTraceEnabled()) {
-                            LOG.trace("Configured connection factory " + ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE + " for [" + beanIdentifier.getName() + "] datasource");
-                        }
+                        LOG.trace("Configured connection factory " + ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE + " for [{}] datasource",
+                                beanName);
                         bean.setConnectionFactoryClassName(ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE);
                     }
 
@@ -137,7 +132,7 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
                                 bean.setURL(url);
                                 return this;
                             } catch (SQLException e) {
-                                throw new ConfigurationException("Error configuring the [" + beanIdentifier.getName() + "] datasource url: " + e.getMessage(), e);
+                                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource url: " + e.getMessage(), e);
                             }
                         }
 
@@ -152,7 +147,7 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
                                 bean.setUser(user);
                                 return this;
                             } catch (SQLException e) {
-                                throw new ConfigurationException("Error configuring the [" + beanIdentifier.getName() + "] datasource user: " + e.getMessage(), e);
+                                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource user: " + e.getMessage(), e);
                             }
                         }
 
@@ -171,16 +166,14 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
                                 bean.setPassword(String.valueOf(password));
                                 return this;
                             } catch (SQLException e) {
-                                throw new ConfigurationException("Error configuring the [" + beanIdentifier.getName() + "] datasource password: " + e.getMessage(), e);
+                                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource password: " + e.getMessage(), e);
                             }
                         }
                     });
 
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Successfully configured OracleWallet for [" + beanIdentifier.getName() + "] datasource");
-                    }
+                    LOG.debug("Successfully configured OracleWallet for [{}] datasource", beanName);
                 } catch (IOException | SQLException e) {
-                    throw new ConfigurationException("Error configuring the [" + beanIdentifier.getName() + "] datasource: " + e.getMessage(), e);
+                    throw new ConfigurationException("Error configuring the [" + beanName + "] datasource: " + e.getMessage(), e);
                 }
             }
         }

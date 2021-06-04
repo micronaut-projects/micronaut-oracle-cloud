@@ -38,7 +38,5 @@ final class OciCommonFeature implements Feature {
                 "jdk.xml",
                 "com.sun.org.apache.xerces",
                 "com.sun.xml").forEach(RuntimeClassInitialization::initializeAtBuildTime);
-
     }
-
 }

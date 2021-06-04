@@ -21,12 +21,21 @@ import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
 import com.oracle.bmc.objectstorage.model.ListObjects;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
-import com.oracle.bmc.objectstorage.requests.*;
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest;
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import com.oracle.bmc.objectstorage.requests.ListObjectsRequest;
 import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.annotation.*;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Delete;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 
 import java.util.List;
@@ -92,7 +101,7 @@ public class BucketController {
                 .bucketName(bucketName)
                 .limit(limit.orElse(25))
                 .namespaceName(namespaceResponse.getValue());
-        if(start != null) {
+        if (start != null) {
             listObjectsRequestBuilder.start(start);
         }
         ListObjects listObjects = objectStorage.listObjects(listObjectsRequestBuilder.build())

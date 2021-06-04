@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.atp.jdbc.upc
 
-
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import oracle.ucp.jdbc.PoolDataSource
@@ -33,9 +32,8 @@ class UcpPoolConfigurationListenerSpec extends Specification {
                 "datasources.default.walletPassword": "FooBar.123"
         ], Environment.ORACLE_CLOUD)
 
-
         when:
-        PoolDataSource poolDataSource = context.getBean(PoolDataSource.class)
+        PoolDataSource poolDataSource = context.getBean(PoolDataSource)
 
         then:
         Connection connection = poolDataSource.getConnection()
@@ -57,7 +55,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         ], Environment.ORACLE_CLOUD)
 
         when:
-        DataSource dataSource = context.getBean(DataSource.class)
+        DataSource dataSource = context.getBean(DataSource)
 
         then:
         Connection connection = dataSource.getConnection()

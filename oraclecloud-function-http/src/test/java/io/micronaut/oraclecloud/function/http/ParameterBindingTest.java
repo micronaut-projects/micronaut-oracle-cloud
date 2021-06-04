@@ -6,10 +6,11 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.RxHttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest
 @Property(name = "fn.test.config.foo.bar", value = "good")
@@ -25,7 +26,7 @@ public class ParameterBindingTest {
                 HttpRequest.GET("/parameters/uri/Fred"), String.class
         ).blockingFirst();
         String result = response.body();
-        Assertions.assertEquals("Hello Fred", result);
+        assertEquals("Hello Fred", result);
     }
 
     @Test
@@ -34,7 +35,7 @@ public class ParameterBindingTest {
                 HttpRequest.GET("/parameters/context"), String.class
         ).blockingFirst();
         String result = response.body();
-        Assertions.assertEquals("Got good context: myAppID", result);
+        assertEquals("Got good context: myAppID", result);
     }
 
 }

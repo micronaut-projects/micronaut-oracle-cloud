@@ -30,11 +30,14 @@ import io.micronaut.context.annotation.ConfigurationProperties;
  */
 @ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD + ".client")
 public class OracleCloudClientConfigurationProperties {
+
     @ConfigurationBuilder(prefixes = "", excludes = {"retryConfiguration", "circuitBreakerConfiguration"})
     private final ClientConfiguration.ClientConfigurationBuilder clientBuilder = ClientConfiguration.builder();
+
     @ConfigurationBuilder(prefixes = "", value = "retry")
     @Nullable
     private RetryConfiguration.Builder retryBuilder;
+
     @ConfigurationBuilder(prefixes = "", value = "circuit-breaker")
     @Nullable
     private CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder circuitBreakerBuilder;

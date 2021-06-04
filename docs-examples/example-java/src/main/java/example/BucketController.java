@@ -16,11 +16,19 @@
 package example;
 
 // tag::imports[]
-import com.oracle.bmc.objectstorage.model.*;
-import com.oracle.bmc.objectstorage.requests.*;
-import com.oracle.bmc.objectstorage.responses.*;
+import com.oracle.bmc.objectstorage.model.BucketSummary;
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails;
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest;
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import com.oracle.bmc.objectstorage.responses.CreateBucketResponse;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.annotation.*;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Delete;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.Post;
 import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.reactivex.Single;

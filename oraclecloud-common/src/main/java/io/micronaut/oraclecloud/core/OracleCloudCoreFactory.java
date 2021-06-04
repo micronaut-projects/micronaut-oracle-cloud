@@ -16,10 +16,20 @@
 package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.ClientConfiguration;
-import com.oracle.bmc.auth.*;
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
 import edu.umd.cs.findbugs.annotations.Nullable;
-import io.micronaut.context.annotation.*;
+import io.micronaut.context.annotation.Context;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.context.exceptions.DisabledBeanException;
 
@@ -76,14 +86,9 @@ public class OracleCloudCoreFactory {
     @Primary
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
         if (getConfigPath().isPresent()) {
-            return new ConfigFileAuthenticationDetailsProvider(
-                    configPath,
-                    profile
-            );
+            return new ConfigFileAuthenticationDetailsProvider(configPath, profile);
         } else {
-            return new ConfigFileAuthenticationDetailsProvider(
-                    profile
-            );
+            return new ConfigFileAuthenticationDetailsProvider(profile);
         }
     }
 

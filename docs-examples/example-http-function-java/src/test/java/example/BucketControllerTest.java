@@ -3,12 +3,18 @@ package example;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
 import io.micronaut.oraclecloud.function.http.test.FnHttpTest;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.DisabledForJreRange;
 import org.junit.jupiter.api.condition.JRE;
+
+import static io.micronaut.http.HttpStatus.OK;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -26,14 +32,8 @@ public class BucketControllerTest {
         final HttpResponse<String> response = FnHttpTest
                 .invoke(HttpRequest.GET("/os/buckets"));
 
-        Assertions.assertEquals(
-                HttpStatus.OK,
-                response.status()
-        );
-
-        Assertions.assertTrue(
-                StringUtils.isNotEmpty(response.body())
-        );
+        assertEquals(OK, response.status());
+        assertTrue(StringUtils.isNotEmpty(response.body()));
     }
 
     @Test
@@ -42,14 +42,8 @@ public class BucketControllerTest {
         final HttpResponse<String> response = FnHttpTest
                 .invoke(HttpRequest.POST(createDeleteUri, ""));
 
-        Assertions.assertEquals(
-                HttpStatus.OK,
-                response.status()
-        );
-
-        Assertions.assertTrue(
-                StringUtils.isNotEmpty(response.body())
-        );
+        assertEquals(OK, response.status());
+        assertTrue(StringUtils.isNotEmpty(response.body()));
     }
 
     @Test
@@ -58,14 +52,8 @@ public class BucketControllerTest {
         final HttpResponse<String> response = FnHttpTest
                 .invoke(HttpRequest.GET("/os/objects/" + testBucket));
 
-        Assertions.assertEquals(
-                HttpStatus.OK,
-                response.status()
-        );
-
-        Assertions.assertTrue(
-                StringUtils.isNotEmpty(response.body())
-        );
+        assertEquals(OK, response.status());
+        assertTrue(StringUtils.isNotEmpty(response.body()));
     }
 
     @Test
@@ -74,13 +62,7 @@ public class BucketControllerTest {
         final HttpResponse<String> response = FnHttpTest
                 .invoke(HttpRequest.DELETE(createDeleteUri));
 
-        Assertions.assertEquals(
-                HttpStatus.OK,
-                response.status()
-        );
-
-        Assertions.assertTrue(
-                StringUtils.isNotEmpty(response.body())
-        );
+        assertEquals(OK, response.status());
+        assertTrue(StringUtils.isNotEmpty(response.body()));
     }
 }
