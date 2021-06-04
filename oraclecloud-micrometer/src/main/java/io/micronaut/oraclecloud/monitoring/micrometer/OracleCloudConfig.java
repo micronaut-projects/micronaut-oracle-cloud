@@ -24,7 +24,9 @@ import io.micrometer.core.instrument.step.StepRegistryConfig;
 
 import java.util.regex.Pattern;
 
-import static io.micrometer.core.instrument.config.validate.PropertyValidator.*;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getBoolean;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getInteger;
+import static io.micrometer.core.instrument.config.validate.PropertyValidator.getString;
 
 /**
  * Configuration for {@link OracleCloudMeterRegistry}.

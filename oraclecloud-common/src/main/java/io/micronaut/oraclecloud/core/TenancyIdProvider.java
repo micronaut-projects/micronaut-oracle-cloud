@@ -17,7 +17,6 @@ package io.micronaut.oraclecloud.core;
 
 import edu.umd.cs.findbugs.annotations.Nullable;
 
-
 /**
  * Interface that supplies the Tenant ID.
  *

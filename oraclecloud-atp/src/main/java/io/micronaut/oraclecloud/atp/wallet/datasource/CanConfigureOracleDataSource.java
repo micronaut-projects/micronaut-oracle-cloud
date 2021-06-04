@@ -23,13 +23,13 @@ import java.sql.SQLException;
 
 /**
  * A trait interface for types that can contribute to the configuration of an {@link
- * OracleDataSourceAttributes} instance
+ * OracleDataSourceAttributes} instance.
  */
 @Internal
 public interface CanConfigureOracleDataSource {
 
     /**
-     * Convenience method to configure an {@link OracleCommonDataSource} sub-type
+     * Convenience method to configure an {@link OracleCommonDataSource} sub-type.
      *
      * @param ods The data source to be configure
      * @throws SQLException if a database error occurs configuring the data source
@@ -40,7 +40,7 @@ public interface CanConfigureOracleDataSource {
     }
 
     /**
-     * Configure a data source using the state in this instance
+     * Configure a data source using the state in this instance.
      *
      * @param dataSource The data source to be configured
      * @param <T> The data source type

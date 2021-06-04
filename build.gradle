@@ -14,13 +14,12 @@ subprojects { Project subproject ->
     if (subproject.name == 'oraclecloud-bom') {
         apply plugin: "java-platform"
         version projectVersion
-    } else if (subproject.parent.name == "docs-examples" || subproject.name == "docs-examples") {
+    } else {
         repositories {
             jcenter()
             mavenCentral()
         }
-        return
-    } else {
+
         apply plugin: "io.micronaut.build.internal.common"
 
         dependencies {
@@ -31,20 +30,19 @@ subprojects { Project subproject ->
             testAnnotationProcessor "io.micronaut:micronaut-inject-java"
         }
 
-         tasks.withType(JavaCompile) {
-             options.encoding = "UTF-8"
-             options.compilerArgs.addAll([
-                     '-parameters',
-                     // enables incremental compilation
-                     '-Amicronaut.processing.incremental=true',
-                     '-Amicronaut.processing.annotations=io.micronaut.oraclecloud.*',
-                     "-Amicronaut.processing.group=$project.group",
-                     "-Amicronaut.processing.module=$project.name",
-             ])
-         }
+        tasks.withType(JavaCompile) {
+            options.encoding = "UTF-8"
+            options.compilerArgs.addAll([
+                    '-parameters',
+                    // enables incremental compilation
+                    '-Amicronaut.processing.incremental=true',
+                    '-Amicronaut.processing.annotations=io.micronaut.oraclecloud.*',
+                    "-Amicronaut.processing.group=$project.group",
+                    "-Amicronaut.processing.module=$project.name",
+            ])
+        }
     }
 
-    
     apply plugin: "io.micronaut.build.internal.dependency-updates"
     if (!['oraclecloud-sdk-processor', 'oraclecloud-atp-hikari-test', 'oraclecloud-atp-ucp-test'].contains(subproject.name)) {
         apply plugin: "io.micronaut.build.internal.publishing"

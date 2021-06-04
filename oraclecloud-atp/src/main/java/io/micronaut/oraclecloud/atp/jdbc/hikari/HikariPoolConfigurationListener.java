@@ -74,23 +74,18 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
     @Override
     public DatasourceConfiguration onInitialized(BeanInitializingEvent<DatasourceConfiguration> event) {
         DatasourceConfiguration bean = event.getBean();
+        String beanName = bean.getName();
 
         AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = beanLocator.findBean(AutonomousDatabaseConfiguration.class,
-                Qualifiers.byName(bean.getName())).orElse(null);
+                Qualifiers.byName(beanName)).orElse(null);
 
         if (autonomousDatabaseConfiguration == null) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("No AutonomousDatabaseConfiguration for [" + bean.getName() + "] datasource");
-            }
+            LOG.trace("No AutonomousDatabaseConfiguration for [{}] datasource", beanName);
         } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
-                        "AutonomousDatabaseConfiguration for [" + bean.getName() + "] datasource");
-            }
+            LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
+                    "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
         } else {
-            if (LOG.isTraceEnabled()) {
-                LOG.trace("Retrieving Oracle Wallet for DataSource [" + bean.getName() + "]");
-            }
+            LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", beanName);
 
             final CanConfigureOracleDataSource walletArchive = walletArchiveProvider
                     .loadWalletArchive(autonomousDatabaseConfiguration);
@@ -106,7 +101,7 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
                     oracleDataSource.setConnectionProperties(dataSourceProperties);
                 }
             } catch (SQLException | IOException e) {
-                throw new ConfigurationException("Error configuring the [" + bean.getName() + "] datasource: " + e.getMessage(), e);
+                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource: " + e.getMessage(), e);
             }
         }
         return bean;

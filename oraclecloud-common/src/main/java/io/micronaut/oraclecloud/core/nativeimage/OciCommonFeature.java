@@ -34,14 +34,14 @@ final class OciCommonFeature implements Feature {
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
-        Arrays.asList(
+        for (String s : Arrays.asList(
                 "java.awt",
                 "jdk.xml",
                 "com.sun.org.apache.xerces",
                 "com.sun.xml",
                 "sun.awt",
-                "sun.java2d").forEach(RuntimeClassInitialization::initializeAtBuildTime);
-
+                "sun.java2d")) {
+            RuntimeClassInitialization.initializeAtBuildTime(s);
+        }
     }
-
 }

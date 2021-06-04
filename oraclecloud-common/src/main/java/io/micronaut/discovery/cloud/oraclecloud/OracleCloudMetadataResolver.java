@@ -32,11 +32,29 @@ import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static io.micronaut.discovery.cloud.ComputeInstanceMetadataResolverUtils.populateMetadata;
 import static io.micronaut.discovery.cloud.ComputeInstanceMetadataResolverUtils.readMetadataUrl;
-import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.*;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.AGENT_CONFIG;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.AVAILABILITY_DOMAIN;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.CANONICAL_REGION_NAME;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.DISPLAY_NAME;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.ID;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.IMAGE;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.MAC;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.MONITORING_DISABLED;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.PRIVATE_IP;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.REGION;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.SHAPE;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.TIME_CREATED;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.USER_METADATA;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.VNIC_ID;
 
 /**
  * Resolves {@link ComputeInstanceMetadata} for Oracle Cloud Infrastructure.
@@ -146,13 +164,9 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
             return Optional.of(instanceMetadata);
 
         } catch (MalformedURLException mue) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Oracle Cloud metadataUrl value is invalid!: " + configuration.getUrl(), mue);
-            }
+            LOG.error("Oracle Cloud metadataUrl value is invalid!: {}", configuration.getUrl(), mue);
         } catch (IOException ioe) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Error connecting to " + configuration.getUrl() + " reading instance metadata", ioe);
-            }
+            LOG.error("Error connecting to {} reading instance metadata", configuration.getUrl(), ioe);
         }
 
         return Optional.empty();
