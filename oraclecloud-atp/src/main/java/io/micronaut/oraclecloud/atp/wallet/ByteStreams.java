@@ -15,25 +15,18 @@
  */
 package io.micronaut.oraclecloud.atp.wallet;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FilterInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.StandardCharsets;
 
-/** Utility methods for working with {@link InputStream} and {@link OutputStream}. */
+/** Utility methods for working with {@link InputStream} and {@link OutputStream} */
 class ByteStreams {
     private static final int BUFFER_SIZE = 65536;
 
-    ByteStreams() { }
+    ByteStreams() {}
 
     static Reader reader(InputStream content) {
         return new InputStreamReader(content, StandardCharsets.UTF_8);
@@ -100,6 +93,6 @@ class ByteStreams {
         }
 
         @Override
-        public void close() { }
+        public void close() {}
     }
 }

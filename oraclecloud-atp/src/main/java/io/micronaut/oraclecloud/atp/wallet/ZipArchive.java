@@ -20,7 +20,7 @@ import java.util.zip.ZipInputStream;
 
 class ZipArchive {
 
-    private final byte[] bytes;
+    private byte[] bytes;
 
     ZipArchive(final byte[] bytes) {
         this.bytes = bytes;

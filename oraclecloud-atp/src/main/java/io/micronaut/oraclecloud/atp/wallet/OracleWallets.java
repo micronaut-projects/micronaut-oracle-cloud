@@ -41,13 +41,12 @@ class OracleWallets {
      * <p>This provides the most robust means to preserve the state of the io.micronaut.oraclecloud.adb.wallet.
      *
      * @param existing The {@link OracleWallet} instance to duplicate
-     * @param password The password used to encrypt/decrypt the contents of the wallet
      * @return new {@link OracleWallet} instance containing contents of the provided {@link
      *     OracleWallet}
-     * @throws IOException if there is a problem reading the wallet
+     * @throws IOException
      */
     OracleWallet copy(final OracleWallet existing, char[] password) throws IOException {
-        try (InputStream payload = existing.getWalletArray(true)) {
+        try (final InputStream payload = existing.getWalletArray(true)) {
             final byte[] bytes = streams.asByteArray(payload);
             final OracleWallet duplicate = read(bytes, password);
             return duplicate;

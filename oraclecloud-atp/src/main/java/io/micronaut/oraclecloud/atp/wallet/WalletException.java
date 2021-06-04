@@ -17,10 +17,7 @@ package io.micronaut.oraclecloud.atp.wallet;
 
 import java.io.IOException;
 
-/**
- * Wrapper exception to contain an exception thrown when working with wallets.
- */
-public final class WalletException extends IOException {
+public class WalletException extends IOException {
 
     private WalletException(final Throwable cause) {
         super(cause);

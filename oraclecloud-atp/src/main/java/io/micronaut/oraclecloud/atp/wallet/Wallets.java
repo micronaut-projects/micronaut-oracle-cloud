@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-/** Services for reading Oracle {@code cwallet.sso} and {@code ewallet.p12} wallets. */
+/** Services for reading Oracle {@code cwallet.sso} and {@code ewallet.p12} wallets */
 public class Wallets {
 
     private static final String CWALLET_SSO = "cwallet.sso";
@@ -40,7 +40,7 @@ public class Wallets {
     }
 
     /**
-     * Create an auto login io.micronaut.oraclecloud.adb.wallet {@link Wallet.Builder}.
+     * Create an auto login io.micronaut.oraclecloud.adb.wallet {@link Wallet.Builder}
      *
      * @return {@link Wallet.Builder} instance
      * @throws IOException if an error occurs creating the io.micronaut.oraclecloud.adb.wallet
@@ -51,31 +51,16 @@ public class Wallets {
         return Wallet.Builder.of(wallet);
     }
 
-    /**
-     * Create a builder to make changes to a wallet.
-     *
-     * @param wallet the wallet
-     * @return the builder
-     * @throws IOException if there's a problem reading the wallet
-     */
     public Wallet.Builder modify(final Wallet wallet) throws IOException {
         return modify(wallet, null);
     }
 
-    /**
-     * Create a builder to make changes to a wallet.
-     *
-     * @param wallet the wallet
-     * @param password the password used to encrypt/decrypt the contents of the wallet
-     * @return the builder
-     * @throws IOException if there's a problem reading the wallet
-     */
     public Wallet.Builder modify(final Wallet wallet, final char[] password) throws IOException {
         return Wallet.Builder.of(wallets.copy(wallet.wallet, password));
     }
 
     /**
-     * Read the contents of a {@code cwallet.sso} io.micronaut.oraclecloud.adb.wallet.
+     * Read the contents of a {@code cwallet.sso} io.micronaut.oraclecloud.adb.wallet
      *
      * @param content The bytes of the io.micronaut.oraclecloud.adb.wallet
      * @return Wallet instance
@@ -105,7 +90,7 @@ public class Wallets {
     }
 
     private Wallet readWallet(Path wallet) throws IOException {
-        try (InputStream content = Files.newInputStream(wallet)) {
+        try (final InputStream content = Files.newInputStream(wallet)) {
             return read(content);
         }
     }
@@ -116,7 +101,6 @@ public class Wallets {
      * @param wallet Path to the io.micronaut.oraclecloud.adb.wallet. If the specified location is a folder then the {@code
      *     ewallet.p12} located within that folder is read. If the location is a file then that file
      *     is read as a password protected io.micronaut.oraclecloud.adb.wallet.
-     * @param password the password used to encrypt/decrypt the contents of the wallet
      * @return Wallet instance
      * @throws IOException if an error occurs reading the specified location
      */
@@ -129,20 +113,17 @@ public class Wallets {
     }
 
     private Wallet readWallet(Path wallet, char[] password) throws IOException {
-        try (InputStream content = Files.newInputStream(wallet)) {
+        try (final InputStream content = Files.newInputStream(wallet)) {
             return read(content, password);
         }
     }
 
-    /**
-     * @return the Archives
-     */
     public Archives archives() {
         return archives;
     }
 
     /**
-     * Read the contents of an {@code ewallet.p12} io.micronaut.oraclecloud.adb.wallet.
+     * Read the contents of an {@code ewallet.p12} io.micronaut.oraclecloud.adb.wallet
      *
      * @param content The bytes of the io.micronaut.oraclecloud.adb.wallet
      * @param password The password used to encrypt the contents of the io.micronaut.oraclecloud.adb.wallet
@@ -156,9 +137,6 @@ public class Wallets {
         return wallet;
     }
 
-    /**
-     * Helper class to populate a WalletArchive from a compressed wallet.
-     */
     public class Archives {
 
         private final ZipArchives zipArchives;
@@ -166,10 +144,9 @@ public class Wallets {
         Archives(final ZipArchives zipArchives) {
             this.zipArchives = zipArchives;
         }
-
         /**
          * Read the a Wallet Archive containing at least a {@code cwallet.sso} and optionally a
-         * {@code tnsnames.ora}.
+         * {@code tnsnames.ora}
          *
          * @param path The path of the zip archive
          * @return WalletArchive instance
@@ -181,7 +158,7 @@ public class Wallets {
 
         /**
          * Read the a Wallet Archive containing at least a {@code ewallet.p12} and optionally a
-         * {@code tnsnames.ora}.
+         * {@code tnsnames.ora}
          *
          * @param path The path of the zip archive
          * @param password The password used to protect {@code ewallet.p12}
@@ -195,7 +172,7 @@ public class Wallets {
 
         /**
          * Read the a Wallet Archive containing at least a {@code cwallet.sso} and optionally a
-         * {@code tnsnames.ora}.
+         * {@code tnsnames.ora}
          *
          * @param content The contents of the Wallet archive
          * @return WalletArchive instance
@@ -207,7 +184,7 @@ public class Wallets {
 
         /**
          * Read the a Wallet Archive containing at least a {@code ewallet.p12} and optionally a
-         * {@code tnsnames.ora}.
+         * {@code tnsnames.ora}
          *
          * @param content The content of the io.micronaut.oraclecloud.adb.wallet archive
          * @param password The password used to protect {@code ewallet.p12}
@@ -225,7 +202,7 @@ public class Wallets {
             Wallet wallet = null;
             TNSNames tnsNames = null;
 
-            try (ZipInputStream zip = archive.toZipInputStream()) {
+            try (final ZipInputStream zip = archive.toZipInputStream()) {
                 ZipEntry entry = zip.getNextEntry();
                 while (entry != null) {
                     final InputStream entryContent = streams.uncloseable(zip);

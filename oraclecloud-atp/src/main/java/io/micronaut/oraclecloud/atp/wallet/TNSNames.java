@@ -22,13 +22,9 @@ import oracle.net.jdbc.nl.NVPair;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
-/** Represents the contents of a {@code TNSNAMES.ORA} file. */
+/** Represents the contents of a {@code TNSNAMES.ORA} file */
 final class TNSNames {
     static final String NAME = "tnsnames.ora";
 
@@ -50,7 +46,7 @@ final class TNSNames {
      * @return {@link TNSNames} instance
      * @throws IOException if an error occurs reading or parsing the TNSNAMES.ora resource
      */
-    static TNSNames read(final InputStream content) throws IOException {
+    static final TNSNames read(final InputStream content) throws IOException {
         try (Reader r = ByteStreams.reader(content)) {
             Map<String, ConnectionDescriptor> connectionDescriptors = new LinkedHashMap<>();
             final NLParamParser parser = new NLParamParser(r);
@@ -75,7 +71,7 @@ final class TNSNames {
     }
 
     /**
-     * Find the corresponding {@link ConnectionDescriptor} for the specified service alias.
+     * Find the corresponding {@link ConnectionDescriptor} for the specified service alias
      *
      * @param serviceAlias The alias for the {@link ConnectionDescriptor} to find
      * @return {@link ConnectionDescriptor} instance or null if no match found

@@ -15,17 +15,17 @@
  */
 package io.micronaut.oraclecloud.atp.wallet;
 
+
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 import oracle.security.pki.OracleKeyStoreSpi;
 import oracle.security.pki.OracleSecretStore;
 import oracle.security.pki.OracleSecretStoreException;
 
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/** Holds the database credentials and possibly the URL for the data source. */
-final class DataSourceCredentials {
+/** Holds the database credentials and possibly the URL for the data source */
+class DataSourceCredentials {
     private static final String ORACLE_THIN_JDBC_PREFIX = "jdbc:oracle:thin:";
     private static final String PASSWORD = OracleKeyStoreSpi.CREDENTIAL_PASSWORD;
     private static final String SERVICE_NAME_SYNTAX_PREFIX = "@//";
@@ -75,7 +75,11 @@ final class DataSourceCredentials {
             String url = null;
             String user = new String(store.getSecret(USER + index));
             if (serviceAlias.startsWith(SERVICE_NAME_SYNTAX_PREFIX)) {
-                url = ORACLE_THIN_JDBC_PREFIX + serviceAlias;
+
+                final StringBuilder text = new StringBuilder();
+                text.append(ORACLE_THIN_JDBC_PREFIX);
+                text.append(serviceAlias);
+                url = text.toString();
             }
             // We do not materialize the password eagerly since it is a sensitive value
             return new DataSourceCredentials(store, index, url, user);
@@ -100,7 +104,9 @@ final class DataSourceCredentials {
 
     private void erase(char[] password) {
         if (password != null) {
-            Arrays.fill(password, '*');
+            for (int i = 0; i < password.length; ++i) {
+                password[i] = '*';
+            }
         }
     }
 

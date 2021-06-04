@@ -27,16 +27,12 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.util.Enumeration;
 import java.util.Map;
 
-/** Represents an Oracle {@code cwallet.sso} or {@code ewallet.p12} wallet. */
+/** Represents an Oracle {@code cwallet.sso} or {@code ewallet.p12} wallet */
 final class Wallet implements CanConfigureOracleDataSource {
 
     private static final String TLS_PROTOCOL = "TLS";
@@ -112,7 +108,7 @@ final class Wallet implements CanConfigureOracleDataSource {
     }
 
     /**
-     * Specialize this wallet to configure the specified service alias (AKA TNS Alias).
+     * Specialize this wallet to configure the specified service alias (AKA TNS Alias)
      *
      * @param serviceAlias The alias of the database service to configure
      * @return Wallet instance that will additionally configure the user credentials and URL for the
@@ -130,10 +126,10 @@ final class Wallet implements CanConfigureOracleDataSource {
      *
      * <p>If the wallet contains a certificate key store and/or trust store these will be used to
      * configure a TLS connection for the data source.
+     *
      * <p>
      *
      * @param dataSource The data source to be configured by this wallet
-     * @param <T> the data source generic type
      * @return The supplied data source
      * @throws WalletException if an error occurs accessing the wallet
      */
@@ -154,7 +150,7 @@ final class Wallet implements CanConfigureOracleDataSource {
         return wallet.getWalletArray(true);
     }
 
-    public static final class Builder {
+    public static class Builder {
 
         private final transient KeyStore keyStore;
 
@@ -179,7 +175,7 @@ final class Wallet implements CanConfigureOracleDataSource {
         }
 
         /**
-         * Build {@link Wallet} instance.
+         * Build {@link Wallet} instance
          *
          * @return {@link Wallet} instance
          * @throws WalletException if an error occurs creating the wallet
@@ -233,7 +229,7 @@ final class Wallet implements CanConfigureOracleDataSource {
         }
 
         /**
-         * Add a {@link Certificate} to the wallet.
+         * Add a {@link Certificate} to the wallet
          *
          * @param alias The alias of the certificate
          * @param cert The certificate
@@ -255,7 +251,7 @@ final class Wallet implements CanConfigureOracleDataSource {
         }
 
         /**
-         * Add a secret to the wallet.
+         * Add a secret to the wallet
          *
          * @param alias The alias of the secret
          * @param secret The secret value
@@ -287,7 +283,7 @@ final class Wallet implements CanConfigureOracleDataSource {
         }
 
         /**
-         * Add the credentials for a database service alias.
+         * Add the credentials for a database service alias
          *
          * @param serviceAlias The alias of the database service ( as it appears in {@code
          *     TNSNAMES.ORA} )
