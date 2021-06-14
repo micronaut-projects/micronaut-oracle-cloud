@@ -3,7 +3,7 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     implementation("io.micronaut:micronaut-http-server")
-    implementation 'org.eclipse.jetty:jetty-server:9.4.35.v20201120'
+    implementation 'org.eclipse.jetty:jetty-server:11.0.5'
     implementation "com.fnproject.fn:testing-junit4:$fnVersion"
     compileOnly project(":oraclecloud-function-http")
 }
