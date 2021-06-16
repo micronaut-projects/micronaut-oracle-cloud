@@ -1,0 +1,26 @@
+plugins {
+    id "groovy"
+    id "io.micronaut.application"
+}
+
+dependencies {
+    implementation project(":oraclecloud-sdk")
+    implementation project(":oraclecloud-function")
+    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+        exclude module:'javassist'
+    }
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
+    runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
+    testImplementation 'com.fnproject.fn:testing-junit4:1.0.130'
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-groovy"
+}
+
+testNativeImage.enabled=false
+
+mainClassName = "com.fnproject.fn.runtime.EntryPoint"
+
+run {
+    args("example.ListBucketsFunction::handleRequest")
+}

@@ -1,0 +1,34 @@
+plugins {
+    id("org.jetbrains.kotlin.jvm") version "1.4.32"
+    id("org.jetbrains.kotlin.kapt") version "1.4.32"
+    id "io.micronaut.application"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.4.32"
+}
+
+dependencies {
+    implementation "io.micronaut:micronaut-http-server-netty"
+    implementation project(":oraclecloud-sdk")
+    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+        exclude group:'org.javassist', module:'javassist'
+    }
+    implementation "com.oracle.oci.sdk:oci-java-sdk-database", {
+        exclude group:'org.javassist', module:'javassist'
+    }
+    implementation "io.micronaut.kotlin:micronaut-kotlin-runtime"
+    implementation "javax.annotation:javax.annotation-api"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+    runtimeOnly("ch.qos.logback:logback-classic")
+    runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin"
+
+    testImplementation "io.micronaut:micronaut-http-client"
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+}
+
+test {
+    exclude '**/*Test$Intercepted*'
+}
+
+mainClassName = "example.Application"

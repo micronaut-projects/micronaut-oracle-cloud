@@ -42,10 +42,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static io.micronaut.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static io.micronaut.http.HttpStatus.OK;
+
 /**
  * Testing support for functions.
  */
 public final class FnHttpTest {
+
+    private static final Argument<String> STRING = Argument.of(String.class);
 
     /**
      * Invoke a function via HTTP.
@@ -54,7 +59,19 @@ public final class FnHttpTest {
      * @return The result
      */
     public static <I> HttpResponse<String> invoke(HttpRequest<I> request) {
-        return invoke(request, String.class);
+        return invoke(request, STRING, null);
+    }
+
+    /**
+     * Invoke a function via HTTP.
+     * @param request The request
+     * @param sharedClasses optional classes to share between the test classloader and the FN classloader
+     * @param <I> The body type
+     * @return The result
+     */
+    public static <I> HttpResponse<String> invoke(HttpRequest<I> request,
+                                                  List<Class<?>> sharedClasses) {
+        return invoke(request, STRING, sharedClasses);
     }
 
     /**
@@ -65,7 +82,20 @@ public final class FnHttpTest {
      * @return The result
      */
     public static <I> HttpResponse<String> invoke(HttpMethod method, String uri) {
-        return invoke(HttpRequest.create(method, uri), String.class);
+        return invoke(HttpRequest.create(method, uri), STRING, null);
+    }
+
+    /**
+     * Invoke a function via HTTP.
+     * @param method The http method
+     * @param uri The uri
+     * @param sharedClasses optional classes to share between the test classloader and the FN classloader
+     * @param <I> The body type
+     * @return The result
+     */
+    public static <I> HttpResponse<String> invoke(HttpMethod method, String uri,
+                                                  List<Class<?>> sharedClasses) {
+        return invoke(HttpRequest.create(method, uri), STRING, sharedClasses);
     }
 
     /**
@@ -76,8 +106,24 @@ public final class FnHttpTest {
      * @param <O> The output type
      * @return The response
      */
-    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request, Class<O> resultType) {
-        return invoke(request, Argument.of(resultType));
+    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request,
+                                                Class<O> resultType) {
+        return invoke(request, Argument.of(resultType), null);
+    }
+
+    /**
+     * Invoke a function via HTTP.
+     * @param request The request
+     * @param resultType The result type
+     * @param sharedClasses optional classes to share between the test classloader and the FN classloader
+     * @param <I> The input type
+     * @param <O> The output type
+     * @return The response
+     */
+    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request,
+                                                Class<O> resultType,
+                                                List<Class<?>> sharedClasses) {
+        return invoke(request, Argument.of(resultType), sharedClasses);
     }
 
     /**
@@ -88,14 +134,37 @@ public final class FnHttpTest {
      * @param <O> The output type
      * @return The response
      */
-    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request, Argument<O> resultType) {
+    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request,
+                                                Argument<O> resultType) {
+        return invoke(request, resultType, null);
+    }
+
+    /**
+     * Invoke a function via HTTP.
+     * @param request The request
+     * @param resultType The result type
+     * @param sharedClasses optional classes to share between the test classloader and the FN classloader
+     * @param <I> The input type
+     * @param <O> The output type
+     * @return The response
+     */
+    public static <I, O> HttpResponse<O> invoke(HttpRequest<I> request,
+                                                Argument<O> resultType,
+                                                List<Class<?>> sharedClasses) {
         try (ApplicationContext ctx = ApplicationContext.run()) {
             final MediaTypeCodecRegistry codecRegistry = ctx.getBean(MediaTypeCodecRegistry.class);
             Objects.requireNonNull(request, "The request cannot be null");
             Objects.requireNonNull(resultType, "The result type cannot be null");
+
             FnTestingRule fn = FnTestingRule.createDefault();
             fn.addSharedClassPrefix("org.slf4j.");
             fn.addSharedClassPrefix("com.sun.");
+            if (sharedClasses != null) {
+                for (Class<?> c : sharedClasses) {
+                    fn.addSharedClass(c);
+                }
+            }
+
             FnEventBuilder<FnTestingRule> eventBuilder = fn.givenEvent()
                     .withHeader("Fn-Http-Request-Url", request.getUri().toString())
                     .withHeader("Fn-Http-Method", request.getMethodName());
@@ -117,12 +186,7 @@ public final class FnHttpTest {
                 if (codec != null) {
                     eventBuilder.withBody(codec.encode(b));
                 } else {
-                    eventBuilder.withBody(
-                            ConversionService.SHARED.convertRequired(
-                                    b,
-                                    byte[].class
-                            )
-                    );
+                    eventBuilder.withBody(ConversionService.SHARED.convertRequired(b, byte[].class));
                 }
             }
 
@@ -165,7 +229,7 @@ public final class FnHttpTest {
         public HttpStatus getStatus() {
             return outputEvent.getHeaders().get("Fn-Http-Status").map(s ->
                     HttpStatus.valueOf(Integer.parseInt(s))).orElseGet(() ->
-                outputEvent.getStatus() == OutputEvent.Status.Success ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR
+                outputEvent.getStatus() == OutputEvent.Status.Success ? OK : INTERNAL_SERVER_ERROR
             );
         }
 
@@ -209,10 +273,7 @@ public final class FnHttpTest {
                     final B result = codec.decode(resultType, bodyAsBytes);
                     return Optional.ofNullable(result);
                 } else {
-                    return ConversionService.SHARED.convert(
-                            bodyAsBytes, resultType
-
-                    );
+                    return ConversionService.SHARED.convert(bodyAsBytes, resultType);
                 }
             }
         }

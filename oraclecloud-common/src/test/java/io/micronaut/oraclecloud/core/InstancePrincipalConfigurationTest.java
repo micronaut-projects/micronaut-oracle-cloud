@@ -8,12 +8,12 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 @MicronautTest
 @Property(name = InstancePrincipalConfiguration.PREFIX + ".enabled", value = StringUtils.TRUE)
@@ -35,6 +35,6 @@ public class InstancePrincipalConfigurationTest {
 
     @MockBean(BasicAuthenticationDetailsProvider.class)
     BasicAuthenticationDetailsProvider mockBean() {
-        return Mockito.mock(InstancePrincipalsAuthenticationDetailsProvider.class);
+        return mock(InstancePrincipalsAuthenticationDetailsProvider.class);
     }
 }

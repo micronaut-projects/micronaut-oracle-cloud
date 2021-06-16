@@ -1,15 +1,14 @@
 package io.micronaut.oraclecloud.function;
 
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import io.micronaut.oraclecloud.core.TenancyIdProvider;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ObjectStorageFunction extends OciFunction {
@@ -18,17 +17,20 @@ public class ObjectStorageFunction extends OciFunction {
     ObjectStorageClient client;
 
     @Inject
-    AuthenticationDetailsProvider detailsProvider;
+    TenancyIdProvider tenancyIdProvider;
 
     public String handleRequest() {
-        final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-        builder.namespaceName("kg");
-        builder.compartmentId(detailsProvider.getTenantId());
+        ListBucketsRequest request = ListBucketsRequest.builder()
+                .namespaceName("kg")
+                .compartmentId(tenancyIdProvider.getTenancyId())
+                .build();
         final List<BucketSummary> items = client
-                .listBuckets(builder.build())
+                .listBuckets(request)
                 .getItems();
 
-        assertNotNull(items);
-        return "ok";
+        return items.stream()
+                .map(BucketSummary::getName)
+                .collect(Collectors.toList())
+                .toString();
     }
 }
