@@ -1,0 +1,39 @@
+import io.micronaut.gradle.docker.DockerBuildStrategy
+
+plugins {
+    id "groovy"
+    id "io.micronaut.application"
+}
+
+dependencies {
+    implementation project(":oraclecloud-sdk")
+    implementation project(":oraclecloud-function")
+    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+        exclude module: 'javassist'
+    }
+    implementation("io.micronaut.groovy:micronaut-runtime-groovy")
+    implementation("io.micronaut:micronaut-validation")
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
+    runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
+    testImplementation "com.fnproject.fn:testing-junit4:$fnVersion"
+    testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-groovy"
+}
+
+project.afterEvaluate {
+    nativeImage.enabled = false
+    testNativeImage.enabled = false
+}
+
+application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
+
+dockerfile {
+    buildStrategy.set(DockerBuildStrategy.ORACLE_FUNCTION)
+    defaultCommand.set("example.ListBucketsFunction::handleRequest")
+}
+
+run {
+    args("example.ListBucketsFunction::handleRequest")
+}

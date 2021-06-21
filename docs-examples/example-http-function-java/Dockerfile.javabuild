@@ -1,5 +1,0 @@
-FROM fnproject/fn-java-fdk:1.0.105
-WORKDIR /function
-COPY build/layers/libs /function/app/
-COPY build/layers/application.jar /function/app/
-CMD ["io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest"]

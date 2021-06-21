@@ -1,7 +1,6 @@
 package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.ClientConfiguration;
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +14,8 @@ public class OracleCloudCoreDefaultConfigTest {
      * This tests that the default configurations can be setup.
      */
     @Test
-    void testDefaultConfig(
-            ClientConfiguration clientConfiguration,
-            AuthenticationDetailsProvider provider) {
-        assertEquals(60000, clientConfiguration.getReadTimeoutMillis());
+    void testDefaultConfig(ClientConfiguration clientConfiguration) {
         assertNotNull(clientConfiguration);
-        assertNotNull(provider);
+        assertEquals(60000, clientConfiguration.getReadTimeoutMillis());
     }
 }

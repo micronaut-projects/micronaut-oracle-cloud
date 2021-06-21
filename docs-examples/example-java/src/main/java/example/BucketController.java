@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2021 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,12 +40,12 @@ import java.util.stream.Collectors;
 // tag::class[]
 @Controller("/os")
 public class BucketController implements BucketOperations {
+
     private final ObjectStorageRxClient objectStorage;
     private final TenancyIdProvider tenancyIdProvider;
 
-    public BucketController(
-            ObjectStorageRxClient objectStorage,
-            TenancyIdProvider tenancyIdProvider) { // <1>
+    public BucketController(ObjectStorageRxClient objectStorage,
+                            TenancyIdProvider tenancyIdProvider) { // <1>
         this.objectStorage = objectStorage;
         this.tenancyIdProvider = tenancyIdProvider;
     }
@@ -54,59 +54,63 @@ public class BucketController implements BucketOperations {
     @Override
     @Get("/buckets{/compartmentId}")
     public Single<List<String>> listBuckets(@PathVariable @Nullable String compartmentId) {
+
         String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
+
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(compartmentOcid).build();
+
         return objectStorage.getNamespace(getNamespaceRequest).flatMap(namespaceResponse -> {
-            final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-            builder.namespaceName(namespaceResponse.getValue());
-            builder.compartmentId(compartmentOcid);
-            return objectStorage.listBuckets(builder.build())
+            ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+                    .namespaceName(namespaceResponse.getValue())
+                    .compartmentId(compartmentOcid)
+                    .build();
+            return objectStorage.listBuckets(listBucketsRequest)
                     .map(listBucketsResponse -> listBucketsResponse.getItems()
                             .stream()
                             .map(BucketSummary::getName)
                             .collect(Collectors.toList()));
         });
-
     }
 
     // tag::method[]
     @Override
     @Post(value = "/buckets/{name}")
     public Single<String> createBucket(String name) {
+
         String tenancyId = tenancyIdProvider.getTenancyId();
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyId).build();
         return objectStorage.getNamespace(getNamespaceRequest) // <1>
                 .flatMap(namespaceResponse -> {
-            CreateBucketRequest.Builder builder = CreateBucketRequest.builder()
-                    .namespaceName(namespaceResponse.getValue())
-                    .createBucketDetails(CreateBucketDetails.builder()
-                            .compartmentId(tenancyId)
-                            .name(name)
-                            .build());
+                    CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
+                            .namespaceName(namespaceResponse.getValue())
+                            .createBucketDetails(CreateBucketDetails.builder()
+                                    .compartmentId(tenancyId)
+                                    .name(name)
+                                    .build())
+                            .build();
 
-            return objectStorage.createBucket(builder.build()) // <2>
-                    .map(CreateBucketResponse::getLocation); // <3>
-        });
+                    return objectStorage.createBucket(createBucketRequest) // <2>
+                            .map(CreateBucketResponse::getLocation); // <3>
+                });
     }
     // end::method[]
 
     @Override
     @Delete(value = "/buckets/{name}")
     public Single<Boolean> deleteBucket(String name) {
-        String tenancyId = tenancyIdProvider.getTenancyId();
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
-                .compartmentId(tenancyId).build();
+                .compartmentId(tenancyIdProvider.getTenancyId()).build();
         return objectStorage.getNamespace(getNamespaceRequest).flatMap(getNamespaceResponse -> {
-            DeleteBucketRequest.Builder builder = DeleteBucketRequest.builder()
+            DeleteBucketRequest deleteBucketRequest = DeleteBucketRequest.builder()
                     .namespaceName(getNamespaceResponse.getValue())
-                    .bucketName(name);
+                    .bucketName(name)
+                    .build();
 
-            return objectStorage.deleteBucket(builder.build())
-                    .map(response -> Boolean.TRUE);
+            return objectStorage.deleteBucket(deleteBucketRequest)
+                    .map(response -> true);
         });
-
     }
 // tag::class[]
 }

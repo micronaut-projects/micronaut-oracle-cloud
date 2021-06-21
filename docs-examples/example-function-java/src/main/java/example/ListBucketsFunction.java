@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2021 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.function.OciFunction;
 
@@ -38,18 +39,22 @@ public class ListBucketsFunction extends OciFunction { // <1>
 
     @Inject
     TenancyIdProvider tenantIdProvider;
-
 // end::class[]
 
     // tag::method[]
+    @ReflectiveAccess
     public List<String> handleRequest() {
+
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenantIdProvider.getTenancyId()).build();
         String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
-        final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-        builder.namespaceName(namespace);
-        builder.compartmentId(tenantIdProvider.getTenancyId());
-        return objectStorageClient.listBuckets(builder.build())
+
+        ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+                .namespaceName(namespace)
+                .compartmentId(tenantIdProvider.getTenancyId())
+                .build();
+
+        return objectStorageClient.listBuckets(listBucketsRequest)
                 .getItems().stream().map(BucketSummary::getName)
                 .collect(Collectors.toList());
     }
