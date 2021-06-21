@@ -1,0 +1,4 @@
+oci:
+  config:
+    instance-principal:
+      enabled: true

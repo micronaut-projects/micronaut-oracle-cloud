@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2021 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller("/books")
 public class BookController {
+
     private final Map<String, Book> books = new ConcurrentHashMap<>();
 
     public BookController() {
@@ -47,7 +48,7 @@ public class BookController {
     @Post("/")
     @Status(HttpStatus.CREATED)
     Book save(@Valid @NotNull @Body Book book) {
-        this.books.put(book.getTitle(), book);
+        books.put(book.getTitle(), book);
         return book;
     }
 

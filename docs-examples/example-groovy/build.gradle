@@ -1,0 +1,32 @@
+plugins {
+    id "groovy"
+    id "io.micronaut.application"
+}
+
+dependencies {
+    implementation project(":oraclecloud-sdk")
+    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
+        exclude module: 'javassist'
+    }
+    implementation "com.oracle.oci.sdk:oci-java-sdk-database", {
+        exclude group:'org.javassist', module:'javassist'
+    }
+    implementation "io.micronaut:micronaut-http-server-netty"
+    implementation 'io.micronaut:micronaut-validation'
+    implementation 'io.micronaut.groovy:micronaut-runtime-groovy'
+    runtimeOnly("ch.qos.logback:logback-classic")
+    testImplementation "io.micronaut:micronaut-http-client"
+    testImplementation("io.micronaut.test:micronaut-test-spock")
+    testAnnotationProcessor "io.micronaut:micronaut-inject-groovy"
+}
+
+test {
+    exclude '**/*Test$Intercepted*'
+}
+
+project.afterEvaluate {
+    nativeImage.enabled = false
+    testNativeImage.enabled = false
+}
+
+mainClassName = "example.Application"

@@ -1,4 +1,0 @@
-schema_version: 20180708
-name: list-buckets
-version: 0.0.1
-timeout: 120

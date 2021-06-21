@@ -1,3 +1,5 @@
+import io.micronaut.gradle.docker.DockerBuildStrategy
+
 plugins {
     id "io.micronaut.application"
 }
@@ -6,21 +8,48 @@ dependencies {
     implementation project(":oraclecloud-sdk")
     implementation project(":oraclecloud-function")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-        exclude module:'javassist'
+        exclude module: 'javassist'
     }
+    implementation("io.micronaut:micronaut-runtime")
+    implementation("io.micronaut:micronaut-validation")
     runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
     runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
-    testImplementation 'com.fnproject.fn:testing-junit4:1.0.130'
+    testImplementation "com.fnproject.fn:testing-junit4:$fnVersion"
+    testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
 }
 
-testNativeImage.enabled=false
+testNativeImage.enabled = false
 
-mainClassName = "com.fnproject.fn.runtime.EntryPoint"
+application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
+
+nativeImage {
+    args("--static",
+         "-Dfn.handler=example.ListBucketsFunction::handleRequest",
+         "--initialize-at-build-time=example")
+}
+
+dockerfileNative {
+    args("-XX:MaximumHeapSizePercent=80")
+    buildStrategy.set(DockerBuildStrategy.ORACLE_FUNCTION)
+    defaultCommand.set("example.ListBucketsFunction::handleRequest")
+}
+
+dockerfile {
+    buildStrategy.set(DockerBuildStrategy.ORACLE_FUNCTION)
+    defaultCommand.set("example.ListBucketsFunction::handleRequest")
+}
+
+dockerBuild {
+    images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
+}
+
+dockerBuildNative {
+    images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name-native:$project.version"]
+}
 
 run {
     args("example.ListBucketsFunction::handleRequest")
 }
-

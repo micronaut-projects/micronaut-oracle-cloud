@@ -16,5 +16,11 @@ include 'oraclecloud-sdk-processor'
 
 // doc examples
 include 'docs-examples:example-java'
+include 'docs-examples:example-groovy'
+include 'docs-examples:example-kotlin'
 include 'docs-examples:example-function-java'
+include 'docs-examples:example-function-groovy'
+include 'docs-examples:example-function-kotlin'
 include 'docs-examples:example-http-function-java'
+include 'docs-examples:example-http-function-groovy'
+include 'docs-examples:example-http-function-kotlin'
