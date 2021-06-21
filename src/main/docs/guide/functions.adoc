@@ -12,7 +12,9 @@ Micronaut support for Oracle Functions can be combined with the OCI SDK support 
 
 NOTE: You must have <<resource-principals, resource principal authentication>> properly configured in order for this example to work.
 
-With Micronaut 2.1 and above you can create a new Oracle Function with the following command line command:
+=== Creating a Function with a Gradle build
+
+With Micronaut 2.1 and above you can create a new Oracle Function using Gradle as the build tool with the following command line command:
 
 [source,bash]
 ----
@@ -34,6 +36,33 @@ dockerBuildNative {
 
 The `REGION` should be altered to your region, the `TENANCY_ID` to your tenancy and the `REPOSITORY` to the Docker repository you wish to publish to.
 
+=== Creating a Function with a Maven build
+
+With Micronaut 2.2 and above you can create a new Oracle Function using Maven as the build tool with the following command line command:
+
+[source,bash]
+----
+$ mn create-function-app myfunction --build=maven --features oracle-function
+----
+
+This will create a Maven build that sets up the Micronaut Maven plugin. The only changes you need to make are to modify the `pom.xml` and and add these properties in the `<properties>` section to point at the Oracle Cloud Registry you wish the publish the docker images for the function:
+
+[source, xml]
+----
+<jib.docker.image>[REGION].ocir.io/[TENANCY_ID]/[REPOSITORY]/${project.artifactId}</jib.docker.image>
+
+<jib.docker.tag>${project.version}</jib.docker.tag>
+----
+
+The `REGION` should be altered to your region, the `TENANCY_ID` to your tenancy and the `REPOSITORY` to the Docker repository you wish to publish to.
+
+Also add a property to define the full class name and package of the function class, e.g.
+
+[source, xml]
+----
+<exec.mainClass>com.mycompany.MyFunction</exec.mainClass>
+----
+
 [#functions-build]
 === Build
 
@@ -53,12 +82,16 @@ The above example uses the Object Storage API to list the available buckets.
 [#functions-dockerfile]
 === Docker Build
 
-To build the Oracle Function, run the `./gradlew dockerBuild` command or to build the GraalVM native image version run `./gradlew dockerBuildNative`.
+To build the Oracle Function with Gradle, run the `./gradlew dockerBuild` command or to build the GraalVM native image version run `./gradlew dockerBuildNative`.
+
+To build the Oracle Function with Maven, run the `./mvnw package -Dpackaging=docker` command or to build the GraalVM native image version run `./mvnw package -Dpackaging=docker-native`.
 
 [#functions-deploy]
 === Deploy
 
-To deploy the Oracle Function as a Java function, run `./gradlew dockerPush` to push the function to Oracle Container Registry, or to deploy the GraalVM native image version run `./gradlew dockerPushNative`.
+To deploy the Oracle Function as a Java function with Gradle, run `./gradlew dockerPush` to push the function to Oracle Container Registry, or to deploy the GraalVM native image version run `./gradlew dockerPushNative`.
+
+To deploy the Oracle Function as a Java function with Maven, run `./mvnw deploy -Dpackaging=docker` to push the function to Oracle Container Registry, or to deploy the GraalVM native image version run `./mvnw deploy -Dpackaging=docker-native`.
 
 Note that these commands only publish the function to Oracle Container Registry. To make the function invokable, use the Oracle Cloud UI to create the function, or use the `fn` command line application to create the function from the container image:
 
@@ -73,7 +106,7 @@ $ fn create function myapp myfunction us-ashburn-1.ocir.io/mytenancy/myrepositor
 
 NOTE: For Java functions that do not use Native Image you will need to pass `--memory 512 --timeout 120` as Java functions occupy more memory that native functions.
 
-If you publish a new image using `./gradlew dockerPush` or `./gradlew dockerPushNative` for an existing function you can also update it with `fn update`:
+If you publish a new image using `./gradlew dockerPush` or `./gradlew dockerPushNative` (or with Maven using `./mvnw deploy -Dpackaging=docker` or `./mvnw deploy -Dpackaging=docker-native`) for an existing function you can also update it with `fn update`:
 
 .Updating an existing Function from a Container Image
 [source,bash]

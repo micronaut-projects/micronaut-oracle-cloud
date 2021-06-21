@@ -1,11 +1,19 @@
 The `micronaut-oraclecloud-function-http` module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.
 
-Since Micronaut 2.1 you can create HTTP functions using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
+Since Micronaut 2.1 you can create HTTP functions with a Gradle build using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
 
 .Creating a new Function with the CLI
 [source,bash]
 ----
 $ mn create-app myfunction --features oracle-function
+----
+
+Since Micronaut 2.2 you can create HTTP functions with a Maven build using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
+
+.Creating a new Function with the CLI
+[source,bash]
+----
+$ mn create-app myfunction --build=maven --features oracle-function
 ----
 
 You can then create your controller just as you would a normal Micronaut controller.
@@ -21,7 +29,9 @@ snippet::example.BucketController[project-base="docs-examples/example-http-funct
 [#http-functions-dockerfile]
 === Docker Build
 
-To build the Oracle Function, run the `./gradlew dockerBuild` command or to build the native version run `./gradlew dockerBuildNative`.
+To build the Oracle Function with Gradle, run the `./gradlew dockerBuild` command or to build the native version run `./gradlew dockerBuildNative`.
+
+To build the Oracle Function with Maven, run the `./mvnw package -Dpackaging=docker` command or to build the native version run `./mvnw package -Dpackaging=docker-native`.
 
 === Deploy
 
