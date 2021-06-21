@@ -560,15 +560,77 @@ import java.util.stream.Collectors;
 
 @Controller("/os")
 public class BucketController implements BucketOperations {
+
     private final ObjectStorageRxClient objectStorage;
     private final TenancyIdProvider tenancyIdProvider;
 
-    public BucketController(
-            ObjectStorageRxClient objectStorage,
-            TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
+    public BucketController(ObjectStorageRxClient objectStorage,
+                            TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
         this.objectStorage = objectStorage;
         this.tenancyIdProvider = tenancyIdProvider;
     }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.oracle.bmc.objectstorage.model.CreateBucketDetails
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import com.oracle.bmc.objectstorage.responses.CreateBucketResponse
+import groovy.transform.CompileStatic
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
+import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import io.reactivex.Single
+
+@CompileStatic
+@Controller('/os')
+class BucketController implements BucketOperations {
+
+    private final ObjectStorageRxClient objectStorage
+    private final TenancyIdProvider tenancyIdProvider
+
+    BucketController(ObjectStorageRxClient objectStorage,
+                     TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
+        this.objectStorage = objectStorage
+        this.tenancyIdProvider = tenancyIdProvider
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import com.oracle.bmc.objectstorage.responses.ListBucketsResponse
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails
+import com.oracle.bmc.objectstorage.responses.CreateBucketResponse
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.responses.DeleteBucketResponse
+import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Post
+import io.reactivex.Single
+
+@Controller("/os")
+class BucketController(private val objectStorage: ObjectStorageRxClient,
+                       private val tenancyIdProvider: TenancyIdProvider) <b class="conum">(1)</b>
+    : BucketOperations {
 }</code></pre>
 </div>
 </div>
@@ -588,21 +650,70 @@ public class BucketController implements BucketOperations {
 <pre class="highlight"><code class="language-java" data-lang="java">@Override
 @Post(value = "/buckets/{name}")
 public Single&lt;String&gt; createBucket(String name) {
+
     String tenancyId = tenancyIdProvider.getTenancyId();
     GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
             .compartmentId(tenancyId).build();
     return objectStorage.getNamespace(getNamespaceRequest) <b class="conum">(1)</b>
             .flatMap(namespaceResponse -&gt; {
-        CreateBucketRequest.Builder builder = CreateBucketRequest.builder()
-                .namespaceName(namespaceResponse.getValue())
-                .createBucketDetails(CreateBucketDetails.builder()
-                        .compartmentId(tenancyId)
-                        .name(name)
-                        .build());
+                CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
+                        .namespaceName(namespaceResponse.getValue())
+                        .createBucketDetails(CreateBucketDetails.builder()
+                                .compartmentId(tenancyId)
+                                .name(name)
+                                .build())
+                        .build();
 
-        return objectStorage.createBucket(builder.build()) <b class="conum">(2)</b>
-                .map(CreateBucketResponse::getLocation); <b class="conum">(3)</b>
-    });
+                return objectStorage.createBucket(createBucketRequest) <b class="conum">(2)</b>
+                        .map(CreateBucketResponse::getLocation); <b class="conum">(3)</b>
+            });
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Override
+@Post(value = '/buckets/{name}')
+Single&lt;String&gt; createBucket(String name) {
+
+    String tenancyId = tenancyIdProvider.tenancyId
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenancyId).build()
+    return objectStorage.getNamespace(getNamespaceRequest) <b class="conum">(1)</b>
+            .flatMap(namespaceResponse -&gt; {
+                CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
+                        .namespaceName(namespaceResponse.value)
+                        .createBucketDetails(CreateBucketDetails.builder()
+                                .compartmentId(tenancyId)
+                                .name(name)
+                                .build())
+                        .build()
+
+                return objectStorage.createBucket(createBucketRequest) <b class="conum">(2)</b>
+                        .map(CreateBucketResponse::getLocation) <b class="conum">(3)</b>
+            }) as Single&lt;String&gt;
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">@Post(value = "/buckets/{name}")
+override fun createBucket(name: String): Single&lt;String&gt; {
+    val tenancyId = tenancyIdProvider.tenancyId
+    val getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenancyId).build()
+    return objectStorage.getNamespace(getNamespaceRequest) <b class="conum">(1)</b>
+            .flatMap { namespaceResponse: GetNamespaceResponse -&gt;
+                val createBucketRequest = CreateBucketRequest.builder()
+                        .namespaceName(namespaceResponse.value)
+                        .createBucketDetails(CreateBucketDetails.builder()
+                                .compartmentId(tenancyId)
+                                .name(name)
+                                .build())
+                        .build()
+                objectStorage.createBucket(createBucketRequest) <b class="conum">(2)</b>
+                        .map { obj: CreateBucketResponse -&gt; obj.location } <b class="conum">(3)</b>
+            }
 }</code></pre>
 </div>
 </div>
@@ -714,6 +825,7 @@ dockerBuildNative {
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
+import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.function.OciFunction;
 
@@ -730,6 +842,54 @@ public class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
 
     @Inject
     TenancyIdProvider tenantIdProvider;
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.oracle.bmc.objectstorage.ObjectStorageClient
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import groovy.transform.CompileStatic
+import io.micronaut.core.annotation.ReflectiveAccess
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import io.micronaut.oraclecloud.function.OciFunction
+
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@CompileStatic
+@Singleton
+class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
+
+    @Inject
+    ObjectStorageClient objectStorageClient <b class="conum">(2)</b>
+
+    @Inject
+    TenancyIdProvider tenantIdProvider
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorageClient
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import io.micronaut.core.annotation.ReflectiveAccess
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import io.micronaut.oraclecloud.function.OciFunction
+import javax.inject.Inject
+import javax.inject.Singleton
+
+@Singleton
+class ListBucketsFunction : OciFunction() { <b class="conum">(1)</b>
+
+    @Inject
+    lateinit var objectStorageClient : ObjectStorageClient <b class="conum">(2)</b>
+
+    @Inject
+    lateinit var tenantIdProvider: TenancyIdProvider
 
 }</code></pre>
 </div>
@@ -751,17 +911,58 @@ public class ListBucketsFunction extends OciFunction { <b class="conum">(1)</b>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public List&lt;String&gt; handleRequest() {
+<pre class="highlight"><code class="language-java" data-lang="java">@ReflectiveAccess
+public List&lt;String&gt; handleRequest() {
+
     GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
             .compartmentId(tenantIdProvider.getTenancyId()).build();
     String namespace = objectStorageClient.getNamespace(getNamespaceRequest).getValue();
-    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-    builder.namespaceName(namespace);
-    builder.compartmentId(tenantIdProvider.getTenancyId());
-    return objectStorageClient.listBuckets(builder.build())
+
+    ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(tenantIdProvider.getTenancyId())
+            .build();
+
+    return objectStorageClient.listBuckets(listBucketsRequest)
             .getItems().stream().map(BucketSummary::getName)
             .collect(Collectors.toList());
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@ReflectiveAccess
+List&lt;String&gt; handleRequest() {
+
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenantIdProvider.tenancyId).build()
+    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).value
+
+    ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(tenantIdProvider.tenancyId)
+            .build()
+
+    return objectStorageClient.listBuckets(listBucketsRequest).items*.name
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">@ReflectiveAccess
+fun handleRequest(): List&lt;String&gt; {
+
+    val getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenantIdProvider.tenancyId).build()
+    val namespace = objectStorageClient.getNamespace(getNamespaceRequest).value
+
+    val listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(tenantIdProvider.tenancyId)
+            .build()
+
+    return objectStorageClient.listBuckets(listBucketsRequest)
+            .items.map { it.name }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -853,7 +1054,6 @@ import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import com.oracle.bmc.objectstorage.requests.ListObjectsRequest;
-import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.http.MediaType;
@@ -872,15 +1072,77 @@ import java.util.stream.Collectors;
 
 @Controller("/os")
 public class BucketController {
+
     private final ObjectStorage objectStorage;
     private final TenancyIdProvider tenancyIdProvider;
 
-    public BucketController(
-            ObjectStorage objectStorage,
-            TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
+    public BucketController(ObjectStorage objectStorage,
+                            TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
         this.objectStorage = objectStorage;
         this.tenancyIdProvider = tenancyIdProvider;
     }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">import com.oracle.bmc.objectstorage.ObjectStorage
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails
+import com.oracle.bmc.objectstorage.model.ListObjects
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import com.oracle.bmc.objectstorage.requests.ListObjectsRequest
+import groovy.transform.CompileStatic
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.QueryValue
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+
+@CompileStatic
+@Controller('/os')
+class BucketController {
+
+    private final ObjectStorage objectStorage
+    private final TenancyIdProvider tenancyIdProvider
+
+    BucketController(ObjectStorage objectStorage,
+                     TenancyIdProvider tenancyIdProvider) { <b class="conum">(1)</b>
+        this.objectStorage = objectStorage
+        this.tenancyIdProvider = tenancyIdProvider
+    }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorage
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import com.oracle.bmc.objectstorage.requests.ListObjectsRequest
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.QueryValue
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import java.util.Optional
+
+@Controller("/os")
+class BucketController(private val objectStorage: ObjectStorage,
+                       private val tenancyIdProvider: TenancyIdProvider) { <b class="conum">(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -899,18 +1161,60 @@ public class BucketController {
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Get("/buckets{/compartmentId}")
 public List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartmentId) {
+
     String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
+
     GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
             .compartmentId(compartmentOcid).build();
-    final GetNamespaceResponse namespaceResponse = objectStorage.getNamespace(getNamespaceRequest);
-    final ListBucketsRequest.Builder builder = ListBucketsRequest.builder();
-    builder.namespaceName(namespaceResponse.getValue());
-    builder.compartmentId(compartmentOcid);
-    return objectStorage.listBuckets(builder.build())
-                    .getItems()
-                    .stream()
-                    .map(BucketSummary::getName)
-                    .collect(Collectors.toList());
+    String namespace = objectStorage.getNamespace(getNamespaceRequest).getValue();
+
+    ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(compartmentOcid)
+            .build();
+
+    return objectStorage.listBuckets(listBucketsRequest)
+            .getItems()
+            .stream()
+            .map(BucketSummary::getName)
+            .collect(Collectors.toList());
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">@Get('/buckets{/compartmentId}')
+List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartmentId) {
+
+    String compartmentOcid = compartmentId ?: tenancyIdProvider.tenancyId
+
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(compartmentOcid).build()
+    String namespace = objectStorage.getNamespace(getNamespaceRequest).value
+
+    ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(compartmentOcid)
+            .build()
+
+    return objectStorage.listBuckets(listBucketsRequest).items*.name
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlight"><code class="language-kotlin" data-lang="kotlin">@Get("/buckets{/compartmentId}")
+fun listBuckets(@PathVariable @Nullable compartmentId: String?): List&lt;String&gt; {
+    val compartmentOcid = compartmentId ?: tenancyIdProvider.tenancyId!!
+    val getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(compartmentOcid).build()
+    val namespace = objectStorage.getNamespace(getNamespaceRequest).value
+    val listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(compartmentOcid)
+            .build()
+    return objectStorage.listBuckets(listBucketsRequest).items
+            .map { it.name }
 }</code></pre>
 </div>
 </div>

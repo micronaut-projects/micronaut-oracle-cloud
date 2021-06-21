@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -184,12 +184,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>static &lt;I&gt;&nbsp;io.micronaut.http.HttpResponse&lt;java.lang.String&gt;</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpMethod,java.lang.String,java.util.List)">invoke</a></span>&#8203;(io.micronaut.http.HttpMethod&nbsp;method,
+      java.lang.String&nbsp;uri,
+      java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</code></th>
 <td class="colLast">
 <div class="block">Invoke a function via HTTP.</div>
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>static &lt;I&gt;&nbsp;io.micronaut.http.HttpResponse&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request)</code></th>
+<td class="colLast">
+<div class="block">Invoke a function via HTTP.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static &lt;I,&#8203;O&gt;<br>io.micronaut.http.HttpResponse&lt;O&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest,io.micronaut.core.type.Argument)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
       io.micronaut.core.type.Argument&lt;O&gt;&nbsp;resultType)</code></th>
@@ -197,10 +206,36 @@ extends java.lang.Object</pre>
 <div class="block">Invoke a function via HTTP.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
+<td class="colFirst"><code>static &lt;I,&#8203;O&gt;<br>io.micronaut.http.HttpResponse&lt;O&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest,io.micronaut.core.type.Argument,java.util.List)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+      io.micronaut.core.type.Argument&lt;O&gt;&nbsp;resultType,
+      java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</code></th>
+<td class="colLast">
+<div class="block">Invoke a function via HTTP.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static &lt;I,&#8203;O&gt;<br>io.micronaut.http.HttpResponse&lt;O&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest,java.lang.Class)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
       java.lang.Class&lt;O&gt;&nbsp;resultType)</code></th>
+<td class="colLast">
+<div class="block">Invoke a function via HTTP.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>static &lt;I,&#8203;O&gt;<br>io.micronaut.http.HttpResponse&lt;O&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest,java.lang.Class,java.util.List)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+      java.lang.Class&lt;O&gt;&nbsp;resultType,
+      java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</code></th>
+<td class="colLast">
+<div class="block">Invoke a function via HTTP.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>static &lt;I&gt;&nbsp;io.micronaut.http.HttpResponse&lt;java.lang.String&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#invoke(io.micronaut.http.HttpRequest,java.util.List)">invoke</a></span>&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+      java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</code></th>
 <td class="colLast">
 <div class="block">Invoke a function via HTTP.</div>
 </td>
@@ -266,6 +301,26 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="invoke(io.micronaut.http.HttpRequest,java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>invoke</h4>
+<pre class="methodSignature">public static&nbsp;&lt;I&gt;&nbsp;io.micronaut.http.HttpResponse&lt;java.lang.String&gt;&nbsp;invoke&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+                                                                          java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</pre>
+<div class="block">Invoke a function via HTTP.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>I</code> - The body type</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>request</code> - The request</dd>
+<dd><code>sharedClasses</code> - optional classes to share between the test classloader and the FN classloader</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The result</dd>
+</dl>
+</li>
+</ul>
 <a id="invoke(io.micronaut.http.HttpMethod,java.lang.String)">
 <!--   -->
 </a>
@@ -281,6 +336,28 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>method</code> - The http method</dd>
 <dd><code>uri</code> - The uri</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The result</dd>
+</dl>
+</li>
+</ul>
+<a id="invoke(io.micronaut.http.HttpMethod,java.lang.String,java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>invoke</h4>
+<pre class="methodSignature">public static&nbsp;&lt;I&gt;&nbsp;io.micronaut.http.HttpResponse&lt;java.lang.String&gt;&nbsp;invoke&#8203;(io.micronaut.http.HttpMethod&nbsp;method,
+                                                                          java.lang.String&nbsp;uri,
+                                                                          java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</pre>
+<div class="block">Invoke a function via HTTP.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>I</code> - The body type</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>method</code> - The http method</dd>
+<dd><code>uri</code> - The uri</dd>
+<dd><code>sharedClasses</code> - optional classes to share between the test classloader and the FN classloader</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The result</dd>
 </dl>
@@ -307,10 +384,33 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="invoke(io.micronaut.http.HttpRequest,java.lang.Class,java.util.List)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>invoke</h4>
+<pre class="methodSignature">public static&nbsp;&lt;I,&#8203;O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;&nbsp;invoke&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+                                                                   java.lang.Class&lt;O&gt;&nbsp;resultType,
+                                                                   java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</pre>
+<div class="block">Invoke a function via HTTP.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>I</code> - The input type</dd>
+<dd><code>O</code> - The output type</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>request</code> - The request</dd>
+<dd><code>resultType</code> - The result type</dd>
+<dd><code>sharedClasses</code> - optional classes to share between the test classloader and the FN classloader</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response</dd>
+</dl>
+</li>
+</ul>
 <a id="invoke(io.micronaut.http.HttpRequest,io.micronaut.core.type.Argument)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>invoke</h4>
 <pre class="methodSignature">public static&nbsp;&lt;I,&#8203;O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;&nbsp;invoke&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
@@ -323,6 +423,29 @@ extends java.lang.Object</pre>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>request</code> - The request</dd>
 <dd><code>resultType</code> - The result type</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The response</dd>
+</dl>
+</li>
+</ul>
+<a id="invoke(io.micronaut.http.HttpRequest,io.micronaut.core.type.Argument,java.util.List)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>invoke</h4>
+<pre class="methodSignature">public static&nbsp;&lt;I,&#8203;O&gt;&nbsp;io.micronaut.http.HttpResponse&lt;O&gt;&nbsp;invoke&#8203;(io.micronaut.http.HttpRequest&lt;I&gt;&nbsp;request,
+                                                                   io.micronaut.core.type.Argument&lt;O&gt;&nbsp;resultType,
+                                                                   java.util.List&lt;java.lang.Class&lt;?&gt;&gt;&nbsp;sharedClasses)</pre>
+<div class="block">Invoke a function via HTTP.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>I</code> - The input type</dd>
+<dd><code>O</code> - The output type</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>request</code> - The request</dd>
+<dd><code>resultType</code> - The result type</dd>
+<dd><code>sharedClasses</code> - optional classes to share between the test classloader and the FN classloader</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The response</dd>
 </dl>
