@@ -23,4 +23,6 @@ test {
     exclude '**/*Test$Intercepted*'
 }
 
+testNativeImage.enabled = false
+
 mainClassName = "example.Application"

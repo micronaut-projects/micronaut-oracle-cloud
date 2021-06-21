@@ -20,6 +20,8 @@ dependencies {
 
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 
+testNativeImage.enabled = false
+
 run {
     args("io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest")
 }
