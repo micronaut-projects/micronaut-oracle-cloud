@@ -12,7 +12,7 @@ dependencies {
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
         exclude module: 'javassist'
     }
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.31'
     runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
     testImplementation project(":oraclecloud-function-http-test")
     testImplementation 'io.micronaut:micronaut-http-client'

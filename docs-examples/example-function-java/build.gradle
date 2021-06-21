@@ -12,7 +12,7 @@ dependencies {
     }
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-validation")
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
+    runtimeOnly 'org.slf4j:slf4j-simple:1.7.31'
     runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
     testImplementation "com.fnproject.fn:testing-junit4:$fnVersion"
     testImplementation("io.micronaut:micronaut-http-client")
