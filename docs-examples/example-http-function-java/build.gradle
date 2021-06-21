@@ -43,4 +43,7 @@ dockerBuildNative {
     images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name-native:$project.version"]
 }
 
-testNativeImage.enabled = false
+project.afterEvaluate {
+    nativeImage.enabled = false
+    testNativeImage.enabled = false
+}

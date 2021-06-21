@@ -22,7 +22,10 @@ dependencies {
     testAnnotationProcessor "io.micronaut:micronaut-inject-groovy"
 }
 
-testNativeImage.enabled = false
+project.afterEvaluate {
+    nativeImage.enabled = false
+    testNativeImage.enabled = false
+}
 
 application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
 

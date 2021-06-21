@@ -22,7 +22,10 @@ dependencies {
 
 mainClassName = "com.fnproject.fn.runtime.EntryPoint"
 
-testNativeImage.enabled = false
+project.afterEvaluate {
+    nativeImage.enabled = false
+    testNativeImage.enabled = false
+}
 
 dockerBuild {
     images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
