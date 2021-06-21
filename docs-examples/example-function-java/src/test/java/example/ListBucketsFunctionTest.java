@@ -5,7 +5,7 @@ import example.mock.MockData;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnJre;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.condition.JRE.JAVA_8;
 
 @DisabledOnJre(value = JAVA_8, disabledReason = "FDK requires Java 11+")
@@ -25,8 +25,6 @@ public class ListBucketsFunctionTest {
           .thenRun(ListBucketsFunction.class, "handleRequest");
 
         String body = fn.getOnlyResult().getBodyAsString();
-
-        assertTrue(body.contains("\"kg\"") || // native image tests
-                body.contains("[\"b1\",\"b2\"]")); // unit tests
+        assertEquals("[\"b1\",\"b2\"]", body);
     }
 }

@@ -8,10 +8,10 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
@@ -32,10 +32,10 @@ public class BucketControllerTest {
         String bucketName = "test-bucket-" + RandomStringUtils.randomAlphanumeric(10);
 
         List<String> names = client.listBuckets(null).blockingGet();
-        assertEquals(Arrays.asList("b1", "b2"), names);
+        assertFalse(names.isEmpty());
 
         String location = client.createBucket(bucketName).blockingGet();
-        assertEquals(MockData.bucketLocation, location);
+        assertNotNull(location);
 
         boolean result  = client.deleteBucket(bucketName).blockingGet();
         assertTrue(result);
