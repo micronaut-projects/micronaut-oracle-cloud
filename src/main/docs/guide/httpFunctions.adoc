@@ -21,7 +21,7 @@ snippet::example.BucketController[project-base="docs-examples/example-http-funct
 [#http-functions-dockerfile]
 === Docker Build
 
-To build the Oracle Function you can run the `./gradlew dockerBuild` command or to build the native version run `./gradlew dockerBuildNative`.
+To build the Oracle Function, run the `./gradlew dockerBuild` command or to build the native version run `./gradlew dockerBuildNative`.
 
 === Deploy
 
@@ -35,21 +35,21 @@ First, create an API Gateway by selecting 'Developer Services', then 'API Gatewa
 
 image::api-gateway-menu.png[API Gateway Menu]
 
-Click on 'Create Gateway'.
+Click 'Create Gateway'.
 
 image::create-gateway.png[Create Gateway Button]
 
-Enter a name for the gateway, choose the compartment it is stored in and the network and subnet.
+Enter a name for the gateway, choose the compartment it is stored in, and the network and subnet.
 
 image::gateway-details.png[Create Gateway Button]
 
-When the gateway is ‘Active’, click ‘Deployments’, then ‘Create Deployment’.
+When the gateway is `Active`, click `Deployments`, then `Create Deployment`.
 
 image::create-deployment-button.png[Create Gateway Button]
 
-Provide a name for the deployment and enter a “Path Prefix”. If necessary, configure any Authentication, CORS or Rate Limiting and click ’Next’.
+Provide a name for the deployment and enter a "Path Prefix". If necessary, configure any Authentication, CORS, or Rate Limiting and click `Next`.
 
-NOTE: The path prefix must match the path you used in your controller (IE: `@Controller("/os")`).
+NOTE: The path prefix must match the path you used in your controller (e.g. `@Controller("/os")`).
 
 image::deployment-details-basic.png[Create Gateway Button]
 
@@ -71,7 +71,7 @@ Your new deployment will be listed in 'Creating' state.
 
 image::deployment-creating.png[Deployment Creating]
 
-When your new deployment becomes 'Active', click on the deployment to view the deployment details. Copy the 'Endpoint' - this is the base URL that you'll use for your function invocations.
+When your new deployment becomes 'Active', click the deployment to view the deployment details. Copy the 'Endpoint' - this is the base URL that you'll use for your function invocations.
 
 image::deployment-details.png[Create Gateway Button]
 

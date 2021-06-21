@@ -34,7 +34,7 @@ implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[]
 
-Provides the api:oci.function.OciFunction[] super class that you can subclass to enable the ability to write Oracle Cloud Functions in Micronaut that can utilize Micronaut dependency injection services.
+Provides the api:oci.function.OciFunction[] superclass that you can subclass to write Oracle Cloud Functions in Micronaut that can utilize Micronaut dependency injection.
 
 === micronaut-oraclecloud-function-http
 
@@ -54,4 +54,4 @@ NOTE: The module generates the OracleWallet on startup.
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer[]
 
-Provides support for sending the https://micrometer.io[Micrometer] metrics to the https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm[Oracle Cloud Infrastructure Monitoring] service.
+Provides support for sending https://micrometer.io[Micrometer] metrics to the https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm[OCI Monitoring] service.

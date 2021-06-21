@@ -1,8 +1,8 @@
-Oracle Functions are based on https://fnproject.io/[Project.fn]. You can write simple functions targeting the Oracle Function environment by extending from the api:oci.function.OciFunction[] super class.
+Oracle Functions are based on https://fnproject.io/[Project.fn]. You can write simple functions targeting the Oracle Function environment by extending from the api:oci.function.OciFunction[] superclass.
 
 NOTE: Micronaut's Oracle Function support can utilize GraalVM `native-image` running within a Docker container. This will result in extremely responsive serverless functions utilizing very few Cloud resources.
 
-This super class enables dependency injection for the function. Note that the the function definition must conform to the following rules:
+This superclass enables dependency injection for the function. Note that the the function definition must conform to the following rules:
 
 * The class must have a public no arguments constructor
 * A public method that executes the function must be defined
@@ -37,7 +37,6 @@ The `REGION` should be altered to your region, the `TENANCY_ID` to your tenancy 
 [#functions-build]
 === Build
 
-
 The following provides a serverless function example that uses the Object Storage API to list the available buckets:
 
 snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="imports,class"]
@@ -45,7 +44,7 @@ snippet::example.ListBucketsFunction[project-base="docs-examples/example-functio
 <1> A public class with a no argument constructor annotated with `@Singleton` and extending from api:oci.function.OciFunction[]
 <2> You can use the `@Inject` annotation to inject SDK components
 
-Once you have defined the function you should define a public method that is the function handler. For example:
+Once you have defined the function, define a public method that is the function handler, for example:
 
 snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="method", indent="0"]
 
@@ -54,16 +53,14 @@ The above example uses the Object Storage API to list the available buckets.
 [#functions-dockerfile]
 === Docker Build
 
-To build the Oracle Function you can run the `./gradlew dockerBuild` command or to build the native version run `./gradlew dockerBuildNative`.
+To build the Oracle Function, run the `./gradlew dockerBuild` command or to build the GraalVM native image version run `./gradlew dockerBuildNative`.
 
 [#functions-deploy]
 === Deploy
 
-To deploy the Oracle Function as a Java function run `./gradlew dockerPush` which will push the function to Oracle Container Registry.
+To deploy the Oracle Function as a Java function, run `./gradlew dockerPush` to push the function to Oracle Container Registry, or to deploy the GraalVM native image version run `./gradlew dockerPushNative`.
 
-To deploy the function as a native image you can run `./gradlew dockerPushNative` which will deploy the function as a GraalVM native image.
-
-Note that these commands will actually only publish the function to Oracle Container Registry, to make the function invokable you should use the Oracle Cloud UI to create the function or use the `fn` command line application to create the function from the container image:
+Note that these commands only publish the function to Oracle Container Registry. To make the function invokable, use the Oracle Cloud UI to create the function, or use the `fn` command line application to create the function from the container image:
 
 .Creating a Function from a Container Image
 [source,bash]
@@ -76,7 +73,7 @@ $ fn create function myapp myfunction us-ashburn-1.ocir.io/mytenancy/myrepositor
 
 NOTE: For Java functions that do not use Native Image you will need to pass `--memory 512 --timeout 120` as Java functions occupy more memory that native functions.
 
-If you publish a new image using `./gradlew dockerPush` or `./gradlerw dockerPushNative` for an existing function you can also update it with `fn update`:
+If you publish a new image using `./gradlew dockerPush` or `./gradlew dockerPushNative` for an existing function you can also update it with `fn update`:
 
 .Updating an existing Function from a Container Image
 [source,bash]
