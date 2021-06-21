@@ -31,4 +31,4 @@ test {
     exclude '**/*Test$Intercepted*'
 }
 
-mainClassName = "example.Application"
+mainClassName = "example.ApplicationKt"
