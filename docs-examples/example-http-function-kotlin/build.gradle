@@ -17,7 +17,7 @@ dependencies {
     }
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    runtimeOnly 'org.slf4j:slf4j-simple:1.7.30'
+    runtimeOnly "org.slf4j:slf4j-simple:$slf4jVersion"
     runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin"
     testImplementation project(":oraclecloud-function-http-test")
