@@ -32,7 +32,7 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-atp[scope="runtime"]
 
 Then you must configure the <<authentication, authentication provider>>.
 
-Then simply add a dependency to one of the Micronaut connection pool implementation.
+Then simply add a dependency to one of the Micronaut connection pool implementations.
 
 NOTE: Automated configuration is currently supported only for the HikariCP and UCP connection pool.
 
@@ -56,12 +56,12 @@ datasources:
     password: bar // <4>
 ----
 <1> autonomous database id
-<2> password to encrypt the keys inside the wallet, that  must be at least 8 characters long and must include at least 1 letter and either 1 numeric character or 1 special character
+<2> password to encrypt the keys inside the wallet; must be at least eight characters long and must include at least one letter and either one numeric character or one special character
 <3> database username
 <4> database password
 
 NOTE: The `username` and `password` are not automatically generated and must be created in advance.
 
-Module uses `<db_name>_high` as a default service alias. This can be overriden by `serviceAlias` property.
+Module uses `<db_name>_high` as a default service alias. This can be overriden with the `serviceAlias` property.
 
-The wallet is of type `SINGLE`. Use `walletType` property to configure different type. See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].
+The wallet is of type `SINGLE`. Use the `walletType` property to configure different types. See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].
