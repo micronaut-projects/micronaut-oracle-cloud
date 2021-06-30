@@ -27,7 +27,7 @@ import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
  *  OracleCloudVault Client.
  *
  *  @author toddsharp
- *  @since 2.0.0
+ *  @since 1.4.0
  */
 @ConfigurationProperties(OracleCloudVaultConfiguration.PREFIX)
 @BootstrapContextCompatible

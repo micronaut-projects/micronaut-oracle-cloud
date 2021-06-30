@@ -14,16 +14,16 @@ import spock.lang.Specification
 class OracleCloudVaultConfigurationClientSpec extends Specification {
 
     @Shared
-    String vaultOcid = "${System.getenv("VAULT_OCID")}"
+    String vaultOcid = System.getenv("VAULT_OCID")
 
     @Shared
-    String compartmentOcid = "${System.getenv("VAULT_SECRETS_COMPARTMENT_OCID")}"
+    String compartmentOcid = System.getenv("VAULT_SECRETS_COMPARTMENT_OCID")
 
     @Shared
-    String secretName = "${System.getenv("VAULT_SECRET_NAME")}"
+    String secretName = System.getenv("VAULT_SECRET_NAME")
 
     @Shared
-    String secretValue = "${System.getenv("VAULT_SECRET_VALUE")}"
+    String secretValue = System.getenv("VAULT_SECRET_VALUE")
 
     void "it loads secret from vault"() {
         given:

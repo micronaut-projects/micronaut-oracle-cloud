@@ -51,7 +51,7 @@ import java.util.concurrent.ExecutorService;
  * A {@link io.micronaut.discovery.config.ConfigurationClient} for Oracle Cloud Vault Configuration.
  *
  * @author toddsharp
- * @since 2.0.0
+ * @since 1.4.0
  */
 @Singleton
 @Requires(classes = {
