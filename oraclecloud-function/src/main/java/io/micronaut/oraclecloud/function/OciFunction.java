@@ -24,6 +24,8 @@ import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.ReflectiveAccess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
@@ -34,7 +36,7 @@ import java.util.Map;
  * @since 1.0.0
  */
 public abstract class OciFunction implements AutoCloseable {
-
+    private static final Logger LOG = LoggerFactory.getLogger(OciFunction.class);
     private ApplicationContext applicationContext;
 
     /**
@@ -60,26 +62,31 @@ public abstract class OciFunction implements AutoCloseable {
     @FnConfiguration
     @ReflectiveAccess
     public final void setupContext(RuntimeContext ctx) {
-        if (applicationContext == null) {
-            Map configuration = ctx.getConfiguration();
-            PropertySource props = PropertySource.of("fnConfig",
-                    (Map<String, Object>) configuration, PropertySource.PropertyConvention.ENVIRONMENT_VARIABLE
-            );
-            applicationContext = newApplicationContextBuilder(ctx)
-                    .propertySources(props)
-                    .singletons(ctx)
-                    .build()
-                    .start();
-        }
-        applicationContext.inject(this);
-        if (enableSharedJackson()) {
-            applicationContext.findBean(ObjectMapper.class).ifPresent(
-                    objectMapper -> ctx.setAttribute(
-                    "com.fnproject.fn.runtime.coercion.jackson.JacksonCoercion.om",
-                    objectMapper));
+        try {
+            if (applicationContext == null) {
+                Map configuration = ctx.getConfiguration();
+                PropertySource props = PropertySource.of("fnConfig",
+                        (Map<String, Object>) configuration, PropertySource.PropertyConvention.ENVIRONMENT_VARIABLE
+                );
+                applicationContext = newApplicationContextBuilder(ctx)
+                        .propertySources(props)
+                        .singletons(ctx)
+                        .build()
+                        .start();
+            }
+            applicationContext.inject(this);
+            if (enableSharedJackson()) {
+                applicationContext.findBean(ObjectMapper.class).ifPresent(
+                        objectMapper -> ctx.setAttribute(
+                        "com.fnproject.fn.runtime.coercion.jackson.JacksonCoercion.om",
+                        objectMapper));
 
+            }
+            setup(ctx);
+        } catch (Throwable e) {
+            LOG.error("An error occurred initializing the function: " + e.getMessage(), e);
+            throw e;
         }
-        setup(ctx);
     }
 
     /**
@@ -128,8 +135,12 @@ public abstract class OciFunction implements AutoCloseable {
     @Override
     public void close() {
         if (applicationContext != null) {
-            applicationContext.close();
-            applicationContext = null;
+            try {
+                applicationContext.close();
+                applicationContext = null;
+            } catch (Exception e) {
+                LOG.error("An error occurred destroying the function: " + e.getMessage(), e);
+            }
         }
     }
 }
