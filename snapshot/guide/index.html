@@ -63,6 +63,8 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#tracing"><strong>10</strong><span>OCI Application Peformance Monitoring as a Tracing Endpoint</span></a></div>
                                 
+                                <div class="toc-item" style="margin-left:0"><a href="#vault"><strong>11</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+                                
                             </div>
                         </div>
                     </li>
@@ -111,6 +113,8 @@
         <div class="toc-item" style="margin-left:0px" id="toc-item-micrometer"><a href="#micrometer"><strong>9</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-tracing"><a href="#tracing"><strong>10</strong><span>OCI Application Peformance Monitoring as a Tracing Endpoint</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-vault"><a href="#vault"><strong>11</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
         
         </div>
     </div>
@@ -506,7 +510,30 @@ The module generates the OracleWallet on startup.
 </p>
 </div>
 <div class="paragraph">
-<p>Provides support for sending <a href="https://micrometer.io">Micrometer</a> metrics to the <a href="https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm">OCI Monitoring</a> service.</p>
+<p>Provides support for sending <a href="https://micrometer.io">Micrometer</a> metrics to the <a href="https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm">Oracle Cloud Monitoring</a> service.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_micronaut_oraclecloud_vault">micronaut-oraclecloud-vault</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-vault")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-vault&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Provides support for <a href="https://docs.micronaut.io/latest/guide/#cloudConfiguration">Distributed Configuration</a> with <a href="https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm">Oracle Cloud Vault</a> service.</p>
 </div>
 </div>
 
@@ -1954,6 +1981,157 @@ tracing:
 </div>
 <div class="paragraph">
 <p>Read more about the Trace Explorer in the <a href="https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html">documentation</a>.</p>
+</div>
+</div>
+
+<h1 id="vault"><a class="anchor" href="#vault"></a>11 Secure Distributed Configuration with Oracle Cloud Vault</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/vault.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To get started with <a href="https://docs.micronaut.io/latest/guide/#cloudConfiguration">Distributed Configuration</a> with <a href="https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm">Oracle Cloud Vault</a>, add the following dependency to your project:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-vault")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-vault&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>Then create a <code>src/main/resources/bootstrap.yml</code> file and ensure your <a href="#authentication">Authentication</a> configuration is present in this file so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).</p>
+</div>
+<div class="paragraph">
+<p>Then add the following to the <code>bootstrap.yml</code> to configure Vault support:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/bootstrap.yml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  application:
+    name: myapp
+  config-client:
+    enabled: true
+oci:
+  vault:
+    config:
+      enabled: true
+    vaults:
+      - ocid: ocid1.vault.oc1.phx...
+        compartment-ocid: ocid1.compartment.oc1...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One or many Vaults can be configured and each should include a <code>ocid</code> and <code>compartment-ocid</code> configuration entry. Note that the <code>compartment-ocid</code> is not the vault compartment but a compartment from where the secrets will be fetched.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you only want this configuration to be active in the Oracle Cloud environment but not locally name the file <code>bootstrap-oraclecloud.yml</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You&#8217;re now ready to go! You can access the config variables in a few different ways. If you create a secret with the name of <code>SECRET_ONE</code> in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Value("${SECRET_ONE}") String secretOne;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use <code>@Property</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Property(name = "SECRET_ONE") String secretOne;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Vault retrieved values are always <code>String</code>, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.</p>
+</div>
+<div class="paragraph">
+<p>So if you were to create secrets in your Oracle Cloud Vault like so:</p>
+</div>
+<table class="tableblock frame-all grid-all spread">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MY_SECRETS_ONE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Value One</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MY_SECRETS_TWO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value two</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MY_SECRETS_THREE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MY_SECRETS_FOUR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">42</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MY_SECRETS_FIVE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.16</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You could add a config bean, like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ConfigurationProperties("my-secrets")
+public class Config {
+    private String one;
+    private String two;
+    private boolean three;
+    private int four;
+    private Double five;
+
+    /* getters/setters removed for brevity */
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another option is to inject your variables into your configuration files which gives you the ability to store things like database passwords and API keys in your vault:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">datasources:
+    default:
+        password: ${DB_PASSWORD}</code></pre>
 </div>
 </div>
 
