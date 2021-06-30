@@ -13,6 +13,7 @@ include 'oraclecloud-function-http-test'
 include 'oraclecloud-micrometer'
 include 'oraclecloud-sdk'
 include 'oraclecloud-sdk-processor'
+include 'oraclecloud-vault'
 
 // doc examples
 include 'docs-examples:example-java'

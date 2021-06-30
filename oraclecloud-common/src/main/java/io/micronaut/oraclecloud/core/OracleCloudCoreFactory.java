@@ -25,6 +25,7 @@ import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
 import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
@@ -53,6 +54,7 @@ import java.util.Optional;
  * @see SimpleAuthenticationDetailsProvider
  */
 @Factory
+@BootstrapContextCompatible
 public class OracleCloudCoreFactory {
 
     public static final String ORACLE_CLOUD = "oci";
@@ -84,6 +86,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Primary
+    @BootstrapContextCompatible
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
         if (getConfigPath().isPresent()) {
             return new ConfigFileAuthenticationDetailsProvider(configPath, profile);
@@ -103,6 +106,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
+    @BootstrapContextCompatible
     protected SimpleAuthenticationDetailsProvider simpleAuthenticationDetailsProvider(
             OracleCloudAuthConfigurationProperties config) {
         return config.getBuilder().build();
@@ -119,6 +123,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
     @Primary
+    @BootstrapContextCompatible
     protected ResourcePrincipalAuthenticationDetailsProvider resourcePrincipalAuthenticationDetailsProvider() {
         return ResourcePrincipalAuthenticationDetailsProvider.builder().build();
     }
@@ -134,6 +139,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Requires(beans = InstancePrincipalConfiguration.class)
     @Primary
+    @BootstrapContextCompatible
     protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
         return instancePrincipalConfiguration.getBuilder().build();
     }
@@ -146,6 +152,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Primary
+    @BootstrapContextCompatible
     protected ClientConfiguration.ClientConfigurationBuilder configurationBuilder(
             OracleCloudClientConfigurationProperties props) {
         return props.getClientBuilder();
@@ -160,6 +167,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Primary
     @Context
+    @BootstrapContextCompatible
     protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
         if (authenticationDetailsProvider == null) {
             throw new DisabledBeanException("Invalid Oracle Cloud Configuration. If you are running locally ensure the CLI is configured by running: oci setup config");
@@ -199,6 +207,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Requires(missingBeans = ClientConfiguration.class)
     @Primary
+    @BootstrapContextCompatible
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }

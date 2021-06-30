@@ -1,0 +1,91 @@
+To get started with https://docs.micronaut.io/latest/guide/#cloudConfiguration[Distributed Configuration] with https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm[Oracle Cloud Vault], add the following dependency to your project:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-vault[]
+
+Then create a `src/main/resources/bootstrap.yml` file and ensure your <<authentication, Authentication>> configuration is present in this file so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).
+
+Then add the following to the `bootstrap.yml` to configure Vault support:
+
+.src/main/resources/bootstrap.yml
+[source,yaml]
+----
+micronaut:
+  application:
+    name: myapp
+  config-client:
+    enabled: true
+oci:
+  vault:
+    config:
+      enabled: true
+    vaults:
+      - ocid: ocid1.vault.oc1.phx...
+        compartment-ocid: ocid1.compartment.oc1...
+----
+
+One or many Vaults can be configured and each should include a `ocid` and `compartment-ocid` configuration entry.
+
+NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the file `bootstrap-oraclecloud.yml`
+
+You're now ready to go! You can access the config variables in a few different ways. If you create a secret with the name of `SECRET_ONE` in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:
+
+[source,java]
+----
+@Value("${SECRET_ONE}") String secretOne;
+----
+
+You can also use `@Property`:
+
+[source,java]
+----
+@Property(name = "SECRET_ONE") String secretOne;
+----
+
+Vault retrieved values are always `String`, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.
+
+So if you were to create secrets in your Oracle Cloud Vault like so:
+
+[cols="1,1"]
+|===
+|Name |Value
+
+|MY_SECRETS_ONE
+|Value One
+
+|MY_SECRETS_TWO
+|value two
+
+|MY_SECRETS_THREE
+|true
+
+|MY_SECRETS_FOUR
+|42
+
+|MY_SECRETS_FIVE
+|3.16
+|===
+
+You could add a config bean, like so:
+
+[source,java]
+----
+@ConfigurationProperties("my-secrets")
+public class Config {
+    private String one;
+    private String two;
+    private boolean three;
+    private int four;
+    private Double five;
+
+    /* getters/setters removed for brevity */
+}
+----
+
+Another option is to inject your variables into your configuration files which gives you the ability to store things like database passwords and API keys in your vault:
+
+[source,yaml]
+----
+datasources:
+    default:
+        password: ${DB_PASSWORD}
+----
