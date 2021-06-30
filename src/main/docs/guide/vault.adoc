@@ -23,7 +23,7 @@ oci:
         compartment-ocid: ocid1.compartment.oc1...
 ----
 
-One or many Vaults can be configured and each should include a `ocid` and `compartment-ocid` configuration entry.
+One or many Vaults can be configured and each should include a `ocid` and `compartment-ocid` configuration entry. Note that the `compartment-ocid` is not the vault compartment but a compartment from where the secrets will be fetched.
 
 NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the file `bootstrap-oraclecloud.yml`
 

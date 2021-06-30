@@ -15,16 +15,6 @@
  */
 package io.micronaut.oraclecloud.discovery.vault;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-
-import javax.inject.Named;
-import javax.inject.Singleton;
-
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.secrets.SecretsClient;
 import com.oracle.bmc.secrets.model.Base64SecretBundleContentDetails;
@@ -40,7 +30,6 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.discovery.config.ConfigurationClient;
-import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.scheduling.TaskExecutors;
 import io.reactivex.Flowable;
 import io.reactivex.Scheduler;
@@ -50,11 +39,19 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Named;
+import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+
 /**
- *  A {@link io.micronaut.discovery.config.ConfigurationClient} for Oracle Cloud Vault Configuration.
+ * A {@link io.micronaut.discovery.config.ConfigurationClient} for Oracle Cloud Vault Configuration.
  *
- *  @author toddsharp
- *  @since 2.0.0
+ * @author toddsharp
+ * @since 2.0.0
  */
 @Singleton
 @Requires(classes = {
@@ -62,14 +59,13 @@ import org.slf4j.LoggerFactory;
         VaultsClient.class,
         AuthenticationDetailsProvider.class
 })
-@Requires(beans = OracleCloudVaultClientConfiguration.class)
+@Requires(beans = {VaultsClient.class, SecretsClient.class, AuthenticationDetailsProvider.class})
 @BootstrapContextCompatible
 public class OracleCloudVaultConfigurationClient implements ConfigurationClient {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudVaultConfigurationClient.class);
 
-    private final OracleCloudVaultClientConfiguration oracleCloudVaultClientConfiguration;
-    private final ApplicationConfiguration applicationConfiguration;
+    private final OracleCloudVaultConfiguration oracleCloudVaultClientConfiguration;
     private final ExecutorService executorService;
     private final SecretsClient secretsClient;
     private final VaultsClient vaultsClient;
@@ -77,20 +73,17 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
     /**
      * Default Constructor.
      *
-     * @param oracleCloudVaultClientConfiguration   Oracle CloudVault Client Configuration
-     * @param applicationConfiguration              The application configuration
-     * @param executorService                       Executor Service
-     * @param secretsClient                         The secrets client
-     * @param vaultsClient                          The vaults client
+     * @param oracleCloudVaultClientConfiguration Oracle CloudVault Client Configuration
+     * @param executorService                     Executor Service
+     * @param secretsClient                       The secrets client
+     * @param vaultsClient                        The vaults client
      */
     public OracleCloudVaultConfigurationClient(
-            OracleCloudVaultClientConfiguration oracleCloudVaultClientConfiguration,
-            ApplicationConfiguration applicationConfiguration,
+            OracleCloudVaultConfiguration oracleCloudVaultClientConfiguration,
             @Named(TaskExecutors.IO) @Nullable ExecutorService executorService,
             SecretsClient secretsClient,
             VaultsClient vaultsClient) {
         this.oracleCloudVaultClientConfiguration = oracleCloudVaultClientConfiguration;
-        this.applicationConfiguration = applicationConfiguration;
         this.executorService = executorService;
         this.secretsClient = secretsClient;
         this.vaultsClient = vaultsClient;
@@ -102,21 +95,12 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
             return Flowable.empty();
         }
 
-        final String applicationName = applicationConfiguration.getName().orElse(null);
-        final Set<String> activeNames = environment.getActiveNames();
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Oracle Cloud Vault OCIDs: {}",
-                      oracleCloudVaultClientConfiguration.getVaults());
-            LOG.debug("Application name: {}, application profiles: {}", applicationName, activeNames);
-        }
-
         List<Flowable<PropertySource>> propertySources = new ArrayList<>();
         Scheduler scheduler = executorService != null ? Schedulers.from(executorService) : null;
 
         Map<String, Object> secrets = new HashMap<>();
 
-        for (OracleCloudVaultClientConfiguration.OracleCloudVault vault : oracleCloudVaultClientConfiguration.getVaults()) {
+        for (OracleCloudVaultConfiguration.OracleCloudVault vault : oracleCloudVaultClientConfiguration.getVaults()) {
             int retrieved = 0;
 
             if (LOG.isDebugEnabled()) {
@@ -149,6 +133,10 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
                             summary.getSecretName(),
                             secretValue
                     );
+
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Retrieved secret: {}", summary.getSecretName());
+                    }
                 });
             }
             if (LOG.isDebugEnabled()) {

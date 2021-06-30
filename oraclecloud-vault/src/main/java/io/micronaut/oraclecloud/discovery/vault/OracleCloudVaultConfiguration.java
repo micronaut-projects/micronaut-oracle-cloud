@@ -17,12 +17,9 @@ package io.micronaut.oraclecloud.discovery.vault;
 
 import java.util.List;
 
-import com.oracle.bmc.secrets.SecretsClient;
-import com.oracle.bmc.vault.VaultsClient;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.discovery.config.ConfigDiscoveryConfiguration;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
 
@@ -32,11 +29,9 @@ import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
  *  @author toddsharp
  *  @since 2.0.0
  */
-@ConfigurationProperties(OracleCloudVaultClientConfiguration.PREFIX)
+@ConfigurationProperties(OracleCloudVaultConfiguration.PREFIX)
 @BootstrapContextCompatible
-@Requires(property = OracleCloudVaultClientConfiguration.PREFIX)
-@Requires(beans = { VaultsClient.class, SecretsClient.class })
-public class OracleCloudVaultClientConfiguration {
+public class OracleCloudVaultConfiguration {
 
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".vault";
 
@@ -129,6 +124,6 @@ public class OracleCloudVaultClientConfiguration {
     @ConfigurationProperties(ConfigDiscoveryConfiguration.PREFIX)
     @BootstrapContextCompatible
     public static class OracleCloudVaultClientDiscoveryConfiguration extends ConfigDiscoveryConfiguration {
-        public static final String PREFIX = OracleCloudVaultClientConfiguration.PREFIX + "." + ConfigDiscoveryConfiguration.PREFIX;
+        public static final String PREFIX = OracleCloudVaultConfiguration.PREFIX + "." + ConfigDiscoveryConfiguration.PREFIX;
     }
 }

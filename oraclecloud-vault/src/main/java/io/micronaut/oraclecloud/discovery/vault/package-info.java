@@ -20,7 +20,7 @@
  *  @since 2.0.0
  */
 @Requires(property = ConfigurationClient.ENABLED, value = "true", defaultValue = "false")
-@Requires(property = OracleCloudVaultClientConfiguration.PREFIX + "." + ConfigDiscoveryConfiguration.PREFIX + ".enabled", value = "true")
+@Requires(property = OracleCloudVaultConfiguration.PREFIX + "." + ConfigDiscoveryConfiguration.PREFIX + ".enabled", value = "true")
 @Configuration
 package io.micronaut.oraclecloud.discovery.vault;
 
