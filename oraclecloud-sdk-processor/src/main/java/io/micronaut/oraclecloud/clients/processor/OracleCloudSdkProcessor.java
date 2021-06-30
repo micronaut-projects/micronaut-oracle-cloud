@@ -31,6 +31,7 @@ import io.micronaut.annotation.processing.GenericUtils;
 import io.micronaut.annotation.processing.ModelUtils;
 import io.micronaut.annotation.processing.PublicMethodVisitor;
 import io.micronaut.annotation.processing.visitor.JavaVisitorContext;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
@@ -230,7 +231,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addMember("classes", simpleName + ".class")
                 .addMember("beans", authProviderType.canonicalName() + ".class");
 
+
         builder.addAnnotation(requiresSpec.build());
+        // bit of a hack this but not sure of a better way
+        final boolean isBootstrapCompatible = simpleName.equals("SecretsClient") || simpleName.equals("VaultsClient");
+        if (isBootstrapCompatible) {
+            builder.addAnnotation(BootstrapContextCompatible.class);
+        }
         builder.addMethod(constructor.build());
 
         final MethodSpec.Builder getBuilder = MethodSpec.methodBuilder("getBuilder");
@@ -239,6 +246,9 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addAnnotation(requiresSpec.build())
                 .addModifiers(Modifier.PROTECTED)
                 .addCode("return super.getBuilder();");
+        if (isBootstrapCompatible) {
+            getBuilder.addAnnotation(BootstrapContextCompatible.class);
+        }
         builder.addMethod(getBuilder.build());
 
         final MethodSpec.Builder buildMethod = MethodSpec.methodBuilder("build");
@@ -249,6 +259,9 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addAnnotation(requiresSpec.build())
                 .addModifiers(Modifier.PROTECTED)
                 .addCode("return builder.build(authenticationDetailsProvider);");
+        if (isBootstrapCompatible) {
+            buildMethod.addAnnotation(BootstrapContextCompatible.class);
+        }
         builder.addMethod(buildMethod.build());
 
 
