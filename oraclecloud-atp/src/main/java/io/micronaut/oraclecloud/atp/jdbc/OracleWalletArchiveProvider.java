@@ -30,7 +30,7 @@ import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSour
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 
 /**

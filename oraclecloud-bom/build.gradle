@@ -2,10 +2,6 @@ javaPlatform {
     allowDependencies()
 }
 dependencies {
-    def ociBom = new XmlSlurper().parse(
-            "https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/$ociVersion/oci-java-sdk-bom-${ociVersion}.pom"
-    )
-
     constraints {
         for (Project p : rootProject.subprojects) {
             if (p.name.contains("bom") || p.name.contains('docs') || p.name.contains('example')) continue

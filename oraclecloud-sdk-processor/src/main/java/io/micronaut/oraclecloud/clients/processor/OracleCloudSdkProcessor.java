@@ -25,7 +25,7 @@ import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.annotation.processing.AnnotationUtils;
 import io.micronaut.annotation.processing.GenericUtils;
 import io.micronaut.annotation.processing.ModelUtils;
@@ -36,6 +36,8 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
+import io.micronaut.inject.visitor.TypeElementVisitor;
+import jakarta.inject.Singleton;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -44,7 +46,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
-import javax.inject.Singleton;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -151,7 +152,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                         modelUtils,
                         genericUtils,
                         filer,
-                        MutableConvertibleValues.of(new LinkedHashMap<>())
+                        MutableConvertibleValues.of(new LinkedHashMap<>()),
+                        TypeElementVisitor.VisitorKind.ISOLATING
                 );
                 typeElement.asType().accept(new PublicMethodVisitor<Object, Object>(visitorContext) {
                     @Override

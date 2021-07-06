@@ -23,9 +23,9 @@ import com.oracle.bmc.http.signing.RequestSignerFactory;
 import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
 import com.oracle.bmc.monitoring.responses.PostMetricDataResponse;
-import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.core.annotation.Nullable;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Objects;
 
 /**

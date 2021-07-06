@@ -144,7 +144,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.util.StringUtils;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @SdkClients({
         AnalyticsClient.class,

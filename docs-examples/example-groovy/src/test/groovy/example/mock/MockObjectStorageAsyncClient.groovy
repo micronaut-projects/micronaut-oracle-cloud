@@ -15,7 +15,7 @@ import com.oracle.bmc.responses.AsyncHandler
 import groovy.transform.CompileStatic
 import io.micronaut.context.annotation.Replaces
 
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
