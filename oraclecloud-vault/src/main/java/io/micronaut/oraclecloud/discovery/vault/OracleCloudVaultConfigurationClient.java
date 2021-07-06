@@ -31,9 +31,6 @@ import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.discovery.config.ConfigurationClient;
 import io.micronaut.scheduling.TaskExecutors;
-import io.reactivex.Flowable;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 import org.apache.commons.codec.binary.Base64;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
@@ -41,6 +38,10 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Scheduler;
+import reactor.core.scheduler.Schedulers;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,11 +93,11 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
     @Override
     public Publisher<PropertySource> getPropertySources(Environment environment) {
         if (!oracleCloudVaultClientConfiguration.getDiscoveryConfiguration().isEnabled()) {
-            return Flowable.empty();
+            return Flux.empty();
         }
 
-        List<Flowable<PropertySource>> propertySources = new ArrayList<>();
-        Scheduler scheduler = executorService != null ? Schedulers.from(executorService) : null;
+        List<Flux<PropertySource>> propertySources = new ArrayList<>();
+        Scheduler scheduler = executorService != null ? Schedulers.fromExecutor(executorService) : null;
 
         Map<String, Object> secrets = new HashMap<>();
 
@@ -144,7 +145,7 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
             }
         }
 
-        Flowable<PropertySource> propertySourceFlowable = Flowable.just(
+        Flux<PropertySource> propertySourceFlowable = Flux.just(
                 PropertySource.of(secrets)
         );
 
@@ -152,7 +153,7 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
             propertySourceFlowable = propertySourceFlowable.subscribeOn(scheduler);
         }
         propertySources.add(propertySourceFlowable);
-        return Flowable.merge(propertySources);
+        return Flux.merge(propertySources);
     }
 
     private ListSecretsRequest buildRequest(String vaultId, String compartmentId, @Nullable String page) {

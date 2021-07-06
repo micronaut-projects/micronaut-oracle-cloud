@@ -5,6 +5,7 @@ dependencies {
 
     api "io.micronaut.servlet:micronaut-servlet-core:2.1.4"
     api project(":oraclecloud-function")
+    implementation "io.projectreactor:reactor-core:$reactorVersion"
     implementation "com.fnproject.fn:runtime:$fnVersion"
     implementation "io.micronaut:micronaut-http-netty"
     implementation "io.micronaut:micronaut-http-server"

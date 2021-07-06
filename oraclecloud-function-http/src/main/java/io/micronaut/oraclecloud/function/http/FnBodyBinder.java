@@ -30,10 +30,10 @@ import io.micronaut.http.bind.binders.DefaultBodyAnnotationBinder;
 import io.micronaut.http.codec.CodecException;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
-import io.reactivex.Flowable;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -124,7 +124,7 @@ final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements An
                                     final Argument<? extends List<?>> containerType = Argument.listOf(typeArg.getType());
                                     T content = (T) codec.decode(containerType, inputStream);
                                     LOG.trace("Decoded object from function body: {}", content);
-                                    final Flowable flowable = Flowable.fromIterable((Iterable) content);
+                                    final Flux flowable = Flux.fromIterable((Iterable) content);
                                     final T converted = conversionService.convertRequired(flowable, type);
                                     return () -> Optional.of(converted);
                                 }

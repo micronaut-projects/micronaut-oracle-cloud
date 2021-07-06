@@ -5,6 +5,7 @@ dependencies {
     api "io.micronaut.discovery:micronaut-discovery-client:2.5.0"
     // used by OracleCloudVaultConfigurationClient
     implementation project(":oraclecloud-sdk")
+    implementation "io.projectreactor:reactor-core:$reactorVersion"
     api 'com.oracle.oci.sdk:oci-java-sdk-vault'
     api 'com.oracle.oci.sdk:oci-java-sdk-secrets'
 

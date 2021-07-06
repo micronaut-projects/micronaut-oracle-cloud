@@ -21,7 +21,19 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Internal Annotation to trigger the creation of SDK clients.
  */
-@Retention(value = RetentionPolicy.RUNTIME)
+@Retention(value = RetentionPolicy.SOURCE)
 public @interface SdkClients {
-    Class<?>[] value();
+    /**
+     * @return The type of client to generate.
+     */
+    Kind value() default Kind.ASYNC;
+
+    /**
+     * the type of client to generate.
+     */
+    enum Kind {
+        ASYNC,
+        REACTOR,
+        RXJAVA2
+    }
 }

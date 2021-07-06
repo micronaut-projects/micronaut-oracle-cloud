@@ -1,0 +1,13 @@
+dependencies {
+    annotationProcessor project(":oraclecloud-sdk-processor")
+    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+
+    api project(":oraclecloud-sdk")
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.21'
+    // optional modules
+    for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+        compileOnly "com.oracle.oci.sdk:$name:$ociVersion"
+        testImplementation "com.oracle.oci.sdk:$name:$ociVersion"
+        annotationProcessor "com.oracle.oci.sdk:$name:$ociVersion"
+    }
+}

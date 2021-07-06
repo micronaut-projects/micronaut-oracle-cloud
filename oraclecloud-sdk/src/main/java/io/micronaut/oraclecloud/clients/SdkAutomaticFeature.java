@@ -22,7 +22,6 @@ import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.core.annotate.RecomputeFieldValue;
 import com.oracle.svm.core.annotate.Substitute;
 import com.oracle.svm.core.annotate.TargetClass;
-import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.graal.AutomaticFeatureUtils;
 import io.micronaut.core.io.service.ServiceDefinition;
@@ -30,7 +29,6 @@ import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
-import io.micronaut.inject.BeanDefinitionReference;
 import net.minidev.json.JSONStyle;
 import net.minidev.json.reader.BeansWriter;
 import net.minidev.json.reader.JsonWriterI;
@@ -41,24 +39,31 @@ import org.graalvm.nativeimage.hosted.RuntimeReflection;
 import org.jvnet.hk2.internal.SystemDescriptor;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 
 @AutomaticFeature
 @Internal
+@SdkClients(SdkClients.Kind.ASYNC)
 final class SdkAutomaticFeature implements Feature {
 
     @Override
@@ -70,50 +75,73 @@ final class SdkAutomaticFeature implements Feature {
                 "org.glassfish.jersey.message.internal.MediaTypeProvider",
                 "org.glassfish.jersey.message.internal.CacheControlProvider",
                 "org.glassfish.jersey.message.internal.LinkProvider").forEach((n) ->
-                AutomaticFeatureUtils.initializeAtBuildTime(access, n)
+                                                                                      AutomaticFeatureUtils
+                                                                                              .initializeAtBuildTime(access, n)
         );
         // setup BC security
-        AnnotationMetadata annotationMetadata = getAnnotationMetadata(access);
+        Set<Class<?>> reflectiveAccess = new HashSet<>();
+        populateReflectionData(reflectiveAccess, ResponseHelper.ErrorCodeAndMessage.class);
+        String[] classes = resolveOracleCloudClientNamesFromManifest().toArray(new String[0]);
+        for (String aClass : classes) {
+            final String packageName = NameUtils.getPackageName(aClass);
+            final String simpleName = NameUtils.getSimpleName(aClass);
+            final String factoryName = packageName
+                    .replace("com.oracle.bmc", "io.micronaut.oraclecloud.clients") + "." + simpleName + "Factory";
+            AutomaticFeatureUtils.initializeAtRunTime(access, factoryName);
+            Class<?> c = access.findClassByName(aClass);
+            if (c != null) {
+                Set<Class> allInterfaces = ReflectionUtils.getAllInterfaces(c);
+                for (Class i : allInterfaces) {
+                    if (i.getName().endsWith("Async")) {
+                        continue;
+                    }
+                    populateReflectionData(reflectiveAccess, i);
+                }
+            }
+        }
 
-        if (annotationMetadata != null) {
-            Set<Class<?>> reflectiveAccess = new HashSet<>();
-            populateReflectionData(reflectiveAccess, ResponseHelper.ErrorCodeAndMessage.class);
-            String[] classes = annotationMetadata.stringValues(SdkClients.class);
-            for (String aClass : classes) {
-                final String packageName = NameUtils.getPackageName(aClass);
-                final String simpleName = NameUtils.getSimpleName(aClass);
-                final String factoryName = packageName.replace("com.oracle.bmc", "io.micronaut.oraclecloud.clients") + "." + simpleName + "Factory";
-                AutomaticFeatureUtils.initializeAtRunTime(access, factoryName);
-                Class<?> c = access.findClassByName(aClass);
-                if (c != null) {
-                    Set<Class> allInterfaces = ReflectionUtils.getAllInterfaces(c);
-                    for (Class i : allInterfaces) {
-                        if (i.getName().endsWith("Async")) {
-                            continue;
-                        }
-                        populateReflectionData(reflectiveAccess, i);
+        for (Class<?> type : reflectiveAccess) {
+            boolean hasNoArgsConstructor = !type.isEnum() &&
+                    !type.isInterface() &&
+                    hasNoArgsConstructor(type.getDeclaredConstructors());
+
+            RuntimeReflection.register(type);
+            if (hasNoArgsConstructor) {
+                RuntimeReflection.registerForReflectiveInstantiation(type);
+            }
+            for (Method declaredMethod : type.getDeclaredMethods()) {
+                RuntimeReflection.register(declaredMethod);
+            }
+            if (!type.isInterface()) {
+                for (Field declaredField : type.getDeclaredFields()) {
+                    RuntimeReflection.register(declaredField);
+                }
+            }
+        }
+    }
+
+    public static List<String> resolveOracleCloudClientNamesFromManifest() {
+        try {
+            List<String> results = new ArrayList<>();
+            final Enumeration<URL> manifests = SdkAutomaticFeature.class.getClassLoader().getResources("META-INF/MANIFEST.MF");
+            while (manifests.hasMoreElements()) {
+                final URL url = manifests.nextElement();
+                if (url.getPath().contains("oci-java")) {
+                    try (InputStream is = url.openStream()) {
+                        final Manifest manifest = new Manifest(is);
+                        final Map<String, Attributes> entries = manifest.getEntries();
+                        entries.keySet().stream()
+                                .filter((key) -> key.endsWith("Client.class") && !key.contains("/internal"))
+                                .forEach((fileName) -> results.add(
+                                        fileName.replace('/', '.')
+                                                .substring(0, fileName.length() - 6)
+                                ));
                     }
                 }
             }
-
-            for (Class<?> type : reflectiveAccess) {
-                boolean hasNoArgsConstructor = !type.isEnum() &&
-                        !type.isInterface() &&
-                        hasNoArgsConstructor(type.getDeclaredConstructors());
-
-                RuntimeReflection.register(type);
-                if (hasNoArgsConstructor) {
-                    RuntimeReflection.registerForReflectiveInstantiation(type);
-                }
-                for (Method declaredMethod : type.getDeclaredMethods()) {
-                    RuntimeReflection.register(declaredMethod);
-                }
-                if (!type.isInterface()) {
-                    for (Field declaredField : type.getDeclaredFields()) {
-                        RuntimeReflection.register(declaredField);
-                    }
-                }
-            }
+            return results;
+        } catch (IOException e) {
+            return Collections.emptyList();
         }
     }
 
@@ -173,33 +201,8 @@ final class SdkAutomaticFeature implements Feature {
         return rt.getTypeName().startsWith("com.oracle.bmc") && !reflectiveAccess.contains(rt);
     }
 
-    private AnnotationMetadata getAnnotationMetadata(BeforeAnalysisAccess access) {
-        String targetClass = SdkAutomaticFeatureMetadata.class.getPackage().getName();
-        return getAnnotationMetadata(access, targetClass);
-    }
-
-    private AnnotationMetadata getAnnotationMetadata(BeforeAnalysisAccess access, String targetClass) {
-        return getBeanReference(access, targetClass)
-                .map(BeanDefinitionReference::getAnnotationMetadata)
-                .orElse(AnnotationMetadata.EMPTY_METADATA);
-    }
-
-    private Optional<BeanDefinitionReference<?>> getBeanReference(BeforeAnalysisAccess access, String targetClass) {
-        String className = targetClass + ".$" + SdkAutomaticFeatureMetadata.class.getSimpleName() + "DefinitionClass";
-        Class<?> featureClass = access.findClassByName(className);
-        if (featureClass != null) {
-            try {
-                Object o = featureClass.getDeclaredConstructor().newInstance();
-                if (o instanceof BeanDefinitionReference) {
-                    return Optional.ofNullable((BeanDefinitionReference<?>) o);
-                }
-            } catch (Throwable e) {
-                return Optional.empty();
-            }
-        }
-        return Optional.empty();
-    }
 }
+
 //CHECKSTYLE:OFF
 @SuppressWarnings("unused")
 @Internal
@@ -236,6 +239,7 @@ final class HK2UtilsReplacements {
         return false;
     }
 }
+
 @TargetClass(SystemDescriptor.class)
 final class SystemDescriptorReplacements {
     @Substitute
@@ -243,6 +247,7 @@ final class SystemDescriptorReplacements {
         return false;
     }
 }
+
 @TargetClass(DescriptorImpl.class)
 final class DescriptorImplReplacements {
     @Substitute

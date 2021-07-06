@@ -2,7 +2,7 @@ package io.micronaut.oraclecloud.discovery.vault
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.PropertySource
-import io.reactivex.Flowable
+import reactor.core.publisher.Flux
 import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
@@ -37,7 +37,7 @@ class OracleCloudVaultConfigurationClientSpec extends Specification {
         def client = ctx.getBean(OracleCloudVaultConfigurationClient.class)
 
         when:
-        PropertySource propertySource = Flowable.fromPublisher(client.getPropertySources(null)).blockingFirst()
+        PropertySource propertySource = Flux.from(client.getPropertySources(null)).blockFirst()
 
         then:
         !propertySource.isEmpty()

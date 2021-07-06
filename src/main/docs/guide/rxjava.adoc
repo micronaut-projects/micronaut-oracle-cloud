@@ -1,8 +1,17 @@
-In addition to the blocking clients, this module provides clients that use RxJava to allow reactive programming with Micronaut for each SDK.
+In addition to the blocking clients, this module provides clients that use RxJava or Reactor to allow reactive programming with Micronaut for each SDK.
+
+For RxJava 2 add the following module:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[version={ociVersion}]
+
+For Reactor add:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[version={ociVersion}]
+
 
 NOTE: You need to add the relevant OCI SDK dependency to use these clients.
 
-For example, instead of `ObjectStorageClient`, you can inject `ObjectStorageRxClient` to use the Object Storage API:
+For example, instead of `ObjectStorageClient`, you can inject `ObjectStorageRxClient` for RxJava 2 or `ObjectStorageReactorClient` for Reactor to use the Object Storage API:
 
 snippet::example.BucketController[project-base="docs-examples/example", source="main", tags="imports,class"]
 

@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     implementation "io.micronaut:micronaut-http-server-netty"
-    implementation project(":oraclecloud-sdk")
+    implementation project(":oraclecloud-sdk-rxjava2")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
         exclude group:'org.javassist', module:'javassist'
     }
