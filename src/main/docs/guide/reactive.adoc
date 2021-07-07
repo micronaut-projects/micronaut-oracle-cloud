@@ -17,7 +17,7 @@ snippet::example.BucketController[project-base="docs-examples/example", source="
 
 <1> The `ObjectStorageRxClient` is injected into the constructor.
 
-Once you have a reference to the relevant RxJava 2 client, it is easier to compose non-blocking operations. The following example creates a bucket:
+Once you have a reference to the relevant reactive client, it is easier to compose non-blocking operations. The following example creates a bucket:
 
 snippet::example.BucketController[project-base="docs-examples/example", source="main", tags="method", indent="0"]
 
