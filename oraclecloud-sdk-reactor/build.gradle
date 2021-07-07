@@ -11,3 +11,4 @@ dependencies {
         annotationProcessor "com.oracle.oci.sdk:$name:$ociVersion"
     }
 }
+compileJava.options.fork = true

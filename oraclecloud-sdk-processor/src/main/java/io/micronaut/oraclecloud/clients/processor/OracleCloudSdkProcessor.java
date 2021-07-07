@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
@@ -51,7 +52,9 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
@@ -110,17 +113,44 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             final Set<? extends Element> element = roundEnv.getElementsAnnotatedWith(annotation);
             for (Element e : element) {
                 List<String> clientNames = resolveClientNames(e);
+                final String t = resolveClientType(e);
+                final boolean isRxJava2 = t.equals("RXJAVA2");
+                final boolean isReactor = t.equals("REACTOR");
+                final boolean isAsync = t.equals("ASYNC");
+                List<String> factoryClassNames = new ArrayList<>();
                 for (String clientName : clientNames) {
                     final String packageName = NameUtils.getPackageName(clientName);
                     final String simpleName = NameUtils.getSimpleName(clientName);
 
-                    final String t = resolveClientType(e);
-                    if (t.equals("RXJAVA2")) {
+                    if (isRxJava2) {
                         writeRxJava2Clients(e, packageName, simpleName);
-                    } else if (t.equals("REACTOR")) {
-                        writeReactorClients(e, packageName, simpleName);
-                    } else if (t.equals("ASYNC")) {
-                        writeClientFactory(e, packageName, simpleName);
+                    } else {
+                        if (isReactor) {
+                            writeReactorClients(e, packageName, simpleName);
+                        } else {
+                            if (isAsync) {
+                                factoryClassNames.add(writeClientFactory(e, packageName, simpleName));
+                            }
+                        }
+                    }
+                }
+
+                if (!factoryClassNames.isEmpty()) {
+                    try {
+                        final FileObject nativeImageProps = filer.createResource(
+                                StandardLocation.CLASS_OUTPUT,
+                                "",
+                                "META-INF/native-image/io.micronaut.oraclecloud/micronaut-oraclecloud-sdk/native-image.properties",
+                                e
+
+                        );
+                        Properties properties = new Properties();
+                        properties.put("Args","--initialize-at-run-time=" + String.join(",", factoryClassNames));
+                        try (Writer writer = nativeImageProps.openWriter()) {
+                            properties.store(writer, "Generated Native Image Configuration");
+                        }
+                    } catch (IOException ioException) {
+                        messager.printMessage(Diagnostic.Kind.ERROR, "Failed to write native image config: " + ioException.getMessage());
                     }
                 }
             }
@@ -342,7 +372,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         }
     }
 
-    private void writeClientFactory(Element e, String packageName, String simpleName) {
+    private String writeClientFactory(Element e, String packageName, String simpleName) {
         final String factoryName = simpleName + "Factory";
         final String factoryPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE);
         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
@@ -390,14 +420,16 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
 
         final JavaFile javaFile = JavaFile.builder(factoryPackageName, builder.build()).build();
+        final String factoryQualifiedClassName = factoryPackageName + "." + factoryName;
         try {
-            final JavaFileObject javaFileObject = filer.createSourceFile(factoryPackageName + "." + factoryName, e);
+            final JavaFileObject javaFileObject = filer.createSourceFile(factoryQualifiedClassName, e);
             try (Writer writer = javaFileObject.openWriter()) {
                 javaFile.writeTo(writer);
             }
         } catch (IOException ioException) {
             messager.printMessage(Diagnostic.Kind.ERROR, "Error occurred generating Oracle SDK factories: " + ioException.getMessage(), e);
         }
+        return factoryQualifiedClassName;
     }
 
     private TypeSpec.Builder defineSuperclass(String packageName, String simpleName, String factoryName) {

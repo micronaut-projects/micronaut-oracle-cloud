@@ -20,3 +20,4 @@ dependencies {
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
 }
 spotlessJavaMiscCheck.enabled = false
+compileJava.options.fork = true
