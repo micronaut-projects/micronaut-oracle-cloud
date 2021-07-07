@@ -26,7 +26,6 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.graal.AutomaticFeatureUtils;
 import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
-import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
 import net.minidev.json.JSONStyle;
@@ -60,6 +59,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import java.util.stream.Stream;
 
 @AutomaticFeature
 @Internal
@@ -83,11 +83,6 @@ final class SdkAutomaticFeature implements Feature {
         populateReflectionData(reflectiveAccess, ResponseHelper.ErrorCodeAndMessage.class);
         String[] classes = resolveOracleCloudClientNamesFromManifest().toArray(new String[0]);
         for (String aClass : classes) {
-            final String packageName = NameUtils.getPackageName(aClass);
-            final String simpleName = NameUtils.getSimpleName(aClass);
-            final String factoryName = packageName
-                    .replace("com.oracle.bmc", "io.micronaut.oraclecloud.clients") + "." + simpleName + "Factory";
-            AutomaticFeatureUtils.initializeAtRunTime(access, factoryName);
             Class<?> c = access.findClassByName(aClass);
             if (c != null) {
                 Set<Class> allInterfaces = ReflectionUtils.getAllInterfaces(c);
@@ -131,7 +126,7 @@ final class SdkAutomaticFeature implements Feature {
                         final Manifest manifest = new Manifest(is);
                         final Map<String, Attributes> entries = manifest.getEntries();
                         entries.keySet().stream()
-                                .filter((key) -> key.endsWith("Client.class") && !key.contains("/internal"))
+                                .filter((key) -> key.endsWith("Client.class") && !isSdkInternal(key))
                                 .forEach((fileName) -> results.add(
                                         fileName.replace('/', '.')
                                                 .substring(0, fileName.length() - 6)
@@ -143,6 +138,15 @@ final class SdkAutomaticFeature implements Feature {
         } catch (IOException e) {
             return Collections.emptyList();
         }
+    }
+
+    private static boolean isSdkInternal(String key) {
+        return Stream.of(
+                "/internal/",
+                "/auth/",
+                "/streaming/",
+                "/keymanagement/"
+        ).anyMatch(key::contains);
     }
 
     private boolean hasNoArgsConstructor(Constructor<?>[] declaredConstructors) {
