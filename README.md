@@ -18,7 +18,7 @@ Examples can be found in the [examples](https://github.com/micronaut-projects/mi
  
 ## Snapshots and Releases
 
-Snapshots are automatically published to [Sonatype Snapshots](https://oss.sonatype.org/content/repositories/snapshots/) using [Github Actions](https://github.com/micronaut-projects/micronaut-oci/actions).
+Snapshots are automatically published to [Sonatype Snapshots](https://s01.oss.sonatype.org/content/repositories/releases/io/micronaut/oraclecloud/) using [Github Actions](https://github.com/micronaut-projects/micronaut-oci/actions).
 
 See the documentation in the [Micronaut Docs](https://docs.micronaut.io/latest/guide/index.html#usingsnapshots) for how to configure your build to use snapshots.
 
