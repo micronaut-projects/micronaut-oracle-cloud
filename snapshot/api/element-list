@@ -9,6 +9,7 @@ io.micronaut.oraclecloud.clients.processor
 io.micronaut.oraclecloud.clients.rxjava
 io.micronaut.oraclecloud.core
 io.micronaut.oraclecloud.core.sdk
+io.micronaut.oraclecloud.discovery.vault
 io.micronaut.oraclecloud.function
 io.micronaut.oraclecloud.function.http
 io.micronaut.oraclecloud.function.http.test
