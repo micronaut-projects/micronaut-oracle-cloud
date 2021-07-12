@@ -33,4 +33,4 @@ jobs:
           GPG_FILE: ${{ secrets.GPG_FILE }}
         run: |
           echo $GPG_FILE | base64 -d > secring.gpg
-          ./gradlew :oraclecloud-atp:publishToSonatype :oraclecloud-atp:closeAndReleaseSonatypeStagingRepository
+          ./gradlew :oraclecloud-atp:publishToSonatype closeAndReleaseSonatypeStagingRepository
