@@ -1,4 +1,5 @@
 introduction: Introduction
+releaseHistory: Release History
 quickStart: Quick Start
 authentication: Authentication
 modules: Available Modules
@@ -9,3 +10,4 @@ autonomousDatabase: Oracle Autonomous Database
 micrometer: Micrometer Support For Oracle Monitoring
 tracing: OCI Application Peformance Monitoring as a Tracing Endpoint
 vault: Secure Distributed Configuration with Oracle Cloud Vault
+repository: Repository
