@@ -15,7 +15,7 @@
  */
 package io.micronaut.oraclecloud.discovery.vault;
 
-import com.oracle.bmc.auth.AuthenticationDetailsProvider;
+import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.secrets.SecretsClient;
 import com.oracle.bmc.secrets.model.Base64SecretBundleContentDetails;
 import com.oracle.bmc.secrets.requests.GetSecretBundleRequest;
@@ -56,10 +56,9 @@ import java.util.concurrent.ExecutorService;
 @Singleton
 @Requires(classes = {
         SecretsClient.class,
-        VaultsClient.class,
-        AuthenticationDetailsProvider.class
+        VaultsClient.class
 })
-@Requires(beans = {VaultsClient.class, SecretsClient.class, AuthenticationDetailsProvider.class})
+@Requires(beans = {VaultsClient.class, SecretsClient.class})
 @BootstrapContextCompatible
 public class OracleCloudVaultConfigurationClient implements ConfigurationClient {
 
