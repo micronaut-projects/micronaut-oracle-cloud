@@ -135,7 +135,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>@Singleton
-@Requires(classes={com.oracle.bmc.secrets.SecretsClient.class,com.oracle.bmc.vault.VaultsClient.class,com.oracle.bmc.auth.AuthenticationDetailsProvider.class}) @Requires(beans={com.oracle.bmc.vault.VaultsClient.class,com.oracle.bmc.secrets.SecretsClient.class,com.oracle.bmc.auth.AuthenticationDetailsProvider.class})
+@Requires(classes={com.oracle.bmc.secrets.SecretsClient.class,com.oracle.bmc.vault.VaultsClient.class}) @Requires(beans={com.oracle.bmc.vault.VaultsClient.class,com.oracle.bmc.secrets.SecretsClient.class})
 public class <span class="typeNameLabel">OracleCloudVaultConfigurationClient</span>
 extends java.lang.Object
 implements io.micronaut.discovery.config.ConfigurationClient</pre>
