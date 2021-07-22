@@ -4,6 +4,7 @@ dependencies {
 
     api project(":oraclecloud-sdk")
     api 'io.projectreactor:reactor-core:3.4.8'
+    implementation "io.micronaut.reactor:micronaut-reactor:2.0.0-M1"
     // optional modules
     for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
         compileOnly "com.oracle.oci.sdk:$name:$ociVersion"
