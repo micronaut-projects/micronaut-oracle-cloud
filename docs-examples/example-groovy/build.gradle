@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation project(":oraclecloud-sdk")
-    implementation project(":oraclecloud-sdk-rxjava2")
+    implementation project(":oraclecloud-sdk-reactor")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
         exclude module: 'javassist'
     }

@@ -18,11 +18,11 @@ package example;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
-import io.reactivex.Single;
+import org.reactivestreams.Publisher;
 
 import java.util.List;
 
 public interface DatabaseOperations {
     @Get("/list{/compartmentId}")
-    Single<List<String>> listDatabases(@PathVariable @Nullable String compartmentId);
+    Publisher<List<String>> listDatabases(@PathVariable @Nullable String compartmentId);
 }

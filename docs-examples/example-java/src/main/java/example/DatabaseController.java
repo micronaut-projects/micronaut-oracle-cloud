@@ -22,9 +22,9 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
-import io.micronaut.oraclecloud.clients.rxjava2.database.DatabaseRxClient;
+import io.micronaut.oraclecloud.clients.reactor.database.DatabaseReactorClient;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
-import io.reactivex.Single;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,11 +33,11 @@ import java.util.stream.Collectors;
 // tag::class[]
 @Controller("/db")
 public class DatabaseController implements DatabaseOperations {
-    private final DatabaseRxClient dbClient;
+    private final DatabaseReactorClient dbClient;
     private final TenancyIdProvider tenancyIdProvider;
 
     public DatabaseController(
-            DatabaseRxClient dbClient,
+            DatabaseReactorClient dbClient,
             TenancyIdProvider tenancyIdProvider) { // <1>
         this.dbClient = dbClient;
         this.tenancyIdProvider = tenancyIdProvider;
@@ -46,7 +46,7 @@ public class DatabaseController implements DatabaseOperations {
 
     @Override
     @Get("/list{/compartmentId}")
-    public Single<List<String>> listDatabases(@PathVariable @Nullable String compartmentId) {
+    public Mono<List<String>> listDatabases(@PathVariable @Nullable String compartmentId) {
         String compartmentOcId = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
         ListAutonomousDatabasesRequest listAutonomousDatabasesRequest = ListAutonomousDatabasesRequest.builder()
                 .compartmentId(compartmentOcId).build();

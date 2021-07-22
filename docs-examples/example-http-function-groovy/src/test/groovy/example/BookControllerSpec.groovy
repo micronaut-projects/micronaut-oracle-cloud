@@ -3,10 +3,11 @@ package example
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.client.RxHttpClient
+import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.http.client.exceptions.HttpClientResponseException
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import reactor.core.publisher.Mono
 import spock.lang.Specification
 
 import jakarta.inject.Inject
@@ -21,13 +22,13 @@ class BookControllerSpec extends Specification {
 
     @Inject
     @Client('/')
-    RxHttpClient client
+    HttpClient client
 
     void 'test validation'() {
         when:
-        client.exchange(HttpRequest.POST('/books', new Book('', 400))
-                        .contentType(APPLICATION_JSON_TYPE), Book)
-                .blockingFirst()
+        Mono.from(client.exchange(HttpRequest.POST('/books', new Book('', 400))
+                        .contentType(APPLICATION_JSON_TYPE), Book))
+                .block()
 
         then:
         HttpClientResponseException e = thrown()
@@ -36,10 +37,10 @@ class BookControllerSpec extends Specification {
 
     void 'test list books'() {
         when:
-        HttpResponse<Book> postBookResponse = client
+        HttpResponse<Book> postBookResponse = Mono.from(client
                 .exchange(HttpRequest.POST('/books', new Book('Along Came a Spider', 400))
-                                .contentType(APPLICATION_JSON_TYPE), Book)
-                                .blockingFirst()
+                                .contentType(APPLICATION_JSON_TYPE), Book))
+                                .block()
 
         then:
         postBookResponse.status() == CREATED
@@ -47,9 +48,9 @@ class BookControllerSpec extends Specification {
         400 == postBookResponse.body().pages
 
         when:
-        HttpResponse<List<Book>> response = client
+        HttpResponse<List<Book>> response = Mono.from(client
                 .exchange(HttpRequest.GET('/books'), Argument.listOf(Book))
-                .blockingFirst()
+        ).block()
 
         then:
         response.status() == OK

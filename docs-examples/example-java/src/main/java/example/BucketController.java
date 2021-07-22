@@ -29,9 +29,9 @@ import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
-import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient;
+import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
-import io.reactivex.Single;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,10 +41,10 @@ import java.util.stream.Collectors;
 @Controller("/os")
 public class BucketController implements BucketOperations {
 
-    private final ObjectStorageRxClient objectStorage;
+    private final ObjectStorageReactorClient objectStorage;
     private final TenancyIdProvider tenancyIdProvider;
 
-    public BucketController(ObjectStorageRxClient objectStorage,
+    public BucketController(ObjectStorageReactorClient objectStorage,
                             TenancyIdProvider tenancyIdProvider) { // <1>
         this.objectStorage = objectStorage;
         this.tenancyIdProvider = tenancyIdProvider;
@@ -53,7 +53,7 @@ public class BucketController implements BucketOperations {
 
     @Override
     @Get("/buckets{/compartmentId}")
-    public Single<List<String>> listBuckets(@PathVariable @Nullable String compartmentId) {
+    public Mono<List<String>> listBuckets(@PathVariable @Nullable String compartmentId) {
 
         String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
 
@@ -76,7 +76,7 @@ public class BucketController implements BucketOperations {
     // tag::method[]
     @Override
     @Post(value = "/buckets/{name}")
-    public Single<String> createBucket(String name) {
+    public Mono<String> createBucket(String name) {
 
         String tenancyId = tenancyIdProvider.getTenancyId();
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
@@ -99,7 +99,7 @@ public class BucketController implements BucketOperations {
 
     @Override
     @Delete(value = "/buckets/{name}")
-    public Single<Boolean> deleteBucket(String name) {
+    public Mono<Boolean> deleteBucket(String name) {
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyIdProvider.getTenancyId()).build();
         return objectStorage.getNamespace(getNamespaceRequest).flatMap(getNamespaceResponse -> {

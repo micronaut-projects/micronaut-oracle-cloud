@@ -18,9 +18,9 @@ package example
 import io.micronaut.core.annotation.Nullable
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
-import io.reactivex.Single
+import org.reactivestreams.Publisher
 
 interface DatabaseOperations {
     @Get("/list{/compartmentId}")
-    fun listDatabases(@PathVariable @Nullable compartmentId: String?): Single<List<String>>
+    fun listDatabases(@PathVariable @Nullable compartmentId: String?): Publisher<List<String>>
 }

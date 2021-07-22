@@ -1,4 +1,4 @@
-buildscript {
+    buildscript {
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -15,9 +15,9 @@ ext {
     )
 }
 subprojects { Project subproject ->
-    repositories {
-        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
-    }
+//    repositories {
+//        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+//    }
 
     group "io.micronaut.oraclecloud"
 

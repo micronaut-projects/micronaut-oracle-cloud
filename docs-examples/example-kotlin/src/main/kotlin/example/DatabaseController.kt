@@ -16,7 +16,7 @@
 package example
 
 // tag::imports[]
-import io.micronaut.oraclecloud.clients.rxjava2.database.DatabaseRxClient
+import io.micronaut.oraclecloud.clients.reactor.database.DatabaseReactorClient;
 import io.micronaut.oraclecloud.core.TenancyIdProvider
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
@@ -24,18 +24,19 @@ import com.oracle.bmc.database.requests.ListAutonomousDatabasesRequest
 import com.oracle.bmc.database.responses.ListAutonomousDatabasesResponse
 import io.micronaut.core.annotation.Nullable
 import io.micronaut.http.annotation.Controller
-import io.reactivex.Single
+import reactor.core.publisher.Mono
+
 // end::imports[]
 
 // tag::class[]
 @Controller("/db")
-class DatabaseController(private val dbClient: DatabaseRxClient,
+class DatabaseController(private val dbClient: DatabaseReactorClient,
                          private val tenancyIdProvider: TenancyIdProvider) // <1>
     : DatabaseOperations {
 // end::class[]
 
     @Get("/list{/compartmentId}")
-    override fun listDatabases(@PathVariable @Nullable compartmentId: String?): Single<List<String>> {
+    override fun listDatabases(@PathVariable @Nullable compartmentId: String?): Mono<List<String>> {
         val compartmentOcId = compartmentId ?: tenancyIdProvider.tenancyId!!
         val listAutonomousDatabasesRequest = ListAutonomousDatabasesRequest.builder()
                 .compartmentId(compartmentOcId).build()

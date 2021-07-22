@@ -16,7 +16,7 @@
 package example
 
 // tag::imports[]
-import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient
+import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient
 import io.micronaut.oraclecloud.core.TenancyIdProvider
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
@@ -33,18 +33,18 @@ import io.micronaut.core.annotation.Nullable
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Post
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 // end::imports[]
 
 // tag::class[]
 @Controller("/os")
-class BucketController(private val objectStorage: ObjectStorageRxClient,
+class BucketController(private val objectStorage: ObjectStorageReactorClient,
                        private val tenancyIdProvider: TenancyIdProvider) // <1>
     : BucketOperations {
 // end::class[]
 
     @Get("/buckets{/compartmentId}")
-    override fun listBuckets(@PathVariable @Nullable compartmentId: String?): Single<List<String>> {
+    override fun listBuckets(@PathVariable @Nullable compartmentId: String?): Mono<List<String>> {
         val compartmentOcid = compartmentId ?: tenancyIdProvider.tenancyId!!
         val getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(compartmentOcid).build()
@@ -62,7 +62,7 @@ class BucketController(private val objectStorage: ObjectStorageRxClient,
 
     // tag::method[]
     @Post(value = "/buckets/{name}")
-    override fun createBucket(name: String): Single<String> {
+    override fun createBucket(name: String): Mono<String> {
         val tenancyId = tenancyIdProvider.tenancyId
         val getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyId).build()
@@ -82,7 +82,7 @@ class BucketController(private val objectStorage: ObjectStorageRxClient,
     // end::method[]
 
     @Delete(value = "/buckets/{name}")
-    override fun deleteBucket(name: String): Single<Boolean> {
+    override fun deleteBucket(name: String): Mono<Boolean> {
         val getNamespaceRequest = GetNamespaceRequest.builder()
                 .compartmentId(tenancyIdProvider.tenancyId).build()
         return objectStorage.getNamespace(getNamespaceRequest).flatMap { getNamespaceResponse: GetNamespaceResponse ->

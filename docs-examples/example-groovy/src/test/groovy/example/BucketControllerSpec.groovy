@@ -18,19 +18,19 @@ class BucketControllerSpec extends Specification {
         String bucketName = 'test-bucket-' + RandomStringUtils.randomAlphanumeric(10)
 
         when:
-        List<String> names = client.listBuckets(null).blockingGet()
+        List<String> names = client.listBuckets(null).block()
 
         then:
         names == ['b1', 'b2']
 
         when:
-        String location = client.createBucket(bucketName).blockingGet()
+        String location = client.createBucket(bucketName).block()
 
         then:
         location == MockData.bucketLocation
 
         when:
-        boolean result = client.deleteBucket(bucketName).blockingGet()
+        boolean result = client.deleteBucket(bucketName).block()
 
         then:
         result
