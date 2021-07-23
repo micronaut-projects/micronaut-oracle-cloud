@@ -15,6 +15,8 @@
  */
 package io.micronaut.oraclecloud.clients;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.svm.core.annotate.Alias;
@@ -28,6 +30,7 @@ import io.micronaut.core.io.service.ServiceDefinition;
 import io.micronaut.core.io.service.SoftServiceLoader;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
+import io.micronaut.core.util.ArrayUtils;
 import net.minidev.json.JSONStyle;
 import net.minidev.json.reader.BeansWriter;
 import net.minidev.json.reader.JsonWriterI;
@@ -167,6 +170,30 @@ final class SdkAutomaticFeature implements Feature {
             if (builder != Void.class && includeInReflectiveData(reflectiveAccess, builder)) {
                 reflectiveAccess.add(builder);
                 populateReflectionData(reflectiveAccess, builder);
+            }
+        }
+        final JsonTypeInfo ti = type.getAnnotation(JsonTypeInfo.class);
+        if (ti != null) {
+            final Class<?> di = ti.defaultImpl();
+            if (di != type) {
+                if (includeInReflectiveData(reflectiveAccess, di)) {
+                    reflectiveAccess.add(di);
+                    populateReflectionData(reflectiveAccess, di);
+                }
+            }
+        }
+
+        final JsonSubTypes subTypes = type.getAnnotation(JsonSubTypes.class);
+        if (subTypes != null) {
+            final JsonSubTypes.Type[] types = subTypes.value();
+            if (ArrayUtils.isNotEmpty(types)) {
+                for (JsonSubTypes.Type t : types) {
+                    final Class<?> v = t.value();
+                    if (includeInReflectiveData(reflectiveAccess, v)) {
+                        reflectiveAccess.add(v);
+                        populateReflectionData(reflectiveAccess, v);
+                    }
+                }
             }
         }
         Method[] methods = type.getDeclaredMethods();
