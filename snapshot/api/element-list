@@ -6,7 +6,8 @@ io.micronaut.oraclecloud.atp.wallet
 io.micronaut.oraclecloud.atp.wallet.datasource
 io.micronaut.oraclecloud.clients
 io.micronaut.oraclecloud.clients.processor
-io.micronaut.oraclecloud.clients.rxjava
+io.micronaut.oraclecloud.clients.reactor
+io.micronaut.oraclecloud.clients.rxjava2
 io.micronaut.oraclecloud.core
 io.micronaut.oraclecloud.core.sdk
 io.micronaut.oraclecloud.discovery.vault
