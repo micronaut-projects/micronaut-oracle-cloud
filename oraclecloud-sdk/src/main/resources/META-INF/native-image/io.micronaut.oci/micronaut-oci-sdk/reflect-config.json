@@ -400,6 +400,9 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
+    "name":"org.glassfish.jersey.client.ClientConfig"
+  },
+  {
     "name":"org.glassfish.hk2.internal.PerThreadContext",
     "allDeclaredFields":true,
     "allDeclaredMethods":true,
