@@ -33,7 +33,7 @@ import oracle.ucp.jdbc.PoolDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import javax.net.ssl.SSLContext;
 import javax.sql.DataSource;
 import java.io.IOException;

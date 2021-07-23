@@ -19,7 +19,7 @@ import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.testing.FnEventBuilder;
 import com.fnproject.fn.testing.FnResult;
 import com.fnproject.fn.testing.FnTestingRule;
-import edu.umd.cs.findbugs.annotations.NonNull;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValues;

@@ -22,9 +22,9 @@ import io.micronaut.core.annotation.Nullable
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
-import io.micronaut.oraclecloud.clients.rxjava2.database.DatabaseRxClient
+import io.micronaut.oraclecloud.clients.reactor.database.DatabaseReactorClient
 import io.micronaut.oraclecloud.core.TenancyIdProvider
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 // end::imports[]
 
 // tag::class[]
@@ -32,10 +32,10 @@ import io.reactivex.Single
 @Controller('/db')
 class DatabaseController implements DatabaseOperations {
 
-    private final DatabaseRxClient dbClient
+    private final DatabaseReactorClient dbClient
     private final TenancyIdProvider tenancyIdProvider
 
-    DatabaseController(DatabaseRxClient dbClient,
+    DatabaseController(DatabaseReactorClient dbClient,
                        TenancyIdProvider tenancyIdProvider) { // <1>
         this.dbClient = dbClient
         this.tenancyIdProvider = tenancyIdProvider
@@ -44,7 +44,7 @@ class DatabaseController implements DatabaseOperations {
 
     @Override
     @Get('/list{/compartmentId}')
-    Single<List<String>> listDatabases(@PathVariable @Nullable String compartmentId) {
+    Mono<List<String>> listDatabases(@PathVariable @Nullable String compartmentId) {
         String compartmentOcId = compartmentId ?: tenancyIdProvider.tenancyId
         ListAutonomousDatabasesRequest listAutonomousDatabasesRequest = ListAutonomousDatabasesRequest.builder()
                 .compartmentId(compartmentOcId).build()

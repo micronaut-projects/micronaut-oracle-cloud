@@ -15,27 +15,22 @@
  */
 package io.micronaut.oraclecloud.clients.processor;
 
-import com.squareup.javapoet.AnnotationSpec;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.CodeBlock;
-import com.squareup.javapoet.FieldSpec;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.ParameterizedTypeName;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-import edu.umd.cs.findbugs.annotations.Nullable;
-import io.micronaut.annotation.processing.AnnotationUtils;
-import io.micronaut.annotation.processing.GenericUtils;
-import io.micronaut.annotation.processing.ModelUtils;
-import io.micronaut.annotation.processing.PublicMethodVisitor;
-import io.micronaut.annotation.processing.visitor.JavaVisitorContext;
-import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.Factory;
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.convert.value.MutableConvertibleValues;
-import io.micronaut.core.naming.NameUtils;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Writer;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
@@ -44,7 +39,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
-import javax.inject.Singleton;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
@@ -58,14 +52,33 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
+import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.tools.StandardLocation;
+
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
+import io.micronaut.annotation.processing.AnnotationUtils;
+import io.micronaut.annotation.processing.GenericUtils;
+import io.micronaut.annotation.processing.ModelUtils;
+import io.micronaut.annotation.processing.PublicMethodVisitor;
+import io.micronaut.annotation.processing.visitor.JavaVisitorContext;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.convert.value.MutableConvertibleValues;
+import io.micronaut.core.naming.NameUtils;
+import io.micronaut.inject.visitor.TypeElementVisitor;
+import jakarta.inject.Singleton;
 
 /**
  * An annotation processor that generates the Oracle Cloud SDK integration
@@ -100,12 +113,45 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             final Set<? extends Element> element = roundEnv.getElementsAnnotatedWith(annotation);
             for (Element e : element) {
                 List<String> clientNames = resolveClientNames(e);
+                final String t = resolveClientType(e);
+                final boolean isRxJava2 = t.equals("RXJAVA2");
+                final boolean isReactor = t.equals("REACTOR");
+                final boolean isAsync = t.equals("ASYNC");
+                List<String> factoryClassNames = new ArrayList<>();
                 for (String clientName : clientNames) {
                     final String packageName = NameUtils.getPackageName(clientName);
                     final String simpleName = NameUtils.getSimpleName(clientName);
 
-                    writeClientFactory(e, packageName, simpleName);
-                    writeRxJava2Clients(e, packageName, simpleName);
+                    if (isRxJava2) {
+                        writeRxJava2Clients(e, packageName, simpleName);
+                    } else {
+                        if (isReactor) {
+                            writeReactorClients(e, packageName, simpleName);
+                        } else {
+                            if (isAsync) {
+                                factoryClassNames.add(writeClientFactory(e, packageName, simpleName));
+                            }
+                        }
+                    }
+                }
+
+                if (!factoryClassNames.isEmpty()) {
+                    try {
+                        final FileObject nativeImageProps = filer.createResource(
+                                StandardLocation.CLASS_OUTPUT,
+                                "",
+                                "META-INF/native-image/io.micronaut.oraclecloud/micronaut-oraclecloud-sdk/native-image.properties",
+                                e
+
+                        );
+                        Properties properties = new Properties();
+                        properties.put("Args","--initialize-at-run-time=" + String.join(",", factoryClassNames));
+                        try (Writer writer = nativeImageProps.openWriter()) {
+                            properties.store(writer, "Generated Native Image Configuration");
+                        }
+                    } catch (IOException ioException) {
+                        messager.printMessage(Diagnostic.Kind.ERROR, "Failed to write native image config: " + ioException.getMessage());
+                    }
                 }
             }
         }
@@ -151,7 +197,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                         modelUtils,
                         genericUtils,
                         filer,
-                        MutableConvertibleValues.of(new LinkedHashMap<>())
+                        MutableConvertibleValues.of(new LinkedHashMap<>()),
+                        TypeElementVisitor.VisitorKind.ISOLATING
                 );
                 typeElement.asType().accept(new PublicMethodVisitor<Object, Object>(visitorContext) {
                     @Override
@@ -191,7 +238,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                                         methodBuilder.addCode(CodeBlock.builder()
                                                 .addStatement("return $T.create((emitter) -> {", rxSingleType)
                                                 .add("this.client." + methodName + "(" + parameterName + ",")
-                                                .add("new $T<" + requestType + "," + responseType + ">(emitter)", ClassName.get("io.micronaut.oraclecloud.clients.rxjava", "AsyncHandlerEmitter"))
+                                                .add("new $T<" + requestType + "," + responseType + ">(emitter)", ClassName.get("io.micronaut.oraclecloud.clients.rxjava2", "AsyncHandlerEmitter"))
                                                 .addStatement(")")
                                                 .addStatement("})")
                                         .build());
@@ -218,7 +265,114 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         }
     }
 
-    private void writeClientFactory(Element e, String packageName, String simpleName) {
+    private void writeReactorClients(Element e, String packageName, String simpleName) {
+        if (simpleName.endsWith("AsyncClient")) {
+
+            final String rx = simpleName.replace("AsyncClient", "ReactorClient");
+            final String rxPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE + ".reactor");
+
+            ClassName cn = ClassName.get(rxPackageName, rx);
+            TypeSpec.Builder builder = TypeSpec.classBuilder(cn);
+
+            ClassName clientType = ClassName.get(packageName, simpleName);
+            ClassName rxSingleType = ClassName.get("reactor.core.publisher", "Mono");
+            final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
+            final AnnotationSpec.Builder requiresSpec =
+                    AnnotationSpec.builder(Requires.class)
+                            .addMember("classes", "{$T.class, $T.class}", clientType, rxSingleType)
+                            .addMember("beans", "{$T.class}", authProviderType);
+            builder.addAnnotation(requiresSpec.build());
+            builder.addAnnotation(Singleton.class);
+            builder.addModifiers(Modifier.PUBLIC);
+            builder.addField(clientType, "client");
+            builder.addMethod(MethodSpec.constructorBuilder()
+                                      .addParameter(clientType, "client")
+                                      .addCode("this.client = client;")
+                                      .build());
+
+            TypeElement typeElement = elements.getTypeElement(clientType.reflectionName());
+            if (typeElement != null) {
+                ModelUtils modelUtils = new ModelUtils(elements, types) { };
+                GenericUtils genericUtils = new GenericUtils(elements, types, modelUtils) { };
+                AnnotationUtils annotationUtils = new AnnotationUtils(processingEnv, elements, messager, types, modelUtils, genericUtils, filer) { };
+                JavaVisitorContext visitorContext = new JavaVisitorContext(
+                        processingEnv,
+                        messager,
+                        elements,
+                        annotationUtils,
+                        types,
+                        modelUtils,
+                        genericUtils,
+                        filer,
+                        MutableConvertibleValues.of(new LinkedHashMap<>()),
+                        TypeElementVisitor.VisitorKind.ISOLATING
+                );
+                typeElement.asType().accept(new PublicMethodVisitor<Object, Object>(visitorContext) {
+                    @Override
+                    protected void accept(DeclaredType type, Element element, Object o) {
+                        ExecutableElement ee = (ExecutableElement) element;
+                        List<? extends VariableElement> parameters = ee.getParameters();
+                        TypeMirror returnType = ee.getReturnType();
+                        if (returnType instanceof DeclaredType && parameters.size() == 2) {
+                            DeclaredType dt = (DeclaredType) returnType;
+                            Element e = dt.asElement();
+                            if (e.getSimpleName().toString().equals("Future")) {
+                                List<? extends TypeMirror> typeArguments = dt.getTypeArguments();
+                                if (typeArguments.size() == 1) {
+                                    VariableElement variableElement = parameters.get(0);
+                                    TypeMirror m = typeArguments.get(0);
+                                    if (m instanceof DeclaredType) {
+
+                                        String methodName = ee.getSimpleName().toString();
+                                        String parameterName = variableElement.getSimpleName().toString();
+                                        TypeName requestType = ClassName.get(variableElement.asType());
+                                        TypeName responseType = ClassName.get(m);
+                                        MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(
+                                                methodName
+                                        )
+                                                .addModifiers(Modifier.PUBLIC)
+                                                .addParameter(
+                                                        requestType,
+                                                        parameterName
+                                                )
+                                                .returns(
+                                                        ParameterizedTypeName.get(
+                                                                rxSingleType,
+                                                                responseType
+                                                        )
+                                                );
+
+                                        methodBuilder.addCode(CodeBlock.builder()
+                                                                      .addStatement("return $T.create((sink) -> {", rxSingleType)
+                                                                      .add("this.client." + methodName + "(" + parameterName + ",")
+                                                                      .add("new $T<" + requestType + "," + responseType + ">(sink)", ClassName.get("io.micronaut.oraclecloud.clients.reactor", "AsyncHandlerSink"))
+                                                                      .addStatement(")")
+                                                                      .addStatement("})")
+                                                                      .build());
+                                        builder.addMethod(methodBuilder.build());
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }, null);
+            }
+
+            final JavaFile javaFile = JavaFile.builder(rxPackageName, builder.build()).build();
+            try {
+                final JavaFileObject javaFileObject = filer.createSourceFile(cn.reflectionName(), e);
+                try (Writer writer = javaFileObject.openWriter()) {
+                    javaFile.writeTo(writer);
+                }
+            } catch (IOException ioException) {
+                messager.printMessage(Diagnostic.Kind.ERROR, "Error occurred generating Oracle SDK factories: " + ioException.getMessage(), e);
+            }
+        }
+    }
+
+    private String writeClientFactory(Element e, String packageName, String simpleName) {
         final String factoryName = simpleName + "Factory";
         final String factoryPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE);
         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
@@ -266,14 +420,16 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
 
         final JavaFile javaFile = JavaFile.builder(factoryPackageName, builder.build()).build();
+        final String factoryQualifiedClassName = factoryPackageName + "." + factoryName;
         try {
-            final JavaFileObject javaFileObject = filer.createSourceFile(factoryPackageName + "." + factoryName, e);
+            final JavaFileObject javaFileObject = filer.createSourceFile(factoryQualifiedClassName, e);
             try (Writer writer = javaFileObject.openWriter()) {
                 javaFile.writeTo(writer);
             }
         } catch (IOException ioException) {
             messager.printMessage(Diagnostic.Kind.ERROR, "Error occurred generating Oracle SDK factories: " + ioException.getMessage(), e);
         }
+        return factoryQualifiedClassName;
     }
 
     private TypeSpec.Builder defineSuperclass(String packageName, String simpleName, String factoryName) {
@@ -302,35 +458,60 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private List<String> resolveClientNames(Element e) {
-        List<String> clientNames = new ArrayList<>();
+        return resolveOracleCloudClientNamesFromManifest();
+    }
+
+    private List<String> resolveOracleCloudClientNamesFromManifest() {
+        try {
+            List<String> results = new ArrayList<>();
+            final Enumeration<URL> manifests = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
+            while (manifests.hasMoreElements()) {
+                final URL url = manifests.nextElement();
+                if (url.getPath().contains("oci-java")) {
+                    try (InputStream is = url.openStream()) {
+                        final Manifest manifest = new Manifest(is);
+                        final Map<String, Attributes> entries = manifest.getEntries();
+                        entries.keySet().stream()
+                                .filter((key) -> key.endsWith("Client.class") && !isSdkInternal(key))
+                                .forEach((fileName) -> results.add(
+                                        fileName.replace('/', '.')
+                                                .substring(0, fileName.length() - 6)
+                                ));
+                    }
+                }
+            }
+            return results;
+        } catch (IOException e) {
+            return Collections.emptyList();
+        }
+    }
+
+    private boolean isSdkInternal(String key) {
+        return Stream.of(
+                "/internal/",
+                "/auth/",
+                "/streaming/",
+                "/keymanagement/"
+        ).anyMatch(key::contains);
+    }
+
+    private String resolveClientType(Element e) {
         final List<? extends AnnotationMirror> annotationMirrors = e.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             TypeElement te = (TypeElement) annotationMirror.getAnnotationType().asElement();
             String ann = te.getSimpleName().toString();
             if (ann.equals("SdkClients")) {
                 final Map<? extends ExecutableElement, ? extends AnnotationValue> values = annotationMirror.getElementValues();
-                for (Map.Entry<? extends ExecutableElement, ? extends AnnotationValue> entry : values.entrySet()) {
-                    final ExecutableElement executableElement = entry.getKey();
-                    if (executableElement.getSimpleName().toString().equals("value")) {
-                        final AnnotationValue value = entry.getValue();
-                        final Object v = value.getValue();
-                        if (v instanceof Iterable) {
-                            Iterable<Object> i = (Iterable) v;
-                            for (Object o : i) {
-                                if (o instanceof AnnotationValue) {
-                                    final Object nested = ((AnnotationValue) o).getValue();
-                                    if (nested instanceof DeclaredType) {
-                                        final TypeElement dte = (TypeElement) ((DeclaredType) nested).asElement();
-                                        clientNames.add(dte.getQualifiedName().toString());
-                                    }
-                                }
-                            }
-                        }
+                final Iterator<? extends AnnotationValue> i = values.values().iterator();
+                if (i.hasNext()) {
+                    final AnnotationValue av = i.next();
+                    final Object v = av.getValue();
+                    if (v != null) {
+                        return v.toString();
                     }
                 }
-
             }
         }
-        return clientNames;
+        return "ASYNC";
     }
 }

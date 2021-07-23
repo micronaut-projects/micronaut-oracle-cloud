@@ -2,7 +2,7 @@ package io.micronaut.oraclecloud.function.http;
 
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
-import edu.umd.cs.findbugs.annotations.Nullable;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.io.Writable;
 import io.micronaut.http.HttpHeaders;
@@ -17,6 +17,7 @@ import io.micronaut.http.annotation.CookieValue;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.annotation.QueryValue;
 import io.micronaut.http.annotation.Status;
 import io.micronaut.http.cookie.Cookie;
@@ -44,11 +45,13 @@ public class ParametersController {
     }
 
     @Get("/uri/{name}")
+    @Produces(MediaType.TEXT_PLAIN)
     String uriParam(String name) {
         return "Hello " + name;
     }
 
     @Get("/context")
+    @Produces(MediaType.TEXT_PLAIN)
     String context(RuntimeContext runtimeContext) {
         assertEquals(this.runtimeContext, runtimeContext);
         assertNotNull(this.runtimeContext.getMethod());
@@ -56,21 +59,25 @@ public class ParametersController {
     }
 
     @Get("/query")
+    @Produces(MediaType.TEXT_PLAIN)
     String queryValue(@QueryValue("q") String name) {
         return "Hello " + name;
     }
 
     @Get("/allParams")
+    @Produces(MediaType.TEXT_PLAIN)
     String allParams(HttpParameters parameters) {
         return "Hello " + parameters.get("name") + " " + parameters.get("age", int.class).orElse(null);
     }
 
     @Get("/header")
+    @Produces(MediaType.TEXT_PLAIN)
     String headerValue(@Header(HttpHeaders.CONTENT_TYPE) String contentType) {
         return "Hello " + contentType;
     }
 
     @Get("/cookies")
+    @Produces(MediaType.TEXT_PLAIN)
     io.micronaut.http.HttpResponse<String> cookies(@CookieValue String myCookie) {
         return io.micronaut.http.HttpResponse.ok(myCookie)
                 .cookie(Cookie.of("foo", "bar").httpOnly(true).domain("https://foo.com"));
@@ -87,12 +94,14 @@ public class ParametersController {
 
     @Post("/stringBody")
     @Consumes("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     String stringBody(@Body String body) {
         return "Hello " + body;
     }
 
     @Post("/bytesBody")
     @Consumes("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     String bytesBody(@Body byte[] body) {
         return "Hello " + new String(body);
     }
@@ -118,6 +127,7 @@ public class ParametersController {
     @Post(value = "/writable", processes = "text/plain")
     @Header(name = "Foo", value = "Bar")
     @Status(HttpStatus.CREATED)
+    @Produces(MediaType.TEXT_PLAIN)
     Writable fullReq(@Body String text) {
         return out -> out.append("Hello ").append(text);
     }

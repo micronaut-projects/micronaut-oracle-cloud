@@ -10,6 +10,7 @@ dependencies {
     implementation 'io.micronaut:micronaut-runtime'
     implementation 'io.micronaut:micronaut-validation'
     implementation 'io.micronaut.kotlin:micronaut-kotlin-runtime'
+    implementation 'io.projectreactor:reactor-core:3.4.8'
     implementation project(":oraclecloud-sdk")
     implementation project(":oraclecloud-function-http")
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {

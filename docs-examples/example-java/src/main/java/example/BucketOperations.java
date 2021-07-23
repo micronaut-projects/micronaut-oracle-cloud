@@ -19,17 +19,17 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
-import io.reactivex.Single;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 public interface BucketOperations {
     @Get("/buckets{/compartmentId}")
-    Single<List<String>> listBuckets(@Nullable String compartmentId);
+    Mono<List<String>> listBuckets(@Nullable String compartmentId);
 
     @Post("/buckets/{name}")
-    Single<String> createBucket(String name);
+    Mono<String> createBucket(String name);
 
     @Delete("/buckets/{name}")
-    Single<Boolean> deleteBucket(String name);
+    Mono<Boolean> deleteBucket(String name);
 }

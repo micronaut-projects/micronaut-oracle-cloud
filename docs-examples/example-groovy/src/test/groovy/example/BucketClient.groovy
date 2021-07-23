@@ -1,13 +1,13 @@
 package example
 
 import io.micronaut.http.client.annotation.Client
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 
 @Client('/os')
 interface BucketClient extends BucketOperations {
     @Override
-    Single<String> createBucket(String name)
+    Mono<String> createBucket(String name)
 
     @Override
-    Single<Boolean> deleteBucket(String name)
+    Mono<Boolean> deleteBucket(String name)
 }

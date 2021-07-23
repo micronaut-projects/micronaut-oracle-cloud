@@ -12,6 +12,8 @@ include 'oraclecloud-function-http'
 include 'oraclecloud-function-http-test'
 include 'oraclecloud-micrometer'
 include 'oraclecloud-sdk'
+include 'oraclecloud-sdk-rxjava2'
+include 'oraclecloud-sdk-reactor'
 include 'oraclecloud-sdk-processor'
 include 'oraclecloud-vault'
 

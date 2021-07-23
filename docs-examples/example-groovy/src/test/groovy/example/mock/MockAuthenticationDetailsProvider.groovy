@@ -6,7 +6,7 @@ import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import groovy.transform.CompileStatic
 import io.micronaut.context.annotation.Replaces
 
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @CompileStatic
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)

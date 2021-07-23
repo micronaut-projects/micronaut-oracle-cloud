@@ -10,7 +10,7 @@ import com.oracle.bmc.objectstorage.responses.ListBucketsResponse
 import groovy.transform.CompileStatic
 import io.micronaut.context.annotation.Replaces
 
-import javax.inject.Singleton
+import jakarta.inject.Singleton
 
 @CompileStatic
 @Singleton

@@ -19,15 +19,15 @@ import io.micronaut.core.annotation.Nullable
 import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
-import io.reactivex.Single
+import reactor.core.publisher.Mono
 
 interface BucketOperations {
     @Get("/buckets{/compartmentId}")
-    fun listBuckets(@Nullable compartmentId: String?): Single<List<String>>
+    fun listBuckets(@Nullable compartmentId: String?): Mono<List<String>>
 
     @Post("/buckets/{name}")
-    fun createBucket(name: String): Single<String>
+    fun createBucket(name: String): Mono<String>
 
     @Delete("/buckets/{name}")
-    fun deleteBucket(name: String): Single<Boolean>
+    fun deleteBucket(name: String): Mono<Boolean>
 }

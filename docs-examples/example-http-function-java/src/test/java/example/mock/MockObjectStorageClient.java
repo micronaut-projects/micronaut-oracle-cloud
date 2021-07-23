@@ -17,7 +17,7 @@ import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
 import com.oracle.bmc.objectstorage.responses.ListObjectsResponse;
 import io.micronaut.context.annotation.Replaces;
 
-import javax.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 

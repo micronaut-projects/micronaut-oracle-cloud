@@ -30,6 +30,28 @@ implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
 }
 ----
 
+=== micronaut-oraclecloud-sdk-rxjava2
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[version={ociVersion}]
+
+Provides support for injecting inject RxJava 2 client implementations.
+
+NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+
+=== micronaut-oraclecloud-sdk-reactor
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[version={ociVersion}]
+
+Provides support for injecting inject Reactor client implementations.
+
+NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+
+
+
 === micronaut-oraclecloud-function
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[]

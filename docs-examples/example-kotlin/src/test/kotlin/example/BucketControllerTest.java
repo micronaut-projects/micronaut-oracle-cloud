@@ -3,10 +3,10 @@ package example;
 import example.mock.MockData;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import io.reactivex.Single;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +30,13 @@ public class BucketControllerTest {
         MockData.bucketNames.add("b2");
 
         String bucketName = "test-bucket-" + RandomStringUtils.randomAlphanumeric(10);
-        List<String> names = client.listBuckets(null).blockingGet();
+        List<String> names = client.listBuckets(null).block();
         assertEquals(Arrays.asList("b1", "b2"), names);
 
-        String location = client.createBucket(bucketName).blockingGet();
+        String location = client.createBucket(bucketName).block();
         assertEquals(MockData.bucketLocation, location);
 
-        boolean result  = client.deleteBucket(bucketName).blockingGet();
+        boolean result  = client.deleteBucket(bucketName).block();
         assertTrue(result);
     }
 
@@ -48,9 +48,9 @@ public class BucketControllerTest {
     @Client("/os")
     interface BucketClient extends BucketOperations {
         @Override
-        Single<String> createBucket(String name);
+        Mono<String> createBucket(String name);
 
         @Override
-        Single<Boolean> deleteBucket(String name);
+        Mono<Boolean> deleteBucket(String name);
     }
 }

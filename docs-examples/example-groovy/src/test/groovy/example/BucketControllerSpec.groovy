@@ -5,7 +5,7 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import org.apache.commons.lang3.RandomStringUtils
 import spock.lang.Specification
 
-import javax.inject.Inject
+import jakarta.inject.Inject
 
 @MicronautTest
 class BucketControllerSpec extends Specification {
@@ -18,19 +18,19 @@ class BucketControllerSpec extends Specification {
         String bucketName = 'test-bucket-' + RandomStringUtils.randomAlphanumeric(10)
 
         when:
-        List<String> names = client.listBuckets(null).blockingGet()
+        List<String> names = client.listBuckets(null).block()
 
         then:
         names == ['b1', 'b2']
 
         when:
-        String location = client.createBucket(bucketName).blockingGet()
+        String location = client.createBucket(bucketName).block()
 
         then:
         location == MockData.bucketLocation
 
         when:
-        boolean result = client.deleteBucket(bucketName).blockingGet()
+        boolean result = client.deleteBucket(bucketName).block()
 
         then:
         result
