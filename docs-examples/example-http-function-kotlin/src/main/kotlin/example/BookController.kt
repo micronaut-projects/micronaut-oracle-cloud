@@ -15,13 +15,12 @@
  */
 package example
 
-import io.micronaut.http.HttpStatus
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.Status
 import java.util.concurrent.ConcurrentHashMap
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -41,10 +40,9 @@ class BookController {
     fun books(): Collection<Book> = books.values
 
     @Post("/")
-    @Status(HttpStatus.CREATED)
-    fun save(@Body book: @Valid @NotNull Book): Book {
+    fun save(@Body book: @Valid @NotNull Book): HttpResponse<Book> {
         books[book.title] = book
-        return book
+        return HttpResponse.created(book)
     }
 
     @Delete("/{title}")

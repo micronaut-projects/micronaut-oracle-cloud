@@ -54,3 +54,16 @@ project.afterEvaluate {
     nativeImage.enabled = false
     testNativeImage.enabled = false
 }
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        javaParameters = true
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+        javaParameters = true
+    }
+}
