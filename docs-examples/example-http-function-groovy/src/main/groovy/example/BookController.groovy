@@ -16,13 +16,12 @@
 package example
 
 import groovy.transform.CompileStatic
-import io.micronaut.http.HttpStatus
+import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.Status
 
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
@@ -46,10 +45,9 @@ class BookController {
     }
 
     @Post('/')
-    @Status(HttpStatus.CREATED)
-    Book save(@Valid @NotNull @Body Book book) {
+    HttpResponse<Book> save(@Valid @NotNull @Body Book book) {
         books[book.title] = book
-        book
+        HttpResponse.created(book)
     }
 
     @Delete('/{title}')
