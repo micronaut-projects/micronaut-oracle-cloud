@@ -2,9 +2,9 @@ import io.micronaut.gradle.docker.DockerBuildStrategy
 
 plugins {
     id "io.micronaut.application"
-    id("org.jetbrains.kotlin.jvm") version "1.4.32"
-    id("org.jetbrains.kotlin.kapt") version "1.4.32"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.4.32"
+    id("org.jetbrains.kotlin.jvm") version "1.5.30"
+    id("org.jetbrains.kotlin.kapt") version "1.5.30"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.5.30"
 }
 
 dependencies {
@@ -21,7 +21,7 @@ dependencies {
     runtimeOnly "org.slf4j:slf4j-simple:$slf4jVersion"
     runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
     runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin"
-    testImplementation 'com.fnproject.fn:testing-junit4:1.0.130'
+    testImplementation 'com.fnproject.fn:testing-junit4:1.0.133'
     testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
