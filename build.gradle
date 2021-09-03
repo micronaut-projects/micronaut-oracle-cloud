@@ -1,4 +1,4 @@
-    buildscript {
+buildscript {
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -14,6 +14,7 @@ ext {
             "https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/$ociVersion/oci-java-sdk-bom-${ociVersion}.pom"
     )
 }
+
 subprojects { Project subproject ->
 //    repositories {
 //        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }

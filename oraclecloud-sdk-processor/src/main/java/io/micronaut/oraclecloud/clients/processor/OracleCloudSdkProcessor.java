@@ -145,7 +145,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
                         );
                         Properties properties = new Properties();
-                        properties.put("Args","--initialize-at-run-time=" + String.join(",", factoryClassNames));
+                        properties.put("Args", "--initialize-at-run-time=" + String.join(",", factoryClassNames));
                         try (Writer writer = nativeImageProps.openWriter()) {
                             properties.store(writer, "Generated Native Image Configuration");
                         }
