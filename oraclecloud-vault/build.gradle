@@ -2,7 +2,7 @@ dependencies {
     annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
     api "io.micronaut:micronaut-inject:$micronautVersion"
-    api "io.micronaut.discovery:micronaut-discovery-client:2.5.0"
+    api "io.micronaut.discovery:micronaut-discovery-client:3.0.0"
     // used by OracleCloudVaultConfigurationClient
     implementation project(":oraclecloud-sdk")
     implementation "io.projectreactor:reactor-core:$reactorVersion"
