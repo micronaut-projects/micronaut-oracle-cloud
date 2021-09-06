@@ -9,7 +9,7 @@ dependencies {
     implementation 'io.micronaut.groovy:micronaut-runtime-groovy'
     implementation project(":oraclecloud-sdk")
     implementation project(":oraclecloud-function-http")
-    implementation 'io.projectreactor:reactor-core:3.4.8'
+    implementation 'io.projectreactor:reactor-core:3.4.9'
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
         exclude module: 'javassist'
     }
