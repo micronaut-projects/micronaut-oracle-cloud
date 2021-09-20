@@ -3,7 +3,7 @@ import io.micronaut.gradle.docker.DockerBuildStrategy
 plugins {
     id "io.micronaut.application"
     id("org.jetbrains.kotlin.jvm") version "1.5.30"
-    id("org.jetbrains.kotlin.kapt") version "1.5.30"
+    id("org.jetbrains.kotlin.kapt") version "1.5.31"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.5.31"
 }
 
