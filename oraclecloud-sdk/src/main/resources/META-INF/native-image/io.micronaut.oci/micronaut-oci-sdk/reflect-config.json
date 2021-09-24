@@ -400,6 +400,10 @@
     "methods":[{"name":"<init>","parameterTypes":[] }]
   },
   {
+    "name":"org.glassfish.jersey.message.internal.EnumMessageProvider",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
+  },  
+  {
     "name":"org.glassfish.jersey.client.ClientConfig"
   },
   {
