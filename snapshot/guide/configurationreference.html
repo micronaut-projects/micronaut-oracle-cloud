@@ -51,9 +51,53 @@
             </div>
 <div class="sect2">
 <h3 id="_oraclecloud_common_config_properties">Oraclecloud Common Config Properties</h3>
+<a id="io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration" href="#io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html">OracleCloudMetadataConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value ("http://169.254.169.254/opc/v1/instance/").</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.metadata-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The metadata Url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.instance-document-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The instance document Url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.vnic-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The instance document Url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value (true).</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 1. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.html">OracleCloudClientConfigurationProperties</a></caption>
+<caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.html">OracleCloudClientConfigurationProperties</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -167,7 +211,7 @@
 <div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties" href="#io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 2. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudAuthConfigurationProperties.html">OracleCloudAuthConfigurationProperties</a></caption>
+<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudAuthConfigurationProperties.html">OracleCloudAuthConfigurationProperties</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -225,50 +269,6 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.passphrase</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the passphrase</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration" href="#io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html">OracleCloudMetadataConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value ("http://169.254.169.254/opc/v1/instance/").</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.metadata-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The metadata Url</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.instance-document-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The instance document Url</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.vnic-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The instance document Url</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value (true).</p></td>
 </tr>
 </tbody>
 </table>
@@ -345,33 +345,9 @@
 </div>
 <div class="sect2">
 <h3 id="_oraclecloud_vault_config_properties">Oraclecloud Vault Config Properties</h3>
-<a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 5. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.html">OracleCloudVaultConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of {@link OracleCloudVault} objects that contain secrets that will be retrieved, decoded and set into your application as config variables.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration.OracleCloudVault" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration.OracleCloudVault">&#128279;</a>
 <table class="tableblock frame-all grid-all spread">
-<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVault.html">OracleCloudVault</a></caption>
+<caption class="title">Table 5. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVault.html">OracleCloudVault</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -394,6 +370,30 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].compartment-ocid</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Sets the compartment OCID where the vault resides.</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all spread">
+<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.html">OracleCloudVaultConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of {@link OracleCloudVault} objects that contain secrets that will be retrieved, decoded and set into your application as config variables.</p></td>
 </tr>
 </tbody>
 </table>
