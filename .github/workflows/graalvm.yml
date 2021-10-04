@@ -51,20 +51,6 @@ jobs:
             ./gradlew check --continue --no-daemon
           fi
         env:
-           MICRONAUT_ENV_DEDUCTION: false
-           OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
-           OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
-           OCI_REGION: ${{ secrets.OCI_REGION }}
-           OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
-           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
-           OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
-           ATP_OCID: ${{ secrets.ATP_OCID }}
-           ATP_USER: ${{ secrets.ATP_USER }}
-           ATP_PASS: ${{ secrets.ATP_PASS }}
-           VAULT_OCID: ${{ secrets.VAULT_OCID }}
-           VAULT_SECRETS_COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}
-           VAULT_SECRET_NAME: ${{ secrets.VAULT_SECRET_NAME }}
-           VAULT_SECRET_VALUE: ${{ secrets.VAULT_SECRET_VALUE }}
            TESTCONTAINERS_RYUK_DISABLED: true
            GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
       - name: Publish Test Report
