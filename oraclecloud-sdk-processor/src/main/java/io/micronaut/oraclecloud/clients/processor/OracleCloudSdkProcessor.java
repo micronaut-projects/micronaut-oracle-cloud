@@ -71,6 +71,7 @@ import io.micronaut.annotation.processing.GenericUtils;
 import io.micronaut.annotation.processing.ModelUtils;
 import io.micronaut.annotation.processing.PublicMethodVisitor;
 import io.micronaut.annotation.processing.visitor.JavaVisitorContext;
+import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
@@ -384,6 +385,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class)
                 .addMember("classes", simpleName + ".class")
                 .addMember("beans", authProviderType.canonicalName() + ".class");
+        final AnnotationSpec.Builder preDestroy = AnnotationSpec.builder(Bean.class)
+                .addMember("preDestroy", CodeBlock.of("\"close\""));
 
 
         builder.addAnnotation(requiresSpec.build());
@@ -411,6 +414,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(authProviderType, "authenticationDetailsProvider")
                 .addAnnotation(Singleton.class)
                 .addAnnotation(requiresSpec.build())
+                .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
                 .addCode("return builder.build(authenticationDetailsProvider);");
         if (isBootstrapCompatible) {
