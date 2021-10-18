@@ -3,7 +3,7 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     api project(":oraclecloud-sdk")
-    api 'io.projectreactor:reactor-core:3.4.10'
+    api 'io.projectreactor:reactor-core:3.4.11'
     implementation "io.micronaut.reactor:micronaut-reactor:2.0.0"
     // optional modules
     for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {

@@ -9,7 +9,7 @@ dependencies {
     implementation 'io.micronaut:micronaut-validation'
     implementation project(":oraclecloud-sdk")
     implementation project(":oraclecloud-function-http")
-    implementation 'io.projectreactor:reactor-core:3.4.10'
+    implementation 'io.projectreactor:reactor-core:3.4.11'
     implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
         exclude module:'javassist'
     }
