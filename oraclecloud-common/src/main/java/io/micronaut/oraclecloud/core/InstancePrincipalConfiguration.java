@@ -17,6 +17,7 @@ package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
@@ -33,6 +34,7 @@ import static io.micronaut.oraclecloud.core.InstancePrincipalConfiguration.PREFI
  * @since 1.0.0
  */
 @ConfigurationProperties(PREFIX)
+@BootstrapContextCompatible
 @Requires(property = PREFIX + ".enabled", value = StringUtils.TRUE)
 public class InstancePrincipalConfiguration implements Toggleable {
 

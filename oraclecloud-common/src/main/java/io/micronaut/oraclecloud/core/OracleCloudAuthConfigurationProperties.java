@@ -17,6 +17,7 @@ package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.exceptions.ConfigurationException;
@@ -32,6 +33,7 @@ import java.io.IOException;
  * @since 1.0.0
  */
 @ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD)
+@BootstrapContextCompatible
 public class OracleCloudAuthConfigurationProperties {
     public static final String TENANT_ID = OracleCloudCoreFactory.ORACLE_CLOUD + ".tenant-id";
 
