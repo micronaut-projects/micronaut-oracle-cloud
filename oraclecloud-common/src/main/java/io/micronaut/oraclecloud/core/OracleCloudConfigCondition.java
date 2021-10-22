@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.core;
 
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.condition.Condition;
 import io.micronaut.context.condition.ConditionContext;
 import io.micronaut.core.type.Argument;
@@ -28,6 +29,7 @@ import java.io.File;
  * @author graemerocher
  * @since 1.0.0
  */
+@BootstrapContextCompatible
 class OracleCloudConfigCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context) {
