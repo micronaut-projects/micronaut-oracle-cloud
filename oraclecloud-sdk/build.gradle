@@ -4,7 +4,7 @@ dependencies {
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
 
     api project(":oraclecloud-common")
-    compileOnly("org.graalvm.nativeimage:svm:21.2.0")
+    compileOnly("org.graalvm.nativeimage:svm:21.3.0")
     compileOnly("io.reactivex.rxjava2:rxjava")
     // optional modules
     for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
