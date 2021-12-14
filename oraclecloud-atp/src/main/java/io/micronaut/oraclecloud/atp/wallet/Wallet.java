@@ -18,6 +18,7 @@ package io.micronaut.oraclecloud.atp.wallet;
 import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource;
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 import oracle.security.pki.OracleKeyStoreSpi;
+import oracle.security.pki.OraclePKIProvider;
 import oracle.security.pki.OracleSecretStore;
 import oracle.security.pki.OracleSecretStoreException;
 import oracle.security.pki.OracleWallet;
@@ -70,6 +71,14 @@ final class Wallet implements CanConfigureOracleDataSource {
 
     private static SSLContext sslContext(OracleWallet wallet) throws WalletException {
         try {
+            /*
+             * Register OraclePKIProvider as the final JCE provider, as otherwise {@link OracleWallet}
+             * registers OraclePKIProvider as the first provider, which leads to issues, such as an NPE when
+             * trying to retrieve the default {@link javax.net.ssl.SSLContext}.
+             */
+            if (Security.getProvider("OraclePKI") == null) {
+                Security.insertProviderAt(new OraclePKIProvider(), Integer.MAX_VALUE);
+            }
             final KeyStore walletKeyStore = wallet.getKeyStore();
             /* Don't create a context if there are no certs */
             if (walletKeyStore == null || 0 == walletKeyStore.size()) {
