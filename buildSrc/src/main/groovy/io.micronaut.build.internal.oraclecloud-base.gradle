@@ -1,0 +1,28 @@
+plugins {
+    id 'io.micronaut.build.internal.common'
+    id 'io.micronaut.build.internal.dependency-updates'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api platform("com.oracle.oci.sdk:oci-java-sdk-bom:$ociVersion")
+    implementation 'jakarta.inject:jakarta.inject-api:2.0.1'
+    testImplementation mn.micronaut.test.junit5
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testAnnotationProcessor mn.micronaut.inject.java
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs.addAll([
+            '-parameters',
+            // enables incremental compilation
+            '-Amicronaut.processing.incremental=true',
+            '-Amicronaut.processing.annotations=io.micronaut.oraclecloud.*',
+            "-Amicronaut.processing.group=$project.group",
+            "-Amicronaut.processing.module=$project.name",
+    ])
+}

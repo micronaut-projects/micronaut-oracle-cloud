@@ -1,35 +1,29 @@
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
-    id("org.jetbrains.kotlin.kapt") version "1.6.0"
-    id "io.micronaut.application"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.10"
+    id 'io.micronaut.build.internal.oraclecloud-example'
+    alias libs.plugins.kotlin.jvm
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.kotlin.allopen
 }
 
 dependencies {
-    implementation "io.micronaut:micronaut-http-server-netty"
-    implementation project(":oraclecloud-sdk")
-    implementation project(":oraclecloud-sdk-reactor")
-    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-        exclude group:'org.javassist', module:'javassist'
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-database', {
+        exclude group: 'org.javassist', module: 'javassist'
     }
-    implementation "com.oracle.oci.sdk:oci-java-sdk-database", {
-        exclude group:'org.javassist', module:'javassist'
-    }
-    implementation "io.micronaut.kotlin:micronaut-kotlin-runtime"
-    implementation "javax.annotation:javax.annotation-api"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
-    runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly "com.fasterxml.jackson.module:jackson-module-kotlin"
-
-    testImplementation "io.micronaut:micronaut-http-client"
-    testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    implementation mn.javax.annotation.api
+    implementation libs.kotlin.reflect
+    implementation libs.kotlin.stdlib
+    implementation mn.micronaut.http.server.netty
+    implementation mn.micronaut.kotlin
+    implementation projects.oraclecloudSdkReactor
+    runtimeOnly mn.logback
+    runtimeOnly mn.jackson.module.kotlin
+    testAnnotationProcessor mn.micronaut.inject.java
+    testImplementation mn.micronaut.test.junit5
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {
     exclude '**/*Test$Intercepted*'
 }
 
-mainClassName = "example.ApplicationKt"
+mainClassName = 'example.ApplicationKt'

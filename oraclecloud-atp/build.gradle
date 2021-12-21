@@ -1,20 +1,19 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
-    implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
-    api "io.micronaut:micronaut-inject:$micronautVersion"
-    api "io.micronaut:micronaut-validation"
-
-    compileOnly "io.micronaut.sql:micronaut-jdbc:$micronautSqlVersion"
-    compileOnly "io.micronaut.sql:micronaut-jdbc-hikari:$micronautSqlVersion"
-    compileOnly "io.micronaut.sql:micronaut-jdbc-ucp:$micronautSqlVersion"
-
-    api "com.oracle.database.jdbc:ojdbc11"
     api "com.oracle.oci.sdk:oci-java-sdk-database:$ociVersion"
-    implementation "com.oracle.database.xml:xdb"
-    implementation "com.oracle.database.security:oraclepki"
-    implementation "com.oracle.database.security:osdt_core"
-    implementation "com.oracle.database.security:osdt_cert"
-
-    implementation project(":oraclecloud-sdk")
+    api 'com.oracle.database.jdbc:ojdbc11'
+    api mn.micronaut.inject
+    api mn.micronaut.validation
+    compileOnly libs.micronaut.sql.jdbc.hikari
+    compileOnly libs.micronaut.sql.jdbc.ucp
+    compileOnly mn.micronaut.sql.jdbc
+    implementation 'com.oracle.database.security:oraclepki'
+    implementation 'com.oracle.database.security:osdt_cert'
+    implementation 'com.oracle.database.security:osdt_core'
+    implementation 'com.oracle.database.xml:xdb'
+    implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
+    implementation projects.oraclecloudSdk
 }

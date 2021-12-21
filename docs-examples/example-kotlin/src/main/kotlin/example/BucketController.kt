@@ -90,8 +90,7 @@ class BucketController(private val objectStorage: ObjectStorageReactorClient,
                     .namespaceName(getNamespaceResponse.value)
                     .bucketName(name)
                     .build()
-            objectStorage.deleteBucket(deleteBucketRequest)
-                    .map { response: DeleteBucketResponse? -> true }
+            objectStorage.deleteBucket(deleteBucketRequest).map { true }
         }
     }
 // tag::class[]

@@ -1,17 +1,16 @@
-dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
 
-    compileOnly("org.graalvm.nativeimage:svm")
-    compileOnly "io.micronaut:micronaut-runtime"
-    api "io.micronaut:micronaut-inject"
+dependencies {
     api 'com.oracle.oci.sdk:oci-java-sdk-common', {
-        exclude group:'org.javassist', module:'javassist'
+        exclude group: 'org.javassist', module: 'javassist'
     }
-    testImplementation("org.spockframework:spock-core:${spockVersion}") {
-        exclude module:'groovy-all'
-    }
-    testImplementation "io.micronaut:micronaut-runtime"
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation 'org.mockito:mockito-core:4.1.0'
+    api mn.micronaut.inject
+    compileOnly mn.graal
+    compileOnly mn.micronaut.runtime
+    testImplementation libs.mockito
+    testImplementation mn.micronaut.runtime
+    testImplementation mn.micronaut.test.spock
+    testImplementation mn.spock
 }

@@ -1,26 +1,27 @@
 plugins {
-    id "io.micronaut.application"
+    id 'io.micronaut.build.internal.oraclecloud-example'
 }
 
 dependencies {
-    implementation "io.micronaut:micronaut-http-server-netty"
-    implementation project(":oraclecloud-sdk-reactor")
-    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-        exclude group:'org.javassist', module:'javassist'
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-database', {
+        exclude group: 'org.javassist', module: 'javassist'
     }
-    implementation "com.oracle.oci.sdk:oci-java-sdk-database", {
-        exclude group:'org.javassist', module:'javassist'
-    }
-    runtimeOnly("ch.qos.logback:logback-classic")
-
-    testImplementation "io.micronaut:micronaut-http-client"
-    testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    implementation mn.micronaut.http.server.netty
+    implementation projects.oraclecloudSdkReactor
+    runtimeOnly mn.logback
+    testAnnotationProcessor mn.micronaut.inject.java
+    testImplementation mn.micronaut.test.junit5
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 test {
     exclude '**/*Test$Intercepted*'
 }
 
-mainClassName = "example.Application"
+mainClassName = 'example.Application'
+
+graalvmNative {
+    binaries.configureEach {
+        buildArgs.add '--initialize-at-build-time=example'
+    }
+}

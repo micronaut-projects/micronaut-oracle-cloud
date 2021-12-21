@@ -1,50 +1,49 @@
 plugins {
-    id "com.github.johnrengelman.shadow"
-    id "io.micronaut.application"
+    id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'com.github.johnrengelman.shadow'
+    id 'org.graalvm.buildtools.native'
 }
 
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-graal"
-    implementation 'io.micronaut:micronaut-runtime'
-    implementation 'io.micronaut:micronaut-validation'
-    implementation project(":oraclecloud-sdk")
-    implementation project(":oraclecloud-function-http")
-    implementation 'io.projectreactor:reactor-core:3.4.11'
-    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-        exclude module:'javassist'
-    }
-    runtimeOnly "org.slf4j:slf4j-simple:$slf4jVersion"
-    runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
-    testImplementation project(":oraclecloud-function-http-test")
-    testImplementation 'io.micronaut:micronaut-http-client'
-    testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testAnnotationProcessor "io.micronaut:micronaut-inject-java"
+    annotationProcessor mn.micronaut.graal
+    implementation mn.micronaut.runtime
+    implementation mn.reactor
+    implementation projects.oraclecloudFunctionHttp
+    runtimeOnly libs.fn.runtime
+    runtimeOnly mn.slf4j.simple
+    testAnnotationProcessor mn.micronaut.inject.java
+    testImplementation mn.micronaut.test.junit5
+    testImplementation projects.oraclecloudFunctionHttpTest
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
 application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
 
 run {
-    args("io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest")
+    args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
 }
 
-dockerfileNative {
-    args("-XX:MaximumHeapSizePercent=80")
+tasks {
+    dockerfileNative {
+        args('-XX:MaximumHeapSizePercent=80')
+    }
+
+    dockerBuild {
+        images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
+    }
+
+    dockerBuildNative {
+        images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name-native:$project.version"]
+    }
 }
 
-nativeImage {
-    args("--initialize-at-build-time=example")
-}
-
-dockerBuild {
-    images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
-}
-
-dockerBuildNative {
-    images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name-native:$project.version"]
+graalvmNative {
+    binaries.configureEach {
+        buildArgs.add '--initialize-at-build-time=example'
+    }
 }
 
 project.afterEvaluate {
-    nativeImage.enabled = false
+    nativeCompile.enabled = false
     testNativeImage.enabled = false
 }

@@ -1,9 +1,10 @@
-dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
 
-    implementation("io.micronaut:micronaut-http-server")
-    implementation 'org.eclipse.jetty:jetty-server:9.4.35.v20201120'
-    implementation "com.fnproject.fn:testing-junit4:$fnVersion"
-    compileOnly project(":oraclecloud-function-http")
+dependencies {
+    compileOnly projects.oraclecloudFunctionHttp
+    implementation libs.fn.testing.junit4
+    implementation libs.jetty
+    implementation mn.micronaut.http.server
 }

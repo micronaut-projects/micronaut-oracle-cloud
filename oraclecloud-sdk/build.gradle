@@ -1,23 +1,24 @@
-dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor project(":oraclecloud-sdk-processor")
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
 
-    api project(":oraclecloud-common")
-    compileOnly("org.graalvm.nativeimage:svm:21.3.0")
-    compileOnly("io.reactivex.rxjava2:rxjava")
+dependencies {
+    annotationProcessor projects.oraclecloudSdkProcessor
+    api projects.oraclecloudCommon
+    compileOnly mn.graal
+    compileOnly mn.rxjava2
+    testImplementation mn.graal
+    testImplementation mn.micronaut.test.spock
+    testImplementation mn.rxjava2
+    testImplementation mn.spock
+
     // optional modules
-    for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+    for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
         compileOnly "com.oracle.oci.sdk:$name:$ociVersion"
         testImplementation "com.oracle.oci.sdk:$name:$ociVersion"
         annotationProcessor "com.oracle.oci.sdk:$name:$ociVersion"
     }
-    testImplementation("org.graalvm.nativeimage:svm")
-    testImplementation("io.reactivex.rxjava2:rxjava")
-    testImplementation("org.spockframework:spock-core:${spockVersion}") {
-        exclude module:'groovy-all'
-    }
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
 }
+
 spotlessJavaMiscCheck.enabled = false
 compileJava.options.fork = true

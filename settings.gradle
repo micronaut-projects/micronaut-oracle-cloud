@@ -6,10 +6,13 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '4.1.4'
+    id 'io.micronaut.build.shared.settings' version '5.1.0'
 }
 
-rootProject.name = 'oci'
+gradle.ext.ociBom = new groovy.xml.XmlSlurper().parse(
+        "https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/$ociVersion/oci-java-sdk-bom-${ociVersion}.pom")
+
+rootProject.name = 'micronaut-oracle-cloud'
 
 if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
     include 'oraclecloud-atp'
@@ -38,3 +41,17 @@ include 'docs-examples:example-function-kotlin'
 include 'docs-examples:example-http-function-java'
 include 'docs-examples:example-http-function-groovy'
 include 'docs-examples:example-http-function-kotlin'
+
+enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
+enableFeaturePreview 'VERSION_CATALOGS'
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
+    versionCatalogs {
+        mn {
+            from "io.micronaut:micronaut-bom:${providers.gradleProperty('micronautVersion').get()}"
+        }
+    }
+}
