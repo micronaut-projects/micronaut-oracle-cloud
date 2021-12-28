@@ -6,10 +6,12 @@ dependencies {
     compileOnly "io.micronaut:micronaut-runtime"
     api "io.micronaut:micronaut-inject"
     api 'com.oracle.oci.sdk:oci-java-sdk-common', {
-        exclude group:'org.javassist', module:'javassist'
+        exclude group: 'org.javassist', module: 'javassist'
+        exclude group: 'commons-logging', module: 'commons-logging'
     }
+    runtimeOnly "org.slf4j:jcl-over-slf4j:1.7.32"
     testImplementation("org.spockframework:spock-core:${spockVersion}") {
-        exclude module:'groovy-all'
+        exclude module: 'groovy-all'
     }
     testImplementation "io.micronaut:micronaut-runtime"
     testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
