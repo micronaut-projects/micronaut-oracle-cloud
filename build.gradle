@@ -15,6 +15,13 @@ ext {
     )
 }
 
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module("commons-logging:commons-logging"))
+                .using(module("org.slf4j:jcl-over-slf4j:1.7.32"))
+    }
+}
+
 subprojects { Project subproject ->
 //    repositories {
 //        maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
