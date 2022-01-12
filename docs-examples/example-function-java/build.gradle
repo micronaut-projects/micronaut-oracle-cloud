@@ -25,7 +25,6 @@ application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
 graalvmNative {
     binaries.configureEach {
         buildArgs.addAll(
-                '--static',
                 '-Dfn.handler=example.ListBucketsFunction::handleRequest',
                 '--initialize-at-build-time=example'
         )
