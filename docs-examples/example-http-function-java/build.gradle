@@ -14,7 +14,7 @@ dependencies {
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mn.micronaut.test.junit5
     testImplementation projects.oraclecloudFunctionHttpTest
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly libs.junit.jupiter
 }
 
 application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'

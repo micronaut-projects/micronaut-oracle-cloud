@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'io.micronaut.groovy:micronaut-runtime-groovy'
+    implementation libs.micronaut.groovy
     implementation mn.reactor
     implementation projects.oraclecloudFunctionHttp
     runtimeOnly libs.fn.runtime

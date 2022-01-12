@@ -7,7 +7,7 @@ dependencies {
     implementation 'com.oracle.oci.sdk:oci-java-sdk-database', {
         exclude group: 'org.javassist', module: 'javassist'
     }
-    implementation 'io.micronaut.groovy:micronaut-runtime-groovy'
+    implementation libs.micronaut.groovy
     implementation mn.micronaut.http.server.netty
     implementation projects.oraclecloudSdkReactor
     runtimeOnly mn.logback

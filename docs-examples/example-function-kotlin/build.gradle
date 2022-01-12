@@ -20,7 +20,7 @@ dependencies {
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation libs.fn.testing.junit4
     testImplementation mn.micronaut.test.junit5
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly libs.junit.jupiter
 }
 
 project.afterEvaluate {

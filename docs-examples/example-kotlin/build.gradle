@@ -19,7 +19,7 @@ dependencies {
     runtimeOnly mn.jackson.module.kotlin
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mn.micronaut.test.junit5
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testRuntimeOnly libs.junit.jupiter
 }
 
 test {
