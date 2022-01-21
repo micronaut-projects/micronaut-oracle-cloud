@@ -15,13 +15,17 @@
  */
 package io.micronaut.oraclecloud.atp.jdbc.hikari;
 
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import io.micronaut.configuration.jdbc.hikari.DatasourceConfiguration;
 import io.micronaut.context.BeanLocator;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.BeanInitializedEventListener;
 import io.micronaut.context.event.BeanInitializingEvent;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.context.exceptions.NoSuchBeanException;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.Ordered;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
@@ -32,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -45,7 +50,6 @@ import java.util.Properties;
 @Singleton
 @Requires(classes = DatasourceConfiguration.class)
 @Requires(sdk = Requires.Sdk.JAVA, value = "11")
-@Requires(beans = OracleWalletArchiveProvider.class)
 @Internal
 public class HikariPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration>, Ordered {
     public static final int POSITION = Ordered.HIGHEST_PRECEDENCE + 100;
@@ -61,7 +65,8 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
      * @param walletArchiveProvider The wallet archive provider
      * @param beanLocator           The bean locator
      */
-    protected HikariPoolConfigurationListener(OracleWalletArchiveProvider walletArchiveProvider, BeanLocator beanLocator) {
+    protected HikariPoolConfigurationListener(@Nullable OracleWalletArchiveProvider walletArchiveProvider,
+                                              @NonNull BeanLocator beanLocator) {
         this.walletArchiveProvider = walletArchiveProvider;
         this.beanLocator = beanLocator;
     }
@@ -85,6 +90,12 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
             LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
                     "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
         } else {
+
+            if (walletArchiveProvider == null && !beanLocator.findBean(AbstractAuthenticationDetailsProvider.class).isPresent()) {
+                LOG.error("Datasource configuration [{}] requires to have the OCI SDK authentication configured.", beanName);
+                throw new NoSuchBeanException(OracleWalletArchiveProvider.class);
+            }
+
             LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", beanName);
 
             final CanConfigureOracleDataSource walletArchive = walletArchiveProvider
