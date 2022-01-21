@@ -1,6 +1,5 @@
 plugins {
     id 'io.micronaut.build.internal.oraclecloud-example'
-    id 'org.graalvm.buildtools.native'
     alias libs.plugins.kotlin.jvm
     alias libs.plugins.kotlin.kapt
     alias libs.plugins.kotlin.allopen
@@ -27,31 +26,6 @@ application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
 
 run {
     args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
-}
-
-tasks {
-    dockerfileNative {
-        args('-XX:MaximumHeapSizePercent=80')
-    }
-
-    dockerBuild {
-        images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
-    }
-
-    dockerBuildNative {
-        images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name-native:$project.version"]
-    }
-}
-
-graalvmNative {
-    binaries.configureEach {
-        buildArgs.add '--initialize-at-build-time=example'
-    }
-}
-
-project.afterEvaluate {
-    nativeCompile.enabled = false
-    testNativeImage.enabled = false
 }
 
 compileKotlin {

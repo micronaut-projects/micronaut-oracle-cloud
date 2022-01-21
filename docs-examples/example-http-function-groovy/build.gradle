@@ -17,15 +17,6 @@ dependencies {
 
 mainClassName = 'com.fnproject.fn.runtime.EntryPoint'
 
-project.afterEvaluate {
-    nativeCompile.enabled = false
-    testNativeImage.enabled = false
-}
-
-dockerBuild {
-    images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
-}
-
 run {
     args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
 }

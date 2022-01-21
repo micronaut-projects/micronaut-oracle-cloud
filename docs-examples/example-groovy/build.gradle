@@ -19,9 +19,4 @@ test {
     exclude '**/*Test$Intercepted*'
 }
 
-project.afterEvaluate {
-    nativeCompile.enabled = false
-    testNativeImage.enabled = false
-}
-
 mainClassName = 'example.Application'

@@ -1,5 +1,3 @@
-import io.micronaut.gradle.docker.DockerBuildStrategy
-
 plugins {
     id 'io.micronaut.build.internal.oraclecloud-example'
     id 'groovy'
@@ -16,17 +14,7 @@ dependencies {
     testRuntimeOnly libs.junit.jupiter
 }
 
-project.afterEvaluate {
-    nativeCompile.enabled = false
-    testNativeImage.enabled = false
-}
-
 application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
-
-dockerfile {
-    buildStrategy.set(DockerBuildStrategy.ORACLE_FUNCTION)
-    defaultCommand.set('example.ListBucketsFunction::handleRequest')
-}
 
 run {
     args('example.ListBucketsFunction::handleRequest')

@@ -1,8 +1,5 @@
-import io.micronaut.gradle.docker.DockerBuildStrategy
-
 plugins {
     id 'io.micronaut.build.internal.oraclecloud-example'
-    id 'org.graalvm.buildtools.native'
 }
 
 dependencies {
@@ -16,41 +13,7 @@ dependencies {
     testRuntimeOnly libs.junit.jupiter
 }
 
-project.afterEvaluate {
-    testNativeImage.enabled = false
-}
-
 application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
-
-graalvmNative {
-    binaries.configureEach {
-        buildArgs.addAll(
-                '-Dfn.handler=example.ListBucketsFunction::handleRequest',
-                '--initialize-at-build-time=example'
-        )
-    }
-}
-
-tasks {
-    dockerfileNative {
-        args('-XX:MaximumHeapSizePercent=80')
-        buildStrategy.set(DockerBuildStrategy.ORACLE_FUNCTION)
-        defaultCommand.set('example.ListBucketsFunction::handleRequest')
-    }
-
-    dockerfile {
-        buildStrategy.set(DockerBuildStrategy.ORACLE_FUNCTION)
-        defaultCommand.set('example.ListBucketsFunction::handleRequest')
-    }
-
-    dockerBuild {
-        images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
-    }
-
-    dockerBuildNative {
-        images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name-native:$project.version"]
-    }
-}
 
 run {
     args('example.ListBucketsFunction::handleRequest')
