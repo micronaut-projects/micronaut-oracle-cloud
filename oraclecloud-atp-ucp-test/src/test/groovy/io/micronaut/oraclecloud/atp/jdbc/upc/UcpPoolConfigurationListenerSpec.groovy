@@ -11,20 +11,19 @@ import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.ResultSet
 
-@spock.lang.Ignore // TODO temporary
 @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
 class UcpPoolConfigurationListenerSpec extends Specification {
 
     @Shared
-    String userName = "${System.getenv("ATP_USER")}"
+    String userName = System.getenv("ATP_USER")
 
     @Shared
-    String password = "${System.getenv("ATP_PASS")}"
+    String password = System.getenv("ATP_PASS")
 
     @Shared
-    String atpId = "${System.getenv("ATP_OCID")}"
+    String atpId = System.getenv("ATP_OCID")
 
-    def "test it connects to database"() {
+    void "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "datasources.default.ocid"          : atpId,
@@ -46,7 +45,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         context.close()
     }
 
-    def "test it skips datasource without ocid field"() {
+    void "test it skips datasource without ocid field"() {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "datasources.default.url"                       : "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
