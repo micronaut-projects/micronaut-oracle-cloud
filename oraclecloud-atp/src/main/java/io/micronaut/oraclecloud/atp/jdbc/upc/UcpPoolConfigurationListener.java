@@ -15,12 +15,16 @@
  */
 package io.micronaut.oraclecloud.atp.jdbc.upc;
 
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import io.micronaut.context.BeanLocator;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.context.exceptions.NoSuchBeanException;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.Ordered;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanIdentifier;
@@ -48,7 +52,6 @@ import java.sql.SQLException;
 @Singleton
 @Requires(sdk = Requires.Sdk.JAVA, value = "11")
 @Requires(classes = PoolDataSource.class)
-@Requires(beans = OracleWalletArchiveProvider.class)
 @Internal
 public class UcpPoolConfigurationListener implements BeanCreatedEventListener<DataSource>, Ordered {
 
@@ -65,7 +68,8 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
      * @param walletArchiveProvider The wallet archive provider
      * @param beanLocator The bean locator
      */
-    protected UcpPoolConfigurationListener(OracleWalletArchiveProvider walletArchiveProvider, BeanLocator beanLocator) {
+    protected UcpPoolConfigurationListener(@Nullable OracleWalletArchiveProvider walletArchiveProvider,
+                                           @NonNull BeanLocator beanLocator) {
         this.walletArchiveProvider = walletArchiveProvider;
         this.beanLocator = beanLocator;
     }
@@ -93,6 +97,12 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
                 LOG.trace("Skipping configuration of Oracle Wallet due to missing ocid or wallet password in " +
                         "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
             } else {
+
+                if (walletArchiveProvider == null && !beanLocator.findBean(AbstractAuthenticationDetailsProvider.class).isPresent()) {
+                    LOG.error("Datasource configuration [{}] requires to have the OCI SDK authentication configured.", beanName);
+                    throw new NoSuchBeanException(OracleWalletArchiveProvider.class);
+                }
+
                 LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", beanName);
 
                 CanConfigureOracleDataSource walletArchive = walletArchiveProvider
