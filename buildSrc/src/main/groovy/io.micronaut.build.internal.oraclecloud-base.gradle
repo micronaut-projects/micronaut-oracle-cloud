@@ -1,5 +1,4 @@
 plugins {
-    id 'io.micronaut.build.internal.common'
     id 'io.micronaut.build.internal.dependency-updates'
 }
 
@@ -8,7 +7,6 @@ repositories {
 }
 
 dependencies {
-    api platform("com.oracle.oci.sdk:oci-java-sdk-bom:$ociVersion")
     implementation libs.jakarta.inject
     testImplementation mn.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
