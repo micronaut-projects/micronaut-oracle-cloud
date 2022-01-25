@@ -9,9 +9,13 @@
     </appender>
 
     <root level="info">
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="io.micronaut.oraclecloud.atp" level="debug" />
-<!--    <logger name="io.micronaut.context" level="debug" />-->
+    <logger name="io.micronaut.oraclecloud.atp" level="debug"/>
+    <logger name="io.micronaut.context" level="debug"/>
+    <logger name="io.micronaut.jdbc" level="debug"/>
+    <logger name="io.micronaut.configuration.jdbc" level="debug"/>
+    <logger name="io.micronaut.oraclecloud.atp" level="debug"/>
+
 </configuration>

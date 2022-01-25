@@ -16,10 +16,11 @@
 package io.micronaut.oraclecloud.atp.jdbc.upc;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+import io.micronaut.configuration.jdbc.ucp.DatasourceConfiguration;
 import io.micronaut.context.BeanLocator;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.event.BeanCreatedEvent;
-import io.micronaut.context.event.BeanCreatedEventListener;
+import io.micronaut.context.event.BeanInitializedEventListener;
+import io.micronaut.context.event.BeanInitializingEvent;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.context.exceptions.NoSuchBeanException;
 import io.micronaut.core.annotation.Internal;
@@ -27,7 +28,6 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.Ordered;
 import io.micronaut.core.util.StringUtils;
-import io.micronaut.inject.BeanIdentifier;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
 import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider;
@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 
 import jakarta.inject.Singleton;
 import javax.net.ssl.SSLContext;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -53,7 +52,7 @@ import java.sql.SQLException;
 @Requires(sdk = Requires.Sdk.JAVA, value = "11")
 @Requires(classes = PoolDataSource.class)
 @Internal
-public class UcpPoolConfigurationListener implements BeanCreatedEventListener<DataSource>, Ordered {
+public class UcpPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration>, Ordered {
 
     public static final int POSITION = Ordered.HIGHEST_PRECEDENCE + 100;
 
@@ -65,8 +64,9 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
 
     /**
      * Default constructor.
+     *
      * @param walletArchiveProvider The wallet archive provider
-     * @param beanLocator The bean locator
+     * @param beanLocator           The bean locator
      */
     protected UcpPoolConfigurationListener(@Nullable OracleWalletArchiveProvider walletArchiveProvider,
                                            @NonNull BeanLocator beanLocator) {
@@ -80,113 +80,100 @@ public class UcpPoolConfigurationListener implements BeanCreatedEventListener<Da
     }
 
     @Override
-    public DataSource onCreated(BeanCreatedEvent<DataSource> event) {
-        final DataSource dataSource = event.getBean();
-        if (dataSource instanceof PoolDataSource) {
-            PoolDataSource bean = (PoolDataSource) dataSource;
+    public DatasourceConfiguration onInitialized(BeanInitializingEvent<DatasourceConfiguration> event) {
 
-            BeanIdentifier beanIdentifier = event.getBeanIdentifier();
-            String beanName = beanIdentifier.getName();
-            AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = beanLocator
-                    .findBean(AutonomousDatabaseConfiguration.class,
-                            Qualifiers.byName(beanName)).orElse(null);
+        DatasourceConfiguration bean = event.getBean();
+        String beanName = bean.getName();
 
-            if (autonomousDatabaseConfiguration == null) {
-                LOG.trace("No AutonomousDatabaseConfiguration for [{}] datasource", beanName);
-            } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
-                LOG.trace("Skipping configuration of Oracle Wallet due to missing ocid or wallet password in " +
-                        "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
-            } else {
+        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = beanLocator
+                .findBean(AutonomousDatabaseConfiguration.class,
+                        Qualifiers.byName(beanName)).orElse(null);
 
-                if (walletArchiveProvider == null && !beanLocator.findBean(AbstractAuthenticationDetailsProvider.class).isPresent()) {
-                    LOG.error("Datasource configuration [{}] requires to have the OCI SDK authentication configured.", beanName);
-                    throw new NoSuchBeanException(OracleWalletArchiveProvider.class);
+        if (autonomousDatabaseConfiguration == null) {
+            LOG.trace("No AutonomousDatabaseConfiguration for [{}] datasource", beanName);
+        } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
+            LOG.trace("Skipping configuration of Oracle Wallet due to missing ocid or wallet password in " +
+                    "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
+        } else {
+
+            if (walletArchiveProvider == null && !beanLocator.findBean(AbstractAuthenticationDetailsProvider.class).isPresent()) {
+                LOG.error("Datasource configuration [{}] requires to have the OCI SDK authentication configured.", beanName);
+                throw new NoSuchBeanException(OracleWalletArchiveProvider.class);
+            }
+
+            LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", beanName);
+
+            CanConfigureOracleDataSource walletArchive = walletArchiveProvider
+                    .loadWalletArchive(autonomousDatabaseConfiguration);
+
+            try {
+                if (StringUtils.isEmpty(bean.getConfiguredDriverClassName())) {
+                    LOG.debug("Configured connection factory " + ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE + " for [{}] datasource",
+                            beanName);
+                    bean.setDriverClassName(ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE);
                 }
 
-                LOG.trace("Retrieving Oracle Wallet for DataSource [{}]", beanName);
+                walletArchive.configure(new OracleDataSourceAttributes() {
 
-                CanConfigureOracleDataSource walletArchive = walletArchiveProvider
-                        .loadWalletArchive(autonomousDatabaseConfiguration);
+                    private SSLContext sslContext;
 
-                try {
-                    if (StringUtils.isEmpty(bean.getConnectionFactoryClassName())) {
-                        LOG.trace("Configured connection factory " + ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE + " for [{}] datasource",
-                                beanName);
-                        bean.setConnectionFactoryClassName(ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE);
+                    @Override
+                    public SSLContext sslContext() {
+                        return sslContext;
                     }
 
-                    walletArchive.configure(new OracleDataSourceAttributes() {
+                    @Override
+                    public OracleDataSourceAttributes sslContext(SSLContext sslContext) {
+                        this.sslContext = sslContext;
+                        bean.getPoolDataSource().setSSLContext(sslContext);
+                        return this;
+                    }
 
-                        private SSLContext sslContext;
+                    @Override
+                    public String url() {
+                        return null;
+                    }
 
-                        @Override
-                        public SSLContext sslContext() {
-                            return sslContext;
-                        }
-
-                        @Override
-                        public OracleDataSourceAttributes sslContext(SSLContext sslContext) {
-                            this.sslContext = sslContext;
-                            bean.setSSLContext(sslContext);
+                    @Override
+                    public OracleDataSourceAttributes url(String url) {
+                            bean.setUrl(url);
                             return this;
-                        }
+                    }
 
-                        @Override
-                        public String url() {
+                    @Override
+                    public String user() {
+                        return bean.getUsername();
+                    }
+
+                    @Override
+                    public OracleDataSourceAttributes user(String user) {
+                        bean.setUsername(user);
+                        return this;
+
+                    }
+
+                    @Override
+                    public char[] password() {
+                        if (bean.getPassword() != null) {
+                            return bean.getPassword().toCharArray();
+                        } else {
                             return null;
                         }
+                    }
 
-                        @Override
-                        public OracleDataSourceAttributes url(String url) {
-                            try {
-                                bean.setURL(url);
-                                return this;
-                            } catch (SQLException e) {
-                                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource url: " + e.getMessage(), e);
-                            }
-                        }
+                    @Override
+                    public OracleDataSourceAttributes password(char[] password) {
+                            bean.setPassword(String.valueOf(password));
+                            return this;
+                    }
+                });
 
-                        @Override
-                        public String user() {
-                            return bean.getUser();
-                        }
-
-                        @Override
-                        public OracleDataSourceAttributes user(String user) {
-                            try {
-                                bean.setUser(user);
-                                return this;
-                            } catch (SQLException e) {
-                                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource user: " + e.getMessage(), e);
-                            }
-                        }
-
-                        @Override
-                        public char[] password() {
-                            if (bean.getPassword() != null) {
-                                return bean.getPassword().toCharArray();
-                            } else {
-                                return null;
-                            }
-                        }
-
-                        @Override
-                        public OracleDataSourceAttributes password(char[] password) {
-                            try {
-                                bean.setPassword(String.valueOf(password));
-                                return this;
-                            } catch (SQLException e) {
-                                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource password: " + e.getMessage(), e);
-                            }
-                        }
-                    });
-
-                    LOG.debug("Successfully configured OracleWallet for [{}] datasource", beanName);
-                } catch (IOException | SQLException e) {
-                    throw new ConfigurationException("Error configuring the [" + beanName + "] datasource: " + e.getMessage(), e);
-                }
+                LOG.debug("Successfully configured OracleWallet for [{}] datasource", beanName);
+            } catch (IOException | SQLException e) {
+                throw new ConfigurationException("Error configuring the [" + beanName + "] datasource: " + e.getMessage(), e);
             }
         }
-        return dataSource;
+
+        return bean;
     }
 }

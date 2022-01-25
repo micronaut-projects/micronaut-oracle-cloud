@@ -40,6 +40,9 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL")
         resultSet.next()
         resultSet.getString(1) == "X"
+
+        cleanup:
+        context.close()
     }
 
     def "test it skips datasource without ocid field"() {
@@ -62,5 +65,8 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT 1")
         resultSet.next()
         resultSet.getString(1) == "1"
+
+        cleanup:
+        context.close()
     }
 }
