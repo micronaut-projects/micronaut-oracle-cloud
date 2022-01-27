@@ -9,6 +9,7 @@ dependencies {
     api mn.micronaut.inject
     compileOnly mn.graal
     compileOnly mn.micronaut.runtime
+    runtimeOnly 'org.slf4j:jcl-over-slf4j:1.7.32'
     testImplementation libs.mockito
     testImplementation mn.micronaut.runtime
     testImplementation mn.micronaut.test.spock

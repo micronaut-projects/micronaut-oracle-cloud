@@ -24,3 +24,10 @@ tasks.withType(JavaCompile) {
             "-Amicronaut.processing.module=$project.name",
     ])
 }
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute(module('commons-logging:commons-logging'))
+                .using(module('org.slf4j:jcl-over-slf4j:1.7.32'))
+    }
+}
