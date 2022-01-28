@@ -13,7 +13,7 @@ dependencies {
     testAnnotationProcessor mn.micronaut.inject.java
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs.addAll([
             '-parameters',

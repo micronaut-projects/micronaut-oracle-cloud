@@ -8,7 +8,7 @@ dependencies {
     api mn.micronaut.function
     api projects.oraclecloudCommon
     compileOnly mn.graal
-    testImplementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage'
+    testImplementation libs.oci.objectstorage
     testImplementation libs.fn.testing.junit4
     testImplementation mn.micronaut.test.spock
     testImplementation mn.spock

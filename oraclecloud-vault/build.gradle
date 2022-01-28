@@ -3,8 +3,8 @@ plugins {
 }
 
 dependencies {
-    api 'com.oracle.oci.sdk:oci-java-sdk-secrets'
-    api 'com.oracle.oci.sdk:oci-java-sdk-vault'
+    api libs.oci.secrets
+    api libs.oci.vault
     api mn.micronaut.discovery
     api mn.micronaut.inject
     implementation mn.reactor

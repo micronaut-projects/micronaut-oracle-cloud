@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    api "com.oracle.oci.sdk:oci-java-sdk-monitoring:$ociVersion"
+    api libs.oci.monitoring
     api libs.micronaut.micrometer
     api mn.micrometer.core
     api mn.micronaut.inject

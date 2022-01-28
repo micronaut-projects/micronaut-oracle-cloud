@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', {
+    implementation(libs.oci.objectstorage) {
         exclude group: 'org.javassist', module: 'javassist'
     }
     implementation mn.micronaut.validation

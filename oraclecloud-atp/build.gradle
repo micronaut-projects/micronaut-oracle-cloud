@@ -3,17 +3,19 @@ plugins {
 }
 
 dependencies {
-    api "com.oracle.oci.sdk:oci-java-sdk-database:$ociVersion"
-    api 'com.oracle.database.jdbc:ojdbc11'
+    api libs.oci.database
+    api libs.oracle.jdbc
     api mn.micronaut.inject
     api mn.micronaut.validation
+
     compileOnly libs.micronaut.sql.jdbc.hikari
     compileOnly libs.micronaut.sql.jdbc.ucp
     compileOnly mn.micronaut.sql.jdbc
+
+    implementation projects.oraclecloudSdk
+    implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
     implementation 'com.oracle.database.security:oraclepki'
     implementation 'com.oracle.database.security:osdt_cert'
     implementation 'com.oracle.database.security:osdt_core'
     implementation 'com.oracle.database.xml:xdb'
-    implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
-    implementation projects.oraclecloudSdk
 }

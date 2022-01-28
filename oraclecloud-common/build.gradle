@@ -3,13 +3,13 @@ plugins {
 }
 
 dependencies {
-    api 'com.oracle.oci.sdk:oci-java-sdk-common', {
+    api(libs.oci.common) {
         exclude group: 'org.javassist', module: 'javassist'
     }
     api mn.micronaut.inject
     compileOnly mn.graal
     compileOnly mn.micronaut.runtime
-    runtimeOnly 'org.slf4j:jcl-over-slf4j:1.7.32'
+    runtimeOnly libs.slf4j.jcl
     testImplementation libs.mockito
     testImplementation mn.micronaut.runtime
     testImplementation mn.micronaut.test.spock

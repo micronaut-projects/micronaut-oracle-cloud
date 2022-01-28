@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation 'com.oracle.oci.sdk:oci-java-sdk-database', {
+    implementation(libs.oci.database) {
         exclude group: 'org.javassist', module: 'javassist'
     }
     implementation mn.micronaut.http.server.netty
