@@ -1,0 +1,13 @@
+plugins {
+    id 'io.micronaut.minimal.application'
+    id 'io.micronaut.build.internal.oraclecloud-base'
+}
+
+dependencies {
+    implementation(libs.oci.objectstorage) {
+        exclude group: 'org.javassist', module: 'javassist'
+    }
+    implementation mn.micronaut.validation
+    implementation projects.oraclecloudSdk
+    testImplementation mn.micronaut.http.client
+}

@@ -33,11 +33,11 @@ import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
 import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider;
 import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource;
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
+import jakarta.inject.Singleton;
 import oracle.ucp.jdbc.PoolDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Singleton;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.sql.SQLException;

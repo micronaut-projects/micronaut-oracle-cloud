@@ -23,7 +23,7 @@ import io.micrometer.core.util.internal.logging.WarnThenDebugLogger;
 import java.util.regex.Pattern;
 
 /**
- * @link NamingConvention} for Oracle Cloud Monitoring.
+ * {@link NamingConvention} for Oracle Cloud Monitoring.
  *
  * @author Pavol Gressa
  * @see <a href="https://docs.oracle.com/en-us/iaas/tools/java/1.32.0/com/oracle/bmc/monitoring/model/MetricDataDetails.html">MetricDataDetails</a>

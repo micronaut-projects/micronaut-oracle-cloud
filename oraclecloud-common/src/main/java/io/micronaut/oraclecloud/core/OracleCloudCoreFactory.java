@@ -49,7 +49,7 @@ import java.util.Optional;
  *     <li>{@code ClientConfiguration}</li>
  * </ul>
  *
- * @see com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+ * @see com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
  * @see ResourcePrincipalAuthenticationDetailsProvider
  * @see SimpleAuthenticationDetailsProvider
  */

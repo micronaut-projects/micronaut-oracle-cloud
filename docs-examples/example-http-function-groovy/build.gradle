@@ -1,37 +1,22 @@
 plugins {
-    id "groovy"
-    id "com.github.johnrengelman.shadow"
-    id "io.micronaut.application"
+    id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'groovy'
+    id 'com.github.johnrengelman.shadow'
 }
 
 dependencies {
-    implementation 'io.micronaut:micronaut-validation'
-    implementation 'io.micronaut.groovy:micronaut-runtime-groovy'
-    implementation project(":oraclecloud-sdk")
-    implementation project(":oraclecloud-function-http")
-    implementation 'io.projectreactor:reactor-core:3.4.11'
-    implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-        exclude module: 'javassist'
-    }
-    runtimeOnly "org.slf4j:slf4j-simple:$slf4jVersion"
-    runtimeOnly "com.fnproject.fn:runtime:$fnVersion"
-    testImplementation project(":oraclecloud-function-http-test")
-    testImplementation 'io.micronaut:micronaut-http-client'
-    testImplementation("io.micronaut.test:micronaut-test-spock")
-    testAnnotationProcessor "io.micronaut:micronaut-inject-groovy"
+    implementation libs.micronaut.groovy
+    implementation mn.reactor
+    implementation projects.oraclecloudFunctionHttp
+    runtimeOnly libs.fn.runtime
+    runtimeOnly mn.slf4j.simple
+    testAnnotationProcessor mn.micronaut.inject.groovy
+    testImplementation mn.micronaut.test.spock
+    testImplementation projects.oraclecloudFunctionHttpTest
 }
 
-mainClassName = "com.fnproject.fn.runtime.EntryPoint"
-
-project.afterEvaluate {
-    nativeImage.enabled = false
-    testNativeImage.enabled = false
-}
-
-dockerBuild {
-    images = ["[REGION].ocir.io/[TENANCY]/[REPO]/$project.name:$project.version"]
-}
+mainClassName = 'com.fnproject.fn.runtime.EntryPoint'
 
 run {
-    args("io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest")
+    args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
 }

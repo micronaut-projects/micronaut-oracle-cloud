@@ -1,16 +1,19 @@
+plugins {
+    id 'io.micronaut.build.internal.common'
+    id 'io.micronaut.build.internal.oraclecloud-base'
+}
+
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
     annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+    annotationProcessor mn.micronaut.inject.java
 
-    api "io.micronaut:micronaut-inject:$micronautVersion"
+    api mn.micronaut.inject
 
+    testImplementation projects.oraclecloudAtp
     testImplementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
-    testImplementation "io.micronaut.sql:micronaut-jdbc-ucp:$micronautSqlVersion"
-    testImplementation project(":oraclecloud-atp")
+    testImplementation libs.micronaut.sql.jdbc.ucp
+    testImplementation mn.micronaut.test.spock
+    testImplementation mn.spock
 
-    testImplementation("org.spockframework:spock-core:${spockVersion}") {
-        exclude module:'groovy-all'
-    }
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testRuntimeOnly("com.h2database:h2")
+    testRuntimeOnly mn.h2
 }

@@ -1,6 +1,9 @@
+apply plugin: 'java-platform'
+
 javaPlatform {
     allowDependencies()
 }
+
 dependencies {
     constraints {
         for (Project p : rootProject.subprojects) {
@@ -10,7 +13,7 @@ dependencies {
             api "$p.group:micronaut-$p.name:$p.version"
         }
 
-        for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+        for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
             api "com.oracle.oci.sdk:$name:$ociVersion"
         }
 

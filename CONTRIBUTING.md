@@ -2,19 +2,19 @@
 
 ## Finding Issues to Work on
 
-If you are interested in contributing to Micronaut and are looking for issues to work on, take a look at the issues tagged with [help wanted](https://github.com/micronaut-projects/micronaut-data/issues?q=is%3Aopen+is%3Aissue+label%3A%22status%3A+help+wanted%22).
+If you are interested in contributing to Micronaut and are looking for issues to work on, take a look at the issues tagged with [help wanted](https://github.com/micronaut-projects/micronaut-oracle-cloud/issues?q=is%3Aopen+is%3Aissue+label%3A%22status%3A+help+wanted%22).
 
 ## JDK Setup
 
-Micronaut Data currently requires JDK 8
+Micronaut Oracle Cloud currently requires JDK 8
 
 ## IDE Setup
 
-Micronaut Data can be imported into IntelliJ IDEA by opening the `build.gradle` file.
+Micronaut Oracle Cloud can be imported into IntelliJ IDEA by opening the `build.gradle` file.
 
 ## Docker Setup
 
-Micronaut Data tests currently require docker to be installed.
+Micronaut Oracle Cloud tests currently require docker to be installed.
  
 ## Running Tests
 
@@ -32,7 +32,7 @@ To also build the javadocs instead run `./gradlew docs`.
 
 If you are working with the IntelliJ IDEA development environment, you can import the project using the Intellij Gradle Tooling ( "File / Import Project" and select the "settings.gradle" file).
 
-To get a local development version of Micronaut Data working, first run the `publishToMavenLocal` task.
+To get a local development version of Micronaut Oracle Cloud working, first run the `publishToMavenLocal` task.
 
 ```
 ./gradlew pTML
@@ -52,7 +52,7 @@ Once you are satisfied with your changes:
 
 We want to keep the code clean, following good practices about organization, javadoc and style as much as possible. 
 
-Micronaut Data uses [Checkstyle](https://checkstyle.sourceforge.io/) to make sure that all the code follows those standards. The configuration file is defined in `config/checkstyle/checkstyle.xml` and to execute the Checkstyle you
+Micronaut Oracle Cloud uses [Checkstyle](https://checkstyle.sourceforge.io/) to make sure that all the code follows those standards. The configuration file is defined in `config/checkstyle/checkstyle.xml` and to execute the Checkstyle you
 need to run:
  
 ```
