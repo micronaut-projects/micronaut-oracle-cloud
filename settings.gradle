@@ -31,7 +31,6 @@ include 'oraclecloud-sdk-reactor'
 include 'oraclecloud-sdk-processor'
 include 'oraclecloud-vault'
 
-// doc examples
 include 'docs-examples:example-java'
 include 'docs-examples:example-groovy'
 include 'docs-examples:example-kotlin'
@@ -43,7 +42,6 @@ include 'docs-examples:example-http-function-groovy'
 include 'docs-examples:example-http-function-kotlin'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
-enableFeaturePreview 'VERSION_CATALOGS'
 
 dependencyResolutionManagement {
     repositories {
