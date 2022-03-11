@@ -7,7 +7,7 @@ kotlin = '1.6.10'
 micronaut-micrometer = '4.1.1'
 micronaut-sql = '4.1.1'
 mockito = '4.1.0'
-slf4j-jcl = '1.7.33'
+slf4j-jcl = '1.7.36'
 
 [libraries]
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
