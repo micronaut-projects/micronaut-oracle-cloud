@@ -35,6 +35,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+      - name: Set Swap Space
+        uses: pierotofy/set-swap-space@v1.0
+        with:
+          swap-size-gb: 10
       - name: Setup GraalVM CE
         uses: graalvm/setup-graalvm@v1
         with:
