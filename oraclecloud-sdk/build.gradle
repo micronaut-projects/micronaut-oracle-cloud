@@ -4,7 +4,9 @@ plugins {
 
 dependencies {
     annotationProcessor projects.oraclecloudSdkProcessor
-    api projects.oraclecloudCommon
+    api projects.oraclecloudCommon, {
+        exclude group:'commons-logging', module:'commons-logging'
+    }
     compileOnly mn.graal
     compileOnly mn.rxjava2
     testImplementation mn.graal

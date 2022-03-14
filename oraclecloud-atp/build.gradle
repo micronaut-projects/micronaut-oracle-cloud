@@ -3,10 +3,13 @@ plugins {
 }
 
 dependencies {
-    api libs.oci.database
+    api libs.oci.database, {
+        exclude group:'commons-logging', module:'commons-logging'
+    }
     api libs.oracle.jdbc
     api mn.micronaut.inject
     api mn.micronaut.validation
+    runtimeOnly libs.slf4j.jcl
 
     compileOnly libs.micronaut.sql.jdbc.hikari
     compileOnly libs.micronaut.sql.jdbc.ucp

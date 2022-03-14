@@ -25,9 +25,9 @@ tasks.withType(JavaCompile).configureEach {
     ])
 }
 
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute(module('commons-logging:commons-logging'))
-                .using(module('org.slf4j:jcl-over-slf4j:1.7.33'))
-    }
-}
+// configurations.all {
+//     resolutionStrategy.dependencySubstitution {
+//         substitute(module('commons-logging:commons-logging'))
+//                 .using(module('org.slf4j:jcl-over-slf4j:1.7.33'))
+//     }
+// }
