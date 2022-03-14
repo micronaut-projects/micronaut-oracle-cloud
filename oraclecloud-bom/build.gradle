@@ -1,7 +1,5 @@
-apply plugin: 'java-platform'
-
-javaPlatform {
-    allowDependencies()
+plugins {
+    id("io.micronaut.build.internal.bom")
 }
 
 dependencies {
