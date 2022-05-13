@@ -4,13 +4,6 @@ plugins {
 
 dependencies {
     constraints {
-        for (Project p : rootProject.subprojects) {
-            if (p.name.contains("bom") || p.name.contains('docs') || p.name.contains('example')) continue
-            if (p.name.endsWith('ucp-test') || p.name.endsWith('hikari-test')) continue
-
-            api "$p.group:micronaut-$p.name:$p.version"
-        }
-
         for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
             api "com.oracle.oci.sdk:$name:$ociVersion"
         }
