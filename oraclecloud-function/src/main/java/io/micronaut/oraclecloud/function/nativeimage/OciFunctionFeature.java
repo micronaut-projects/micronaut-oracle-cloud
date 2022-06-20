@@ -32,6 +32,7 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.ArrayUtils;
+import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
@@ -93,6 +94,7 @@ final class OciFunctionFeature implements Feature {
                 }
             }
         }
+        registerIfNecessary(JerseyClientBuilder.class);
     }
 
     private void registerForReflection(Class<?> type) {
