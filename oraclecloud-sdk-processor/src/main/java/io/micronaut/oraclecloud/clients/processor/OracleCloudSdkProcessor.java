@@ -74,6 +74,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
+import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import jakarta.inject.Singleton;
 
@@ -463,25 +464,22 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
     private List<String> resolveOraceCloudClientNamesFromGraalVmAddons() {
         List<String> results = new ArrayList<>();
-        SdkClientPackages allSdkClientPackages =
-                SdkAutomaticFeatureMetadata.class.getAnnotation(SdkClientPackages.class);
-        for (Class<?> sdkClientsMetadataPath : allSdkClientPackages.value()) {
-            Class<?>[] allSdkClients =
-                    sdkClientsMetadataPath.getDeclaredAnnotation(SdkClients.class).value();
-            for (Class sdkClient : allSdkClients) {
-                results.add(sdkClient.getName());
+        Class<?> metadataClass = ClassUtils.forName("com.oracle.bmc.graalvm.SdkAutomaticFeatureMetadata", getClass().getClassLoader()).orElse(null);
+        if (metadataClass != null) {
+            SdkClientPackages allSdkClientPackages =
+                    metadataClass.getAnnotation(SdkClientPackages.class);
+            for (Class<?> sdkClientsMetadataPath : allSdkClientPackages.value()) {
+                SdkClients declaredClients = sdkClientsMetadataPath.getDeclaredAnnotation(SdkClients.class);
+                if (declaredClients != null) {
+                    Class<?>[] allSdkClients =
+                            declaredClients.value();
+                    for (Class<?> sdkClient : allSdkClients) {
+                        results.add(sdkClient.getName());
+                    }
+                }
             }
         }
         return results;
-    }
-
-    private boolean isSdkInternal(String key) {
-        return Stream.of(
-                "/internal/",
-                "/auth/",
-                "/streaming/",
-                "/keymanagement/"
-        ).anyMatch(key::contains);
     }
 
     private String resolveClientType(Element e) {
