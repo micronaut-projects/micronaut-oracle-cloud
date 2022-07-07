@@ -16,20 +16,14 @@
 package io.micronaut.oraclecloud.clients.processor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -56,6 +50,8 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
+import com.oracle.bmc.SdkClients;
+import com.oracle.bmc.graalvm.SdkClientPackages;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -462,32 +458,21 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private List<String> resolveClientNames(Element e) {
-        return resolveOracleCloudClientNamesFromManifest();
+        return resolveOraceCloudClientNamesFromGraalVmAddons();
     }
 
-    private List<String> resolveOracleCloudClientNamesFromManifest() {
-        try {
-            List<String> results = new ArrayList<>();
-            final Enumeration<URL> manifests = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
-            while (manifests.hasMoreElements()) {
-                final URL url = manifests.nextElement();
-                if (url.getPath().contains("oci-java")) {
-                    try (InputStream is = url.openStream()) {
-                        final Manifest manifest = new Manifest(is);
-                        final Map<String, Attributes> entries = manifest.getEntries();
-                        entries.keySet().stream()
-                                .filter((key) -> key.endsWith("Client.class") && !isSdkInternal(key))
-                                .forEach((fileName) -> results.add(
-                                        fileName.replace('/', '.')
-                                                .substring(0, fileName.length() - 6)
-                                ));
-                    }
-                }
+    private List<String> resolveOraceCloudClientNamesFromGraalVmAddons() {
+        List<String> results = new ArrayList<>();
+        SdkClientPackages allSdkClientPackages =
+                SdkAutomaticFeatureMetadata.class.getAnnotation(SdkClientPackages.class);
+        for (Class<?> sdkClientsMetadataPath : allSdkClientPackages.value()) {
+            Class<?>[] allSdkClients =
+                    sdkClientsMetadataPath.getDeclaredAnnotation(SdkClients.class).value();
+            for (Class sdkClient : allSdkClients) {
+                results.add(sdkClient.getName());
             }
-            return results;
-        } catch (IOException e) {
-            return Collections.emptyList();
         }
+        return results;
     }
 
     private boolean isSdkInternal(String key) {

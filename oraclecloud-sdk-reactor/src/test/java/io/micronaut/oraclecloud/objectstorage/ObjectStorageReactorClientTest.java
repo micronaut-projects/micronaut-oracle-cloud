@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest
 public class ObjectStorageReactorClientTest {
+
     @Test
     void testObjectStorageClientRx(ObjectStorageReactorClient objectStorageRxClient) {
         ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
