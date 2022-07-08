@@ -702,5 +702,83 @@
   },
   {
     "name":"javax.xml.transform.stream.StreamSource"
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.EncryptDataDetails",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "queryAllDeclaredConstructors":true,
+    "methods":[
+      {"name":"getKeyId","parameterTypes":[] },
+      {"name":"getPlaintext","parameterTypes":[] }
+    ]
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.EncryptDataDetails$EncryptionAlgorithm",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.EncryptedData$Builder",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "queryAllDeclaredConstructors":true,
+    "methods":[
+      {"name":"<init>","parameterTypes":[] },
+      {"name":"build","parameterTypes":[] },
+      {"name":"ciphertext","parameterTypes":["java.lang.String"] },
+      {"name":"encryptionAlgorithm","parameterTypes":["com.oracle.bmc.keymanagement.model.EncryptedData$EncryptionAlgorithm"] },
+      {"name":"keyId","parameterTypes":["java.lang.String"] },
+      {"name":"keyVersionId","parameterTypes":["java.lang.String"] }
+    ]
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.EncryptedData$EncryptionAlgorithm",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "methods":[{"name":"create","parameterTypes":["java.lang.String"] }]
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.Vault$Builder",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "queryAllDeclaredConstructors":true,
+    "methods":[
+      {"name":"<init>","parameterTypes":[] },
+      {"name":"build","parameterTypes":[] },
+      {"name":"compartmentId","parameterTypes":["java.lang.String"] },
+      {"name":"cryptoEndpoint","parameterTypes":["java.lang.String"] },
+      {"name":"definedTags","parameterTypes":["java.util.Map"] },
+      {"name":"displayName","parameterTypes":["java.lang.String"] },
+      {"name":"freeformTags","parameterTypes":["java.util.Map"] },
+      {"name":"id","parameterTypes":["java.lang.String"] },
+      {"name":"isPrimary","parameterTypes":["java.lang.Boolean"] },
+      {"name":"lifecycleState","parameterTypes":["com.oracle.bmc.keymanagement.model.Vault$LifecycleState"] },
+      {"name":"managementEndpoint","parameterTypes":["java.lang.String"] },
+      {"name":"replicaDetails","parameterTypes":["com.oracle.bmc.keymanagement.model.VaultReplicaDetails"] },
+      {"name":"restoredFromVaultId","parameterTypes":["java.lang.String"] },
+      {"name":"timeCreated","parameterTypes":["java.util.Date"] },
+      {"name":"timeOfDeletion","parameterTypes":["java.util.Date"] },
+      {"name":"vaultType","parameterTypes":["com.oracle.bmc.keymanagement.model.Vault$VaultType"] },
+      {"name":"wrappingkeyId","parameterTypes":["java.lang.String"] }
+    ]
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.Vault$LifecycleState",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "methods":[{"name":"create","parameterTypes":["java.lang.String"] }]
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.Vault$VaultType",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "methods":[{"name":"create","parameterTypes":["java.lang.String"] }]
+  },
+  {
+    "name":"com.oracle.bmc.keymanagement.model.VaultReplicaDetails$Builder",
+    "allDeclaredFields":true,
+    "queryAllDeclaredMethods":true,
+    "queryAllDeclaredConstructors":true
   }
 ]
