@@ -147,8 +147,7 @@ final class SdkAutomaticFeature implements Feature {
         return Stream.of(
                 "/internal/",
                 "/auth/",
-                "/streaming/",
-                "/keymanagement/"
+                "/streaming/"
         ).anyMatch(key::contains);
     }
 
