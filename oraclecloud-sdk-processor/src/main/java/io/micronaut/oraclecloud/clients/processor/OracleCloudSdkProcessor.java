@@ -378,7 +378,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final String factoryPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE);
         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
         final MethodSpec.Builder constructor = buildConstructor(simpleName, builder);
-        final ClassName builderType = ClassName.get(packageName, simpleName + ".Builder");
+        ClassName builderType = ClassName.get(packageName, simpleName + ".Builder");
+        if (Stream.of(
+                "KmsCrypto",
+                "KmsManagement"
+        ).anyMatch(simpleName::contains)) {
+            builderType = ClassName.get(packageName, simpleName + "Builder");
+        }
         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
         builder.addAnnotation(Factory.class);
         final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
@@ -438,9 +444,16 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
     private TypeSpec.Builder defineSuperclass(String packageName, String simpleName, String factoryName) {
         final TypeSpec.Builder builder = TypeSpec.classBuilder(factoryName);
+        ClassName builderClassName = ClassName.get(packageName, simpleName + ".Builder");
+        if (Stream.of(
+                "KmsCrypto",
+                "KmsManagement"
+        ).anyMatch(simpleName::contains)) {
+            builderClassName = ClassName.get(packageName, simpleName + "Builder");
+        }
         builder.superclass(ParameterizedTypeName.get(
                 ClassName.get("io.micronaut.oraclecloud.core.sdk", "AbstractSdkClientFactory"),
-                ClassName.get(packageName, simpleName + ".Builder"),
+                builderClassName,
                 ClassName.get(packageName, simpleName))
         );
         return builder;
@@ -494,8 +507,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         return Stream.of(
                 "/internal/",
                 "/auth/",
-                "/streaming/",
-                "/keymanagement/"
+                "/streaming/"
         ).anyMatch(key::contains);
     }
 
