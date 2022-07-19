@@ -13,6 +13,7 @@ dependencies {
     runtimeOnly mn.logback
     testAnnotationProcessor mn.micronaut.inject.groovy
     testImplementation mn.micronaut.test.spock
+    testImplementation libs.commons.lang3
 }
 
 test {

@@ -8,6 +8,7 @@ micronaut-micrometer = '4.1.1'
 micronaut-sql = '4.1.1'
 mockito = '4.1.0'
 slf4j-jcl = '1.7.36'
+commons-lang3 = '3.12.0'
 
 [libraries]
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
@@ -32,6 +33,7 @@ oci-secrets = { module = 'com.oracle.oci.sdk:oci-java-sdk-secrets', version = ''
 oci-vault = { module = 'com.oracle.oci.sdk:oci-java-sdk-vault', version = '' }
 oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version = '' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
+commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
 
 [plugins]
 kotlin-allopen = { id = 'org.jetbrains.kotlin.plugin.allopen', version.ref = 'kotlin' }

@@ -13,6 +13,7 @@ dependencies {
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mn.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
+    testImplementation libs.commons.lang3
 }
 
 test {
