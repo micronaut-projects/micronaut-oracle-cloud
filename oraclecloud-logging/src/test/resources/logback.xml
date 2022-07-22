@@ -1,0 +1,30 @@
+<configuration>
+
+    <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <logId>test-log-id</logId>
+        <blackListLoggerName>name1</blackListLoggerName>
+        <blackListLoggerName>name2</blackListLoggerName>
+
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="io.micronaut.oraclecloud.logging.OracleCloudJsonLayout">
+                <includeTraceId>true</includeTraceId>
+                <includeSpanId>true</includeSpanId>
+                <includeLevel>true</includeLevel>
+                <includeThreadName>true</includeThreadName>
+                <includeMDC>true</includeMDC>
+                <includeLoggerName>true</includeLoggerName>
+                <includeFormattedMessage>true</includeFormattedMessage>
+                <includeExceptionInMessage>true</includeExceptionInMessage>
+                <includeContextName>true</includeContextName>
+                <includeMessage>true</includeMessage>
+                <includeException>true</includeException>
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ORACLE"/>
+    </root>
+</configuration>
