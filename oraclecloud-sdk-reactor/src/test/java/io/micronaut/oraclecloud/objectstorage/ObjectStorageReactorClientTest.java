@@ -46,8 +46,8 @@ public class ObjectStorageReactorClientTest {
     MockAuth authenticationDetailsProvider() {
         return new MockAuth();
     }
-
-    @MockBean(ObjectStorageAsyncClient.class)
+    @Bean
+    @Replaces(ObjectStorageAsyncClient.class)
     ObjectStorageAsyncClient asyncClient() {
         final BasicAuthenticationDetailsProvider authenticationDetailsProvider = new MockAuth();
         return new ObjectStorageAsyncClient(authenticationDetailsProvider) {

@@ -16,3 +16,10 @@ dependencies {
     testImplementation mn.micronaut.test.spock
     testImplementation mn.spock
 }
+
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}

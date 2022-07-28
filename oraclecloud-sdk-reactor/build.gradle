@@ -17,3 +17,10 @@ dependencies {
 }
 
 compileJava.options.fork = true
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}
+
