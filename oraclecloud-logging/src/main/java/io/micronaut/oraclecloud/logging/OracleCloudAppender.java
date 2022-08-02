@@ -51,13 +51,22 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
     private static final String SPEC_VERSION = "1.0";
     private final QueueFactory queueFactory = new QueueFactory();
     private final Duration eventDelayLimit = new Duration(DEFAULT_EVENT_DELAY_TIMEOUT);
-    private final int queueSize = DEFAULT_QUEUE_SIZE;
     private Encoder<ILoggingEvent> encoder;
     private Future<?> task;
     private BlockingDeque<ILoggingEvent> deque;
     private String logId;
     private String host;
     private String appName;
+    private int queueSize = DEFAULT_QUEUE_SIZE;
+
+    public int getQueueSize() {
+        return queueSize;
+    }
+
+    public void setQueueSize(int queueSize) {
+        this.queueSize = queueSize;
+    }
+
     private List<String> blackListLoggerName = new ArrayList<>();
 
     public void addBlackListLoggerName(String test) {
@@ -78,41 +87,35 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
             return;
         }
 
-        int errorCount = 0;
-
         if (queueSize == 0) {
             addWarn("Queue size of zero is deprecated, use a size of one to indicate synchronous processing");
         }
 
         if (queueSize < 0) {
-            errorCount++;
             addError("Queue size must be greater than zero");
+            return;
         }
 
         if (encoder == null) {
-            errorCount++;
             addError("No encoder set for the appender named [" + name + "].");
             return;
         }
 
         if (logId == null) {
-            errorCount++;
             addError("LogId not specified");
             return;
         }
+        deque = queueFactory.newLinkedBlockingDeque(queueSize);
 
-        if (errorCount == 0) {
-            deque = queueFactory.newLinkedBlockingDeque(queueSize);
+        task = getContext().getScheduledExecutorService().scheduleAtFixedRate(() -> {
+            try {
+                dispatchEvents();
+            } catch (InterruptedException e) {
+            }
+            addInfo("shutting down");
+        }, 0, 100, TimeUnit.MILLISECONDS);
+        super.start();
 
-            task = getContext().getScheduledExecutorService().scheduleAtFixedRate(() -> {
-                try {
-                    dispatchEvents();
-                } catch (InterruptedException e) {
-                }
-                addInfo("shutting down");
-            }, 0, 100, TimeUnit.MILLISECONDS);
-            super.start();
-        }
     }
 
     @Override
@@ -140,11 +143,11 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
         }
     }
 
-    public Encoder getEncoder() {
+    public Encoder<ILoggingEvent> getEncoder() {
         return encoder;
     }
 
-    public void setEncoder(Encoder encoder) {
+    public void setEncoder(Encoder<ILoggingEvent> encoder) {
         this.encoder = encoder;
     }
 
