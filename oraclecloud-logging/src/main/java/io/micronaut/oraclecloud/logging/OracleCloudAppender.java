@@ -59,6 +59,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
     private String appName;
     private int queueSize = DEFAULT_QUEUE_SIZE;
 
+    private List<String> blackListLoggerName = new ArrayList<>();
+
     public int getQueueSize() {
         return queueSize;
     }
@@ -66,8 +68,6 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
     public void setQueueSize(int queueSize) {
         this.queueSize = queueSize;
     }
-
-    private List<String> blackListLoggerName = new ArrayList<>();
 
     public void addBlackListLoggerName(String test) {
         this.blackListLoggerName.add(test);
