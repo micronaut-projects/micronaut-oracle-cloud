@@ -111,6 +111,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
             try {
                 dispatchEvents();
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
             addInfo("shutting down");
         }, 0, 100, TimeUnit.MILLISECONDS);
@@ -140,6 +141,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
             }
         } catch (InterruptedException e) {
             addError("Interrupted while appending event to SocketAppender", e);
+            Thread.currentThread().interrupt();
         }
     }
 

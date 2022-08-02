@@ -6,10 +6,12 @@
         <logId>test-log-id</logId>
         <blackListLoggerName>name1</blackListLoggerName>
         <blackListLoggerName>name2</blackListLoggerName>
-
+        <queueSize>300</queueSize>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter">
+                    <objectMapper>io.micronaut.oraclecloud.logging.CustomObjectMapper</objectMapper>
+                </jsonFormatter>
             </layout>
         </encoder>
     </appender>
