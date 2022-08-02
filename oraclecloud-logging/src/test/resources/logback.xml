@@ -8,18 +8,8 @@
         <blackListLoggerName>name2</blackListLoggerName>
 
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-            <layout class="io.micronaut.oraclecloud.logging.OracleCloudJsonLayout">
-                <includeTraceId>true</includeTraceId>
-                <includeSpanId>true</includeSpanId>
-                <includeLevel>true</includeLevel>
-                <includeThreadName>true</includeThreadName>
-                <includeMDC>true</includeMDC>
-                <includeLoggerName>true</includeLoggerName>
-                <includeFormattedMessage>true</includeFormattedMessage>
-                <includeExceptionInMessage>true</includeExceptionInMessage>
-                <includeContextName>true</includeContextName>
-                <includeMessage>true</includeMessage>
-                <includeException>true</includeException>
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
             </layout>
         </encoder>
     </appender>
