@@ -25,11 +25,10 @@ import java.io.StringWriter;
 import java.util.Map;
 
 /**
- * OracleCloudJsonFormatter.
- * <p> TBA
+ * OracleCloudJsonFormatter implementation of the {@link JsonFormatter}.
  *
  * @author Nemanja Mikic
- * @since 1.0.0
+ * @since 2.2.0
  */
 @Internal
 public final class OracleCloudJsonFormatter implements JsonFormatter {

@@ -37,11 +37,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
- * OracleCloudAppender.
- * <p> TBA
+ * Oracle Cloud log appender for logback.
  *
  * @author Nemanja Mikic
- * @since 1.0.0
+ * @since 2.2.0
  */
 @Internal
 public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
@@ -59,7 +58,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> {
     private String appName;
     private int queueSize = DEFAULT_QUEUE_SIZE;
 
-    private List<String> blackListLoggerName = new ArrayList<>();
+    private final List<String> blackListLoggerName = new ArrayList<>();
 
     public int getQueueSize() {
         return queueSize;

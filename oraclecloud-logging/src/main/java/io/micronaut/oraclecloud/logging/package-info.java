@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2022 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 /**
- * Logging classes for integration with StackDriver.
- *
- * @author Vinicius Carvalho
- * @since 2.0.0
+ * Logging classes for integration with Oracle Cloud.
  */
 package io.micronaut.oraclecloud.logging;

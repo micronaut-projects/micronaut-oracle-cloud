@@ -27,11 +27,10 @@ import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 
 /**
- * OracleCloudLoggingClient. TBA
- * <p> TBA
+ * OracleCloudLoggingClient is a {@link Logging} client that is required for {@link OracleCloudAppender}.
  *
  * @author Nemanja Mikic
- * @since 1.0.0
+ * @since 2.2.0
  */
 @Context
 @Internal
