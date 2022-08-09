@@ -42,7 +42,7 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
     private static String appName;
 
     private final Logging internalLogging;
-    private final String  internalAppName;
+    private final String internalAppName;
 
     public OracleCloudLoggingClient(Logging logging, ApplicationConfiguration applicationConfiguration) {
         this.internalLogging = logging;
@@ -72,17 +72,17 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
         OracleCloudLoggingClient.logging = null;
     }
 
-    @PreDestroy
-    public void close() throws Exception {
-        OracleCloudLoggingClient.destroy();
-    }
-
     static synchronized boolean putLogs(PutLogsRequest putLogsRequest) {
         if (logging != null) {
             PutLogsResponse putLogsResponse = logging.putLogs(putLogsRequest);
             return putLogsResponse.getOpcRequestId() != null;
         }
         return false;
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        OracleCloudLoggingClient.destroy();
     }
 
     @Override

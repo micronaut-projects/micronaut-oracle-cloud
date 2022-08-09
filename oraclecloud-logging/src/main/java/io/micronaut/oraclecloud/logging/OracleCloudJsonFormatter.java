@@ -32,32 +32,32 @@ import java.util.Map;
  */
 @Internal
 public final class OracleCloudJsonFormatter implements JsonFormatter {
-        public static final int BUFFER_SIZE = 512;
+    public static final int BUFFER_SIZE = 512;
 
-        private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-        public OracleCloudJsonFormatter() {
-            this.objectMapper = new ObjectMapper();
-        }
+    public OracleCloudJsonFormatter() {
+        this.objectMapper = new ObjectMapper();
+    }
 
-        @Override
-        public String toJsonString(Map m) throws IOException {
-            StringWriter writer = new StringWriter(BUFFER_SIZE);
-            JsonGenerator generator = this.objectMapper.getFactory().createGenerator(writer);
+    @Override
+    public String toJsonString(Map m) throws IOException {
+        StringWriter writer = new StringWriter(BUFFER_SIZE);
+        JsonGenerator generator = this.objectMapper.getFactory().createGenerator(writer);
 
-            this.objectMapper.writeValue(generator, m);
+        this.objectMapper.writeValue(generator, m);
 
-            writer.flush();
+        writer.flush();
 
-            return writer.toString();
-        }
+        return writer.toString();
+    }
 
-        public ObjectMapper getObjectMapper() {
-            return objectMapper;
-        }
+    public ObjectMapper getObjectMapper() {
+        return objectMapper;
+    }
 
-        public void setObjectMapper(ObjectMapper objectMapper) {
-            this.objectMapper = objectMapper;
-        }
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
 }

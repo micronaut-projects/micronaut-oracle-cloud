@@ -31,16 +31,16 @@ class OracleCloudLoggingSpec extends Specification {
     @Inject
     ApplicationConfiguration applicationConfiguration
 
-    def conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
-
     void "test oracle cloud logging"() {
         given:
         def logMessage = 'test logging'
         def testHost = 'testHost'
         def logger = LoggerFactory.getLogger(OracleCloudLoggingSpec.class)
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
 
         def instance = Mock(ServiceInstance.class)
         def event = new ServiceReadyEvent(instance)
+        def mockLogging = (MockLogging) logging
         1 * instance.getHost() >> testHost
         eventPublisher.publishEvent(event)
 
@@ -50,7 +50,7 @@ class OracleCloudLoggingSpec extends Specification {
         then:
         logging.endpoint == 'mock-logging-endpoint'
         conditions.eventually {
-            ((MockLogging) logging).getPutLogsRequestList().size() == 4
+            mockLogging.getPutLogsRequestList().size() == 4
         }
 
         def list = ((MockLogging) logging).getPutLogsRequestList()
@@ -75,7 +75,18 @@ class OracleCloudLoggingSpec extends Specification {
         logEntries.stream().anyMatch(x -> x.data.contains(logMessage))
         logEntries.stream().anyMatch(x -> x.data.contains('Established active environments'))
         logEntries.stream().anyMatch(x -> x.data.contains('Reading bootstrap environment configuration'))
+        MockAppender.getEvents().size() == 0
 
+        when:
+        mockLogging.setSuccess(false)
+        logger.info(logMessage)
+        conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+
+        then:
+        conditions.eventually {
+            MockAppender.getEvents().size() == 1
+        }
+        MockAppender.getEvents().get(0).message == logMessage
     }
 
 
@@ -85,9 +96,19 @@ class OracleCloudLoggingSpec extends Specification {
 
         final List<PutLogsRequest> putLogsRequestList = Collections.synchronizedList(new ArrayList<>())
 
+        private boolean success = true
+
         @Override
         void setEndpoint(String endpoint) {
 
+        }
+
+        boolean getSuccess() {
+            return success
+        }
+
+        void setSuccess(boolean success) {
+            this.success = success
         }
 
         @Override
@@ -116,7 +137,10 @@ class OracleCloudLoggingSpec extends Specification {
             synchronized (putLogsRequestList) {
                 putLogsRequestList.add(request)
             }
-            return PutLogsResponse.builder().build()
+            if (success) {
+                return PutLogsResponse.builder().opcRequestId("validId").build()
+            }
+            return PutLogsResponse.builder().opcRequestId(null).__httpStatusCode__(404).build()
         }
 
         @Override

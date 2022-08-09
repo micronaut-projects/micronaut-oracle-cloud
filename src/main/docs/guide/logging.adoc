@@ -86,6 +86,42 @@ Inside your `src/main/resources/logback.xml` you should add a new appender https
 </configuration>
 ----
 
+=== Emergency Appender
+
+Since this appender is queuing up log messages and then writing them remotely, there are a number of situations which might result in log messages not getting remoted correctly. To address such scenarios you can configure the emergency appender to preserve those messages.
+
+Inside your `src/main/resources/logback.xml` you should add a new appender, in the example it is `STDOUT`. Inside the `OracleCloudAppender` add `appender-ref` that points to the new crated appender.
+
+.src/main/resources/logback.xml
+[source,xml]
+----
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <appender-ref ref="STDOUT"/>
+        <logId>ocid1.log.oc1.iad.amaaaaaabnqp5kqao2yjg6xymuql7w25otmcoylqgnqymwsh3gaxm2j3qgtza</logId>
+        <blackListLoggerName>org.apache.http.impl.conn.PoolingHttpClientConnectionManager</blackListLoggerName>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ORACLE" />
+    </root>
+</configuration>
+----
+
 === Browsing the logs
 
 When you have completed a setup, you can browse your logs on the https://cloud.oracle.com/logging/logs[Oracle Log Portal]. Choose the log that you have created. In the "Explore Log" section you should be able to see your service logs.
