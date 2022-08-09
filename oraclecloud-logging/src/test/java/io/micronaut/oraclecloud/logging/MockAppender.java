@@ -11,11 +11,20 @@ public class MockAppender extends AppenderBase<ILoggingEvent> {
     private static final List<ILoggingEvent> events = new ArrayList<>();
 
     static List<ILoggingEvent> getEvents() {
-        return events;
+        synchronized (events) {
+            return new ArrayList<>(events);
+        }
+    }
+
+    @Override
+    public String getName() {
+        return "MockAppender";
     }
 
     @Override
     protected void append(ILoggingEvent eventObject) {
-        events.add(eventObject);
+        synchronized (events) {
+            events.add(eventObject);
+        }
     }
 }

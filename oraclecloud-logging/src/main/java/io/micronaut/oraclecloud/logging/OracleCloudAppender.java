@@ -109,7 +109,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             return;
         }
 
-        if (publishPeriod < 0) {
+        if (publishPeriod <= 0) {
             addError("Publish period must be greater than zero");
             return;
         }
