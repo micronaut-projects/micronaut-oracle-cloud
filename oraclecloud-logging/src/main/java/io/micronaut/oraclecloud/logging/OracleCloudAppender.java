@@ -225,8 +225,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
                         emergencyAppender.doAppend(event);
                     }
                 }
-            } catch (BmcException e) {
-                addError("Sending log request failed");
+            } catch (Exception e) {
+                addError("Sending log request failed", e);
                 if (emergencyAppender != null) {
                     emergencyAppender.doAppend(event);
                 }
