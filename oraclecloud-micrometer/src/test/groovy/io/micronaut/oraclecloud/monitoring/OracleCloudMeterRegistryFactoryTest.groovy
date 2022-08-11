@@ -8,12 +8,16 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.context.env.Environment
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import spock.lang.Shared
 import spock.lang.Specification
 
 @MicronautTest(startApplication = false)
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 @Requires(beans = AuthenticationDetailsProvider)
 class OracleCloudMeterRegistryFactoryTest extends Specification {
+
+    @Shared
+    String compartmentOcid = System.getenv("MONITORING_COMPARTMENT_OCID")
 
     def "test it not loads when globally disabled"() {
         given:
@@ -48,10 +52,17 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
 
     def "test it publish metrics to ingestion telemetry endpoint"() {
         given:
-        ApplicationContext context = ApplicationContext.run([
+
+        def confVariables = [
                 "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
                 "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test"
-        ], Environment.ORACLE_CLOUD)
+        ]
+
+        if (compartmentOcid != null && !compartmentOcid.isEmpty()) {
+            confVariables["micronaut.metrics.export.oraclecloud.compartmentId"] = compartmentOcid
+        }
+
+        ApplicationContext context = ApplicationContext.run(confVariables, Environment.ORACLE_CLOUD)
         OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry)
 
         when:

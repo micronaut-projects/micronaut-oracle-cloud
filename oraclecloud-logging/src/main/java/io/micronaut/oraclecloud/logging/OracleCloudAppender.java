@@ -185,14 +185,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             return false;
         }
 
-        if (host == null) {
-            host = OracleCloudLoggingClient.getHost();
-        }
-
-        if (appName == null) {
-            appName = OracleCloudLoggingClient.getAppName();
-        }
-
+        host = OracleCloudLoggingClient.getHost();
+        appName = OracleCloudLoggingClient.getAppName();
         configuredSuccessfully = true;
 
         return true;
