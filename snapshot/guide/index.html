@@ -63,11 +63,13 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#micrometer"><strong>10</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#tracing"><strong>11</strong><span>OCI Application Peformance Monitoring as a Tracing Endpoint</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#tracing"><strong>11</strong><span>OCI Application Performance Monitoring as a Tracing Endpoint</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#vault"><strong>12</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#logging"><strong>12</strong><span>OCI Logging service</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>13</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#vault"><strong>13</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -118,11 +120,13 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-micrometer"><a href="#micrometer"><strong>10</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-tracing"><a href="#tracing"><strong>11</strong><span>OCI Application Peformance Monitoring as a Tracing Endpoint</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-tracing"><a href="#tracing"><strong>11</strong><span>OCI Application Performance Monitoring as a Tracing Endpoint</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-vault"><a href="#vault"><strong>12</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-logging"><a href="#logging"><strong>12</strong><span>OCI Logging service</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>13</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-vault"><a href="#vault"><strong>13</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -1891,7 +1895,7 @@ The <code>username</code> and <code>password</code> are not automatically genera
 </div>
 </div>
 
-<h1 id="tracing"><a class="anchor" href="#tracing"></a>11 OCI Application Peformance Monitoring as a Tracing Endpoint</h1>
+<h1 id="tracing"><a class="anchor" href="#tracing"></a>11 OCI Application Performance Monitoring as a Tracing Endpoint</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/tracing.adoc"'>
@@ -2137,7 +2141,213 @@ tracing:
 </div>
 </div>
 
-<h1 id="vault"><a class="anchor" href="#vault"></a>12 Secure Distributed Configuration with Oracle Cloud Vault</h1>
+<h1 id="logging"><a class="anchor" href="#logging"></a>12 OCI Logging service</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/logging.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To use the <a href="https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm">Oracle Logging Service</a>, add the following dependency to your project:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-logging")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-logging&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>First ensure your <a href="#authentication">Authentication</a> configuration is present in this file, so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).</p>
+</div>
+<div class="sect2">
+<h3 id="_create_oracle_cloud_custom_log">Create Oracle Cloud Custom Log</h3>
+<div class="paragraph">
+<p>To create custom log first visit the <a href="https://cloud.oracle.com/logging/logs">Oracle Log Portal</a>.</p>
+</div>
+<div class="paragraph">
+<p>Click on the "Create Custom log".</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_logging_custom_log.png" alt="Create Custom log">
+</div>
+</div>
+<div class="paragraph">
+<p>Choose name of your log and go to next step.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_logging_custom_log_create_step_1.png" alt="Choose Name of Custom log">
+</div>
+</div>
+<div class="paragraph">
+<p>Choose "Add Configuration later" and finish the wizard.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_logging_custom_log_create_step_2.png" alt="Add Configuration later">
+</div>
+</div>
+<div class="paragraph">
+<p>Copy the OCID, you will need it later.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_logging_ocid.png" alt="Logger OCID">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_logback_configuration">Logback configuration</h3>
+<div class="paragraph">
+<p>Edit a <code>src/main/resources/logback.xml</code> file and make it look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/logback.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;configuration&gt;
+
+    &lt;appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender"&gt;
+        &lt;logId&gt;ocid1.log.oc1.iad...&lt;/logId&gt;
+        &lt;!-- &lt;blackListLoggerName&gt;example.app.Application&lt;/blackListLoggerName&gt; --&gt;
+        &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+            &lt;layout class="ch.qos.logback.contrib.json.classic.JsonLayout"&gt;
+                &lt;jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" /&gt;
+            &lt;/layout&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+
+    &lt;root level="INFO"&gt;
+        &lt;appender-ref ref="ORACLE" /&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <code>logId</code> field of the <code>OracleCloudAppender</code> put your log OCID.
+You can customize your JsonLayout with additional parameters the are available on official docs of <a href="https://javadoc.io/static/ch.qos.logback.contrib/logback-json-classic/0.1.5/ch/qos/logback/contrib/json/classic/JsonLayout.html">Logback&#8217;s JsonLayout</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <code>OracleCloudAppender</code> supports blacklisting the loggers by specifying the logger name. That might come handy if you want to use <code>level=DEBUG</code> or <code>level=TRACE</code> for the root logger level.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_opentelemetry_and_logging">OpenTelemetry and logging</h3>
+<div class="paragraph">
+<p>If you are using the <a href="https://opentelemetry.io/">OpenTelemetry</a> for tracing you can include <code>traceId</code> and <code>spanId</code> fields into your logs. First you have to add next dependency into your project:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtimeOnly(<span class="hljs-string">"io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:1.16.0-alpha")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.opentelemetry.instrumentation&lt;/groupId&gt;
+    &lt;artifactId&gt;opentelemetry-logback-mdc-1.0&lt;/artifactId&gt;
+    &lt;version&gt;1.16.0-alpha&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Inside your <code>src/main/resources/logback.xml</code> you should add a new appender <a href="https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html">io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender</a>.</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/logback.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;configuration&gt;
+
+    &lt;appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender"&gt;
+        &lt;logId&gt;ocid1.log.oc1.iad...&lt;/logId&gt;
+        &lt;!-- &lt;blackListLoggerName&gt;example.app.Application&lt;/blackListLoggerName&gt; --&gt;
+        &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+            &lt;layout class="ch.qos.logback.contrib.json.classic.JsonLayout"&gt;
+                &lt;jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" /&gt;
+            &lt;/layout&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+
+    &lt;appender name="OTEL" class="io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender"&gt;
+        &lt;appender-ref ref="ORACLE" /&gt;
+    &lt;/appender&gt;
+
+    &lt;root level="INFO"&gt;
+        &lt;appender-ref ref="OTEL" /&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_emergency_appender">Emergency Appender</h3>
+<div class="paragraph">
+<p>Since this appender is queuing up log messages and then writing them remotely, there are a number of situations which might result in log messages not getting remoted correctly. To address such scenarios you can configure the emergency appender to preserve those messages.</p>
+</div>
+<div class="paragraph">
+<p>Inside your <code>src/main/resources/logback.xml</code> you should add a new appender, in the example it is <code>STDOUT</code>. Inside the <code>OracleCloudAppender</code> add <code>appender-ref</code> that points to the new crated appender.</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/logback.xml</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;configuration&gt;
+    &lt;appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender"&gt;
+        &lt;withJansi&gt;true&lt;/withJansi&gt;
+        &lt;!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default --&gt;
+        &lt;encoder&gt;
+            &lt;pattern&gt;%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n&lt;/pattern&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+
+    &lt;appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender"&gt;
+        &lt;appender-ref ref="STDOUT"/&gt;
+        &lt;logId&gt;ocid1.log.oc1.iad.amaaaaaabnqp5kqao2yjg6xymuql7w25otmcoylqgnqymwsh3gaxm2j3qgtza&lt;/logId&gt;
+        &lt;blackListLoggerName&gt;org.apache.http.impl.conn.PoolingHttpClientConnectionManager&lt;/blackListLoggerName&gt;
+        &lt;encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"&gt;
+            &lt;layout class="ch.qos.logback.contrib.json.classic.JsonLayout"&gt;
+                &lt;jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" /&gt;
+            &lt;/layout&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+
+    &lt;root level="INFO"&gt;
+        &lt;appender-ref ref="ORACLE" /&gt;
+    &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_browsing_the_logs">Browsing the logs</h3>
+<div class="paragraph">
+<p>When you have completed a setup, you can browse your logs on the <a href="https://cloud.oracle.com/logging/logs">Oracle Log Portal</a>. Choose the log that you have created. In the "Explore Log" section you should be able to see your service logs.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_logging_explore_log.png" alt="Add Configuration later">
+</div>
+</div>
+</div>
+
+<h1 id="vault"><a class="anchor" href="#vault"></a>13 Secure Distributed Configuration with Oracle Cloud Vault</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/vault.adoc"'>
@@ -2287,7 +2497,7 @@ public class Config {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>13 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>14 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/repository.adoc"'>
