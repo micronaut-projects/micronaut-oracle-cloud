@@ -199,7 +199,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
     }
 
     private void dispatchEvents() throws InterruptedException {
-        if (!configuredSuccessfully && tryToConfigure()) {
+        if (!configuredSuccessfully && !tryToConfigure()) {
             return;
         }
         while (!deque.isEmpty()) {
