@@ -26,7 +26,6 @@ import com.oracle.bmc.loggingingestion.model.LogEntry;
 import com.oracle.bmc.loggingingestion.model.LogEntryBatch;
 import com.oracle.bmc.loggingingestion.model.PutLogsDetails;
 import com.oracle.bmc.loggingingestion.requests.PutLogsRequest;
-import com.oracle.bmc.model.BmcException;
 import io.micronaut.core.annotation.Internal;
 
 import java.nio.charset.StandardCharsets;
@@ -65,6 +64,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
     private int queueSize = DEFAULT_QUEUE_SIZE;
     private long publishPeriod = DEFAULT_PUBLISH_PERIOD;
     private Appender<ILoggingEvent> emergencyAppender;
+
+    private boolean configuredSuccessfully = false;
 
     public int getQueueSize() {
         return queueSize;
@@ -192,11 +193,13 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             appName = OracleCloudLoggingClient.getAppName();
         }
 
+        configuredSuccessfully = true;
+
         return true;
     }
 
     private void dispatchEvents() throws InterruptedException {
-        if (!tryToConfigure()) {
+        if (!configuredSuccessfully && tryToConfigure()) {
             return;
         }
         while (!deque.isEmpty()) {
