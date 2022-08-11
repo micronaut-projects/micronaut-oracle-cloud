@@ -99,6 +99,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         appender.getPublishPeriod() == 101
 
         appender.detachAndStopAllAppenders()
+        !appender.isAttached(mockAppender)
     }
 
     void 'detach emergency appender by name'() {

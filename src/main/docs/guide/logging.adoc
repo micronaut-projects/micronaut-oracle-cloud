@@ -2,7 +2,6 @@ To use the https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingov
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-logging[]
 
-First ensure your <<authentication, Authentication>> configuration is present in this file, so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).
 
 === Create Oracle Cloud Custom Log
 

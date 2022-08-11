@@ -136,7 +136,6 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            addInfo("shutting down");
         }, 0, publishPeriod, TimeUnit.MILLISECONDS);
         super.start();
 
