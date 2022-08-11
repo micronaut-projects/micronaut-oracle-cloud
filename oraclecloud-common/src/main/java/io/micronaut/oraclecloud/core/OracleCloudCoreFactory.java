@@ -58,7 +58,10 @@ import java.util.Optional;
 public class OracleCloudCoreFactory {
 
     public static final String ORACLE_CLOUD = "oci";
+    @SuppressWarnings("WeakerAccess")
+    // CHECKSTYLE:OFF
     public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
+    // CHECKSTYLE:ON
 
     private final String profile;
     private final String configPath;
