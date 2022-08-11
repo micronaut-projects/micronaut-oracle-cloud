@@ -30,6 +30,7 @@ oci-monitoring = { module = 'com.oracle.oci.sdk:oci-java-sdk-monitoring', versio
 oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version = '' }
 oci-secrets = { module = 'com.oracle.oci.sdk:oci-java-sdk-secrets', version = '' }
 oci-vault = { module = 'com.oracle.oci.sdk:oci-java-sdk-vault', version = '' }
+oci-loggingingestion = { module = 'com.oracle.oci.sdk:oci-java-sdk-loggingingestion', version = '' }
 oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version = '' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 
