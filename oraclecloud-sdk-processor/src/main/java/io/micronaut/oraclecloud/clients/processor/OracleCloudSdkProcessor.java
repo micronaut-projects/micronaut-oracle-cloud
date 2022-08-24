@@ -90,7 +90,6 @@ import jakarta.inject.Singleton;
 public class OracleCloudSdkProcessor extends AbstractProcessor {
 
     public static final String CLIENT_PACKAGE = "io.micronaut.oraclecloud.clients";
-
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -481,14 +480,16 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         if (metadataClass != null) {
             SdkClientPackages allSdkClientPackages =
                     metadataClass.getAnnotation(SdkClientPackages.class);
-            for (Class<?> sdkClientsMetadataPath : allSdkClientPackages.value()) {
-                SdkClients declaredClients = sdkClientsMetadataPath.getDeclaredAnnotation(SdkClients.class);
-                if (declaredClients != null) {
-                    Class<?>[] allSdkClients =
-                            declaredClients.value();
-                    for (Class<?> sdkClient : allSdkClients) {
-                        if (!isSdkInternal(sdkClient.getCanonicalName())) {
-                            results.add(sdkClient.getName());
+            for (String sdkClientsMetadataPath : allSdkClientPackages.value()) {
+                Class<?> sdkClientsMetadataClass = ClassUtils.forName(sdkClientsMetadataPath, getClass().getClassLoader()).orElse(null);
+                if (sdkClientsMetadataClass != null) {
+                    SdkClients declaredAnnotation = sdkClientsMetadataClass.getDeclaredAnnotation(SdkClients.class);
+                    if (declaredAnnotation != null) {
+                        Class<?>[] allSdkClients = declaredAnnotation.value();
+                        for (Class<?> sdkClient : allSdkClients) {
+                            if(!isSdkInternal(sdkClient.getCanonicalName())) {
+                                results.add(sdkClient.getName());
+                            }
                         }
                     }
                 }
