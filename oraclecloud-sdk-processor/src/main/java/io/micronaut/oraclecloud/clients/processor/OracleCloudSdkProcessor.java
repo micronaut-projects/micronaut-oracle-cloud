@@ -18,6 +18,7 @@ package io.micronaut.oraclecloud.clients.processor;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -480,6 +481,10 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         if (metadataClass != null) {
             SdkClientPackages allSdkClientPackages =
                     metadataClass.getAnnotation(SdkClientPackages.class);
+            List<String> allSdkClientPackagesStings = Arrays.asList(allSdkClientPackages.value());
+            if (!allSdkClientPackagesStings.contains("com.oracle.bmc.identity.SdkClientsMetadata")) {
+                allSdkClientPackagesStings.add("com.oracle.bmc.identity.SdkClientsMetadata");
+            }
             for (String sdkClientsMetadataPath : allSdkClientPackages.value()) {
                 Class<?> sdkClientsMetadataClass = ClassUtils.forName(sdkClientsMetadataPath, getClass().getClassLoader()).orElse(null);
                 if (sdkClientsMetadataClass != null) {
