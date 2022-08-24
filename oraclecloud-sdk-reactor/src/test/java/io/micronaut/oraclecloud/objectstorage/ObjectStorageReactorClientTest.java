@@ -17,7 +17,6 @@ import com.oracle.bmc.responses.AsyncHandler;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient;
-import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 

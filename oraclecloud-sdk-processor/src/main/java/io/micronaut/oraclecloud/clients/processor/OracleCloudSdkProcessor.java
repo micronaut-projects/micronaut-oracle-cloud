@@ -481,7 +481,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         if (metadataClass != null) {
             SdkClientPackages allSdkClientPackages =
                     metadataClass.getAnnotation(SdkClientPackages.class);
-            List<String> allSdkClientPackagesStings = Arrays.asList(allSdkClientPackages.value());
+            List<String> allSdkClientPackagesStings = new ArrayList<>(Arrays.asList(allSdkClientPackages.value()));
             if (!allSdkClientPackagesStings.contains("com.oracle.bmc.identity.SdkClientsMetadata")) {
                 allSdkClientPackagesStings.add("com.oracle.bmc.identity.SdkClientsMetadata");
             }
