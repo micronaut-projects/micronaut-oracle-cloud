@@ -487,7 +487,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                     if (declaredAnnotation != null) {
                         Class<?>[] allSdkClients = declaredAnnotation.value();
                         for (Class<?> sdkClient : allSdkClients) {
-                            if(!isSdkInternal(sdkClient.getCanonicalName())) {
+                            if (!isSdkInternal(sdkClient.getCanonicalName())) {
                                 results.add(sdkClient.getName());
                             }
                         }
