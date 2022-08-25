@@ -1,0 +1,129 @@
+To use the https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingoverview.htm[Oracle Logging Service], add the following dependency to your project:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-logging[]
+
+First ensure your <<authentication, Authentication>> configuration is present in this file, so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).
+
+=== Create Oracle Cloud Custom Log
+
+To create custom log first visit the https://cloud.oracle.com/logging/logs[Oracle Log Portal].
+
+Click on the "Create Custom log".
+
+image::oci_logging_custom_log.png[Create Custom log]
+
+Choose name of your log and go to next step.
+
+image::oci_logging_custom_log_create_step_1.png[Choose Name of Custom log]
+
+Choose "Add Configuration later" and finish the wizard.
+
+image::oci_logging_custom_log_create_step_2.png[Add Configuration later]
+
+Copy the OCID, you will need it later.
+
+image::oci_logging_ocid.png[Logger OCID]
+
+=== Logback configuration
+
+Edit a `src/main/resources/logback.xml` file and make it look like this:
+
+.src/main/resources/logback.xml
+[source,xml]
+----
+<configuration>
+
+    <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <logId>ocid1.log.oc1.iad...</logId>
+        <!-- <blackListLoggerName>example.app.Application</blackListLoggerName> -->
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ORACLE" />
+    </root>
+</configuration>
+----
+In the `logId` field of the `OracleCloudAppender` put your log OCID.
+You can customize your JsonLayout with additional parameters the are available on official docs of https://javadoc.io/static/ch.qos.logback.contrib/logback-json-classic/0.1.5/ch/qos/logback/contrib/json/classic/JsonLayout.html[Logback's JsonLayout].
+
+The `OracleCloudAppender` supports blacklisting the loggers by specifying the logger name. That might come handy if you want to use `level=DEBUG` or `level=TRACE` for the root logger level.
+
+=== OpenTelemetry and logging
+
+If you are using the https://opentelemetry.io/[OpenTelemetry] for tracing you can include `traceId` and `spanId` fields into your logs. First you have to add next dependency into your project:
+
+dependency:io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:1.16.0-alpha[scope="runtime"]
+
+Inside your `src/main/resources/logback.xml` you should add a new appender https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html[io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender].
+
+.src/main/resources/logback.xml
+[source,xml]
+----
+<configuration>
+
+    <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <logId>ocid1.log.oc1.iad...</logId>
+        <!-- <blackListLoggerName>example.app.Application</blackListLoggerName> -->
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
+            </layout>
+        </encoder>
+    </appender>
+
+    <appender name="OTEL" class="io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender">
+        <appender-ref ref="ORACLE" />
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="OTEL" />
+    </root>
+</configuration>
+----
+
+=== Emergency Appender
+
+Since this appender is queuing up log messages and then writing them remotely, there are a number of situations which might result in log messages not getting remoted correctly. To address such scenarios you can configure the emergency appender to preserve those messages.
+
+Inside your `src/main/resources/logback.xml` you should add a new appender, in the example it is `STDOUT`. Inside the `OracleCloudAppender` add `appender-ref` that points to the new crated appender.
+
+.src/main/resources/logback.xml
+[source,xml]
+----
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <appender-ref ref="STDOUT"/>
+        <logId>ocid1.log.oc1.iad.amaaaaaabnqp5kqao2yjg6xymuql7w25otmcoylqgnqymwsh3gaxm2j3qgtza</logId>
+        <blackListLoggerName>org.apache.http.impl.conn.PoolingHttpClientConnectionManager</blackListLoggerName>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ORACLE" />
+    </root>
+</configuration>
+----
+
+=== Browsing the logs
+
+When you have completed a setup, you can browse your logs on the https://cloud.oracle.com/logging/logs[Oracle Log Portal]. Choose the log that you have created. In the "Explore Log" section you should be able to see your service logs.
+
+image::oci_logging_explore_log.png[Add Configuration later]
