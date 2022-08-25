@@ -99,6 +99,11 @@ class OracleCloudLoggingSpec extends Specification {
         private boolean success = true
 
         @Override
+        void refreshClient() {
+
+        }
+
+        @Override
         void setEndpoint(String endpoint) {
 
         }

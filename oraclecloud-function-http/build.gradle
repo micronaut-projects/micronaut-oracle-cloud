@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     annotationProcessor mn.micronaut.graal
-    api mn.micronaut.servlet
+    api mn.micronaut.servlet.core
     api projects.oraclecloudFunction
     implementation libs.fn.runtime
     implementation mn.micronaut.http.netty

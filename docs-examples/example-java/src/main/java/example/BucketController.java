@@ -43,6 +43,7 @@ public class BucketController implements BucketOperations {
 
     private final ObjectStorageReactorClient objectStorage;
     private final TenancyIdProvider tenancyIdProvider;
+    private final String defaultCompartmentId = System.getenv("COMPARTMENT_OCID");
 
     public BucketController(ObjectStorageReactorClient objectStorage,
                             TenancyIdProvider tenancyIdProvider) { // <1>
@@ -54,7 +55,7 @@ public class BucketController implements BucketOperations {
     @Override
     @Get("/buckets{/compartmentId}")
     public Mono<List<String>> listBuckets(@PathVariable @Nullable String compartmentId) {
-
+        compartmentId = compartmentId != null ? compartmentId : defaultCompartmentId;
         String compartmentOcid = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
 
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
@@ -78,15 +79,16 @@ public class BucketController implements BucketOperations {
     @Post(value = "/buckets/{name}")
     public Mono<String> createBucket(String name) {
 
-        String tenancyId = tenancyIdProvider.getTenancyId();
+        String compartmentId = defaultCompartmentId != null ? defaultCompartmentId : tenancyIdProvider.getTenancyId();
+
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
-                .compartmentId(tenancyId).build();
+                .compartmentId(compartmentId).build();
         return objectStorage.getNamespace(getNamespaceRequest) // <1>
                 .flatMap(namespaceResponse -> {
                     CreateBucketRequest createBucketRequest = CreateBucketRequest.builder()
                             .namespaceName(namespaceResponse.getValue())
                             .createBucketDetails(CreateBucketDetails.builder()
-                                    .compartmentId(tenancyId)
+                                    .compartmentId(compartmentId)
                                     .name(name)
                                     .build())
                             .build();
@@ -100,8 +102,10 @@ public class BucketController implements BucketOperations {
     @Override
     @Delete(value = "/buckets/{name}")
     public Mono<Boolean> deleteBucket(String name) {
+        String compartmentId = defaultCompartmentId != null ? defaultCompartmentId : tenancyIdProvider.getTenancyId();
+
         GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
-                .compartmentId(tenancyIdProvider.getTenancyId()).build();
+                .compartmentId(compartmentId).build();
         return objectStorage.getNamespace(getNamespaceRequest).flatMap(getNamespaceResponse -> {
             DeleteBucketRequest deleteBucketRequest = DeleteBucketRequest.builder()
                     .namespaceName(getNamespaceResponse.getValue())
