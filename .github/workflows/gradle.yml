@@ -64,6 +64,7 @@ jobs:
            ATP_PASS: ${{ secrets.ATP_PASS }}
            VAULT_OCID: ${{ secrets.VAULT_OCID }}
            VAULT_SECRETS_COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}
+           MONITORING_COMPARTMENT_OCID: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
            VAULT_SECRET_NAME: ${{ secrets.VAULT_SECRET_NAME }}
            VAULT_SECRET_VALUE: ${{ secrets.VAULT_SECRET_VALUE }}
            COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}

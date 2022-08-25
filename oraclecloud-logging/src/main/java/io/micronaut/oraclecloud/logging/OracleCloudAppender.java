@@ -26,7 +26,6 @@ import com.oracle.bmc.loggingingestion.model.LogEntry;
 import com.oracle.bmc.loggingingestion.model.LogEntryBatch;
 import com.oracle.bmc.loggingingestion.model.PutLogsDetails;
 import com.oracle.bmc.loggingingestion.requests.PutLogsRequest;
-import com.oracle.bmc.model.BmcException;
 import io.micronaut.core.annotation.Internal;
 
 import java.nio.charset.StandardCharsets;
@@ -65,6 +64,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
     private int queueSize = DEFAULT_QUEUE_SIZE;
     private long publishPeriod = DEFAULT_PUBLISH_PERIOD;
     private Appender<ILoggingEvent> emergencyAppender;
+
+    private boolean configuredSuccessfully = false;
 
     public int getQueueSize() {
         return queueSize;
@@ -136,7 +137,6 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-            addInfo("shutting down");
         }, 0, publishPeriod, TimeUnit.MILLISECONDS);
         super.start();
 
@@ -185,19 +185,15 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             return false;
         }
 
-        if (host == null) {
-            host = OracleCloudLoggingClient.getHost();
-        }
-
-        if (appName == null) {
-            appName = OracleCloudLoggingClient.getAppName();
-        }
+        host = OracleCloudLoggingClient.getHost();
+        appName = OracleCloudLoggingClient.getAppName();
+        configuredSuccessfully = true;
 
         return true;
     }
 
     private void dispatchEvents() throws InterruptedException {
-        if (!tryToConfigure()) {
+        if (!configuredSuccessfully && !tryToConfigure()) {
             return;
         }
         while (!deque.isEmpty()) {
@@ -226,8 +222,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
                         emergencyAppender.doAppend(event);
                     }
                 }
-            } catch (BmcException e) {
-                addError("Sending log request failed");
+            } catch (Exception e) {
+                addError("Sending log request failed", e);
                 if (emergencyAppender != null) {
                     emergencyAppender.doAppend(event);
                 }
