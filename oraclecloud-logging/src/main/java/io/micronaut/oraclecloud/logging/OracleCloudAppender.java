@@ -50,6 +50,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     private static final int DEFAULT_QUEUE_SIZE = 128;
     private static final int DEFAULT_EVENT_DELAY_TIMEOUT = 100;
+    private static final int DEFAULT_MAX_BATCH_SIZE = 128;
     private static final String SPEC_VERSION = "1.0";
     private static final long DEFAULT_PUBLISH_PERIOD = 100;
     private final QueueFactory queueFactory = new QueueFactory();
@@ -59,12 +60,13 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
     private Future<?> task;
     private BlockingDeque<ILoggingEvent> deque;
     private String logId;
-    private String host;
-    private String appName;
+    private String source;
+    private String subject;
+    private String type;
     private int queueSize = DEFAULT_QUEUE_SIZE;
     private long publishPeriod = DEFAULT_PUBLISH_PERIOD;
+    private int maxBatchSize = DEFAULT_MAX_BATCH_SIZE;
     private Appender<ILoggingEvent> emergencyAppender;
-
     private boolean configuredSuccessfully = false;
 
     public int getQueueSize() {
@@ -95,6 +97,38 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
         this.logId = logId;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public int getMaxBatchSize() {
+        return maxBatchSize;
+    }
+
+    public void setMaxBatchSize(int maxBatchSize) {
+        this.maxBatchSize = maxBatchSize;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     @Override
     public void start() {
         if (isStarted()) {
@@ -117,6 +151,11 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
         if (encoder == null) {
             addError("No encoder set for the appender named [" + name + "].");
+            return;
+        }
+
+        if (maxBatchSize <= 0) {
+            addError("Max Batch size must be greater than zero");
             return;
         }
 
@@ -181,12 +220,25 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     private boolean tryToConfigure() {
 
-        if (OracleCloudLoggingClient.getLogging() == null) {
+        if (!OracleCloudLoggingClient.isReady()) {
             return false;
         }
 
-        host = OracleCloudLoggingClient.getHost();
-        appName = OracleCloudLoggingClient.getAppName();
+        String host = OracleCloudLoggingClient.getHost();
+        String appName = OracleCloudLoggingClient.getAppName();
+
+        if (type == null) {
+            type = String.format("%s.%s", host, appName);
+        }
+
+        if (source == null) {
+            source = host;
+        }
+
+        if (subject == null) {
+            subject = appName;
+        }
+
         configuredSuccessfully = true;
 
         return true;
@@ -196,40 +248,49 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
         if (!configuredSuccessfully && !tryToConfigure()) {
             return;
         }
-        while (!deque.isEmpty()) {
-            ILoggingEvent event = deque.takeFirst();
-            PutLogsDetails putLogsDetails = PutLogsDetails.builder()
-                    .logEntryBatches(Collections.singletonList(LogEntryBatch.builder()
-                            .source(host)
-                            .subject(event.getLoggerName())
-                            .type(String.format("%s.%s.%s", appName, host, event.getLevel()))
-                            .defaultlogentrytime(new Date())
-                            .entries(Collections.singletonList(LogEntry.builder()
-                                    .id(UUID.randomUUID().toString())
-                                    .data(new String(encoder.encode(event), StandardCharsets.UTF_8)).build()))
-                            .build())
-                    )
-                    .specversion(SPEC_VERSION)
-                    .build();
-            PutLogsRequest putLogsRequest = PutLogsRequest.builder()
-                    .putLogsDetails(putLogsDetails)
-                    .logId(logId)
-                    .build();
-            try {
-                if (!OracleCloudLoggingClient.putLogs(putLogsRequest)) {
-                    addError("Sending log request failed");
-                    if (emergencyAppender != null) {
-                        emergencyAppender.doAppend(event);
-                    }
-                }
-            } catch (Exception e) {
-                addError("Sending log request failed", e);
-                if (emergencyAppender != null) {
-                    emergencyAppender.doAppend(event);
-                }
-            }
 
+        List<LogEntry> logEntries = new ArrayList<>(maxBatchSize);
+        List<ILoggingEvent> iLoggingEvents = new ArrayList<>(maxBatchSize);
+
+        while (!deque.isEmpty() && logEntries.size() < maxBatchSize) {
+            ILoggingEvent event = deque.takeFirst();
+            final LogEntry inputLogEvent = LogEntry.builder().id(UUID.randomUUID().toString())
+                    .data(new String(encoder.encode(event), StandardCharsets.UTF_8)).build();
+
+            iLoggingEvents.add(event);
+            logEntries.add(inputLogEvent);
         }
+        if (!logEntries.isEmpty() && !sendLogsToOracleCloud(logEntries) && emergencyAppender != null) {
+            iLoggingEvents.forEach(emergencyAppender::doAppend);
+        }
+    }
+
+    private boolean sendLogsToOracleCloud(List<LogEntry> logEntries) {
+        PutLogsDetails putLogsDetails = PutLogsDetails.builder()
+                .logEntryBatches(Collections.singletonList(LogEntryBatch.builder()
+                        .source(source)
+                        .subject(subject)
+                        .type(type)
+                        .defaultlogentrytime(new Date())
+                        .entries(logEntries)
+                        .build())
+                )
+                .specversion(SPEC_VERSION)
+                .build();
+        PutLogsRequest putLogsRequest = PutLogsRequest.builder()
+                .putLogsDetails(putLogsDetails)
+                .logId(logId)
+                .build();
+        try {
+            if (!OracleCloudLoggingClient.putLogs(putLogsRequest)) {
+                addError("Sending log request failed");
+            } else {
+                return true;
+            }
+        } catch (Exception e) {
+            addError("Sending log request failed", e);
+        }
+        return false;
     }
 
     @Override
