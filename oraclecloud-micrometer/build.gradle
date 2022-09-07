@@ -17,3 +17,10 @@ dependencies {
     testImplementation mn.spock
     testRuntimeOnly mn.micronaut.http.server.netty
 }
+
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}

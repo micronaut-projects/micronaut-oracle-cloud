@@ -22,3 +22,10 @@ dependencies {
     implementation 'com.oracle.database.security:osdt_core'
     implementation 'com.oracle.database.xml:xdb'
 }
+
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}

@@ -7,6 +7,9 @@ dependencies {
     api projects.oraclecloudCommon, {
         exclude group:'commons-logging', module:'commons-logging'
     }
+    api("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$ociVersion") {
+        transitive = false
+    }
     compileOnly mn.graal
     compileOnly mn.rxjava2
     testImplementation mn.graal
@@ -24,3 +27,10 @@ dependencies {
 
 spotlessJavaMiscCheck.enabled = false
 compileJava.options.fork = true
+
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}

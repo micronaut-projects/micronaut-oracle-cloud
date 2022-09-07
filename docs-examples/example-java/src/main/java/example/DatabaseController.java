@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 public class DatabaseController implements DatabaseOperations {
     private final DatabaseReactorClient dbClient;
     private final TenancyIdProvider tenancyIdProvider;
+    private final String defaultCompartmentId = System.getenv("COMPARTMENT_OCID");
 
     public DatabaseController(
             DatabaseReactorClient dbClient,
@@ -47,6 +48,7 @@ public class DatabaseController implements DatabaseOperations {
     @Override
     @Get("/list{/compartmentId}")
     public Mono<List<String>> listDatabases(@PathVariable @Nullable String compartmentId) {
+        compartmentId = compartmentId != null ? compartmentId : defaultCompartmentId;
         String compartmentOcId = compartmentId != null ? compartmentId : tenancyIdProvider.getTenancyId();
         ListAutonomousDatabasesRequest listAutonomousDatabasesRequest = ListAutonomousDatabasesRequest.builder()
                 .compartmentId(compartmentOcId).build();

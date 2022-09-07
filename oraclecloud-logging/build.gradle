@@ -3,21 +3,16 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
     api libs.oci.loggingingestion, {
         exclude group:'commons-logging', module:'commons-logging'
     }
     api mn.micronaut.discovery
     api mn.micronaut.inject
-    implementation mn.reactor
     implementation projects.oraclecloudSdk
-    implementation("ch.qos.logback.contrib:logback-json-classic:0.1.5")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    testImplementation "io.micronaut:micronaut-inject-java"
-    testImplementation "io.micronaut.test:micronaut-test-spock:$micronautTestVersion"
-    testImplementation "io.micronaut:micronaut-inject-groovy"
-    testImplementation "org.testcontainers:spock"
+    implementation libs.logback.json.classic
+    implementation libs.jackson.databind
+    testImplementation mn.micronaut.inject.groovy
+    testImplementation mn.micronaut.test.spock
 }
 
 // TODO temporarily disable binary compatibility checks

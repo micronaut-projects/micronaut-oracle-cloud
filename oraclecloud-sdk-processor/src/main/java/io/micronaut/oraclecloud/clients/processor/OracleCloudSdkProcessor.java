@@ -16,20 +16,15 @@
 package io.micronaut.oraclecloud.clients.processor;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Writer;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -56,6 +51,8 @@ import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 
+import com.oracle.bmc.SdkClients;
+import com.oracle.bmc.graalvm.SdkClientPackages;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -78,6 +75,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
+import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import jakarta.inject.Singleton;
 
@@ -93,7 +91,6 @@ import jakarta.inject.Singleton;
 public class OracleCloudSdkProcessor extends AbstractProcessor {
 
     public static final String CLIENT_PACKAGE = "io.micronaut.oraclecloud.clients";
-
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -382,7 +379,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         if (Stream.of(
                 "KmsCrypto",
                 "KmsManagement"
-        ).anyMatch(simpleName::contains)) {
+        ).anyMatch(simpleName::startsWith)) {
             builderType = ClassName.get(packageName, simpleName + "Builder");
         }
         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
@@ -448,7 +445,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         if (Stream.of(
                 "KmsCrypto",
                 "KmsManagement"
-        ).anyMatch(simpleName::contains)) {
+        ).anyMatch(simpleName::startsWith)) {
             builderClassName = ClassName.get(packageName, simpleName + "Builder");
         }
         builder.superclass(ParameterizedTypeName.get(
@@ -475,39 +472,42 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private List<String> resolveClientNames(Element e) {
-        return resolveOracleCloudClientNamesFromManifest();
+        return resolveOraceCloudClientNamesFromGraalVmAddons();
     }
 
-    private List<String> resolveOracleCloudClientNamesFromManifest() {
-        try {
-            List<String> results = new ArrayList<>();
-            final Enumeration<URL> manifests = getClass().getClassLoader().getResources("META-INF/MANIFEST.MF");
-            while (manifests.hasMoreElements()) {
-                final URL url = manifests.nextElement();
-                if (url.getPath().contains("oci-java")) {
-                    try (InputStream is = url.openStream()) {
-                        final Manifest manifest = new Manifest(is);
-                        final Map<String, Attributes> entries = manifest.getEntries();
-                        entries.keySet().stream()
-                                .filter((key) -> key.endsWith("Client.class") && !isSdkInternal(key))
-                                .forEach((fileName) -> results.add(
-                                        fileName.replace('/', '.')
-                                                .substring(0, fileName.length() - 6)
-                                ));
+    private List<String> resolveOraceCloudClientNamesFromGraalVmAddons() {
+        List<String> results = new ArrayList<>();
+        Class<?> metadataClass = ClassUtils.forName("com.oracle.bmc.graalvm.SdkAutomaticFeatureMetadata", getClass().getClassLoader()).orElse(null);
+        if (metadataClass != null) {
+            SdkClientPackages allSdkClientPackages =
+                    metadataClass.getAnnotation(SdkClientPackages.class);
+            List<String> allSdkClientPackagesStings = new ArrayList<>(Arrays.asList(allSdkClientPackages.value()));
+            if (!allSdkClientPackagesStings.contains("com.oracle.bmc.identity.SdkClientsMetadata")) {
+                allSdkClientPackagesStings.add("com.oracle.bmc.identity.SdkClientsMetadata");
+            }
+            for (String sdkClientsMetadataPath : allSdkClientPackages.value()) {
+                Class<?> sdkClientsMetadataClass = ClassUtils.forName(sdkClientsMetadataPath, getClass().getClassLoader()).orElse(null);
+                if (sdkClientsMetadataClass != null) {
+                    SdkClients declaredAnnotation = sdkClientsMetadataClass.getDeclaredAnnotation(SdkClients.class);
+                    if (declaredAnnotation != null) {
+                        Class<?>[] allSdkClients = declaredAnnotation.value();
+                        for (Class<?> sdkClient : allSdkClients) {
+                            if (!isSdkInternal(sdkClient.getCanonicalName())) {
+                                results.add(sdkClient.getName());
+                            }
+                        }
                     }
                 }
             }
-            return results;
-        } catch (IOException e) {
-            return Collections.emptyList();
         }
+        return results;
     }
 
-    private boolean isSdkInternal(String key) {
+    private static boolean isSdkInternal(String key) {
         return Stream.of(
-                "/internal/",
-                "/auth/",
-                "/streaming/"
+                ".internal.",
+                ".auth.",
+                ".streaming."
         ).anyMatch(key::contains);
     }
 

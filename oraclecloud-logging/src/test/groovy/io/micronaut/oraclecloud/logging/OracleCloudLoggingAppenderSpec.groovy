@@ -1,29 +1,60 @@
 package io.micronaut.oraclecloud.logging
 
+import ch.qos.logback.classic.Level
 import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.classic.PatternLayout
+import ch.qos.logback.classic.spi.LoggingEvent
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
+import io.micronaut.discovery.ServiceInstance
+import io.micronaut.discovery.event.ServiceReadyEvent
+import io.micronaut.runtime.ApplicationConfiguration
 import spock.lang.Specification
+import spock.util.concurrent.PollingConditions
 
 
 class OracleCloudLoggingAppenderSpec extends Specification {
 
-    def appender = new OracleCloudAppender()
-    def context = new LoggerContext()
-
+    OracleCloudAppender appender
+    LoggerContext context
+    PatternLayout layout
+    LayoutWrappingEncoder encoder
+    OracleCloudLoggingSpec.MockLogging oracleCloudLogsClient
 
     def setup() {
-        appender = new OracleCloudAppender()
         context = new LoggerContext()
-        appender.setContext(context)
+        layout = new PatternLayout()
+        layout.context = context
+        layout.pattern = "[%thread] %level %logger{20} - %msg%n%xThrowable"
+        layout.start()
+        encoder = new LayoutWrappingEncoder()
+        encoder.layout = layout
+        encoder.start()
+        appender = new OracleCloudAppender()
+        appender.context = context
+        appender.encoder = encoder
+        def config = Stub(ApplicationConfiguration) {
+            getName() >> Optional.of("my-awesome-app")
+        }
+        def instance = Mock(ServiceInstance.class)
+        instance.getHost() >> "testHost"
+        def serviceReadyEvent = new ServiceReadyEvent(instance)
+
+        oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
+
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config).onApplicationEvent(serviceReadyEvent)
+
     }
 
     def cleanup() {
+        layout.stop()
+        encoder.stop()
         appender.stop()
+        OracleCloudLoggingClient.destroy()
     }
 
     void 'test error queue size less then 0'() {
         when:
-        appender.setQueueSize(-1)
+        appender.queueSize = -1
         appender.start()
 
         then:
@@ -33,7 +64,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
     void 'test error queue size equal to 0'() {
         when:
-        appender.setQueueSize(0)
+        appender.queueSize = 0
         appender.start()
 
         then:
@@ -41,10 +72,20 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         statuses.find { it.message == "Queue size of zero is deprecated, use a size of one to indicate synchronous processing" }
     }
 
+    void 'test error max batch size less or equal to 0'() {
+        when:
+        appender.maxBatchSize = 0
+        appender.start()
+
+        then:
+        def statuses = context.getStatusManager().getCopyOfStatusList()
+        statuses.find { it.message == "Max Batch size must be greater than zero" }
+    }
+
     void 'test error publish period less or equal to 0'() {
         when:
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(0)
+        appender.queueSize = 100
+        appender.publishPeriod = 0
         appender.start()
 
         then:
@@ -54,8 +95,9 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
     void 'encoder not set'() {
         when:
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(100)
+        appender.queueSize = 100
+        appender.publishPeriod = 100
+        appender.encoder = null
         appender.start()
 
         then:
@@ -65,8 +107,8 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
     void 'log id not set'() {
         when:
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(100)
+        appender.queueSize = 100
+        appender.publishPeriod = 100
         appender.setEncoder(new LayoutWrappingEncoder())
         appender.start()
 
@@ -79,15 +121,15 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         when:
         def logId = "testLogId"
         def mockAppender = new MockAppender()
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(101)
+        appender.queueSize = 100
+        appender.publishPeriod = 101
         appender.setEncoder(new LayoutWrappingEncoder())
-        appender.setLogId(logId)
+        appender.logId = logId
         appender.addAppender(mockAppender)
         appender.addAppender(mockAppender)
 
         then:
-        def statuses = context.getStatusManager().getCopyOfStatusList()
+        def statuses = context.statusManager.getCopyOfStatusList()
         statuses.find { it.message == "One and only one appender may be attached to OracleCloudAppender" }
         statuses.find { it.message == "Ignoring additional appender named [MockAppender]" }
         appender.getAppender("MockAppender") != null
@@ -99,15 +141,16 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         appender.getPublishPeriod() == 101
 
         appender.detachAndStopAllAppenders()
+        !appender.isAttached(mockAppender)
     }
 
     void 'detach emergency appender by name'() {
         when:
         def mockAppender = new MockAppender()
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(100)
-        appender.setEncoder(new LayoutWrappingEncoder())
-        appender.setLogId("testLogId")
+        appender.queueSize = 100
+        appender.publishPeriod = 100
+        appender.encoder = new LayoutWrappingEncoder()
+        appender.logId = "testLogId"
         appender.addAppender(mockAppender)
 
         then:
@@ -118,10 +161,10 @@ class OracleCloudLoggingAppenderSpec extends Specification {
     void 'detach emergency appender by instance'() {
         when:
         def mockAppender = new MockAppender()
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(100)
-        appender.setEncoder(new LayoutWrappingEncoder())
-        appender.setLogId("testLogId")
+        appender.queueSize = 100
+        appender.publishPeriod = 100
+        appender.encoder = new LayoutWrappingEncoder()
+        appender.logId = "testLogId"
         appender.addAppender(mockAppender)
 
         then:
@@ -132,10 +175,10 @@ class OracleCloudLoggingAppenderSpec extends Specification {
     void 'try to create iterator for emergency appender'() {
         when:
         def mockAppender = new MockAppender()
-        appender.setQueueSize(100)
-        appender.setPublishPeriod(100)
+        appender.queueSize = 100
+        appender.publishPeriod = 100
         appender.setEncoder(new LayoutWrappingEncoder())
-        appender.setLogId("testLogId")
+        appender.logId = "testLogId"
         appender.addAppender(mockAppender)
         appender.iteratorForAppenders()
 
@@ -143,4 +186,44 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         thrown(UnsupportedOperationException)
     }
 
+    void 'custom subject, type and and source of log'() {
+        given:
+        def testSubject = "testSubject"
+        def testType = "testType"
+        def testSource = "testSource"
+        def testMessage = "testMessage"
+        appender.logId = "testLogId"
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggingEvent event = createEvent("name", Level.INFO, testMessage, System.currentTimeMillis())
+
+        when:
+        appender.subject = testSubject
+        appender.type = testType
+        appender.source = testSource
+        appender.start()
+        appender.doAppend(event)
+
+        then:
+        appender.subject == testSubject
+        appender.type == testType
+        appender.source == testSource
+        conditions.eventually {
+            oracleCloudLogsClient.putLogsRequestList.size() == 1
+        }
+        oracleCloudLogsClient.putLogsRequestList.get(0).putLogsDetails.logEntryBatches.get(0).subject == testSubject
+        oracleCloudLogsClient.putLogsRequestList.get(0).putLogsDetails.logEntryBatches.get(0).type == testType
+        oracleCloudLogsClient.putLogsRequestList.get(0).putLogsDetails.logEntryBatches.get(0).source == testSource
+
+    }
+
+    LoggingEvent createEvent(String name, Level level, String message, Long time) {
+        LoggingEvent event = new LoggingEvent()
+        event.loggerName = name
+        event.level = level
+        event.message = message
+        if (time != null) {
+            event.timeStamp = time
+        }
+        return event
+    }
 }

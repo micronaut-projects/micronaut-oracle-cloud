@@ -17,7 +17,6 @@ import com.oracle.bmc.responses.AsyncHandler;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient;
-import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
@@ -25,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @MicronautTest
 public class ObjectStorageReactorClientTest {
+
     @Test
     void testObjectStorageClientRx(ObjectStorageReactorClient objectStorageRxClient) {
         ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
@@ -45,8 +45,8 @@ public class ObjectStorageReactorClientTest {
     MockAuth authenticationDetailsProvider() {
         return new MockAuth();
     }
-
-    @MockBean(ObjectStorageAsyncClient.class)
+    @Bean
+    @Replaces(ObjectStorageAsyncClient.class)
     ObjectStorageAsyncClient asyncClient() {
         final BasicAuthenticationDetailsProvider authenticationDetailsProvider = new MockAuth();
         return new ObjectStorageAsyncClient(authenticationDetailsProvider) {

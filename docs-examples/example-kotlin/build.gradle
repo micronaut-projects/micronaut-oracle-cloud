@@ -14,13 +14,14 @@ dependencies {
     implementation libs.kotlin.reflect
     implementation libs.kotlin.stdlib
     implementation mn.micronaut.http.server.netty
-    implementation mn.micronaut.kotlin
+    implementation mn.micronaut.kotlin.runtime
     implementation projects.oraclecloudSdkReactor
     runtimeOnly mn.logback
     runtimeOnly mn.jackson.module.kotlin
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mn.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
+    testImplementation libs.commons.lang3
 }
 
 test {

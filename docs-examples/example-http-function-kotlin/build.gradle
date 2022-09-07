@@ -9,7 +9,7 @@ dependencies {
     annotationProcessor mn.micronaut.graal
     implementation libs.kotlin.reflect
     implementation libs.kotlin.stdlib
-    implementation mn.micronaut.kotlin
+    implementation mn.micronaut.kotlin.runtime
     implementation mn.micronaut.runtime
     implementation mn.reactor
     implementation projects.oraclecloudFunctionHttp

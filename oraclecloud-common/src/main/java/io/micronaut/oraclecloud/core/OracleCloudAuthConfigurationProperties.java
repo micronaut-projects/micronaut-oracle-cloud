@@ -22,6 +22,7 @@ import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.io.Readable;
+import io.micronaut.core.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class OracleCloudAuthConfigurationProperties {
      * @param privateKey The private key as a string
      */
     public void setPrivateKey(String privateKey) {
-        if (privateKey != null) {
+        if (StringUtils.isNotEmpty(privateKey)) {
             builder.privateKeySupplier(() -> new ByteArrayInputStream(privateKey.getBytes()));
         }
     }
@@ -76,7 +77,7 @@ public class OracleCloudAuthConfigurationProperties {
      * @param passphrase Sets the passphrase
      */
     public void setPassphrase(String passphrase) {
-        if (passphrase != null) {
+        if (StringUtils.isNotEmpty(passphrase)) {
             this.builder.passPhrase(passphrase);
         }
     }
@@ -85,7 +86,7 @@ public class OracleCloudAuthConfigurationProperties {
      * @param region Sets the region
      */
     public void setRegion(String region) {
-        if (region != null) {
+        if (StringUtils.isNotEmpty(region)) {
             this.builder.region(Region.fromRegionCode(region));
         }
     }

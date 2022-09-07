@@ -49,8 +49,8 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
         this.internalAppName = applicationConfiguration.getName().orElse("");
     }
 
-    static synchronized Logging getLogging() {
-        return logging;
+    static synchronized boolean isReady() {
+        return logging != null;
     }
 
     static synchronized String getHost() {
@@ -70,6 +70,8 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
     static synchronized void destroy() throws Exception {
         OracleCloudLoggingClient.logging.close();
         OracleCloudLoggingClient.logging = null;
+        OracleCloudLoggingClient.host = null;
+        OracleCloudLoggingClient.appName = null;
     }
 
     static synchronized boolean putLogs(PutLogsRequest putLogsRequest) {

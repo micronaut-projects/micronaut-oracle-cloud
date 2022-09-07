@@ -8,3 +8,10 @@ dependencies {
     implementation libs.jetty
     implementation mn.micronaut.http.server
 }
+
+// TODO temporarily disable binary compatibility checks
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}

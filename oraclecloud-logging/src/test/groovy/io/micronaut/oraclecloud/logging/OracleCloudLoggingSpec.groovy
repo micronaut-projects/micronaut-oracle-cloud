@@ -64,10 +64,8 @@ class OracleCloudLoggingSpec extends Specification {
                 }
         )
         logEntryBatch.stream().allMatch(x -> x.source == testHost)
-        logEntryBatch.stream().allMatch(x -> x.type == applicationConfiguration.getName().get() + '.' + testHost + '.INFO')
-        logEntryBatch.stream().anyMatch(x -> x.subject == 'io.micronaut.context.env.DefaultEnvironment')
-        logEntryBatch.stream().anyMatch(x -> x.subject == 'io.micronaut.context.DefaultBeanContext')
-        logEntryBatch.stream().anyMatch(x -> x.subject == 'io.micronaut.oraclecloud.logging.OracleCloudLoggingSpec')
+        logEntryBatch.stream().allMatch(x -> x.type == testHost + '.' + applicationConfiguration.getName().get())
+        logEntryBatch.stream().anyMatch(x -> x.subject == applicationConfiguration.getName().get())
 
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context.env.DefaultEnvironment'))
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context.DefaultBeanContext'))
@@ -97,6 +95,11 @@ class OracleCloudLoggingSpec extends Specification {
         final List<PutLogsRequest> putLogsRequestList = Collections.synchronizedList(new ArrayList<>())
 
         private boolean success = true
+
+        @Override
+        void refreshClient() {
+
+        }
 
         @Override
         void setEndpoint(String endpoint) {
