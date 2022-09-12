@@ -11,4 +11,5 @@ micrometer: Micrometer Support For Oracle Monitoring
 tracing: OCI Application Performance Monitoring as a Tracing Endpoint
 logging: OCI Logging service
 vault: Secure Distributed Configuration with Oracle Cloud Vault
+cloudStorage: Oracle Cloud Storage Support
 repository: Repository

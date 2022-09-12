@@ -1,0 +1,7 @@
+Micronaut provides a high-level, uniform object storage API that works across the major cloud providers: https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/[Micronaut Object Storage].
+
+To get started, select the `object-storage-oracle-cloud` feature in https://micronaut.io/launch?type=DEFAULT&name=demo&package=com.example&javaVersion=JDK_11&lang=JAVA&build=GRADLE&test=JUNIT&features=object-storage-oracle-cloud&activity=preview&showing=build.gradle[Micronaut Launch], or add the following dependency:
+
+dependency:io.micronaut.objectstorage:micronaut-object-storage-oracle-cloud[]
+
+For more information, check the https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud[Micronaut Object Storage Oracle Cloud support] documentation.
