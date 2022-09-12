@@ -8,9 +8,9 @@ dependencies {
     }
     api mn.micronaut.discovery
     api mn.micronaut.inject
+    api mn.micronaut.serde.jackson
     implementation projects.oraclecloudSdk
     implementation libs.logback.json.classic
-    implementation libs.jackson.databind
     testImplementation mn.micronaut.inject.groovy
     testImplementation mn.micronaut.test.spock
 }

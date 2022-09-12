@@ -110,6 +110,8 @@ The `OracleCloudAppender` supports blacklisting the loggers by specifying the lo
 |List of logger names that won't be published
 |===
 
+NOTE: The `logId` is also configurable through `application.yml` and `application-oraclecloud.yml` files with the `oci.logging.logId` key, and it will be considered as the prime source of it.
+
 === OpenTelemetry and logging
 
 If you are using the https://opentelemetry.io/[OpenTelemetry] for tracing you can include `traceId` and `spanId` fields into your logs. First you have to add next dependency into your project:

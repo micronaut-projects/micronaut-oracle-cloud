@@ -41,7 +41,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
         oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
 
-        new OracleCloudLoggingClient(oracleCloudLogsClient, config).onApplicationEvent(serviceReadyEvent)
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config, Optional.empty()).onApplicationEvent(serviceReadyEvent)
 
     }
 
@@ -114,7 +114,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
         then:
         def statuses = context.getStatusManager().getCopyOfStatusList()
-        statuses.find { it.message == "LogId not specified" }
+        statuses.find { it.message == "LogId is not specified in logback configuration it might be fetch from application configuration if available" }
     }
 
     void 'register multiple emergency appender'() {

@@ -13,9 +13,7 @@
         <publishPeriod>120</publishPeriod>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter">
-                    <objectMapper>io.micronaut.oraclecloud.logging.CustomObjectMapper</objectMapper>
-                </jsonFormatter>
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
             </layout>
         </encoder>
     </appender>
