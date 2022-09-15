@@ -85,8 +85,8 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
         this.publishPeriod = publishPeriod;
     }
 
-    public void addBlackListLoggerName(String test) {
-        this.blackListLoggerName.add(test);
+    public void addBlackListLoggerName(String blackListLoggerName) {
+        this.blackListLoggerName.add(blackListLoggerName);
     }
 
     public String getLogId() {
@@ -160,7 +160,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
         }
 
         if (logId == null) {
-            addError("LogId not specified");
+            addWarn("LogId is not specified in logback configuration it might be fetch from application configuration if available");
             return;
         }
 
@@ -226,6 +226,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
         String host = OracleCloudLoggingClient.getHost();
         String appName = OracleCloudLoggingClient.getAppName();
+        String logIdFromAppConfig = OracleCloudLoggingClient.getLogId();
 
         if (type == null) {
             type = String.format("%s.%s", host, appName);
@@ -237,6 +238,15 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
         if (subject == null) {
             subject = appName;
+        }
+
+        if (logIdFromAppConfig != null) {
+            addInfo("Using logId from application configuration");
+            logId = logIdFromAppConfig;
+        }
+
+        if (logId == null) {
+            addError("LogId is null. Everything will be sent to emergency appender if set");
         }
 
         configuredSuccessfully = true;

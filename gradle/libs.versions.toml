@@ -16,7 +16,6 @@ fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
 fn-testing-junit4 = { module = 'com.fnproject.fn:testing-junit4', version.ref = 'fn' }
 jakarta-inject = { module = 'jakarta.inject:jakarta.inject-api', version.ref = 'jakarta-inject' }
-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version = '' }
 javapoet = { module = 'com.squareup:javapoet', version.ref = 'javapoet' }
 jetty = { module = 'org.eclipse.jetty:jetty-server', version.ref = 'jetty' }
 junit-jupiter = { module = 'org.junit.jupiter:junit-jupiter-engine', version = '' }

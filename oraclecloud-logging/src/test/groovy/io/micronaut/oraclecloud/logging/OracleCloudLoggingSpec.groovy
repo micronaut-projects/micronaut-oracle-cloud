@@ -7,7 +7,9 @@ import com.oracle.bmc.loggingingestion.model.LogEntry
 import com.oracle.bmc.loggingingestion.model.LogEntryBatch
 import com.oracle.bmc.loggingingestion.requests.PutLogsRequest
 import com.oracle.bmc.loggingingestion.responses.PutLogsResponse
+import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
+import io.micronaut.context.annotation.Requires
 import io.micronaut.context.event.ApplicationEventPublisher
 import io.micronaut.discovery.ServiceInstance
 import io.micronaut.discovery.event.ServiceReadyEvent
@@ -20,6 +22,8 @@ import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
 @MicronautTest
+@Property(name = "spec.name", value = "OracleCloudLoggingSpec")
+@Property(name = "oci.logging.logId", value = "test-logId-from-application-config")
 class OracleCloudLoggingSpec extends Specification {
 
     @Inject
@@ -54,7 +58,7 @@ class OracleCloudLoggingSpec extends Specification {
         }
 
         def list = ((MockLogging) logging).getPutLogsRequestList()
-        list.stream().allMatch(x -> x.logId == 'test-log-id')
+        list.stream().allMatch(x -> x.logId == 'test-logId-from-application-config')
         def logEntries = new ArrayList<LogEntry>()
         def logEntryBatch = new ArrayList<LogEntryBatch>()
         list.putLogsDetails.logEntryBatches.forEach(
@@ -87,7 +91,7 @@ class OracleCloudLoggingSpec extends Specification {
         MockAppender.getEvents().get(0).message == logMessage
     }
 
-
+    @Requires(property = "spec.name", value = "OracleCloudLoggingSpec")
     @Singleton
     @Replaces(LoggingClient)
     static class MockLogging implements Logging {

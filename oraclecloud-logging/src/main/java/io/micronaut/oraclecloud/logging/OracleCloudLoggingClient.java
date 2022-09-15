@@ -19,12 +19,16 @@ import com.oracle.bmc.loggingingestion.Logging;
 import com.oracle.bmc.loggingingestion.requests.PutLogsRequest;
 import com.oracle.bmc.loggingingestion.responses.PutLogsResponse;
 import io.micronaut.context.annotation.Context;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.discovery.event.ServiceReadyEvent;
+import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
 import io.micronaut.runtime.ApplicationConfiguration;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
+
+import java.util.Optional;
 
 /**
  * OracleCloudLoggingClient is a {@link Logging} client that is required for {@link OracleCloudAppender}.
@@ -37,16 +41,23 @@ import jakarta.inject.Singleton;
 @Singleton
 final class OracleCloudLoggingClient implements ApplicationEventListener<ServiceReadyEvent> {
 
+    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".logging";
+
     private static Logging logging;
     private static String host;
     private static String appName;
-
+    private static String logId;
     private final Logging internalLogging;
     private final String internalAppName;
+    private final String internalLogId;
 
-    public OracleCloudLoggingClient(Logging logging, ApplicationConfiguration applicationConfiguration) {
+    public OracleCloudLoggingClient(
+            Logging logging, ApplicationConfiguration applicationConfiguration,
+            @Property(name = PREFIX + ".logId")
+     Optional<String> internalLogId) {
         this.internalLogging = logging;
         this.internalAppName = applicationConfiguration.getName().orElse("");
+        this.internalLogId = internalLogId.orElse(null);
     }
 
     static synchronized boolean isReady() {
@@ -61,10 +72,11 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
         return appName;
     }
 
-    private static synchronized void setLogging(Logging logging, String host, String appName) {
+    private static synchronized void setLogging(Logging logging, String host, String appName, String logId) {
         OracleCloudLoggingClient.logging = logging;
         OracleCloudLoggingClient.host = host;
         OracleCloudLoggingClient.appName = appName;
+        OracleCloudLoggingClient.logId = logId;
     }
 
     static synchronized void destroy() throws Exception {
@@ -82,6 +94,10 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
         return false;
     }
 
+    public static synchronized String getLogId() {
+        return logId;
+    }
+
     @PreDestroy
     public void close() throws Exception {
         OracleCloudLoggingClient.destroy();
@@ -89,6 +105,6 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
 
     @Override
     public void onApplicationEvent(ServiceReadyEvent event) {
-        setLogging(internalLogging, event.getSource().getHost(), internalAppName);
+        setLogging(internalLogging, event.getSource().getHost(), internalAppName, internalLogId);
     }
 }
