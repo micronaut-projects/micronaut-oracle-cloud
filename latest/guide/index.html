@@ -69,7 +69,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#vault"><strong>13</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#cloudStorage"><strong>14</strong><span>Oracle Cloud Storage Support</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -126,7 +128,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-vault"><a href="#vault"><strong>13</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>14</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cloudStorage"><a href="#cloudStorage"><strong>14</strong><span>Oracle Cloud Storage Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>15</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -136,7 +140,7 @@
         <h1>Micronaut Oracle Cloud</h1>
         <p></p>
         <p>Provides integration between Micronaut and Oracle Cloud</p>
-        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/index.html'>SNAPSHOT</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.2.0/guide/index.html'>2.2.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.5/guide/index.html'>2.1.5</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.4/guide/index.html'>2.1.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.3/guide/index.html'>2.1.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.2/guide/index.html'>2.1.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.1/guide/index.html'>2.1.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.0/guide/index.html'>2.1.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.4/guide/index.html'>2.0.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.3/guide/index.html'>2.0.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.2/guide/index.html'>2.0.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.1/guide/index.html'>2.0.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.0/guide/index.html'>2.0.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.0-RC1/guide/index.html'>2.0.0-RC1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.3/guide/index.html'>1.4.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.2/guide/index.html'>1.4.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.1/guide/index.html'>1.4.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.0/guide/index.html'>1.4.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.6/guide/index.html'>1.3.6</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.5/guide/index.html'>1.3.5</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.4/guide/index.html'>1.3.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.3/guide/index.html'>1.3.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.2/guide/index.html'>1.3.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.1/guide/index.html'>1.3.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.0/guide/index.html'>1.3.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.2.1/guide/index.html'>1.2.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.2.0/guide/index.html'>1.2.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.1.1/guide/index.html'>1.1.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.1.0/guide/index.html'>1.1.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.0.0/guide/index.html'>1.0.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.0.0.RC4/guide/index.html'>1.0.0.RC4</option></select> </p>
+        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/index.html'>SNAPSHOT</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.2.1/guide/index.html'>2.2.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.2.0/guide/index.html'>2.2.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.5/guide/index.html'>2.1.5</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.4/guide/index.html'>2.1.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.3/guide/index.html'>2.1.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.2/guide/index.html'>2.1.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.1/guide/index.html'>2.1.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.0/guide/index.html'>2.1.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.4/guide/index.html'>2.0.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.3/guide/index.html'>2.0.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.2/guide/index.html'>2.0.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.1/guide/index.html'>2.0.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.0/guide/index.html'>2.0.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.0-RC1/guide/index.html'>2.0.0-RC1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.3/guide/index.html'>1.4.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.2/guide/index.html'>1.4.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.1/guide/index.html'>1.4.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.4.0/guide/index.html'>1.4.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.6/guide/index.html'>1.3.6</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.5/guide/index.html'>1.3.5</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.4/guide/index.html'>1.3.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.3/guide/index.html'>1.3.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.2/guide/index.html'>1.3.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.1/guide/index.html'>1.3.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.3.0/guide/index.html'>1.3.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.2.1/guide/index.html'>1.2.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.2.0/guide/index.html'>1.2.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.1.1/guide/index.html'>1.1.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.1.0/guide/index.html'>1.1.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/1.0.0/guide/index.html'>1.0.0</option></select> </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
@@ -188,7 +192,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:2.2.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:2.2.1")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -196,7 +200,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
-    &lt;version&gt;2.2.0&lt;/version&gt;
+    &lt;version&gt;2.2.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -344,7 +348,7 @@ In the Oracle Java SDK the environment variable <code>OCI_CONFIG_FILE</code> doe
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-common:2.2.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-common:2.2.1")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -352,7 +356,7 @@ In the Oracle Java SDK the environment variable <code>OCI_CONFIG_FILE</code> doe
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-common&lt;/artifactId&gt;
-    &lt;version&gt;2.2.0&lt;/version&gt;
+    &lt;version&gt;2.2.1&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -2327,6 +2331,18 @@ You can customize your JsonLayout with additional parameters the are available o
 </tr>
 </tbody>
 </table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>logId</code> is also configurable through <code>application.yml</code> and <code>application-oraclecloud.yml</code> files with the <code>oci.logging.logId</code> key, and it will be considered as the prime source of it.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_opentelemetry_and_logging">OpenTelemetry and logging</h3>
@@ -2584,7 +2600,42 @@ public class Config {
 </div>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>14 Repository</h1>
+<h1 id="cloudStorage"><a class="anchor" href="#cloudStorage"></a>14 Oracle Cloud Storage Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/cloudStorage.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>Micronaut provides a high-level, uniform object storage API that works across the major cloud providers: <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/">Micronaut Object Storage</a>.</p>
+</div>
+<div class="paragraph">
+<p>To get started, select the <code>object-storage-oracle-cloud</code> feature in <a href="https://micronaut.io/launch?features=object-storage-oracle-cloud">Micronaut Launch</a>, or add the following dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.objectstorage:micronaut-object-storage-oracle-cloud")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.objectstorage&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-object-storage-oracle-cloud&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>For more information, check the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>15 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/repository.adoc"'>
