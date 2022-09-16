@@ -1,0 +1,9 @@
+This section will document breaking changes that may happen during milestone or release candidate releases, as well as major releases eg (1.x.x → 2.x.x).
+
+== Micronaut Oracle Cloud 2.2.0 breaking changes
+
+In version 2.33.0, Oracle removed some dependencies from their Oracle Cloud SDK. If you relied on those dependencies being available, but did not declare them in your build file explicitly, they may now be missing. The solution is to add those dependencies to your own build file.
+
+**In general, we do not recommend depending on transitive dependencies of the Oracle Cloud SDK, as future versions may remove further dependencies.**
+
+The affected dependencies for this release are `commons-codec`, `commons-io`, and `commons-logging`.
