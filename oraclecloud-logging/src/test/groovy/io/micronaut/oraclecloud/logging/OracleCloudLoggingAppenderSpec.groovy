@@ -41,7 +41,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
         oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
 
-        new OracleCloudLoggingClient(oracleCloudLogsClient, config, Optional.empty()).onApplicationEvent(serviceReadyEvent)
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config, null).onApplicationEvent(serviceReadyEvent)
 
     }
 
