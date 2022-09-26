@@ -29,3 +29,7 @@ test {
 }
 
 mainClassName = 'example.ApplicationKt'
+
+graalvmNative.binaries.configureEach {
+    jvmArgs("--add-exports=org.graalvm.sdk/org.graalvm.nativeimage.impl=ALL-UNNAMED")
+}

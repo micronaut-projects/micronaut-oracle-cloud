@@ -22,8 +22,7 @@ test {
 
 mainClassName = 'example.Application'
 
-graalvmNative {
-    binaries.configureEach {
-        buildArgs.add '--initialize-at-build-time=example'
-    }
+graalvmNative.binaries.configureEach {
+    buildArgs.add '--initialize-at-build-time=example'
+    jvmArgs("--add-exports=org.graalvm.sdk/org.graalvm.nativeimage.impl=ALL-UNNAMED")
 }
