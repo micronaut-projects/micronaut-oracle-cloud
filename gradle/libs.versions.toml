@@ -10,6 +10,7 @@ micronaut-sql = '4.1.1'
 mockito = '4.1.0'
 slf4j-jcl = '1.7.36'
 commons-lang3 = '3.12.0'
+shadow = '7.1.2'
 
 [libraries]
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
@@ -38,7 +39,9 @@ oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version = '' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
 
-[plugins]
-kotlin-allopen = { id = 'org.jetbrains.kotlin.plugin.allopen', version.ref = 'kotlin' }
-kotlin-jvm = { id = 'org.jetbrains.kotlin.jvm', version.ref = 'kotlin' }
-kotlin-kapt = { id = 'org.jetbrains.kotlin.kapt', version.ref = 'kotlin' }
+#plugins
+kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
+kotlin-gradle-allopen = { module = 'org.jetbrains.kotlin:kotlin-allopen', version.ref = 'kotlin' }
+shadow-plugin = { module = "gradle.plugin.com.github.johnrengelman:shadow", version.ref = "shadow" }
+micronaut-gradle-plugin = "io.micronaut.gradle:micronaut-gradle-plugin:3.6.1"
+
