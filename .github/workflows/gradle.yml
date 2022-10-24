@@ -51,7 +51,7 @@ jobs:
         run: |
           # Awful hack for kapt and JDK 16. See https://youtrack.jetbrains.com/issue/KT-45545
           if [ ${{ matrix.java }} == 16 ]; then export GRADLE_OPTS="-Dorg.gradle.jvmargs=--illegal-access=permit"; fi
-          ./gradlew dependencyUpdates check --no-daemon --parallel --continue --no-build-cache
+          ./gradlew check --no-daemon --parallel --continue --no-build-cache
         env:
            OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
            OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
