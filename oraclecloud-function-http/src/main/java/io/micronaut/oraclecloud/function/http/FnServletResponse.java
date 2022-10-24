@@ -56,9 +56,10 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     private final Map<String, List<String>> headers = new LinkedHashMap<>(10);
     private final HTTPGatewayContext gatewayContext;
     private final ByteArrayOutputStream body = new ByteArrayOutputStream();
-    private HttpStatus status = HttpStatus.OK;
+    private int status = HttpStatus.OK.getCode();
     private MutableConvertibleValues<Object> attributes;
     private B bodyObject;
+    private String reason = HttpStatus.OK.getReason();
 
     FnServletResponse(HTTPGatewayContext gatewayContext) {
         this.gatewayContext = gatewayContext;
@@ -68,7 +69,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     public OutputEvent getNativeResponse() {
         return OutputEvent.fromBytes(
                 body.toByteArray(),
-                status.getCode() <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
+                status <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
                 getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString(),
                 toFnHeaders()
         );
@@ -135,15 +136,25 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     }
 
     @Override
-    public MutableHttpResponse<B> status(HttpStatus status, CharSequence message) {
-        this.status = Objects.requireNonNull(status, "Status cannot be null");
-        this.gatewayContext.setStatusCode(status.getCode());
+    public MutableHttpResponse<B> status(int status, CharSequence message) {
+        this.status = status;
+        if (message == null) {
+            this.reason = HttpStatus.getDefaultReason(status);
+        } else {
+            this.reason = message.toString();
+        }
+        this.gatewayContext.setStatusCode(status);
         return this;
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public int code() {
         return status;
+    }
+
+    @Override
+    public String reason() {
+        return reason;
     }
 
     /**

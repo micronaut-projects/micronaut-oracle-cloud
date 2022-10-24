@@ -1,9 +1,8 @@
 [versions]
 fn = '1.0.131'
-jakarta-inject = '2.0.1'
 javapoet = '1.13.0'
 jetty = '9.4.35.v20201120'
-kotlin = '1.7.10'
+kotlin = '1.7.20'
 logback-json-classic = '0.1.5'
 micronaut-micrometer = '4.1.1'
 micronaut-sql = '4.1.1'
@@ -17,7 +16,6 @@ micronaut-gradle-plugin = "3.6.1"
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
 fn-testing-junit4 = { module = 'com.fnproject.fn:testing-junit4', version.ref = 'fn' }
-jakarta-inject = { module = 'jakarta.inject:jakarta.inject-api', version.ref = 'jakarta-inject' }
 javapoet = { module = 'com.squareup:javapoet', version.ref = 'javapoet' }
 jetty = { module = 'org.eclipse.jetty:jetty-server', version.ref = 'jetty' }
 junit-jupiter = { module = 'org.junit.jupiter:junit-jupiter-engine', version = '' }
