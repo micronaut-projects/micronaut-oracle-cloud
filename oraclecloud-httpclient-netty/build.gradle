@@ -1,0 +1,12 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+dependencies {
+    implementation("io.netty:netty-codec-http")
+    api("com.oracle.oci.sdk:oci-java-sdk-common-httpclient:$oci3Version")
+    testImplementation("io.micronaut:micronaut-http-server-netty")
+}
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}

@@ -32,7 +32,6 @@ import io.micronaut.discovery.config.ConfigurationClient;
 import io.micronaut.scheduling.TaskExecutors;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import org.apache.commons.codec.binary.Base64;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +40,7 @@ import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -178,7 +178,7 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
                 (Base64SecretBundleContentDetails) getSecretBundleResponse.
                         getSecretBundle().getSecretBundleContent();
 
-        byte[] secretValueDecoded = Base64.decodeBase64(base64SecretBundleContentDetails.getContent());
+        byte[] secretValueDecoded = Base64.getDecoder().decode(base64SecretBundleContentDetails.getContent());
         return new String(secretValueDecoded);
     }
 
