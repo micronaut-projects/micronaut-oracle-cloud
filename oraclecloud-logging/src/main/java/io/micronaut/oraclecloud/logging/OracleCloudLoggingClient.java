@@ -22,9 +22,9 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.discovery.event.ServiceReadyEvent;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
 import io.micronaut.runtime.ApplicationConfiguration;
+import io.micronaut.runtime.server.event.ServerStartupEvent;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 
@@ -39,7 +39,7 @@ import java.util.Optional;
 @Context
 @Internal
 @Singleton
-final class OracleCloudLoggingClient implements ApplicationEventListener<ServiceReadyEvent> {
+final class OracleCloudLoggingClient implements ApplicationEventListener<ServerStartupEvent> {
 
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".logging";
 
@@ -104,7 +104,7 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<Service
     }
 
     @Override
-    public void onApplicationEvent(ServiceReadyEvent event) {
+    public void onApplicationEvent(ServerStartupEvent event) {
         setLogging(internalLogging, event.getSource().getHost(), internalAppName, internalLogId);
     }
 }
