@@ -108,7 +108,7 @@ final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
                 return -1;
             }
             assert n == 1;
-            return bytes[0];
+            return bytes[0] & 0xff;
         }
 
         @Override
