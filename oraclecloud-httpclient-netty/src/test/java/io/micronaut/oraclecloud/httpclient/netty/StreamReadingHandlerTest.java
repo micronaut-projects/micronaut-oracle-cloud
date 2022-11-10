@@ -114,13 +114,13 @@ class StreamReadingHandlerTest {
             stream.read();
             Assertions.fail();
         } catch (IOException e) {
-            Assertions.assertEquals(e.getCause().getMessage(), "foo");
+            Assertions.assertEquals("foo", e.getCause().getMessage());
         }
 
         try {
             channel.checkException();
         } catch (Exception e) {
-            Assertions.assertEquals(e.getMessage(), "bar");
+            Assertions.assertEquals("bar", e.getMessage());
         }
     }
 }
