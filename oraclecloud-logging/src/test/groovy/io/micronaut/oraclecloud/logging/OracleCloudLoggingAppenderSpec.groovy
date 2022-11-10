@@ -37,11 +37,11 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         }
         def instance = Mock(EmbeddedServer.class)
         instance.getHost() >> "testHost"
-        def serviceReadyEvent = new ServerStartupEvent(instance)
+        def serverStartupEvent = new ServerStartupEvent(instance)
 
         oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
 
-        new OracleCloudLoggingClient(oracleCloudLogsClient, config, Optional.empty()).onApplicationEvent(serviceReadyEvent)
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config, Optional.empty()).onApplicationEvent(serverStartupEvent)
 
     }
 
