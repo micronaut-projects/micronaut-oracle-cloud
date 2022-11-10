@@ -21,7 +21,6 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
 
-import javax.net.ssl.SSLException;
 import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -69,11 +68,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
 
     @Override
     public HttpClient build() {
-        try {
-            return new NettyHttpClient(this);
-        } catch (SSLException e) {
-            throw new RuntimeException(e);
-        }
+        return new NettyHttpClient(this);
     }
 
     static final class PrioritizedValue<T> {

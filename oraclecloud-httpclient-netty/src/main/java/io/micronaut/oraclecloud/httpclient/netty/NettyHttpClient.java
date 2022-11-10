@@ -47,7 +47,7 @@ final class NettyHttpClient implements HttpClient {
     final String host;
     final int port;
 
-    NettyHttpClient(NettyHttpClientBuilder builder) throws SSLException {
+    NettyHttpClient(NettyHttpClientBuilder builder) {
         baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
         requestInterceptors = builder.requestInterceptors.stream()
                 .sorted(Comparator.comparingInt(p -> p.priority))
@@ -59,8 +59,12 @@ final class NettyHttpClient implements HttpClient {
             sslContext = null;
         } else {
             defaultPort = 443;
-            sslContext = SslContextBuilder.forClient()
-                    .build();
+            try {
+                sslContext = SslContextBuilder.forClient()
+                        .build();
+            } catch (SSLException e) {
+                throw new IllegalStateException("Couldn't set up ssl context", e);
+            }
         }
         int port = builder.baseUri.getPort();
         if (port == -1) {
