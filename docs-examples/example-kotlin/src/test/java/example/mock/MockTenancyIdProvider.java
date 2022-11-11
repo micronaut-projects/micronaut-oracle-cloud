@@ -1,10 +1,9 @@
 package example.mock;
 
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
-
 import jakarta.inject.Singleton;
 
 @Context
