@@ -8,6 +8,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
@@ -36,6 +37,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
     private String endpoint;
 
     boolean handleContinue;
+    boolean aggregate;
     Consumer<Channel> channelCustomizer;
     private List<Throwable> errors;
     private Channel serverChannel;
@@ -57,6 +59,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
 
         channelCustomizer = c -> {};
         handleContinue = false;
+        aggregate = true;
         handlers = new ArrayDeque<>();
 
         errors = new CopyOnWriteArrayList<>();
@@ -73,34 +76,40 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                         ch.pipeline()
                                 .addLast(new ReadTimeoutHandler(5, TimeUnit.SECONDS))
                                 .addLast(new LoggingHandler(LogLevel.INFO))
-                                .addLast(new HttpServerCodec())
-                                .addLast(new HttpObjectAggregator(4096) {
-                                    @Override
-                                    protected Object newContinueResponse(HttpMessage start, int maxContentLength, ChannelPipeline pipeline) {
-                                        if (!handleContinue) {
-                                            return super.newContinueResponse(start, maxContentLength, pipeline);
-                                        }
-
-                                        ExpectedRequestHandler handler = handlers.poll();
-                                        if (handler == null) {
-                                            throw new AssertionError("Unexpected message: " + start);
-                                        }
-                                        ChannelHandlerContext ctx = pipeline.context(this);
-                                        try {
-                                            handler.handle(ctx, (HttpRequest) start);
-                                        } catch (Exception e) {
-                                            try {
-                                                exceptionCaught(ctx, e);
-                                            } catch (Exception ex) {
-                                                throw new RuntimeException(ex);
-                                            }
-                                        }
-                                        return null;
+                                .addLast(new HttpServerCodec());
+                        if (aggregate) {
+                            ch.pipeline().addLast(new HttpObjectAggregator(4096) {
+                                @Override
+                                protected Object newContinueResponse(HttpMessage start, int maxContentLength, ChannelPipeline pipeline) {
+                                    if (!handleContinue) {
+                                        return super.newContinueResponse(start, maxContentLength, pipeline);
                                     }
-                                })
-                                .addLast(new ChannelInboundHandlerAdapter() {
+
+                                    ExpectedRequestHandler handler = handlers.poll();
+                                    if (handler == null) {
+                                        throw new AssertionError("Unexpected message: " + start);
+                                    }
+                                    ChannelHandlerContext ctx = pipeline.context(this);
+                                    try {
+                                        handler.handle(ctx, (HttpRequest) start);
+                                    } catch (Exception e) {
+                                        try {
+                                            exceptionCaught(ctx, e);
+                                        } catch (Exception ex) {
+                                            throw new RuntimeException(ex);
+                                        }
+                                    }
+                                    return null;
+                                }
+                            });
+                        }
+                        ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
                                     @Override
                                     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                        if (msg instanceof HttpContent && !aggregate) {
+                                            ((HttpContent) msg).release();
+                                            return;
+                                        }
                                         if (((HttpMessage) msg).decoderResult().isFailure()) {
                                             ((HttpMessage) msg).decoderResult().cause().printStackTrace();
                                         }

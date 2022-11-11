@@ -36,6 +36,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     Duration connectTimeout = DEFAULT_TIMEOUT;
     Duration readTimeout = DEFAULT_TIMEOUT;
     int asyncPoolSize = 0;
+    boolean buffered = true;
 
     @Override
     public HttpClientBuilder baseUri(URI uri) {
@@ -51,6 +52,8 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
             readTimeout = (Duration) value;
         } else if (key == StandardClientProperties.ASYNC_POOL_SIZE) {
             asyncPoolSize = (Integer) value;
+        } else if (key == StandardClientProperties.BUFFER_REQUEST) {
+            buffered = (Boolean) value;
         } else {
             // todo: support all standard client properties
             throw new IllegalArgumentException(

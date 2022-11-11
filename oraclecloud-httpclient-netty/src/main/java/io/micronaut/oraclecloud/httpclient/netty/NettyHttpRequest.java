@@ -43,6 +43,7 @@ import io.netty.handler.codec.http.HttpVersion;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
@@ -54,6 +55,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
 final class NettyHttpRequest implements HttpRequest {
+    private static final long UNKNOWN_CONTENT_LENGTH = -1;
+
     private final NettyHttpClient client;
 
     private final Map<String, Object> attributes;
@@ -69,6 +72,7 @@ final class NettyHttpRequest implements HttpRequest {
     private Object returningBody;
     private ByteBuf immediateBody;
     private InputStream blockingBody;
+    private long blockingContentLength;
 
     public NettyHttpRequest(NettyHttpClient nettyHttpClient, Method method) {
         client = nettyHttpClient;
@@ -91,6 +95,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.returningBody = from.returningBody;
         this.immediateBody = from.immediateBody == null ? null : from.immediateBody.retainedDuplicate();
         this.blockingBody = from.blockingBody;
+        this.blockingContentLength = from.blockingContentLength;
     }
 
     @Override
@@ -107,8 +112,7 @@ final class NettyHttpRequest implements HttpRequest {
             immediateBody = ByteBufUtil.encodeString(client.alloc(), CharBuffer.wrap((CharSequence) body), StandardCharsets.UTF_8);
             returningBody = body;
         } else if (body instanceof InputStream) {
-            blockingBody = (InputStream) body;
-            returningBody = body;
+            body((InputStream) body, UNKNOWN_CONTENT_LENGTH);
         } else if (body == null) {
             immediateBody = Unpooled.EMPTY_BUFFER;
             returningBody = "";
@@ -129,7 +133,11 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest body(InputStream body, long contentLength) {
-        return body(body);
+        immediateBody = null;
+        blockingBody = body;
+        blockingContentLength = contentLength;
+        returningBody = body;
+        return this;
     }
 
     @Override
@@ -229,6 +237,12 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        if (client.buffered && blockingBody != null) {
+            // asynchronously buffer the body, then run execute() again
+            return CompletableFuture.runAsync(this::bufferBody, client.blockingIoExecutor)
+                    .thenCompose(v -> execute());
+        }
+
         for (RequestInterceptor interceptor : client.requestInterceptors) {
             interceptor.intercept(this);
         }
@@ -256,6 +270,26 @@ final class NettyHttpRequest implements HttpRequest {
             return null;
         });
         return future;
+    }
+
+    private void bufferBody() {
+        ByteBuf buf = (blockingContentLength == UNKNOWN_CONTENT_LENGTH ?
+                client.alloc().buffer() :
+                client.alloc().buffer(Math.toIntExact(blockingContentLength)));
+        try {
+            byte[] arr = new byte[4096];
+            while (true) {
+                int n = blockingBody.read(arr);
+                if (n == -1) {
+                    break;
+                }
+                buf.writeBytes(arr, 0, n);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+        blockingBody = null;
+        immediateBody = buf;
     }
 
     private io.netty.handler.codec.http.HttpRequest buildNettyRequest() {
@@ -301,7 +335,11 @@ final class NettyHttpRequest implements HttpRequest {
         DefaultHttpRequest nettyRequest;
         if (blockingBody != null) {
             if (!hasTransferHeader) {
-                headers.add(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED);
+                if (blockingContentLength == UNKNOWN_CONTENT_LENGTH) {
+                    headers.add(HttpHeaderNames.TRANSFER_ENCODING, HttpHeaderValues.CHUNKED);
+                } else {
+                    headers.add(HttpHeaderNames.CONTENT_LENGTH, blockingContentLength);
+                }
             }
             nettyRequest = new DefaultHttpRequest(HttpVersion.HTTP_1_1, method, pathAndQuery, headers);
         } else {

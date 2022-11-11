@@ -46,6 +46,7 @@ final class NettyHttpClient implements HttpClient {
     final SslContext sslContext;
     final String host;
     final int port;
+    final boolean buffered;
 
     NettyHttpClient(NettyHttpClientBuilder builder) {
         baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
@@ -80,6 +81,7 @@ final class NettyHttpClient implements HttpClient {
         group = new NioEventLoopGroup(builder.asyncPoolSize);
         bootstrap.group(group);
         blockingIoExecutor = Executors.newCachedThreadPool();
+        this.buffered = builder.buffered;
     }
 
     ByteBufAllocator alloc() {
