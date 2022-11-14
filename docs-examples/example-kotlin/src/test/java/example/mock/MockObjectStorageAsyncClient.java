@@ -13,8 +13,8 @@ import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
 import com.oracle.bmc.responses.AsyncHandler;
 import io.micronaut.context.annotation.Replaces;
-
 import jakarta.inject.Singleton;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
