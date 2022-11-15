@@ -13,3 +13,9 @@ dependencies {
         }
     }
 }
+
+tasks.named("checkVersionCatalogCompatibility") {
+   onlyIf { JavaVersion.current().java11Compatible }
+}
+
+
