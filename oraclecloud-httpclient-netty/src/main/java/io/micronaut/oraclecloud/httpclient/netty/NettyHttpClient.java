@@ -25,11 +25,19 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.ssl.ClientAuth;
+import io.netty.handler.ssl.IdentityCipherSuiteFilter;
+import io.netty.handler.ssl.JdkSslContext;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.KeyStoreBuilderParameters;
 import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 import java.net.URI;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -61,9 +69,38 @@ final class NettyHttpClient implements HttpClient {
         } else {
             defaultPort = 443;
             try {
-                sslContext = SslContextBuilder.forClient()
-                        .build();
-            } catch (SSLException e) {
+                if (builder.sslContext == null) {
+                    SslContextBuilder sslBuilder = SslContextBuilder.forClient();
+                    if (builder.keyStore != null) {
+                        KeyManagerFactory kmf = KeyManagerFactory.getInstance("PKIX");
+                        kmf.init(new KeyStoreBuilderParameters(KeyStore.Builder.newInstance(
+                                builder.keyStore.getKeyStore(),
+                                new KeyStore.PasswordProtection(builder.keyStore.getPassword().toCharArray())
+                        )));
+                        sslBuilder.keyManager(kmf);
+                    }
+
+                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                    tmf.init(builder.trustStore);
+                    if (builder.hostnameVerifier != null) {
+                        tmf = new CustomTrustManagerFactory(tmf, builder.hostnameVerifier);
+                    }
+                    sslBuilder.trustManager(tmf);
+
+                    sslContext = sslBuilder.build();
+                } else {
+                    sslContext = new JdkSslContext(
+                            builder.sslContext,
+                            true,
+                            null,
+                            IdentityCipherSuiteFilter.INSTANCE,
+                            null,
+                            ClientAuth.NONE, // ignored for isClient=true
+                            null,
+                            false
+                    );
+                }
+            } catch (SSLException | GeneralSecurityException e) {
                 throw new IllegalStateException("Couldn't set up ssl context", e);
             }
         }

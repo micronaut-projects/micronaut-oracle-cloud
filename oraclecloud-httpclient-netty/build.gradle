@@ -6,6 +6,8 @@ dependencies {
     implementation("io.netty:netty-codec-http")
     api("com.oracle.oci.sdk:oci-java-sdk-common-httpclient:$oci3Version")
     testImplementation("io.micronaut:micronaut-http-server-netty")
+    // for self-signed certs
+    testImplementation("org.bouncycastle:bcpkix-jdk18on:1.72")
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()

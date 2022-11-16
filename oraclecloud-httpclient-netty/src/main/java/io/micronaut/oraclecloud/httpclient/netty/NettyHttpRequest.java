@@ -40,7 +40,10 @@ import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.ssl.SslHandler;
 
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLParameters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -254,7 +257,7 @@ final class NettyHttpRequest implements HttpRequest {
         ChannelFuture connectFuture = client.bootstrap.clone()
                 .handler(new ChannelInitializer<Channel>() {
                     @Override
-                    protected void initChannel(Channel ch) throws Exception {
+                    protected void initChannel(Channel ch) {
                         initializeChannel(ch, nettyRequest, future);
                     }
                 })
@@ -359,8 +362,14 @@ final class NettyHttpRequest implements HttpRequest {
 
     private void initializeChannel(Channel ch, io.netty.handler.codec.http.HttpRequest nettyRequest, CompletableFuture<HttpResponse> future) {
         if (client.sslContext != null) {
-            ch.pipeline()
-                    .addLast(client.sslContext.newHandler(ch.alloc(), client.host, client.port));
+            SslHandler sslHandler = client.sslContext.newHandler(ch.alloc(), client.host, client.port);
+            // enable host verification
+            SSLEngine engine = sslHandler.engine();
+            SSLParameters params = engine.getSSLParameters();
+            params.setEndpointIdentificationAlgorithm("HTTPS");
+            engine.setSSLParameters(params);
+
+            ch.pipeline().addLast(sslHandler);
         }
         LimitedBufferingBodyHandler limitedBufferingBodyHandler = new LimitedBufferingBodyHandler(4096);
         UndecidedBodyHandler undecidedBodyHandler = new UndecidedBodyHandler();
@@ -368,7 +377,7 @@ final class NettyHttpRequest implements HttpRequest {
                 .addLast(new HttpClientCodec())
                 .addLast(new ChannelInboundHandlerAdapter() {
                     @Override
-                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) {
                         if (msg instanceof io.netty.handler.codec.http.HttpResponse) {
                             future.complete(new NettyHttpResponse((io.netty.handler.codec.http.HttpResponse) msg, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
                             ctx.pipeline().remove(this);

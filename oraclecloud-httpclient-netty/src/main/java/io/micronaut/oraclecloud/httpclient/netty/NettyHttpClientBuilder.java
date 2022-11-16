@@ -18,10 +18,14 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
+import com.oracle.bmc.http.client.KeyStoreWithPassword;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
 import java.net.URI;
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +41,11 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     Duration readTimeout = DEFAULT_TIMEOUT;
     int asyncPoolSize = 0;
     boolean buffered = true;
+
+    KeyStoreWithPassword keyStore;
+    KeyStore trustStore;
+    HostnameVerifier hostnameVerifier;
+    SSLContext sslContext;
 
     @Override
     public HttpClientBuilder baseUri(URI uri) {
@@ -54,6 +63,14 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
             asyncPoolSize = (Integer) value;
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;
+        } else if (key == StandardClientProperties.KEY_STORE) {
+            keyStore = (KeyStoreWithPassword) value;
+        } else if (key == StandardClientProperties.TRUST_STORE) {
+            trustStore = (KeyStore) value;
+        } else if (key == StandardClientProperties.HOSTNAME_VERIFIER) {
+            hostnameVerifier = (HostnameVerifier) value;
+        } else if (key == StandardClientProperties.SSL_CONTEXT) {
+            sslContext = (SSLContext) value;
         } else {
             // todo: support all standard client properties
             throw new IllegalArgumentException(
