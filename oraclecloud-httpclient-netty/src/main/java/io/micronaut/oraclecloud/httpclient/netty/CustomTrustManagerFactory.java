@@ -247,5 +247,11 @@ final class CustomTrustManagerFactory extends SimpleTrustManagerFactory {
         public int getApplicationBufferSize() {
             return delegate.getApplicationBufferSize();
         }
+
+        @Deprecated
+        @Override
+        public javax.security.cert.X509Certificate[] getPeerCertificateChain() {
+            throw new UnsupportedOperationException();
+        }
     }
 }
