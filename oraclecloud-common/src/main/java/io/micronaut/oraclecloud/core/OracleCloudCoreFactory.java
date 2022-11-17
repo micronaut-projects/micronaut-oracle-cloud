@@ -58,6 +58,9 @@ import java.util.Optional;
 public class OracleCloudCoreFactory {
 
     public static final String ORACLE_CLOUD = "oci";
+
+    public static final String ORACLE_CLOUD_CONFIG_PATH = ORACLE_CLOUD + ".config.path";
+
     // CHECKSTYLE:OFF
     public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
     // CHECKSTYLE:ON
@@ -69,7 +72,7 @@ public class OracleCloudCoreFactory {
      * @param configPath The configuration file path
      */
     protected OracleCloudCoreFactory(@Nullable @Property(name = ORACLE_CLOUD + ".config.profile") String profile,
-                                     @Nullable @Property(name = ORACLE_CLOUD + ".config.path") String configPath) {
+                                     @Nullable @Property(name = ORACLE_CLOUD_CONFIG_PATH) String configPath) {
         this.profile = profile;
         this.configPath = configPath;
     }
