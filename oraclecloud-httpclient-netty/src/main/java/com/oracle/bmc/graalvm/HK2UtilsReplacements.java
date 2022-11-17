@@ -16,4 +16,5 @@
 package com.oracle.bmc.graalvm;
 
 final class HK2UtilsReplacements {
+    // replaces oci sdk class that needs jersey
 }

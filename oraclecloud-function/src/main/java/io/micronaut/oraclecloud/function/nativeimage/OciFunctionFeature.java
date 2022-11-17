@@ -60,10 +60,10 @@ final class OciFunctionFeature implements Feature {
                 // need to use reflection because 22.3 is java11+ only, can't compile against that
                 Class.forName("org.graalvm.nativeimage.hosted.RuntimeJNIAccess")
                         .getMethod("register", Class[].class)
-                        .invoke(null, new Object[]{new Class[]{t}});
+                        .invoke(null, (Object) new Class[]{t});
                 Class.forName("org.graalvm.nativeimage.hosted.RuntimeJNIAccess")
                         .getMethod("register", Executable[].class)
-                        .invoke(null, new Object[]{t.getDeclaredMethods()});
+                        .invoke(null, (Object) t.getDeclaredMethods());
             } catch (ReflectiveOperationException e) {
                 // fall back to old api
                 JNIRuntimeAccess.register(t);

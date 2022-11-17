@@ -16,4 +16,5 @@
 package com.oracle.bmc.graalvm;
 
 final class SystemDescriptorReplacements {
+    // replaces oci sdk class that needs jersey
 }

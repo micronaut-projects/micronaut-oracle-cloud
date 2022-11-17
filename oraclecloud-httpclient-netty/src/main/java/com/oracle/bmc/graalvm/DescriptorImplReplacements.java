@@ -16,4 +16,5 @@
 package com.oracle.bmc.graalvm;
 
 final class DescriptorImplReplacements {
+    // replaces oci sdk class that needs jersey
 }
