@@ -45,6 +45,3 @@ kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', v
 kotlin-gradle-allopen = { module = 'org.jetbrains.kotlin:kotlin-allopen', version.ref = 'kotlin' }
 shadow-plugin = { module = "gradle.plugin.com.github.johnrengelman:shadow", version.ref = "shadow" }
 micronaut-gradle-plugin = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref="micronaut-gradle-plugin" }
-
-# until we have the 3.8 bom, use our own version
-svm = { module = "org.graalvm.nativeimage:svm", version="22.3.0" }

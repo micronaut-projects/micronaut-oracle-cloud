@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fnproject.fn.api.FnConfiguration;
 import com.oracle.svm.core.annotate.AutomaticFeature;
+import com.oracle.svm.core.jni.JNIRuntimeAccess;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.reflect.ClassUtils;
@@ -27,11 +28,11 @@ import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.ArrayUtils;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
-import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -54,8 +55,20 @@ final class OciFunctionFeature implements Feature {
     public void beforeAnalysis(BeforeAnalysisAccess access) {
         Class<?> t = access.findClassByName(UNIX_SOCKET_NATIVE);
         if (t != null) {
-            RuntimeJNIAccess.register(t);
-            RuntimeJNIAccess.register(t.getDeclaredMethods());
+            try {
+                // graalvm 22.3
+                // need to use reflection because 22.3 is java11+ only, can't compile against that
+                Class.forName("org.graalvm.nativeimage.hosted.RuntimeJNIAccess")
+                        .getMethod("register", Class[].class)
+                        .invoke(null, new Object[]{new Class[]{t}});
+                Class.forName("org.graalvm.nativeimage.hosted.RuntimeJNIAccess")
+                        .getMethod("register", Executable[].class)
+                        .invoke(null, new Object[]{t.getDeclaredMethods()});
+            } catch (ReflectiveOperationException e) {
+                // fall back to old api
+                JNIRuntimeAccess.register(t);
+                JNIRuntimeAccess.register(t.getDeclaredMethods());
+            }
             RuntimeClassInitialization.initializeAtRunTime(t);
         }
 

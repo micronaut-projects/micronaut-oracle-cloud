@@ -7,7 +7,7 @@ dependencies {
     api libs.fn.api
     api mn.micronaut.function
     api projects.oraclecloudCommon
-    compileOnly libs.svm
+    compileOnly mn.graal
     testImplementation libs.oci.objectstorage
     testImplementation libs.fn.testing.junit4
     testImplementation mn.micronaut.test.spock
