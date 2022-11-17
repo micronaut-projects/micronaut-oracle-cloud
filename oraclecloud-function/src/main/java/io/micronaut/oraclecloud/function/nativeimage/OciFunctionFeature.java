@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fnproject.fn.api.FnConfiguration;
 import com.oracle.svm.core.annotate.AutomaticFeature;
-import com.oracle.svm.core.jni.JNIRuntimeAccess;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.reflect.ClassUtils;
@@ -28,6 +27,7 @@ import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.ArrayUtils;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
+import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 import java.lang.reflect.AnnotatedElement;
@@ -54,8 +54,8 @@ final class OciFunctionFeature implements Feature {
     public void beforeAnalysis(BeforeAnalysisAccess access) {
         Class<?> t = access.findClassByName(UNIX_SOCKET_NATIVE);
         if (t != null) {
-            JNIRuntimeAccess.register(t);
-            JNIRuntimeAccess.register(t.getDeclaredMethods());
+            RuntimeJNIAccess.register(t);
+            RuntimeJNIAccess.register(t.getDeclaredMethods());
             RuntimeClassInitialization.initializeAtRunTime(t);
         }
 
