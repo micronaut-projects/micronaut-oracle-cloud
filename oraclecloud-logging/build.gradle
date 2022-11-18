@@ -6,7 +6,6 @@ dependencies {
     api libs.oci.loggingingestion, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api mn.micronaut.discovery
     api mn.micronaut.inject
     api mn.micronaut.serde.jackson
     implementation projects.oraclecloudSdk
