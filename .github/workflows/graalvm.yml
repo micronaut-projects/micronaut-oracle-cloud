@@ -42,6 +42,7 @@ jobs:
           runners-count: '1'
   build:
     if: github.repository != 'micronaut-projects/micronaut-project-template'
+    needs: start-runner
     runs-on: ${{ needs.start-runner.outputs.label }
     strategy:
       matrix:
