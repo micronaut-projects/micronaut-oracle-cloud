@@ -17,6 +17,7 @@ jobs:
   start-runner:
     name: Start self-hosted OracleCloud runners
     runs-on: ubuntu-latest
+    if: ${{ always() }}
     outputs:
       label: ${{ steps.start-runner.outputs.label }}
     steps:
