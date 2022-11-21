@@ -71,6 +71,7 @@ jobs:
           GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
           GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
         run: |
+          dnf install gc
           [ -f ./setup.sh ] && ./setup.sh || true
       - name: Build with Gradle
         run: |
