@@ -9,7 +9,6 @@ on:
     branches:
       - master
       - '[1-9]+.[0-9]+.x'
-      - n0tl3ss-runner/**
   pull_request:
     branches:
       - master
@@ -18,7 +17,6 @@ jobs:
   start-runner:
     name: Start self-hosted OracleCloud runners
     runs-on: ubuntu-latest
-    if: ${{ always() }}
     outputs:
       label: ${{ steps.start-runner.outputs.label }}
     steps:
@@ -45,7 +43,7 @@ jobs:
   build:
     if: github.repository != 'micronaut-projects/micronaut-project-template'
     needs: start-runner
-    runs-on: ${{ needs.start-runner.outputs.label }
+    runs-on: ${{ needs.start-runner.outputs.label }}
     strategy:
       matrix:
         java: ['11', '17']
