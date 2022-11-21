@@ -134,5 +134,5 @@ jobs:
         uses: micronaut-projects/github-actions/stop-oracle-cloud-runners@master
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          oci-compartment-ocid: ${{ secrets.OCI_COMPARTMENT }}
+          oci-compartment-ocid: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
           oci-runner-label-tag-value: ${{ needs.start-runner.outputs.label }}
