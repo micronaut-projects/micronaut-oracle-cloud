@@ -71,7 +71,7 @@ jobs:
           GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
           GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
         run: |
-          yum group install "Development Tools"
+          apt install build-essential
       - name: Build with Gradle
         run: |
           if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
