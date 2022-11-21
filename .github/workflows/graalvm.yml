@@ -62,16 +62,6 @@ jobs:
           version: '22.3.0'
           java-version: ${{ matrix.java }}
           components: 'native-image'
-      - name: Setup step
-        env:
-          K8S_VERSION: '1.21'
-          JAVA_VERSION: ${{ matrix.java }}
-          EXAMPLE_SERVICE_RUNTIME: 'native'
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
-          GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
-          GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
-        run: |
-          sudo apt install build-essential
       - name: Build with Gradle
         run: |
           if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
