@@ -24,10 +24,10 @@ jobs:
         uses: micronaut-projects/github-actions/configure-oracle-cloud-cli@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          oci-user-ocid: ${{ secrets.OCI_USER }}
+          oci-user-ocid: ${{ secrets.OCI_USER_ID }}
           oci-region: ${{ secrets.OCI_REGION }}
-          oci-tenancy-ocid: ${{ secrets.OCI_TENANCY }}
-          oci-private-key: ${{ secrets.OCI_KEY_FILE }}
+          oci-tenancy-ocid: ${{ secrets.OCI_TENANT_ID }}
+          oci-private-key: ${{ secrets.OCI_PRIVATE_KEY }}
           oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
           oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
       - name: Start runner
@@ -35,7 +35,7 @@ jobs:
         id: start-runner
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          oci-compartment-ocid: ${{ secrets.OCI_COMPARTMENT }}
+          oci-compartment-ocid: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
           oci-subnet-ocid: ${{ secrets.OCI_SUBNET }}
           oci-av-domain: ${{ secrets.OCI_AV_DOMAIN }}
           oci-image-ocid: ${{ secrets.OCI_RUNNER_IMAGE }}
@@ -124,10 +124,10 @@ jobs:
         uses: micronaut-projects/github-actions/configure-oracle-cloud-cli@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          oci-user-ocid: ${{ secrets.OCI_USER }}
+          oci-user-ocid: ${{ secrets.OCI_USER_ID }}
           oci-region: ${{ secrets.OCI_REGION }}
-          oci-tenancy-ocid: ${{ secrets.OCI_TENANCY }}
-          oci-private-key: ${{ secrets.OCI_KEY_FILE }}
+          oci-tenancy-ocid: ${{ secrets.OCI_TENANT_ID }}
+          oci-private-key: ${{ secrets.OCI_PRIVATE_KEY }}
           oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
           oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
       - name: Stop runners
