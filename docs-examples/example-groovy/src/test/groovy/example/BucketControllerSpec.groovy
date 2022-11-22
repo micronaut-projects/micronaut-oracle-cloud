@@ -1,6 +1,7 @@
 package example
 
 import example.mock.MockData
+import io.micronaut.context.annotation.Requires
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import org.apache.commons.lang3.RandomStringUtils
 import spock.lang.Specification
@@ -8,6 +9,7 @@ import spock.lang.Specification
 import jakarta.inject.Inject
 
 @MicronautTest
+@Requires(missingProperty = "micronaut.test.server.executable")
 class BucketControllerSpec extends Specification {
 
     @Inject BucketClient client
