@@ -26,6 +26,8 @@ import io.micronaut.core.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.function.Supplier;
 
 /**
  * Configuration for Oracle Cloud auth config.
@@ -54,7 +56,7 @@ public class OracleCloudAuthConfigurationProperties {
      */
     public void setPrivateKeyFile(Readable privateKeyFile) {
         if (privateKeyFile != null) {
-            builder.privateKeySupplier(() -> {
+            builder.privateKeySupplier((Supplier<InputStream>) () -> {
                 try {
                     return privateKeyFile.asInputStream();
                 } catch (IOException e) {
@@ -69,7 +71,7 @@ public class OracleCloudAuthConfigurationProperties {
      */
     public void setPrivateKey(String privateKey) {
         if (StringUtils.isNotEmpty(privateKey)) {
-            builder.privateKeySupplier(() -> new ByteArrayInputStream(privateKey.getBytes()));
+            builder.privateKeySupplier((Supplier<InputStream>) () -> new ByteArrayInputStream(privateKey.getBytes()));
         }
     }
 
