@@ -8,7 +8,9 @@ dependencies {
     testImplementation("io.micronaut:micronaut-http-server-netty")
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk18on:1.72")
-    testImplementation(projects.oraclecloudSdk)
+    testImplementation(projects.oraclecloudSdk) {
+        exclude group: 'com.oracle.oci.sdk'
+    }
     testImplementation("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
 }
 tasks.withType(Test).configureEach {
