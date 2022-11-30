@@ -10,4 +10,5 @@ dependencies {
     implementation mn.micronaut.validation
     implementation projects.oraclecloudSdk
     testImplementation mn.micronaut.http.client
+    testRuntimeOnly mn.micronaut.jackson.databind
 }
