@@ -11,9 +11,9 @@ dependencies {
     api mn.micronaut.validation
     runtimeOnly libs.slf4j.jcl
 
-    compileOnly libs.micronaut.sql.jdbc.hikari
-    compileOnly libs.micronaut.sql.jdbc.ucp
-    compileOnly mn.micronaut.sql.jdbc
+    compileOnly mnSql.micronaut.jdbc.hikari
+    compileOnly mnSql.micronaut.jdbc.ucp
+    compileOnly mnSql.micronaut.jdbc
 
     implementation projects.oraclecloudSdk
     implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")

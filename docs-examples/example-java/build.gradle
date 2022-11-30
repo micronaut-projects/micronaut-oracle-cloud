@@ -9,9 +9,9 @@ dependencies {
     }
     implementation mn.micronaut.http.server.netty
     implementation projects.oraclecloudSdkReactor
-    runtimeOnly mn.logback
+    runtimeOnly mn.logback.classic
     testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mn.micronaut.test.junit5
+    testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
     testImplementation libs.commons.lang3
 }

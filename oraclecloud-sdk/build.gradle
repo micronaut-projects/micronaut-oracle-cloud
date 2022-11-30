@@ -10,12 +10,11 @@ dependencies {
     api("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$ociVersion") {
         transitive = false
     }
-    compileOnly mn.graal
-    compileOnly mn.rxjava2
-    testImplementation mn.graal
-    testImplementation mn.micronaut.test.spock
-    testImplementation mn.rxjava2
-    testImplementation mn.spock
+    compileOnly libs.graal.svm
+    compileOnly mnRxjava2.rxjava2
+    testImplementation libs.graal.svm
+    testImplementation mnTest.micronaut.test.spock
+    testImplementation mnRxjava2.rxjava2
 
     // optional modules
     for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {

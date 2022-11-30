@@ -11,7 +11,7 @@ dependencies {
     runtimeOnly libs.fn.runtime
     runtimeOnly mn.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mn.micronaut.test.junit5
+    testImplementation mnTest.micronaut.test.junit5
     testImplementation projects.oraclecloudFunctionHttpTest
     testRuntimeOnly libs.junit.jupiter
 }

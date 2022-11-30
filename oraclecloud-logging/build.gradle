@@ -6,15 +6,15 @@ dependencies {
     api libs.oci.loggingingestion, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api mn.micronaut.discovery
+    api mn.micronaut.discovery.core
     api mn.micronaut.inject
-    api mn.micronaut.serde.jackson
+    api mnSerde.micronaut.serde.jackson
     implementation projects.oraclecloudSdk
     implementation libs.logback.json.classic
 
     testImplementation mn.snakeyaml
     testImplementation mn.micronaut.inject.groovy
-    testImplementation mn.micronaut.test.spock
+    testImplementation mnTest.micronaut.test.spock
 }
 
 // TODO temporarily disable binary compatibility checks

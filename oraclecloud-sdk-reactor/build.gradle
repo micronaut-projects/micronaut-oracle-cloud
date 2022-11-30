@@ -6,7 +6,7 @@ dependencies {
     annotationProcessor projects.oraclecloudSdkProcessor
     api mn.reactor
     api projects.oraclecloudSdk
-    implementation mn.micronaut.reactor
+    implementation mnReactor.micronaut.reactor
 
     // optional modules
     for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
