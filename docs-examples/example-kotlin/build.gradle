@@ -1,25 +1,21 @@
 plugins {
-    id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'io.micronaut.build.internal.oraclecloud-kotlin-example'
     id 'io.micronaut.application'
-    alias libs.plugins.kotlin.jvm
-    alias libs.plugins.kotlin.kapt
-    alias libs.plugins.kotlin.allopen
 }
 
 dependencies {
     implementation(libs.oci.database) {
         exclude group: 'org.javassist', module: 'javassist'
     }
-    implementation mn.javax.annotation.api
     implementation libs.kotlin.reflect
     implementation libs.kotlin.stdlib
     implementation mn.micronaut.http.server.netty
-    implementation mn.micronaut.kotlin.runtime
+    implementation mnKotlin.micronaut.kotlin.runtime
     implementation projects.oraclecloudSdkReactor
-    runtimeOnly mn.logback
+    runtimeOnly mn.logback.classic
     runtimeOnly mn.jackson.module.kotlin
     testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mn.micronaut.test.junit5
+    testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
     testImplementation libs.commons.lang3
 }

@@ -7,13 +7,14 @@ dependencies {
         exclude group: 'org.javassist', module: 'javassist'
     }
     api mn.micronaut.inject
-    compileOnly mn.graal
+    api mn.micronaut.json.core
+
+    compileOnly libs.graal.svm
     compileOnly mn.micronaut.runtime
     runtimeOnly libs.slf4j.jcl
     testImplementation libs.mockito
     testImplementation mn.micronaut.runtime
-    testImplementation mn.micronaut.test.spock
-    testImplementation mn.spock
+    testImplementation mnTest.micronaut.test.spock
 }
 
 // TODO temporarily disable binary compatibility checks

@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-    id 'io.micronaut.build.shared.settings' version '5.3.7'
+    id("io.micronaut.build.shared.settings") version "6.1.0"
 }
 
 gradle.ext.ociBom = new groovy.xml.XmlSlurper().parse(
@@ -14,11 +14,9 @@ gradle.ext.ociBom = new groovy.xml.XmlSlurper().parse(
 
 rootProject.name = 'oracle-cloud'
 
-if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_11)) {
-    include 'oraclecloud-atp'
-    include 'oraclecloud-atp-hikari-test'
-    include 'oraclecloud-atp-ucp-test'
-}
+include 'oraclecloud-atp'
+include 'oraclecloud-atp-hikari-test'
+include 'oraclecloud-atp-ucp-test'
 include 'oraclecloud-bom'
 include 'oraclecloud-common'
 include 'oraclecloud-function'
@@ -43,13 +41,16 @@ include 'docs-examples:example-http-function-kotlin'
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-    versionCatalogs {
-        mn {
-            from "io.micronaut:micronaut-bom:${providers.gradleProperty('micronautVersion').get()}"
-        }
-    }
+micronautBuild {
+    addSnapshotRepository()
+    importMicronautCatalog()
+    importMicronautCatalog("micronaut-groovy")
+    importMicronautCatalog("micronaut-kotlin")
+    importMicronautCatalog("micronaut-micrometer")
+    importMicronautCatalog("micronaut-reactor")
+    importMicronautCatalog("micronaut-rxjava2")
+    importMicronautCatalog("micronaut-serde")
+    importMicronautCatalog("micronaut-servlet")
+    importMicronautCatalog("micronaut-sql")
+    importMicronautCatalog("micronaut-test")
 }

@@ -233,6 +233,16 @@ public final class FnHttpTest {
             );
         }
 
+        @Override
+        public int code() {
+            return getStatus().getCode();
+        }
+
+        @Override
+        public String reason() {
+            return getStatus().getReason();
+        }
+
         @NonNull
         @Override
         public <T> Optional<T> getBody(@NonNull Argument<T> type) {

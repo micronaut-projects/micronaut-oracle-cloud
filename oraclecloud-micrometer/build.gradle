@@ -6,15 +6,14 @@ dependencies {
     api libs.oci.monitoring, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api libs.micronaut.micrometer
-    api mn.micrometer.core
+    api mnMicrometer.micronaut.micrometer.core
+    api mnMicrometer.micrometer.core
     api mn.micronaut.inject
     api mn.micronaut.runtime
     implementation projects.oraclecloudSdk
     testImplementation mn.micronaut.http.client
     testImplementation mn.micronaut.management
-    testImplementation mn.micronaut.test.spock
-    testImplementation mn.spock
+    testImplementation mnTest.micronaut.test.spock
     testRuntimeOnly mn.micronaut.http.server.netty
 }
 

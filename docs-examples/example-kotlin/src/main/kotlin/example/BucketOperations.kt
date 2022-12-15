@@ -19,8 +19,10 @@ import io.micronaut.core.annotation.Nullable
 import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
+import io.micronaut.validation.Validated
 import reactor.core.publisher.Mono
 
+@Validated
 interface BucketOperations {
     @Get("/buckets{/compartmentId}")
     fun listBuckets(@Nullable compartmentId: String?): Mono<List<String>>

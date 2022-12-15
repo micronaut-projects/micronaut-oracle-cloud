@@ -5,7 +5,7 @@ plugins {
 dependencies {
     annotationProcessor projects.oraclecloudSdkProcessor
     api projects.oraclecloudSdk
-    implementation mn.rxjava2
+    implementation mnRxjava2.rxjava2
 
     // optional modules
     for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {

@@ -4,15 +4,14 @@ plugins {
 
 dependencies {
     annotationProcessor mn.micronaut.graal
-    api mn.micronaut.servlet.core
+    api mnServlet.micronaut.servlet.core
     api projects.oraclecloudFunction
     implementation libs.fn.runtime
     implementation mn.micronaut.http.netty
     implementation mn.micronaut.http.server
-    implementation mn.reactor
+    implementation mnReactor.micronaut.reactor
     testImplementation mn.micronaut.http.client
-    testImplementation mn.micronaut.test.spock
-    testImplementation mn.spock
+    testImplementation mnTest.micronaut.test.spock
     testImplementation projects.oraclecloudFunctionHttpTest
 }
 
