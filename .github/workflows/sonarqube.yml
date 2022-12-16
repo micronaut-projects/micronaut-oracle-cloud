@@ -25,8 +25,10 @@ jobs:
          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
          sudo apt-get clean
          df -h
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v3.0.11
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -35,8 +37,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'adopt'
-          java-version: 11
+          distribution: 'temurin'
+          java-version: 17
       - name: Optional setup step
         env:
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
