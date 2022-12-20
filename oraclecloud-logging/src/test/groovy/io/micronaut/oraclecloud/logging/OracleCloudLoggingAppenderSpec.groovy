@@ -5,9 +5,9 @@ import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.PatternLayout
 import ch.qos.logback.classic.spi.LoggingEvent
 import ch.qos.logback.core.encoder.LayoutWrappingEncoder
-import io.micronaut.discovery.ServiceInstance
-import io.micronaut.discovery.event.ServiceReadyEvent
 import io.micronaut.runtime.ApplicationConfiguration
+import io.micronaut.runtime.server.EmbeddedServer
+import io.micronaut.runtime.server.event.ServerStartupEvent
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
@@ -35,13 +35,13 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         def config = Stub(ApplicationConfiguration) {
             getName() >> Optional.of("my-awesome-app")
         }
-        def instance = Mock(ServiceInstance.class)
+        def instance = Mock(EmbeddedServer.class)
         instance.getHost() >> "testHost"
-        def serviceReadyEvent = new ServiceReadyEvent(instance)
+        def serverStartupEvent = new ServerStartupEvent(instance)
 
         oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
 
-        new OracleCloudLoggingClient(oracleCloudLogsClient, config, Optional.empty()).onApplicationEvent(serviceReadyEvent)
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config, Optional.empty()).onApplicationEvent(serverStartupEvent)
 
     }
 

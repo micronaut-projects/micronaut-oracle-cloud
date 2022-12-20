@@ -11,9 +11,9 @@ import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
 import io.micronaut.context.event.ApplicationEventPublisher
-import io.micronaut.discovery.ServiceInstance
-import io.micronaut.discovery.event.ServiceReadyEvent
 import io.micronaut.runtime.ApplicationConfiguration
+import io.micronaut.runtime.server.EmbeddedServer
+import io.micronaut.runtime.server.event.ServerStartupEvent
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
@@ -30,7 +30,7 @@ class OracleCloudLoggingSpec extends Specification {
     Logging logging
 
     @Inject
-    ApplicationEventPublisher<ServiceReadyEvent> eventPublisher
+    ApplicationEventPublisher<ServerStartupEvent> eventPublisher
 
     @Inject
     ApplicationConfiguration applicationConfiguration
@@ -42,8 +42,8 @@ class OracleCloudLoggingSpec extends Specification {
         def logger = LoggerFactory.getLogger(OracleCloudLoggingSpec.class)
         PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
 
-        def instance = Mock(ServiceInstance.class)
-        def event = new ServiceReadyEvent(instance)
+        def instance = Mock(EmbeddedServer.class)
+        def event = new ServerStartupEvent(instance)
         def mockLogging = (MockLogging) logging
         1 * instance.getHost() >> testHost
         eventPublisher.publishEvent(event)
@@ -72,11 +72,9 @@ class OracleCloudLoggingSpec extends Specification {
         logEntryBatch.stream().anyMatch(x -> x.subject == applicationConfiguration.getName().get())
 
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context.env.DefaultEnvironment'))
-        logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context.DefaultBeanContext'))
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.oraclecloud.logging.OracleCloudLoggingSpec'))
         logEntries.stream().anyMatch(x -> x.data.contains(logMessage))
         logEntries.stream().anyMatch(x -> x.data.contains('Established active environments'))
-        logEntries.stream().anyMatch(x -> x.data.contains('Reading bootstrap environment configuration'))
         MockAppender.getEvents().size() == 0
 
         when:

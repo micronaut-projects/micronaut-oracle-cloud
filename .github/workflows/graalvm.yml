@@ -14,21 +14,42 @@ on:
       - master
       - '[1-9]+.[0-9]+.x'
 jobs:
+  start-runner:
+    name: Start self-hosted OracleCloud runners
+    runs-on: ubuntu-latest
+    outputs:
+      label: ${{ steps.start-runner.outputs.label }}
+    steps:
+      - name: Install OCI CLI
+        uses: micronaut-projects/github-actions/configure-oracle-cloud-cli@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          oci-user-ocid: ${{ secrets.OCI_USER_ID }}
+          oci-region: ${{ secrets.OCI_REGION }}
+          oci-tenancy-ocid: ${{ secrets.OCI_TENANT_ID }}
+          oci-private-key: ${{ secrets.OCI_PRIVATE_KEY }}
+          oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
+          oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
+      - name: Start runner
+        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@master
+        id: start-runner
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          oci-compartment-ocid: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
+          oci-subnet-ocid: ${{ secrets.OCI_SUBNET }}
+          oci-av-domain: ${{ secrets.OCI_AV_DOMAIN }}
+          oci-image-ocid: ${{ secrets.OCI_RUNNER_IMAGE }}
+          runners-count: '1'
   build:
     if: github.repository != 'micronaut-projects/micronaut-project-template'
-    runs-on: ubuntu-latest
+    needs: start-runner
+    runs-on: ${{ needs.start-runner.outputs.label }}
     strategy:
       matrix:
         java: ['17']
         graalvm: ['latest', 'dev']
     steps:
-       # https://github.com/actions/virtual-environments/issues/709
-      - name: Free disk space
-        run: |
-         sudo rm -rf "/usr/local/share/boost"
-         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-         sudo apt-get clean
-         df -h
+      - uses: AutoModality/action-clean@1.1.0
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
@@ -42,7 +63,10 @@ jobs:
           version: ${{ matrix.graalvm }}
           java-version: ${{ matrix.java }}
           components: 'native-image'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2.3.3
       - name: Build with Gradle
+        id: gradle
         run: |
           if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
           then
@@ -72,10 +96,53 @@ jobs:
            GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
            GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
            PREDICTIVE_TEST_SELECTION: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
+      - name: Add build scan URL as PR comment
+        uses: actions/github-script@v5
+        if: github.event_name == 'pull_request' && failure()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ ${{ github.workflow }} ${{ matrix.java }} ${{ matrix.graalvm }} failed: ${{ steps.gradle.outputs.build-scan-url }}'
+            })
       - name: Publish Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v3.3.3
+        uses: mikepenz/action-junit-report@v3.7.0
         with:
           check_name: GraalVM CE CI / Test Report (Java ${{ matrix.java }})
           report_paths: '**/build/test-results/test/TEST-*.xml'
           check_retries: 'true'
+      - name: Optional tear down step
+        env:
+          K8S_VERSION: ${{ matrix.k8s }}
+          JAVA_VERSION: ${{ matrix.java }}
+        run: |
+          [ -f ./teardown.sh ] && ./teardown.sh || true
+
+  stop-runner:
+    name: Stop self-hosted OracleCloud runners
+    needs:
+      - start-runner
+      - build
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Install OCI CLI
+        uses: micronaut-projects/github-actions/configure-oracle-cloud-cli@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          oci-user-ocid: ${{ secrets.OCI_USER_ID }}
+          oci-region: ${{ secrets.OCI_REGION }}
+          oci-tenancy-ocid: ${{ secrets.OCI_TENANT_ID }}
+          oci-private-key: ${{ secrets.OCI_PRIVATE_KEY }}
+          oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
+          oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
+      - name: Stop runners
+        uses: micronaut-projects/github-actions/stop-oracle-cloud-runners@master
+        with:
+          github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          oci-compartment-ocid: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
+          oci-runner-label-tag-value: ${{ needs.start-runner.outputs.label }}
