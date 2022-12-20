@@ -34,3 +34,14 @@ tasks.withType(JavaCompile).configureEach {
             "-Amicronaut.processing.module=$project.name",
     ])
 }
+
+micronautBuild {
+    checkstyleVersion = "10.5.0"
+}
+
+// configurations.all {
+//     resolutionStrategy.dependencySubstitution {
+//         substitute(module('commons-logging:commons-logging'))
+//                 .using(module('org.slf4j:jcl-over-slf4j:1.7.33'))
+//     }
+// }

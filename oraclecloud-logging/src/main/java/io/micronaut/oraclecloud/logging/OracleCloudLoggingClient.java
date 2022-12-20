@@ -22,13 +22,12 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.event.ServerStartupEvent;
 import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
-
-import java.util.Optional;
 
 /**
  * OracleCloudLoggingClient is a {@link Logging} client that is required for {@link OracleCloudAppender}.
@@ -53,11 +52,10 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<ServerS
 
     public OracleCloudLoggingClient(
             Logging logging, ApplicationConfiguration applicationConfiguration,
-            @Property(name = PREFIX + ".logId")
-     Optional<String> internalLogId) {
+            @Nullable @Property(name = PREFIX + ".logId") String internalLogId) {
         this.internalLogging = logging;
         this.internalAppName = applicationConfiguration.getName().orElse("");
-        this.internalLogId = internalLogId.orElse(null);
+        this.internalLogId = internalLogId;
     }
 
     static synchronized boolean isReady() {
