@@ -15,12 +15,6 @@
  */
 package io.micronaut.oraclecloud.function.nativeimage;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -32,10 +26,16 @@ import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.ArrayUtils;
-import org.glassfish.jersey.client.JerseyClientBuilder;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * An automatic feature for native functions.
@@ -55,8 +55,20 @@ final class OciFunctionFeature implements Feature {
     public void beforeAnalysis(BeforeAnalysisAccess access) {
         Class<?> t = access.findClassByName(UNIX_SOCKET_NATIVE);
         if (t != null) {
-            JNIRuntimeAccess.register(t);
-            JNIRuntimeAccess.register(t.getDeclaredMethods());
+            try {
+                // graalvm 22.3
+                // need to use reflection because 22.3 is java11+ only, can't compile against that
+                Class.forName("org.graalvm.nativeimage.hosted.RuntimeJNIAccess")
+                        .getMethod("register", Class[].class)
+                        .invoke(null, (Object) new Class[]{t});
+                Class.forName("org.graalvm.nativeimage.hosted.RuntimeJNIAccess")
+                        .getMethod("register", Executable[].class)
+                        .invoke(null, (Object) t.getDeclaredMethods());
+            } catch (ReflectiveOperationException e) {
+                // fall back to old api
+                JNIRuntimeAccess.register(t);
+                JNIRuntimeAccess.register(t.getDeclaredMethods());
+            }
             RuntimeClassInitialization.initializeAtRunTime(t);
         }
 
@@ -94,7 +106,15 @@ final class OciFunctionFeature implements Feature {
                 }
             }
         }
-        registerIfNecessary(JerseyClientBuilder.class);
+        Class<?> clbClass;
+        try {
+            clbClass = Class.forName("org.glassfish.jersey.client.JerseyClientBuilder");
+        } catch (ReflectiveOperationException e) {
+            clbClass = null;
+        }
+        if (clbClass != null) {
+            registerIfNecessary(clbClass);
+        }
     }
 
     private void registerForReflection(Class<?> type) {

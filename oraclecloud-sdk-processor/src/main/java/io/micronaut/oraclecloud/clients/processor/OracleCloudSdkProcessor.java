@@ -15,42 +15,6 @@
  */
 package io.micronaut.oraclecloud.clients.processor;
 
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
-import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.ExecutableElement;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeMirror;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
-import javax.tools.FileObject;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardLocation;
-
 import com.oracle.bmc.SdkClients;
 import com.oracle.bmc.graalvm.SdkClientPackages;
 import com.squareup.javapoet.AnnotationSpec;
@@ -78,6 +42,42 @@ import io.micronaut.core.naming.NameUtils;
 import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import jakarta.inject.Singleton;
+
+import javax.annotation.processing.AbstractProcessor;
+import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
+import javax.lang.model.element.AnnotationMirror;
+import javax.lang.model.element.AnnotationValue;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeMirror;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
+import javax.tools.Diagnostic;
+import javax.tools.FileObject;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * An annotation processor that generates the Oracle Cloud SDK integration
@@ -481,11 +481,12 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         if (metadataClass != null) {
             SdkClientPackages allSdkClientPackages =
                     metadataClass.getAnnotation(SdkClientPackages.class);
-            List<String> allSdkClientPackagesStings = new ArrayList<>(Arrays.asList(allSdkClientPackages.value()));
-            if (!allSdkClientPackagesStings.contains("com.oracle.bmc.identity.SdkClientsMetadata")) {
-                allSdkClientPackagesStings.add("com.oracle.bmc.identity.SdkClientsMetadata");
+            // oci sdk bug: this contains duplicate entries
+            List<String> allSdkClientPackagesStrings = new ArrayList<>(new LinkedHashSet<>(Arrays.asList(allSdkClientPackages.value())));
+            if (!allSdkClientPackagesStrings.contains("com.oracle.bmc.identity.SdkClientsMetadata")) {
+                allSdkClientPackagesStrings.add("com.oracle.bmc.identity.SdkClientsMetadata");
             }
-            for (String sdkClientsMetadataPath : allSdkClientPackages.value()) {
+            for (String sdkClientsMetadataPath : allSdkClientPackagesStrings) {
                 Class<?> sdkClientsMetadataClass = ClassUtils.forName(sdkClientsMetadataPath, getClass().getClassLoader()).orElse(null);
                 if (sdkClientsMetadataClass != null) {
                     SdkClients declaredAnnotation = sdkClientsMetadataClass.getDeclaredAnnotation(SdkClients.class);

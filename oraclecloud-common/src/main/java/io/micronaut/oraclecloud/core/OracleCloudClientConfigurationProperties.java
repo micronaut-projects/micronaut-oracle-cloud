@@ -18,10 +18,10 @@ package io.micronaut.oraclecloud.core;
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.retrier.RetryConfiguration;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.annotation.Nullable;
 
 /**
  * Configuration for the {@link com.oracle.bmc.auth.AuthenticationDetailsProvider}.
@@ -33,7 +33,7 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 @BootstrapContextCompatible
 public class OracleCloudClientConfigurationProperties {
 
-    @ConfigurationBuilder(prefixes = "", excludes = {"retryConfiguration", "circuitBreakerConfiguration"})
+    @ConfigurationBuilder(prefixes = "", excludes = {"retryConfiguration", "circuitBreakerConfiguration", "circuitBreaker"})
     private final ClientConfiguration.ClientConfigurationBuilder clientBuilder = ClientConfiguration.builder();
 
     @ConfigurationBuilder(prefixes = "", value = "retry")

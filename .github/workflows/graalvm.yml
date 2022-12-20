@@ -19,7 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['11', '17']
+        java: ['17']
+        graalvm: ['latest', 'dev']
     steps:
        # https://github.com/actions/virtual-environments/issues/709
       - name: Free disk space
@@ -28,8 +29,8 @@ jobs:
          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
          sudo apt-get clean
          df -h
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2.1.7
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
@@ -38,10 +39,13 @@ jobs:
       - name: Setup GraalVM CE
         uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.1.0'
+          version: ${{ matrix.graalvm }}
           java-version: ${{ matrix.java }}
           components: 'native-image'
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2.3.3
       - name: Build with Gradle
+        id: gradle
         run: |
           if ./gradlew tasks --no-daemon --all | grep -w "testNativeImage"
           then
@@ -50,29 +54,27 @@ jobs:
             ./gradlew check --continue --no-daemon
           fi
         env:
-           MICRONAUT_ENV_DEDUCTION: false
-           OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
-           OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
-           OCI_REGION: ${{ secrets.OCI_REGION }}
-           OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
-           OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
-           OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
-           ATP_OCID: ${{ secrets.ATP_OCID }}
-           ATP_USER: ${{ secrets.ATP_USER }}
-           ATP_PASS: ${{ secrets.ATP_PASS }}
-           VAULT_OCID: ${{ secrets.VAULT_OCID }}
-           VAULT_SECRETS_COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}
-           MONITORING_COMPARTMENT_OCID: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
-           VAULT_SECRET_NAME: ${{ secrets.VAULT_SECRET_NAME }}
-           VAULT_SECRET_VALUE: ${{ secrets.VAULT_SECRET_VALUE }}
-           COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}
            TESTCONTAINERS_RYUK_DISABLED: true
            GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
            GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
            GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
+           PREDICTIVE_TEST_SELECTION: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
+      - name: Add build scan URL as PR comment
+        uses: actions/github-script@v5
+        if: github.event_name == 'pull_request' && failure()
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '❌ ${{ github.workflow }} ${{ matrix.java }} ${{ matrix.graalvm }} failed: ${{ steps.gradle.outputs.build-scan-url }}'
+            })
       - name: Publish Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v2.9.1
+        uses: mikepenz/action-junit-report@v3.7.0
         with:
           check_name: GraalVM CE CI / Test Report (Java ${{ matrix.java }})
           report_paths: '**/build/test-results/test/TEST-*.xml'
+          check_retries: 'true'

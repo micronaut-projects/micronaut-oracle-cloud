@@ -1,6 +1,7 @@
 package example;
 
 import example.mock.MockData;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @MicronautTest
+@Requires(missingProperty = "micronaut.test.server.executable")
 public class BucketControllerTest {
 
     private final BucketClient client;
