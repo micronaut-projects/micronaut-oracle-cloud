@@ -64,19 +64,22 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
     private final FnServletResponse<Object> response;
+
+    private final ConversionService conversionService;
     private MutableConvertibleValues<Object> attributes;
     private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
     private final Map<Argument, Optional> consumedBodies = new ConcurrentHashMap<>();
 
     public FnServletRequest(
-            InputEvent inputEvent,
-            FnServletResponse<Object> response,
-            HTTPGatewayContext gatewayContext,
-            MediaTypeCodecRegistry codecRegistry) {
+        InputEvent inputEvent,
+        FnServletResponse<Object> response,
+        HTTPGatewayContext gatewayContext,
+        ConversionService conversionService, MediaTypeCodecRegistry codecRegistry) {
         this.inputEvent = inputEvent;
         this.response = response;
         this.gatewayContext = gatewayContext;
+        this.conversionService = conversionService;
         this.codecRegistry = codecRegistry;
     }
 
@@ -135,7 +138,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             synchronized (this) { // double check
                 cookies = this.cookies;
                 if (cookies == null) {
-                    cookies = new SimpleCookies(ConversionService.SHARED);
+                    cookies = new SimpleCookies(conversionService);
                     this.cookies = cookies;
                 }
             }
@@ -244,7 +247,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
             if (name != null) {
                 Optional<String> v = gatewayContext.getQueryParameters().get(name.toString());
-                return v.flatMap(s -> ConversionService.SHARED.convert(
+                return v.flatMap(s -> conversionService.convert(
                         s, conversionContext
                 ));
             }
@@ -288,7 +291,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
             if (name != null) {
                 Optional<String> v = gatewayContext.getHeaders().get(name.toString());
-                return v.flatMap(s -> ConversionService.SHARED.convert(
+                return v.flatMap(s -> conversionService.convert(
                     s, conversionContext
                 ));
             }

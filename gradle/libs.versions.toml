@@ -1,5 +1,5 @@
 [versions]
-fn = '1.0.131'
+fn = '1.0.162'
 graal-svm = "22.0.0.2"
 javapoet = '1.13.0'
 jetty = '9.4.35.v20201120'

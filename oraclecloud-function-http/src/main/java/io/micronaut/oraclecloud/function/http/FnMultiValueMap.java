@@ -40,13 +40,17 @@ import java.util.Set;
 @Internal
 public class FnMultiValueMap implements ConvertibleMultiValues<String> {
     private final Map<String, List<String>> map;
+    private final ConversionService conversionService;
 
     /**
      * Default constructor.
-     * @param map The target map. Never null
+     *
+     * @param map               The target map. Never null
+     * @param conversionService
      */
-    public FnMultiValueMap(Map<String, List<String>> map) {
+    public FnMultiValueMap(Map<String, List<String>> map, ConversionService conversionService) {
         this.map = Objects.requireNonNull(map, "Passed map cannot be null");
+        this.conversionService = conversionService;
     }
 
     @Override
@@ -84,7 +88,7 @@ public class FnMultiValueMap implements ConvertibleMultiValues<String> {
     public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
         final String v = get(name);
         if (v != null) {
-            return ConversionService.SHARED.convert(v, conversionContext);
+            return conversionService.convert(v, conversionContext);
         }
         return Optional.empty();
     }

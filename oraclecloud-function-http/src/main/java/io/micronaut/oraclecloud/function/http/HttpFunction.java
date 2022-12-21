@@ -22,6 +22,8 @@ import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.ReflectiveAccess;
+import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.oraclecloud.function.OciFunction;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
@@ -40,11 +42,15 @@ import jakarta.inject.Singleton;
 public class HttpFunction extends OciFunction {
     private ServletHttpHandler<InputEvent, OutputEvent> httpHandler;
 
+    private ConversionService conversionService;
+
     /**
      * Default constructor.
      */
     @ReflectiveAccess
     public HttpFunction() {
+        this.conversionService = new DefaultMutableConversionService();
+        //no op
     }
 
     /**
@@ -54,6 +60,7 @@ public class HttpFunction extends OciFunction {
     @Inject
     protected HttpFunction(ApplicationContext applicationContext) {
         super(applicationContext);
+        this.conversionService = applicationContext.getBean(ConversionService.class);
     }
 
     @Override
@@ -92,9 +99,9 @@ public class HttpFunction extends OciFunction {
     @SuppressWarnings("unused")
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
-        FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext);
+        FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-                new FnServletRequest<>(inputEvent, response, gatewayContext, httpHandler.getMediaTypeCodecRegistry()),
+                new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry()),
                 response
         );
         this.httpHandler.service(

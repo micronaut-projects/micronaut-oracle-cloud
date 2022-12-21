@@ -46,11 +46,11 @@ class FnBinderRegistry extends ServletBinderRegistry {
      *  @param mediaTypeCodecRegistry The media type codec registry
      * @param conversionService      The conversion service
      * @param binders                Any registered binders
-     * @param runtimeContext         The runtime context.
+     * @param runtimeContexts        The runtime context.
      */
-    public FnBinderRegistry(MediaTypeCodecRegistry mediaTypeCodecRegistry, ConversionService conversionService, List<RequestArgumentBinder> binders, RuntimeContext runtimeContext) {
+    public FnBinderRegistry(MediaTypeCodecRegistry mediaTypeCodecRegistry, ConversionService conversionService, List<RequestArgumentBinder> binders, List<RuntimeContext> runtimeContexts) {
         super(mediaTypeCodecRegistry, conversionService, binders);
-        this.runtimeContext = runtimeContext;
+        this.runtimeContext = runtimeContexts.get(0); //FIXME: investigate why there are 2 RuntimeContexts.
 
         this.byAnnotation.put(Body.class, new FnBodyBinder<>(conversionService, mediaTypeCodecRegistry));
         this.byType.put(RuntimeContext.class, new FnRuntimeContextBinder());

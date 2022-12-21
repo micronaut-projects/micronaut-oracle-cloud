@@ -42,7 +42,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -57,13 +56,16 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     private final Map<String, List<String>> headers = new LinkedHashMap<>(10);
     private final HTTPGatewayContext gatewayContext;
     private final ByteArrayOutputStream body = new ByteArrayOutputStream();
+
+    private final ConversionService conversionService;
     private int status = HttpStatus.OK.getCode();
     private MutableConvertibleValues<Object> attributes;
     private B bodyObject;
     private String reason = HttpStatus.OK.getReason();
 
-    FnServletResponse(HTTPGatewayContext gatewayContext) {
+    FnServletResponse(HTTPGatewayContext gatewayContext, ConversionService conversionService) {
         this.gatewayContext = gatewayContext;
+        this.conversionService = conversionService;
     }
 
     @Override
@@ -167,7 +169,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
          * Default constructor.
          */
         FnResponseHeaders() {
-            super(headers);
+            super(headers, conversionService);
         }
 
         @Override

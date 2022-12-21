@@ -24,6 +24,7 @@ import io.micronaut.http.cookie.Cookie;
 
 import java.awt.event.InputEvent;
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,10 +37,10 @@ public class ParametersController {
     private final String another;
 
     public ParametersController(
-            RuntimeContext runtimeContext,
+            List<RuntimeContext> runtimeContexts,
             @Nullable @Property(name="fn.app.id") String fnAppId,
             @Nullable @Property(name="foo.bar") String another) {
-        this.runtimeContext = runtimeContext;
+        this.runtimeContext = runtimeContexts.get(0); //FIXME: investigate why there are 2 RuntimeContexts.
         this.fnAppId = fnAppId;
         this.another = another;
     }
