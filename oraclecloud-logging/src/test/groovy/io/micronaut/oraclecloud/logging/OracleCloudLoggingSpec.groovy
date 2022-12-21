@@ -18,14 +18,12 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.slf4j.LoggerFactory
-import spock.lang.Ignore
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
 @MicronautTest
 @Property(name = "spec.name", value = "OracleCloudLoggingSpec")
 @Property(name = "oci.logging.logId", value = "test-logId-from-application-config")
-@Ignore //FIXME: investigate why
 class OracleCloudLoggingSpec extends Specification {
 
     @Inject

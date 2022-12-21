@@ -65,7 +65,7 @@ public class HttpFunction extends OciFunction {
 
     @Override
     protected final void setup(RuntimeContext ctx) {
-        this.httpHandler = new ServletHttpHandler<InputEvent, OutputEvent>(getApplicationContext()) {
+        this.httpHandler = new ServletHttpHandler<>(getApplicationContext()) {
             @Override
             protected ServletExchange<InputEvent, OutputEvent> createExchange(InputEvent request, OutputEvent response) {
                 throw new UnsupportedOperationException("Use handleRequest to invoke the function");
