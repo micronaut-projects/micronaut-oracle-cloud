@@ -176,8 +176,8 @@ public final class FnHttpTest {
                 }
             });
             I b = request.getBody().orElse(null);
-            if (b instanceof byte[]) {
-                eventBuilder.withBody((byte[]) b);
+            if (b instanceof byte[] ba) {
+                eventBuilder.withBody(ba);
             } else if (b instanceof CharSequence)  {
                 eventBuilder.withBody(
                         b.toString().getBytes(request.getCharacterEncoding())

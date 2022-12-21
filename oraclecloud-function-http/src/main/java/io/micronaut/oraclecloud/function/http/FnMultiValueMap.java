@@ -19,6 +19,7 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.core.convert.value.ConvertibleMultiValues;
 import io.micronaut.core.util.ArgumentUtils;
 
@@ -40,18 +41,28 @@ import java.util.Set;
 @Internal
 public class FnMultiValueMap implements ConvertibleMultiValues<String> {
     private final Map<String, List<String>> map;
-    private final ConversionService conversionService;
+    protected ConversionService conversionService;
 
     /**
      * Default constructor.
      *
      * @param map               The target map. Never null
-     * @param conversionService
+     */
+    public FnMultiValueMap(Map<String, List<String>> map) {
+        this(map, new DefaultMutableConversionService());
+    }
+
+    /**
+     * Default constructor.
+     *
+     * @param map               The target map. Never null
+     * @param conversionService The conversion service
      */
     public FnMultiValueMap(Map<String, List<String>> map, ConversionService conversionService) {
         this.map = Objects.requireNonNull(map, "Passed map cannot be null");
-        this.conversionService = conversionService;
+        this.conversionService = Objects.requireNonNull(conversionService, "ConversionService cannot be null");
     }
+
 
     @Override
     public List<String> getAll(CharSequence name) {
@@ -91,5 +102,9 @@ public class FnMultiValueMap implements ConvertibleMultiValues<String> {
             return conversionService.convert(v, conversionContext);
         }
         return Optional.empty();
+    }
+
+    public void setConversionService(ConversionService conversionService) {
+        this.conversionService = conversionService;
     }
 }

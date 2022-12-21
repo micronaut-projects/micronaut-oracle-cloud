@@ -96,8 +96,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
 
     @Override
     public MutableHttpResponse<B> cookie(Cookie cookie) {
-        if (cookie instanceof NettyCookie) {
-            NettyCookie nettyCookie = (NettyCookie) cookie;
+        if (cookie instanceof NettyCookie nettyCookie) {
             final String encoded = ServerCookieEncoder.STRICT.encode(nettyCookie.getNettyCookie());
             header(HttpHeaders.SET_COOKIE, encoded);
         }
@@ -169,7 +168,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
          * Default constructor.
          */
         FnResponseHeaders() {
-            super(headers, conversionService);
+            super(headers);
         }
 
         @Override
@@ -186,11 +185,6 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
                 headers.remove(header.toString());
             }
             return this;
-        }
-
-        @Override
-        public void setConversionService(ConversionService conversionService) {
-
         }
     }
 }
