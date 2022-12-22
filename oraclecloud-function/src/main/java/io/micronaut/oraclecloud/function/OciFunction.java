@@ -70,7 +70,6 @@ public abstract class OciFunction implements AutoCloseable {
                 );
                 applicationContext = newApplicationContextBuilder(ctx)
                         .propertySources(props)
-                        .singletons(ctx)
                         .build()
                         .start();
             }
