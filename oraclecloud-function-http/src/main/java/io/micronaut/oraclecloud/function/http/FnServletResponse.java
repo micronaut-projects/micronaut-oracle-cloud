@@ -21,7 +21,6 @@ import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.http.HttpHeaders;
