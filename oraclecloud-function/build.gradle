@@ -13,10 +13,3 @@ dependencies {
     testImplementation mnTest.micronaut.test.spock
     testImplementation projects.oraclecloudSdk
 }
-
-// TODO temporarily disable binary compatibility checks
-micronautBuild {
-    binaryCompatibility {
-        enabled = false
-    }
-}
