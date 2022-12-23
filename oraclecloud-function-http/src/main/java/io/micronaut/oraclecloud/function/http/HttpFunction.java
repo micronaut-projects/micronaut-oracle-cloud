@@ -42,7 +42,7 @@ import jakarta.inject.Singleton;
 public class HttpFunction extends OciFunction {
     private ServletHttpHandler<InputEvent, OutputEvent> httpHandler;
 
-    private ConversionService conversionService;
+    private final ConversionService conversionService;
 
     /**
      * Default constructor.
@@ -50,7 +50,6 @@ public class HttpFunction extends OciFunction {
     @ReflectiveAccess
     public HttpFunction() {
         this.conversionService = new DefaultMutableConversionService();
-        //no op
     }
 
     /**
@@ -99,7 +98,7 @@ public class HttpFunction extends OciFunction {
     @SuppressWarnings("unused")
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
-        FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
+        FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext);
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
                 new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry()),
                 response

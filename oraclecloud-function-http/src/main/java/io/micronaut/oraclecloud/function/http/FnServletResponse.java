@@ -57,15 +57,13 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     private final HTTPGatewayContext gatewayContext;
     private final ByteArrayOutputStream body = new ByteArrayOutputStream();
 
-    private final ConversionService conversionService;
     private int status = HttpStatus.OK.getCode();
     private MutableConvertibleValues<Object> attributes;
     private B bodyObject;
     private String reason = HttpStatus.OK.getReason();
 
-    FnServletResponse(HTTPGatewayContext gatewayContext, ConversionService conversionService) {
+    FnServletResponse(HTTPGatewayContext gatewayContext) {
         this.gatewayContext = gatewayContext;
-        this.conversionService = conversionService;
     }
 
     @Override
