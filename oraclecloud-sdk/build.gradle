@@ -7,7 +7,7 @@ dependencies {
     api projects.oraclecloudCommon, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$ociVersion") {
+    api("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$oci3Version") {
         transitive = false
     }
     compileOnly libs.graal.svm
@@ -18,11 +18,16 @@ dependencies {
 
     // optional modules
     for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
-        compileOnly "com.oracle.oci.sdk:$name:$ociVersion"
-        testImplementation "com.oracle.oci.sdk:$name:$ociVersion"
-        annotationProcessor "com.oracle.oci.sdk:$name:$ociVersion"
+        compileOnly "com.oracle.oci.sdk:$name:$oci3Version"
+        testImplementation "com.oracle.oci.sdk:$name:$oci3Version"
+        annotationProcessor "com.oracle.oci.sdk:$name:$oci3Version"
     }
 }
 
 spotlessJavaMiscCheck.enabled = false
 compileJava.options.fork = true
+
+tasks.withType(me.champeau.gradle.japicmp.JapicmpTask) {
+    // Ignore changes in the generated factories for the new OCI Java SDK
+    packageExcludes = ["io.micronaut.oraclecloud.clients.*"]
+}

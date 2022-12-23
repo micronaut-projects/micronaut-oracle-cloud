@@ -12,13 +12,13 @@ Provides the common functionality and sets up the following beans:
 
 === micronaut-oraclecloud-sdk
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={oci3Version}]
 
 Provides support for injecting any of the available SDK client interfaces.
 
 NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={oci3Version}]
 
 It is important to note that if you plan to build native images you also need to ensure the transitive `javassist` dependency is not included when adding dependencies on SDK modules using dependency exclusions. For example with Gradle:
 
@@ -32,23 +32,23 @@ implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
 
 === micronaut-oraclecloud-sdk-rxjava2
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[version={oci3Version}]
 
 Provides support for injecting inject RxJava 2 client implementations.
 
 NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={oci3Version}]
 
 === micronaut-oraclecloud-sdk-reactor
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[version={oci3Version}]
 
 Provides support for injecting inject Reactor client implementations.
 
 NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={oci3Version}]
 
 
 
