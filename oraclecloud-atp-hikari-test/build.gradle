@@ -15,4 +15,5 @@ dependencies {
     testImplementation mnTest.micronaut.test.spock
 
     testRuntimeOnly mnSql.h2
+    testRuntimeOnly projects.oraclecloudHttpclientNetty
 }

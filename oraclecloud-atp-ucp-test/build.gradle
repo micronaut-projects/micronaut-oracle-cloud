@@ -13,6 +13,7 @@ dependencies {
     testImplementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
     testImplementation mnSql.micronaut.jdbc.ucp
     testImplementation mnTest.micronaut.test.spock
+    testRuntimeOnly projects.oraclecloudHttpclientNetty
 
     testRuntimeOnly mnSql.h2
 }
