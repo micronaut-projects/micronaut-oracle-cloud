@@ -10,6 +10,7 @@ dependencies {
     api("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$oci3Version") {
         transitive = false
     }
+    api projects.oraclecloudHttpclientNetty
     compileOnly libs.graal.svm
     compileOnly mnRxjava2.rxjava2
     testImplementation libs.graal.svm

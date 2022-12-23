@@ -18,7 +18,6 @@ dependencies {
     testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
     testImplementation libs.commons.lang3
-    testRuntimeOnly projects.oraclecloudHttpclientNetty
 }
 
 test {
