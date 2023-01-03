@@ -49,7 +49,7 @@ public class HttpFunction extends OciFunction {
      */
     @ReflectiveAccess
     public HttpFunction() {
-        this.conversionService = new DefaultMutableConversionService();
+        this.conversionService = ConversionService.SHARED;
     }
 
     /**

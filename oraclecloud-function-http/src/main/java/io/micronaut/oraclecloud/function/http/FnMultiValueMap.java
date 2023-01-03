@@ -50,7 +50,7 @@ public class FnMultiValueMap implements ConvertibleMultiValues<String> {
      * @param map               The target map. Never null
      */
     public FnMultiValueMap(Map<String, List<String>> map) {
-        this(map, new DefaultMutableConversionService());
+        this(map, ConversionService.SHARED);
     }
 
     /**
