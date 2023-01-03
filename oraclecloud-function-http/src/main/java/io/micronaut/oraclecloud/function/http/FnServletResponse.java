@@ -18,9 +18,10 @@ package io.micronaut.oraclecloud.function.http;
 import com.fnproject.fn.api.Headers;
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.http.HttpHeaders;
@@ -54,6 +55,7 @@ import java.util.Optional;
 final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> {
     private final Map<String, List<String>> headers = new LinkedHashMap<>(10);
     private final HTTPGatewayContext gatewayContext;
+    private final ConversionService conversionService;
     private final ByteArrayOutputStream body = new ByteArrayOutputStream();
 
     private int status = HttpStatus.OK.getCode();
@@ -61,8 +63,9 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     private B bodyObject;
     private String reason = HttpStatus.OK.getReason();
 
-    FnServletResponse(HTTPGatewayContext gatewayContext) {
+    FnServletResponse(HTTPGatewayContext gatewayContext, ConversionService conversionService) {
         this.gatewayContext = gatewayContext;
+        this.conversionService = conversionService;
     }
 
     @Override
@@ -165,7 +168,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
          * Default constructor.
          */
         FnResponseHeaders() {
-            super(headers);
+            super(headers, FnServletResponse.this.conversionService);
         }
 
         @Override

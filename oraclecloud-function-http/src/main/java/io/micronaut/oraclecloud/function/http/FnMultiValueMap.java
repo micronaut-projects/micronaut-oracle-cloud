@@ -20,7 +20,6 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
-import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.core.convert.value.ConvertibleMultiValues;
 import io.micronaut.core.util.ArgumentUtils;
 
@@ -43,15 +42,6 @@ import java.util.Set;
 public class FnMultiValueMap implements ConvertibleMultiValues<String> {
     protected ConversionService conversionService;
     private final Map<String, List<String>> map;
-
-    /**
-     * Default constructor.
-     *
-     * @param map               The target map. Never null
-     */
-    public FnMultiValueMap(Map<String, List<String>> map) {
-        this(map, ConversionService.SHARED);
-    }
 
     /**
      * Default constructor.
