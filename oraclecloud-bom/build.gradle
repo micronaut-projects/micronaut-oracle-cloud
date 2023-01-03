@@ -5,7 +5,7 @@ plugins {
 dependencies {
     constraints {
         for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
-            api "com.oracle.oci.sdk:$name:$oci3Version"
+            api "com.oracle.oci.sdk:$name:$ociVersion"
         }
 
         for (module in ['api', 'runtime', 'testing-junit4']) {

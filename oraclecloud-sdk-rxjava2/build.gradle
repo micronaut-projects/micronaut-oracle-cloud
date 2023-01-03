@@ -9,9 +9,9 @@ dependencies {
 
     // optional modules
     for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
-        compileOnly "com.oracle.oci.sdk:$name:$oci3Version"
-        testImplementation "com.oracle.oci.sdk:$name:$oci3Version"
-        annotationProcessor "com.oracle.oci.sdk:$name:$oci3Version"
+        compileOnly "com.oracle.oci.sdk:$name:$ociVersion"
+        testImplementation "com.oracle.oci.sdk:$name:$ociVersion"
+        annotationProcessor "com.oracle.oci.sdk:$name:$ociVersion"
     }
 }
 
