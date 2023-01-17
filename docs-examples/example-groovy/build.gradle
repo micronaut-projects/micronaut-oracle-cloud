@@ -10,6 +10,8 @@ dependencies {
     implementation mnGroovy.micronaut.runtime.groovy
     implementation mn.micronaut.http.server.netty
     implementation projects.oraclecloudSdkReactor
+    implementation mnSerde.micronaut.serde.support
+    implementation mnSerde.micronaut.serde.jackson
     runtimeOnly mn.logback.classic
     testAnnotationProcessor mn.micronaut.inject.groovy
     testImplementation mnTest.micronaut.test.spock

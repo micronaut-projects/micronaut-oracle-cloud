@@ -1,6 +1,7 @@
 package example
 
 import example.mock.MockData
+import io.micronaut.context.annotation.Requires
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
@@ -12,6 +13,7 @@ import reactor.core.publisher.Mono
 import java.util.*
 
 @MicronautTest
+@Requires(missingProperty = "micronaut.test.server.executable")
 class BookControllerTest {
     @Inject
     lateinit var client: BucketClient
