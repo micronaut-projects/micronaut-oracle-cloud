@@ -23,6 +23,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.oraclecloud.function.OciFunction;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
@@ -62,7 +63,7 @@ public class HttpFunction extends OciFunction {
 
     @Override
     protected final void setup(RuntimeContext ctx) {
-        this.httpHandler = new ServletHttpHandler<>(getApplicationContext()) {
+        this.httpHandler = new ServletHttpHandler<>(getApplicationContext(), conversionService) {
             @Override
             protected ServletExchange<InputEvent, OutputEvent> createExchange(InputEvent request, OutputEvent response) {
                 throw new UnsupportedOperationException("Use handleRequest to invoke the function");
