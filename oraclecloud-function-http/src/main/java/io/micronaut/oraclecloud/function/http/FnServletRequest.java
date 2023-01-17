@@ -18,9 +18,9 @@ package io.micronaut.oraclecloud.function.http;
 import com.fnproject.fn.api.InputEvent;
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.value.ConvertibleValues;
@@ -34,7 +34,7 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.micronaut.http.cookie.Cookies;
-import io.micronaut.servlet.http.ServletCookies;
+import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
 import io.micronaut.servlet.http.ServletHttpResponse;
@@ -64,19 +64,22 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
     private final FnServletResponse<Object> response;
+
+    private final ConversionService conversionService;
     private MutableConvertibleValues<Object> attributes;
-    private ServletCookies cookies;
+    private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
     private final Map<Argument, Optional> consumedBodies = new ConcurrentHashMap<>();
 
     public FnServletRequest(
-            InputEvent inputEvent,
-            FnServletResponse<Object> response,
-            HTTPGatewayContext gatewayContext,
-            MediaTypeCodecRegistry codecRegistry) {
+        InputEvent inputEvent,
+        FnServletResponse<Object> response,
+        HTTPGatewayContext gatewayContext,
+        ConversionService conversionService, MediaTypeCodecRegistry codecRegistry) {
         this.inputEvent = inputEvent;
         this.response = response;
         this.gatewayContext = gatewayContext;
+        this.conversionService = conversionService;
         this.codecRegistry = codecRegistry;
     }
 
@@ -130,12 +133,12 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     @NonNull
     @Override
     public Cookies getCookies() {
-        ServletCookies cookies = this.cookies;
+        Cookies cookies = this.cookies;
         if (cookies == null) {
             synchronized (this) { // double check
                 cookies = this.cookies;
                 if (cookies == null) {
-                    cookies = new ServletCookies(getPath(), getHeaders(), ConversionService.SHARED);
+                    cookies = new SimpleCookies(conversionService);
                     this.cookies = cookies;
                 }
             }
@@ -244,7 +247,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
             if (name != null) {
                 Optional<String> v = gatewayContext.getQueryParameters().get(name.toString());
-                return v.flatMap(s -> ConversionService.SHARED.convert(
+                return v.flatMap(s -> conversionService.convert(
                         s, conversionContext
                 ));
             }
@@ -288,7 +291,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
             if (name != null) {
                 Optional<String> v = gatewayContext.getHeaders().get(name.toString());
-                return v.flatMap(s -> ConversionService.SHARED.convert(
+                return v.flatMap(s -> conversionService.convert(
                     s, conversionContext
                 ));
             }

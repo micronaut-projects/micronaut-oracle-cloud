@@ -19,19 +19,20 @@ import com.fnproject.fn.api.InputEvent;
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
-import io.micronaut.core.annotation.NonNull;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
+import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.oraclecloud.function.OciFunction;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpHandler;
-
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 /**
- * An parent HttpFunction for authoring Project.fn gateway functions.
+ * A parent HttpFunction for authoring Project.fn gateway functions.
  *
  * @author graemerocher
  * @since 1.0.0
@@ -40,11 +41,14 @@ import jakarta.inject.Singleton;
 public class HttpFunction extends OciFunction {
     private ServletHttpHandler<InputEvent, OutputEvent> httpHandler;
 
+    private final ConversionService conversionService;
+
     /**
      * Default constructor.
      */
     @ReflectiveAccess
     public HttpFunction() {
+        this.conversionService = new DefaultMutableConversionService();
     }
 
     /**
@@ -54,11 +58,12 @@ public class HttpFunction extends OciFunction {
     @Inject
     protected HttpFunction(ApplicationContext applicationContext) {
         super(applicationContext);
+        this.conversionService = applicationContext.getConversionService();
     }
 
     @Override
     protected final void setup(RuntimeContext ctx) {
-        this.httpHandler = new ServletHttpHandler<InputEvent, OutputEvent>(getApplicationContext()) {
+        this.httpHandler = new ServletHttpHandler<>(getApplicationContext(), conversionService) {
             @Override
             protected ServletExchange<InputEvent, OutputEvent> createExchange(InputEvent request, OutputEvent response) {
                 throw new UnsupportedOperationException("Use handleRequest to invoke the function");
@@ -92,9 +97,9 @@ public class HttpFunction extends OciFunction {
     @SuppressWarnings("unused")
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
-        FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext);
+        FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-                new FnServletRequest<>(inputEvent, response, gatewayContext, httpHandler.getMediaTypeCodecRegistry()),
+                new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry()),
                 response
         );
         this.httpHandler.service(

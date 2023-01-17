@@ -11,9 +11,8 @@ dependencies {
 
     testImplementation projects.oraclecloudAtp
     testImplementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
-    testImplementation libs.micronaut.sql.jdbc.ucp
-    testImplementation mn.micronaut.test.spock
-    testImplementation mn.spock
+    testImplementation mnSql.micronaut.jdbc.ucp
+    testImplementation mnTest.micronaut.test.spock
 
-    testRuntimeOnly mn.h2
+    testRuntimeOnly mnSql.h2
 }

@@ -60,7 +60,7 @@ final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements An
      * @param mediaTypeCodecRegistry The codec registry
      */
     protected FnBodyBinder(
-            ConversionService<?> conversionService,
+            ConversionService conversionService,
             MediaTypeCodecRegistry mediaTypeCodecRegistry) {
         super(conversionService);
         this.mediaTypeCodeRegistry = mediaTypeCodecRegistry;

@@ -9,17 +9,9 @@ dependencies {
     api libs.oci.vault, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api mn.micronaut.discovery
+    api mn.micronaut.discovery.core
     api mn.micronaut.inject
     implementation mn.reactor
     implementation projects.oraclecloudSdk
-    testImplementation mn.micronaut.test.spock
-    testImplementation mn.spock
-}
-
-// TODO temporarily disable binary compatibility checks
-micronautBuild {
-    binaryCompatibility {
-        enabled = false
-    }
+    testImplementation mnTest.micronaut.test.spock
 }

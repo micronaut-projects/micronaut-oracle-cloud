@@ -5,7 +5,7 @@ plugins {
 dependencies {
     implementation libs.kotlin.reflect
     implementation libs.kotlin.stdlib
-    implementation mn.micronaut.kotlin.runtime
+    implementation mnKotlin.micronaut.kotlin.runtime
     implementation mn.micronaut.runtime
     implementation projects.oraclecloudFunction
     runtimeOnly libs.fn.runtime
@@ -13,7 +13,7 @@ dependencies {
     runtimeOnly mn.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation libs.fn.testing.junit4
-    testImplementation mn.micronaut.test.junit5
+    testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
 }
 

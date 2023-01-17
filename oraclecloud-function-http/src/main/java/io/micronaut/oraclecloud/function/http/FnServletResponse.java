@@ -18,9 +18,10 @@ package io.micronaut.oraclecloud.function.http;
 import com.fnproject.fn.api.Headers;
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.http.HttpHeaders;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -55,20 +55,24 @@ import java.util.Optional;
 final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> {
     private final Map<String, List<String>> headers = new LinkedHashMap<>(10);
     private final HTTPGatewayContext gatewayContext;
+    private final ConversionService conversionService;
     private final ByteArrayOutputStream body = new ByteArrayOutputStream();
-    private HttpStatus status = HttpStatus.OK;
+
+    private int status = HttpStatus.OK.getCode();
     private MutableConvertibleValues<Object> attributes;
     private B bodyObject;
+    private String reason = HttpStatus.OK.getReason();
 
-    FnServletResponse(HTTPGatewayContext gatewayContext) {
+    FnServletResponse(HTTPGatewayContext gatewayContext, ConversionService conversionService) {
         this.gatewayContext = gatewayContext;
+        this.conversionService = conversionService;
     }
 
     @Override
     public OutputEvent getNativeResponse() {
         return OutputEvent.fromBytes(
                 body.toByteArray(),
-                status.getCode() <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
+                status <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
                 getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString(),
                 toFnHeaders()
         );
@@ -92,8 +96,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
 
     @Override
     public MutableHttpResponse<B> cookie(Cookie cookie) {
-        if (cookie instanceof NettyCookie) {
-            NettyCookie nettyCookie = (NettyCookie) cookie;
+        if (cookie instanceof NettyCookie nettyCookie) {
             final String encoded = ServerCookieEncoder.STRICT.encode(nettyCookie.getNettyCookie());
             header(HttpHeaders.SET_COOKIE, encoded);
         }
@@ -135,15 +138,25 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     }
 
     @Override
-    public MutableHttpResponse<B> status(HttpStatus status, CharSequence message) {
-        this.status = Objects.requireNonNull(status, "Status cannot be null");
-        this.gatewayContext.setStatusCode(status.getCode());
+    public MutableHttpResponse<B> status(int status, CharSequence message) {
+        this.status = status;
+        if (message == null) {
+            this.reason = HttpStatus.getDefaultReason(status);
+        } else {
+            this.reason = message.toString();
+        }
+        this.gatewayContext.setStatusCode(status);
         return this;
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public int code() {
         return status;
+    }
+
+    @Override
+    public String reason() {
+        return reason;
     }
 
     /**
@@ -155,7 +168,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
          * Default constructor.
          */
         FnResponseHeaders() {
-            super(headers);
+            super(headers, FnServletResponse.this.conversionService);
         }
 
         @Override
