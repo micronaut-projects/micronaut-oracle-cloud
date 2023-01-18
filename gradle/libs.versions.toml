@@ -10,7 +10,7 @@ slf4j-jcl = '2.0.6'
 commons-lang3 = '3.12.0'
 shadow = '7.1.2'
 
-micronaut-gradle-plugin = "3.6.1"
+micronaut-gradle-plugin = "3.7.0"
 micronaut-groovy = "4.0.0-SNAPSHOT"
 micronaut-kotlin = "3.2.2"
 micronaut-micrometer = "5.0.0-SNAPSHOT"
