@@ -16,6 +16,7 @@ dependencies {
     implementation mnSerde.micronaut.serde.jackson
     runtimeOnly mn.logback.classic
     runtimeOnly mn.jackson.module.kotlin
+    runtimeOnly mn.snakeyaml
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter

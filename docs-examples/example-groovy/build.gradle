@@ -13,6 +13,7 @@ dependencies {
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson
     runtimeOnly mn.logback.classic
+    runtimeOnly mn.snakeyaml
     testAnnotationProcessor mn.micronaut.inject.groovy
     testImplementation mnTest.micronaut.test.spock
     testImplementation libs.commons.lang3
