@@ -7,16 +7,11 @@ dependencies {
         exclude group:'commons-logging', module:'commons-logging'
     }
     api mn.micronaut.inject
-    api mn.micronaut.serde.jackson
+    api mnSerde.micronaut.serde.jackson
     implementation projects.oraclecloudSdk
     implementation libs.logback.json.classic
-    testImplementation mn.micronaut.inject.groovy
-    testImplementation mn.micronaut.test.spock
-}
 
-// TODO temporarily disable binary compatibility checks
-micronautBuild {
-    binaryCompatibility {
-        enabled = false
-    }
+    testImplementation mn.snakeyaml
+    testImplementation mn.micronaut.inject.groovy
+    testImplementation mnTest.micronaut.test.spock
 }

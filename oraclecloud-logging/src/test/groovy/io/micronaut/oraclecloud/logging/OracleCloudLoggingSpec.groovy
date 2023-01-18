@@ -1,5 +1,8 @@
 package io.micronaut.oraclecloud.logging
 
+import ch.qos.logback.classic.Logger
+import ch.qos.logback.classic.LoggerContext
+import ch.qos.logback.core.read.ListAppender
 import com.oracle.bmc.Region
 import com.oracle.bmc.loggingingestion.Logging
 import com.oracle.bmc.loggingingestion.LoggingClient
@@ -41,14 +44,23 @@ class OracleCloudLoggingSpec extends Specification {
         def testHost = 'testHost'
         def logger = LoggerFactory.getLogger(OracleCloudLoggingSpec.class)
         PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory()
+        ListAppender listAppender
+        loggerContext.loggerList.each { Logger l ->
+            l.iteratorForAppenders().each { appender ->
+                if (appender.name == 'ORACLE') {
+                    OracleCloudAppender oracleCloudAppender = (OracleCloudAppender) appender
+                    listAppender = (ListAppender) oracleCloudAppender.getAppender('MOCK')
+                }
+            }
+        }
 
+        when:
         def instance = Mock(EmbeddedServer.class)
         def event = new ServerStartupEvent(instance)
         def mockLogging = (MockLogging) logging
         1 * instance.getHost() >> testHost
         eventPublisher.publishEvent(event)
-
-        when:
         logger.info(logMessage)
 
         then:
@@ -75,7 +87,7 @@ class OracleCloudLoggingSpec extends Specification {
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.oraclecloud.logging.OracleCloudLoggingSpec'))
         logEntries.stream().anyMatch(x -> x.data.contains(logMessage))
         logEntries.stream().anyMatch(x -> x.data.contains('Established active environments'))
-        MockAppender.getEvents().size() == 0
+        listAppender.list.size() == 0
 
         when:
         mockLogging.setSuccess(false)
@@ -84,9 +96,9 @@ class OracleCloudLoggingSpec extends Specification {
 
         then:
         conditions.eventually {
-            MockAppender.getEvents().size() != 0
+            listAppender.list.size() != 0
         }
-        MockAppender.getEvents().get(0).message == logMessage
+        listAppender.list.get(0).message == logMessage
     }
 
     @Requires(property = "spec.name", value = "OracleCloudLoggingSpec")

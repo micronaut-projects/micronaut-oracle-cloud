@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.function.http;
 
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
@@ -39,14 +40,18 @@ import java.util.Set;
  */
 @Internal
 public class FnMultiValueMap implements ConvertibleMultiValues<String> {
+    protected ConversionService conversionService;
     private final Map<String, List<String>> map;
 
     /**
      * Default constructor.
-     * @param map The target map. Never null
+     *
+     * @param map               The target map. Never null
+     * @param conversionService The conversion service
      */
-    public FnMultiValueMap(Map<String, List<String>> map) {
+    public FnMultiValueMap(Map<String, List<String>> map, ConversionService conversionService) {
         this.map = Objects.requireNonNull(map, "Passed map cannot be null");
+        this.conversionService = Objects.requireNonNull(conversionService, "ConversionService cannot be null");
     }
 
     @Override
@@ -84,8 +89,15 @@ public class FnMultiValueMap implements ConvertibleMultiValues<String> {
     public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
         final String v = get(name);
         if (v != null) {
-            return ConversionService.SHARED.convert(v, conversionContext);
+            return conversionService.convert(v, conversionContext);
         }
         return Optional.empty();
+    }
+
+    /**
+     * @param conversionService The conversion service.
+     */
+    public void setConversionService(@NonNull ConversionService conversionService) {
+        this.conversionService = conversionService;
     }
 }

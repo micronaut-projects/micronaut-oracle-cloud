@@ -6,7 +6,7 @@ dependencies {
     annotationProcessor projects.oraclecloudSdkProcessor
     api mn.reactor
     api projects.oraclecloudSdk
-    implementation mn.micronaut.reactor
+    implementation mnReactor.micronaut.reactor
 
     // optional modules
     for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
@@ -17,9 +17,8 @@ dependencies {
 }
 
 compileJava.options.fork = true
-// TODO temporarily disable binary compatibility checks
-micronautBuild {
-    binaryCompatibility {
-        enabled = false
-    }
+
+tasks.withType(me.champeau.gradle.japicmp.JapicmpTask) {
+    // Ignore changes in the generated factories for the new OCI Java SDK
+    packageExcludes = ["io.micronaut.oraclecloud.clients.reactor.*"]
 }

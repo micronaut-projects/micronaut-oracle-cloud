@@ -9,9 +9,12 @@ dependencies {
     }
     implementation mn.micronaut.http.server.netty
     implementation projects.oraclecloudSdkReactor
-    runtimeOnly mn.logback
+    implementation mnSerde.micronaut.serde.support
+    implementation mnSerde.micronaut.serde.jackson
+    runtimeOnly mn.logback.classic
+    runtimeOnly mn.snakeyaml
     testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mn.micronaut.test.junit5
+    testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
     testImplementation libs.commons.lang3
 }
@@ -22,8 +25,7 @@ test {
 
 mainClassName = 'example.Application'
 
-graalvmNative {
-    binaries.configureEach {
-        buildArgs.add '--initialize-at-build-time=example'
-    }
+graalvmNative.binaries.configureEach {
+    buildArgs.add '--initialize-at-build-time=example'
+    jvmArgs("--add-exports=org.graalvm.sdk/org.graalvm.nativeimage.impl=ALL-UNNAMED")
 }

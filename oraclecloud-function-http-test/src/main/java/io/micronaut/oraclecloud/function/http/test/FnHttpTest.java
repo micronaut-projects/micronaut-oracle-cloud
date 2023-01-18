@@ -153,6 +153,7 @@ public final class FnHttpTest {
                                                 List<Class<?>> sharedClasses) {
         try (ApplicationContext ctx = ApplicationContext.run()) {
             final MediaTypeCodecRegistry codecRegistry = ctx.getBean(MediaTypeCodecRegistry.class);
+            final ConversionService conversionService = ctx.getBean(ConversionService.class);
             Objects.requireNonNull(request, "The request cannot be null");
             Objects.requireNonNull(resultType, "The result type cannot be null");
 
@@ -175,8 +176,8 @@ public final class FnHttpTest {
                 }
             });
             I b = request.getBody().orElse(null);
-            if (b instanceof byte[]) {
-                eventBuilder.withBody((byte[]) b);
+            if (b instanceof byte[] ba) {
+                eventBuilder.withBody(ba);
             } else if (b instanceof CharSequence)  {
                 eventBuilder.withBody(
                         b.toString().getBytes(request.getCharacterEncoding())
@@ -186,7 +187,7 @@ public final class FnHttpTest {
                 if (codec != null) {
                     eventBuilder.withBody(codec.encode(b));
                 } else {
-                    eventBuilder.withBody(ConversionService.SHARED.convertRequired(b, byte[].class));
+                    eventBuilder.withBody(conversionService.convertRequired(b, byte[].class));
                 }
             }
 
@@ -194,7 +195,7 @@ public final class FnHttpTest {
             fn.thenRun(HttpFunction.class, "handleRequest");
             FnResult fnResult = fn.getOnlyResult();
 
-            return new FnHttpResponse<>(fnResult, resultType, codecRegistry);
+            return new FnHttpResponse<>(fnResult, resultType, codecRegistry, conversionService);
         }
     }
 
@@ -207,12 +208,17 @@ public final class FnHttpTest {
         private final FnHeaders fnHeaders;
         private final Argument<B> resultType;
         private final MediaTypeCodecRegistry codecRegistry;
+
+        private final ConversionService conversionService;
         private MutableConvertibleValues<Object> attributes;
 
-        public FnHttpResponse(FnResult outputEvent, Argument<B> resultType, MediaTypeCodecRegistry codecRegistry) {
+        public FnHttpResponse(FnResult outputEvent, Argument<B> resultType,
+                              MediaTypeCodecRegistry codecRegistry,
+                              ConversionService conversionService) {
             this.outputEvent = outputEvent;
             this.resultType = resultType;
             this.codecRegistry = codecRegistry;
+            this.conversionService = conversionService;
             Map<String, List<String>> headers = new LinkedHashMap<>();
             outputEvent.getHeaders().asMap().forEach((key, strings) -> {
                 if (key.startsWith("Fn-Http-H-")) {
@@ -222,7 +228,7 @@ public final class FnHttpTest {
                     }
                 }
             });
-            this.fnHeaders = new FnHeaders(headers);
+            this.fnHeaders = new FnHeaders(headers, conversionService);
         }
 
         @Override
@@ -233,10 +239,20 @@ public final class FnHttpTest {
             );
         }
 
+        @Override
+        public int code() {
+            return getStatus().getCode();
+        }
+
+        @Override
+        public String reason() {
+            return getStatus().getReason();
+        }
+
         @NonNull
         @Override
         public <T> Optional<T> getBody(@NonNull Argument<T> type) {
-            return ConversionService.SHARED.convert(outputEvent.getBodyAsBytes(), type);
+            return conversionService.convert(outputEvent.getBodyAsBytes(), type);
         }
 
         @NonNull
@@ -273,7 +289,7 @@ public final class FnHttpTest {
                     final B result = codec.decode(resultType, bodyAsBytes);
                     return Optional.ofNullable(result);
                 } else {
-                    return ConversionService.SHARED.convert(bodyAsBytes, resultType);
+                    return conversionService.convert(bodyAsBytes, resultType);
                 }
             }
         }
@@ -295,8 +311,8 @@ public final class FnHttpTest {
              *
              * @param map The target map. Never null
              */
-            public FnHeaders(Map<String, List<String>> map) {
-                super(map);
+            public FnHeaders(Map<String, List<String>> map, ConversionService conversionService) {
+                super(map, conversionService);
             }
         }
     }

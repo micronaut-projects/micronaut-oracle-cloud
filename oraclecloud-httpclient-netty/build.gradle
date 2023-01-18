@@ -4,19 +4,15 @@ plugins {
 
 dependencies {
     implementation("io.netty:netty-codec-http")
-    api("com.oracle.oci.sdk:oci-java-sdk-common-httpclient:$oci3Version")
+    api("com.oracle.oci.sdk:oci-java-sdk-common-httpclient:$ociVersion")
     testImplementation("io.micronaut:micronaut-http-server-netty")
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     testImplementation(projects.oraclecloudSdk) {
         exclude group: 'com.oracle.oci.sdk'
     }
-    testImplementation("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
+    testImplementation("com.oracle.oci.sdk:oci-java-sdk-monitoring:$ociVersion")
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
-}
-
-micronautBuild {
-    binaryCompatibility.enabled = false
 }
