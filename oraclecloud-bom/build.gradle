@@ -1,19 +1,16 @@
 plugins {
     id("io.micronaut.build.internal.bom")
+    id("io.micronaut.build.internal.oraclecloud-bom")
 }
-
-def fnVersion = libs.fn.api.get().version
-def ociVersion = libs.oci.bom.get().version
-def ociBom = new groovy.xml.XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${ociVersion}/oci-java-sdk-bom-${ociVersion}.pom")
 
 dependencies {
     constraints {
-        for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
-            api "com.oracle.oci.sdk:$name:$ociVersion"
+        for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+            api "com.oracle.oci.sdk:$name:$gradle.ociVersion"
         }
 
         for (module in ['api', 'runtime', 'testing-junit4']) {
-            api "com.fnproject.fn:$module:$fnVersion"
+            api "com.fnproject.fn:$module:${libs.fn.api.get().version}"
         }
     }
 }
