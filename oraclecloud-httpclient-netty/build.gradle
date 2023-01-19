@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation("io.netty:netty-codec-http")
+    implementation(mn.netty.codec.http)
     api(libs.oci.common.httpclient)
-    testImplementation("io.micronaut:micronaut-http-server-netty")
+    testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     testImplementation(projects.oraclecloudSdk) {
