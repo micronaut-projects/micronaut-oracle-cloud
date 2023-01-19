@@ -2,12 +2,15 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-module'
 }
 
+def ociVersion = libs.oci.bom.get().version
+def ociBom = new groovy.xml.XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${ociVersion}/oci-java-sdk-bom-${ociVersion}.pom")
+
 dependencies {
     annotationProcessor projects.oraclecloudSdkProcessor
     api projects.oraclecloudCommon, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$ociVersion") {
+    api(libs.oci.graalvm) {
         transitive = false
     }
     api projects.oraclecloudHttpclientNetty
@@ -18,7 +21,7 @@ dependencies {
     testImplementation mnRxjava2.rxjava2
 
     // optional modules
-    for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+    for (name in ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
         compileOnly "com.oracle.oci.sdk:$name:$ociVersion"
         testImplementation "com.oracle.oci.sdk:$name:$ociVersion"
         annotationProcessor "com.oracle.oci.sdk:$name:$ociVersion"

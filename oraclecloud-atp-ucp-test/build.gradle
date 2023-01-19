@@ -4,13 +4,12 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
     annotationProcessor mn.micronaut.inject.java
 
     api mn.micronaut.inject
 
     testImplementation projects.oraclecloudAtp
-    testImplementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
+    testImplementation platform(libs.oracle.jdbc.bom)
     testImplementation mnSql.micronaut.jdbc.ucp
     testImplementation mnTest.micronaut.test.spock
 

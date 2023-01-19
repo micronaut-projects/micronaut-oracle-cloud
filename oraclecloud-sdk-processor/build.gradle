@@ -6,10 +6,10 @@ plugins {
 dependencies {
     implementation libs.javapoet
     implementation mn.micronaut.inject.java
-    implementation("com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:$ociVersion") {
+    implementation(libs.oci.graalvm) {
         transitive = false
     }
-    implementation("com.oracle.oci.sdk:oci-java-sdk-common:$ociVersion") {
+    implementation(libs.oci.common) {
         transitive = false
     }
 }

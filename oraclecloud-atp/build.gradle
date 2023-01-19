@@ -16,7 +16,7 @@ dependencies {
     compileOnly mnSql.micronaut.jdbc
 
     implementation projects.oraclecloudSdk
-    implementation platform("com.oracle.database.jdbc:ojdbc-bom:$ojdbcVersion")
+    implementation platform(libs.oracle.jdbc.bom)
     implementation 'com.oracle.database.security:oraclepki'
     implementation 'com.oracle.database.security:osdt_cert'
     implementation 'com.oracle.database.security:osdt_core'

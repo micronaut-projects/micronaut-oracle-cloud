@@ -4,7 +4,6 @@ plugins {
 }
 
 dependencies {
-    api platform("com.oracle.oci.sdk:oci-java-sdk-bom:$ociVersion")
-    annotationProcessor "io.micronaut.docs:micronaut-docs-asciidoc-config-props:$micronautDocsVersion"
+    api platform(libs.oci.bom)
     annotationProcessor mn.micronaut.inject.java
 }
