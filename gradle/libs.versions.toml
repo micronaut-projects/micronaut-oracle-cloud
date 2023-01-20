@@ -1,4 +1,6 @@
 [versions]
+micronaut = "4.0.0-SNAPSHOT"
+micronaut-docs = "2.0.0"
 fn = '1.0.162'
 graal-svm = "22.0.0.2"
 javapoet = '1.13.0'
@@ -9,10 +11,14 @@ mockito = '5.0.0'
 slf4j-jcl = '2.0.6'
 commons-lang3 = '3.12.0'
 shadow = '7.1.2'
+groovy = "4.0.7"
+spock = "2.3-groovy-4.0"
+oci = "3.2.1"
+ojdbc = "21.8.0.0"
 
 micronaut-gradle-plugin = "3.7.0"
 micronaut-groovy = "4.0.0-SNAPSHOT"
-micronaut-kotlin = "3.2.2"
+micronaut-kotlin = "4.0.0-SNAPSHOT"
 micronaut-micrometer = "5.0.0-SNAPSHOT"
 micronaut-reactor = "3.0.0-SNAPSHOT"
 micronaut-rxjava2 = "2.0.0-SNAPSHOT"
@@ -32,6 +38,7 @@ micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.r
 micronaut-servlet = { module = "io.micronaut.servlet:micronaut-servlet-bom", version.ref = "micronaut-servlet" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 micronaut-test = { module = "io.micronaut.test:micronaut-test-bom", version.ref = "micronaut-test" }
+micronaut-docs = { module = "io.micronaut.docs:micronaut-docs-asciidoc-config-props", version.ref = "micronaut-docs" }
 
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
@@ -44,16 +51,26 @@ kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref =
 kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
 logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-json-classic' }
 mockito = { module = 'org.mockito:mockito-core', version.ref = 'mockito' }
-oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version = '' }
-oci-database = { module = 'com.oracle.oci.sdk:oci-java-sdk-database', version = '' }
-oci-monitoring = { module = 'com.oracle.oci.sdk:oci-java-sdk-monitoring', version = '' }
-oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version = '' }
-oci-secrets = { module = 'com.oracle.oci.sdk:oci-java-sdk-secrets', version = '' }
-oci-vault = { module = 'com.oracle.oci.sdk:oci-java-sdk-vault', version = '' }
-oci-loggingingestion = { module = 'com.oracle.oci.sdk:oci-java-sdk-loggingingestion', version = '' }
-oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version = '' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
+
+oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
+oci-database = { module = 'com.oracle.oci.sdk:oci-java-sdk-database', version.ref = "oci" }
+oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version.ref = "oci" }
+oci-common-httpclient = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient', version.ref = "oci" }
+oci-monitoring = { module = 'com.oracle.oci.sdk:oci-java-sdk-monitoring', version.ref = "oci" }
+oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version.ref = "oci" }
+oci-secrets = { module = 'com.oracle.oci.sdk:oci-java-sdk-secrets', version.ref = "oci" }
+oci-vault = { module = 'com.oracle.oci.sdk:oci-java-sdk-vault' , version.ref = "oci"}
+oci-loggingingestion = { module = 'com.oracle.oci.sdk:oci-java-sdk-loggingingestion', version.ref = "oci" }
+oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
+
+oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "ojdbc" }
+oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'ojdbc' }
+oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
+oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
+oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
+oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }

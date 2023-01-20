@@ -1,21 +1,16 @@
 plugins {
     id("io.micronaut.build.internal.bom")
+    id("io.micronaut.build.internal.oraclecloud-bom")
 }
 
 dependencies {
     constraints {
         for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
-            api "com.oracle.oci.sdk:$name:$ociVersion"
+            api "com.oracle.oci.sdk:$name:$gradle.ociVersion"
         }
 
         for (module in ['api', 'runtime', 'testing-junit4']) {
-            api "com.fnproject.fn:$module:$fnVersion"
+            api "com.fnproject.fn:$module:${libs.fn.api.get().version}"
         }
     }
 }
-
-tasks.named("checkVersionCatalogCompatibility") {
-   onlyIf { JavaVersion.current().java11Compatible }
-}
-
-

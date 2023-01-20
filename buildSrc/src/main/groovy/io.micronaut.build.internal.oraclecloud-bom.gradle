@@ -1,0 +1,8 @@
+ExtraPropertiesExtension extraPropertiesExtension = gradle.ext
+
+if (!extraPropertiesExtension.has('ociBom')) {
+    def ociVersion = libs.oci.bom.get().version
+    def ociBom = new groovy.xml.XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${ociVersion}/oci-java-sdk-bom-${ociVersion}.pom")
+    extraPropertiesExtension.set('ociBom', ociBom)
+    extraPropertiesExtension.set('ociVersion', ociVersion)
+}
