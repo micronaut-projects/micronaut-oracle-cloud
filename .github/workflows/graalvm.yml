@@ -50,13 +50,6 @@ jobs:
         graalvm: ['latest', 'dev']
     steps:
       - uses: AutoModality/action-clean@1.1.0
-       # https://github.com/actions/virtual-environments/issues/709
-      - name: Free disk space
-        run: |
-         sudo rm -rf "/usr/local/share/boost"
-         sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-         sudo apt-get clean
-         df -h
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
