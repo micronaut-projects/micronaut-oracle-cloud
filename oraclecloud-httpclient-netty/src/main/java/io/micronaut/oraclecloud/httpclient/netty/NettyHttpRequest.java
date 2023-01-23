@@ -39,6 +39,7 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.ssl.SslHandler;
 
@@ -72,6 +73,7 @@ final class NettyHttpRequest implements HttpRequest {
 
     private Executor offloadExecutor;
 
+    private boolean expectContinue;
     private Object returningBody;
     private ByteBuf immediateBody;
     private InputStream blockingBody;
@@ -195,6 +197,9 @@ final class NettyHttpRequest implements HttpRequest {
     @Override
     public HttpRequest header(String name, String value) {
         headers.add(name, value);
+        if (HttpHeaderNames.EXPECT.contentEqualsIgnoreCase(name)) {
+            expectContinue = HttpHeaderValues.CONTINUE.contentEqualsIgnoreCase(value);
+        }
         return this;
     }
 
@@ -295,6 +300,11 @@ final class NettyHttpRequest implements HttpRequest {
         immediateBody = buf;
     }
 
+    private boolean delayImmediateBody() {
+        // immediateBody.isReadable() can change over time, but only from true to false, which is fine
+        return expectContinue && immediateBody != null && immediateBody.isReadable();
+    }
+
     private io.netty.handler.codec.http.HttpRequest buildNettyRequest() {
         String uriString = buildUri();
 
@@ -350,12 +360,19 @@ final class NettyHttpRequest implements HttpRequest {
             if (!hasTransferHeader) {
                 headers.add(HttpHeaderNames.CONTENT_LENGTH, body.readableBytes());
             }
-            nettyRequest = new DefaultFullHttpRequest(
+            if (delayImmediateBody()) {
+                nettyRequest = new DefaultHttpRequest(
+                    HttpVersion.HTTP_1_1, method, pathAndQuery,
+                    headers
+                );
+            } else {
+                nettyRequest = new DefaultFullHttpRequest(
                     HttpVersion.HTTP_1_1, method, pathAndQuery,
                     body,
                     headers,
                     new DefaultHttpHeaders(true) // trailing header
-            );
+                );
+            }
         }
         return nettyRequest;
     }
@@ -379,8 +396,14 @@ final class NettyHttpRequest implements HttpRequest {
                     @Override
                     public void channelRead(ChannelHandlerContext ctx, Object msg) {
                         if (msg instanceof io.netty.handler.codec.http.HttpResponse) {
-                            future.complete(new NettyHttpResponse((io.netty.handler.codec.http.HttpResponse) msg, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
-                            ctx.pipeline().remove(this);
+                            if (((io.netty.handler.codec.http.HttpResponse) msg).status().equals(HttpResponseStatus.CONTINUE)) {
+                                if (expectContinue) {
+                                    sendBodyIfNecessary(ctx);
+                                }
+                            } else {
+                                future.complete(new NettyHttpResponse((io.netty.handler.codec.http.HttpResponse) msg, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
+                                ctx.pipeline().remove(this);
+                            }
 
                             if (msg instanceof HttpContent) {
                                 ctx.fireChannelRead(msg);
@@ -404,15 +427,23 @@ final class NettyHttpRequest implements HttpRequest {
                         ctx.pipeline().remove(this);
                         ctx.writeAndFlush(nettyRequest, ch.voidPromise());
 
-                        if (blockingBody != null) {
-                            ctx.pipeline()
-                                    .addLast(new StreamWritingHandler(
-                                            blockingBody, client.blockingIoExecutor, new DefaultLastHttpContent()));
+                        if (!expectContinue) {
+                            sendBodyIfNecessary(ctx);
                         }
 
                         ctx.read();
                         super.channelActive(ctx);
                     }
                 });
+    }
+
+    private void sendBodyIfNecessary(ChannelHandlerContext ctx) {
+        if (blockingBody != null) {
+            ctx.pipeline()
+                    .addLast(new StreamWritingHandler(
+                            blockingBody, client.blockingIoExecutor, new DefaultLastHttpContent()));
+        } else if (delayImmediateBody()) {
+            ctx.writeAndFlush(new DefaultLastHttpContent(immediateBody), ctx.voidPromise());
+        }
     }
 }
