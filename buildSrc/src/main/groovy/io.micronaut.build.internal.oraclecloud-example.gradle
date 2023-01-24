@@ -3,6 +3,11 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-base'
 }
 
+java {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
+
 dependencies {
     implementation(libs.oci.objectstorage) {
         exclude group: 'org.javassist', module: 'javassist'
@@ -12,3 +17,12 @@ dependencies {
     testImplementation mn.micronaut.http.client
     testRuntimeOnly mn.micronaut.jackson.databind
 }
+
+if (JavaVersion.current().isCompatibleWith(JavaVersion.toVersion(19))) {
+    plugins.withId('org.graalvm.buildtools.native') {
+        graalvmNative.binaries.all {
+            buildArgs.add('--enable-preview')
+        }
+    }
+}
+
