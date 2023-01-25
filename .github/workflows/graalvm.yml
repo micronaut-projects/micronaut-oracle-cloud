@@ -46,8 +46,14 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }}
     strategy:
       matrix:
-        java: ['17']
-        graalvm: ['latest', 'dev']
+        graalvm: [ 'latest', 'dev' ]
+        java: [ '17' ]
+        include:
+          - graalvm: 'dev'
+            java: '19'
+        exclude:
+          - graalvm: 'dev'
+            java: '17'
     steps:
       - uses: AutoModality/action-clean@1.1.0
       - uses: actions/checkout@v3

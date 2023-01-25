@@ -12,3 +12,12 @@ dependencies {
     testImplementation mn.micronaut.http.client
     testRuntimeOnly mn.micronaut.jackson.databind
 }
+
+if (JavaVersion.current().isCompatibleWith(JavaVersion.toVersion(19))) {
+    plugins.withId('org.graalvm.buildtools.native') {
+        graalvmNative.binaries.all {
+            buildArgs.add('--enable-preview')
+        }
+    }
+}
+
