@@ -32,6 +32,11 @@ micronautBuild {
     checkstyleVersion = "10.5.0"
 }
 
+java {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
+
 // configurations.all {
 //     resolutionStrategy.dependencySubstitution {
 //         substitute(module('commons-logging:commons-logging'))
