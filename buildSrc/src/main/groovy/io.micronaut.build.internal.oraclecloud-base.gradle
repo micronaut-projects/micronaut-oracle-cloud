@@ -32,10 +32,13 @@ micronautBuild {
     checkstyleVersion = "10.5.0"
 }
 
-java {
-    toolchain.languageVersion.convention(null)
-    sourceCompatibility = 17
-    targetCompatibility = 17
+afterEvaluate {
+    java {
+        toolchain.languageVersion.convention(null)
+        toolchain.languageVersion.set(null)
+        sourceCompatibility = 17
+        targetCompatibility = 17
+    }
 }
 
 // configurations.all {
