@@ -33,6 +33,7 @@ micronautBuild {
 }
 
 java {
+    toolchain.languageVersion.convention(null)
     sourceCompatibility = 17
     targetCompatibility = 17
 }
