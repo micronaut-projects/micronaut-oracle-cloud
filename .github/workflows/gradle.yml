@@ -48,28 +48,13 @@ jobs:
         run: |
           ./gradlew check --no-daemon --parallel --continue
         env:
-          OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
-          OCI_PRIVATE_KEY: ${{ secrets.OCI_PRIVATE_KEY }}
-          OCI_REGION: ${{ secrets.OCI_REGION }}
-          OCI_TENANT_ID: ${{ secrets.OCI_TENANT_ID }}
-          OCI_USER_ID: ${{ secrets.OCI_USER_ID }}
-          OCI_PASSPHRASE: ${{ secrets.OCI_PASSPHRASE }}
-          ATP_OCID: ${{ secrets.ATP_OCID }}
-          ATP_USER: ${{ secrets.ATP_USER }}
-          ATP_PASS: ${{ secrets.ATP_PASS }}
-          VAULT_OCID: ${{ secrets.VAULT_OCID }}
-          VAULT_SECRETS_COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}
-          MONITORING_COMPARTMENT_OCID: ${{ secrets.MONITORING_COMPARTMENT_OCID }}
-          VAULT_SECRET_NAME: ${{ secrets.VAULT_SECRET_NAME }}
-          VAULT_SECRET_VALUE: ${{ secrets.VAULT_SECRET_VALUE }}
-          COMPARTMENT_OCID: ${{ secrets.VAULT_SECRETS_COMPARTMENT_OCID }}
-          GH_TOKEN_PUBLIC_REPOS_READONLY: ${{ secrets.GH_TOKEN_PUBLIC_REPOS_READONLY }}
-          GH_USERNAME: ${{ secrets.GH_USERNAME }}
-          TESTCONTAINERS_RYUK_DISABLED: true
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
-          GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
-          GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
-          PREDICTIVE_TEST_SELECTION: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
+           GH_TOKEN_PUBLIC_REPOS_READONLY: ${{ secrets.GH_TOKEN_PUBLIC_REPOS_READONLY }}
+           GH_USERNAME: ${{ secrets.GH_USERNAME }}
+           TESTCONTAINERS_RYUK_DISABLED: true
+           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
+           GRADLE_ENTERPRISE_CACHE_USERNAME: ${{ secrets.GRADLE_ENTERPRISE_CACHE_USERNAME }}
+           GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
+           PREDICTIVE_TEST_SELECTION: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
       - name: Add build scan URL as PR comment
         uses: actions/github-script@v5
         if: github.event_name == 'pull_request' && failure()
@@ -99,7 +84,7 @@ jobs:
         if: success() && github.event_name == 'push' && matrix.java == '17'
         env:
           GH_TOKEN_PUBLIC_REPOS_READONLY: ${{ secrets.GH_TOKEN_PUBLIC_REPOS_READONLY }}
-          GH_USERNAME: ${{ secrets.GH_USERNAME }}
+          GH_USERNAME: ${{ secrets.GH_USERNAME }}        
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GRADLE_ENTERPRISE_ACCESS_KEY }}
