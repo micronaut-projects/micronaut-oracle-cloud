@@ -2,12 +2,11 @@ To get started with https://docs.micronaut.io/latest/guide/#cloudConfiguration[D
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-vault[]
 
-Then create a `src/main/resources/bootstrap.yml` file and ensure your <<authentication, Authentication>> configuration is present in this file so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).
+Then create a `bootstrap` configuration file in `src/main/resources/` and ensure your <<authentication, Authentication>> configuration is present in this file so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).
 
-Then add the following to the `bootstrap.yml` to configure Vault support:
+Then add the following to the `bootstrap` configuration file to specify Vault support:
 
-.src/main/resources/bootstrap.yml
-[source,yaml]
+[configuration]
 ----
 micronaut:
   application:
@@ -25,7 +24,7 @@ oci:
 
 One or many Vaults can be configured and each should include a `ocid` and `compartment-ocid` configuration entry. Note that the `compartment-ocid` is not the vault compartment but a compartment from where the secrets will be fetched.
 
-NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the file `bootstrap-oraclecloud.yml`
+NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file `bootstrap-oraclecloud` (with the appropriate extension, such as .yml).
 
 You're now ready to go! You can access the config variables in a few different ways. If you create a secret with the name of `SECRET_ONE` in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:
 
@@ -83,7 +82,7 @@ public class Config {
 
 Another option is to inject your variables into your configuration files which gives you the ability to store things like database passwords and API keys in your vault:
 
-[source,yaml]
+[configuration]
 ----
 datasources:
     default:
