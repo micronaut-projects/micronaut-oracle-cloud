@@ -110,7 +110,7 @@ The `OracleCloudAppender` supports blacklisting the loggers by specifying the lo
 |List of logger names that won't be published
 |===
 
-NOTE: The `logId` is also configurable through `application.yml` and `application-oraclecloud.yml` files with the `oci.logging.logId` key, and it will be considered as the prime source of it.
+NOTE: The `logId` is also configurable through the `application` and `application-oraclecloud` configuration files with the `oci.logging.logId` key, and it will be considered as the prime source of it.
 
 === OpenTelemetry and logging
 

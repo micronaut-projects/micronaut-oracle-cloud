@@ -8,9 +8,9 @@ The following authentication providers are supported in this module:
 [#config-auth]
 == ConfigFileAuthenticationDetailsProvider
 
-{ocidocs}/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html[ConfigFileAuthenticationDetailsProvider] uses a config file located at `$USER_HOME/.oci/config`. Specify a profile or config file path within the config file via your `application.yml`:
+{ocidocs}/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html[ConfigFileAuthenticationDetailsProvider] uses a config file located at `$USER_HOME/.oci/config`. Specify a profile or config file path within the config file via your `application` configuration file:
 
-[source, yaml]
+[configuration]
 ----
 oci:
   config:
@@ -23,26 +23,35 @@ NOTE: In the Oracle Java SDK the environment variable `OCI_CONFIG_FILE` doesn't 
 [#simple-auth]
 == SimpleAuthenticationDetailsProvider
 
-{ocidocs}/com/oracle/bmc/auth/SimpleAuthenticationDetailsProvider.html[SimpleAuthenticationDetailsProvider] lets you provide config details via standard Micronaut configuration files (`application.yml`).
+{ocidocs}/com/oracle/bmc/auth/SimpleAuthenticationDetailsProvider.html[SimpleAuthenticationDetailsProvider] lets you provide config details via standard Micronaut configuration files.
 
-[source, yaml]
+[configuration]
 ----
 oci:
-  fingerprint: [String. The private key fingerprint]
-  passphrase: [String. The private key passphrase]
-  private-key: [String. The contents of your private key. Optionally, pass a path with private-key-file (see below).]
-  private-key-file: [String. The path to the private key file (used in place of private-key above)]
-  region: [String. e.g. us-phoenix-1]
-  tenant-id: [String. The tenancy OCID]
-  user-id: [String. The user OCID]
+  fingerprint: <value>
+  passphrase: <value>
+  private-key: <value>
+  private-key-file: <value>
+  region: <value>
+  tenant-id: <value>
+  user-id: <value>
 ----
+
+- `fingerprint`: the private key fingerprint]
+- `passphrase`: the private key passphrase]
+- `private-key`: the contents of your private key. Optionally, pass a path with private-key-file (see below).]
+- `private-key-file`: the path to the private key file (used in place of private-key above)]
+- `region`: e.g. us-phoenix-1
+- `tenant-id`: the tenancy OCID
+- `user-id`: the user OCID
+
 
 [#instance-principals]
 == InstancePrincipalsAuthenticationDetailsProvider
 
-If your application is running in Oracle Cloud, you can authorize {ocidocs}/com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider.html[InstancePrincipalsAuthenticationDetailsProvider] to make SDK calls and utilize Instance Principal authentication. See the https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm[documentation] to enable this via dynamic groups and policies, and then enable it for the Oracle Cloud environment via `application-oraclecloud.yml` with:
+If your application is running in Oracle Cloud, you can authorize {ocidocs}/com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider.html[InstancePrincipalsAuthenticationDetailsProvider] to make SDK calls and utilize Instance Principal authentication. See the https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm[documentation] to enable this via dynamic groups and policies, and then enable it for the Oracle Cloud environment via the `application-oraclecloud` configuration file with:
 
-[source, yaml]
+[configuration]
 ----
 oci:
   config:

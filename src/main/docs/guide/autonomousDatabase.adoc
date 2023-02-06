@@ -45,20 +45,19 @@ dependency:micronaut-jdbc-hikari[groupId="io.micronaut.sql", scope="runtime"]
 NOTE: Note that `micronaut-oraclecloud-atp` module is compatible with Java 11+.
 
 To use automated data source configuration from the Wallet, provide a configuration similar to the following:
-[source,yaml]
-.application.yaml
+
+[configuration]
 ----
 datasources:
   default:
-    ocid: ocid1.autonomousdatabase.oc1..... // <1>
-    walletPassword: micronaut.1 // <2>
-    username: foo // <3>
-    password: bar // <4>
+    ocid: ocid1.autonomousdatabase.oc1.....
+    walletPassword: micronaut.1
+    username: foo
+    password: bar
 ----
-<1> autonomous database id
-<2> password to encrypt the keys inside the wallet; must be at least eight characters long and must include at least one letter and either one numeric character or one special character
-<3> database username
-<4> database password
+- `ocid` specifies the autonomous database id
+- `walletPassword` encrypts the keys inside the wallet (at least eight characters long, includes at least one letter and either one numeric character or one special character)
+- specify the database `username` and `password`
 
 NOTE: The `username` and `password` are not automatically generated and must be created in advance.
 
