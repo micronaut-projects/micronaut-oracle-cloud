@@ -37,13 +37,13 @@ import jakarta.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
+@ReflectiveAccess
 public class HttpFunction extends OciFunction {
     private ServletHttpHandler<InputEvent, OutputEvent> httpHandler;
 
     /**
      * Default constructor.
      */
-    @ReflectiveAccess
     public HttpFunction() {
     }
 
