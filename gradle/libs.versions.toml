@@ -16,7 +16,7 @@ spock = "2.3-groovy-4.0"
 oci = "3.4.0"
 ojdbc = "21.9.0.0"
 
-micronaut-gradle-plugin = "3.7.0"
+micronaut-gradle-plugin = "3.7.2"
 micronaut-groovy = "4.0.0-SNAPSHOT"
 micronaut-kotlin = "4.0.0-SNAPSHOT"
 micronaut-micrometer = "5.0.0-SNAPSHOT"
