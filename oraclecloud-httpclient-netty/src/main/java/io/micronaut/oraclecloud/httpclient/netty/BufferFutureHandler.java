@@ -18,14 +18,14 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
-import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.LastHttpContent;
 
 import java.util.concurrent.CompletableFuture;
 
 /**
- * This channel handler accumulates input data ({@link ByteBuf} and {@link HttpContent}), and when
- * {@link LastHttpContent} is received completes a {@link #future} with the accumulated data.
+ * This channel handler accumulates input data ({@link ByteBuf} and
+ * {@link io.netty.handler.codec.http.HttpContent}), and when
+ * {@link io.netty.handler.codec.http.LastHttpContent} is received completes a {@link #future} with
+ * the accumulated data.
  */
 final class BufferFutureHandler extends DecidedBodyHandler {
     final CompletableFuture<ByteBuf> future = new CompletableFuture<>();
