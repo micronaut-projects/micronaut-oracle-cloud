@@ -18,7 +18,7 @@ class UndecidedBodyHandlerTest {
     @Test
     public void fullyBufferedStream() throws Exception {
         EmbeddedChannel channel = new EmbeddedChannel();
-        UndecidedBodyHandler handler = new UndecidedBodyHandler();
+        UndecidedBodyHandler handler = new UndecidedBodyHandler(channel.alloc());
         channel.pipeline().addLast(handler);
 
         channel.writeInbound(new DefaultLastHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
@@ -33,7 +33,7 @@ class UndecidedBodyHandlerTest {
     @Test
     public void fullyBufferedFuture() throws Exception {
         EmbeddedChannel channel = new EmbeddedChannel();
-        UndecidedBodyHandler handler = new UndecidedBodyHandler();
+        UndecidedBodyHandler handler = new UndecidedBodyHandler(channel.alloc());
         channel.pipeline().addLast(handler);
 
         channel.writeInbound(new DefaultLastHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
@@ -47,7 +47,7 @@ class UndecidedBodyHandlerTest {
     @Test
     public void closeImmediatelyAsBuffer() throws Exception {
         EmbeddedChannel channel = new EmbeddedChannel();
-        UndecidedBodyHandler handler = new UndecidedBodyHandler();
+        UndecidedBodyHandler handler = new UndecidedBodyHandler(channel.alloc());
         channel.pipeline().addLast(handler);
         channel.writeInbound(new DefaultLastHttpContent());
 
@@ -64,7 +64,7 @@ class UndecidedBodyHandlerTest {
     @Test
     public void closeImmediatelyAsStream() throws Exception {
         EmbeddedChannel channel = new EmbeddedChannel();
-        UndecidedBodyHandler handler = new UndecidedBodyHandler();
+        UndecidedBodyHandler handler = new UndecidedBodyHandler(channel.alloc());
         channel.pipeline().addLast(handler);
         channel.writeInbound(new DefaultLastHttpContent());
 

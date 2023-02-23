@@ -16,9 +16,8 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.LastHttpContent;
 
@@ -28,51 +27,34 @@ import java.util.concurrent.CompletableFuture;
  * This channel handler accumulates input data ({@link ByteBuf} and {@link HttpContent}), and when
  * {@link LastHttpContent} is received completes a {@link #future} with the accumulated data.
  */
-final class BufferFutureHandler extends ChannelInboundHandlerAdapter {
+final class BufferFutureHandler extends DecidedBodyHandler {
     final CompletableFuture<ByteBuf> future = new CompletableFuture<>();
     private CompositeByteBuf buffer;
 
-    @Override
-    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        buffer = ctx.alloc().compositeBuffer();
+    BufferFutureHandler(ByteBufAllocator alloc) {
+        buffer = alloc.compositeBuffer();
     }
 
     @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+    boolean onError(Throwable cause) {
         if (buffer != null) {
-            future.cancel(false);
             buffer.release();
             buffer = null;
         }
+        return future.completeExceptionally(cause);
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof HttpContent) {
-            channelRead(ctx, ((HttpContent) msg).content().retain());
-            ((HttpContent) msg).release();
-
-            if (msg instanceof LastHttpContent) {
-                if (!future.complete(buffer.retain())) {
-                    buffer.release();
-                }
-                buffer.release();
-                buffer = null;
-                ctx.pipeline().remove(this);
-            } else {
-                ctx.read();
-            }
-        } else if (msg instanceof ByteBuf) {
-            buffer.addComponent(true, (ByteBuf) msg);
-        } else {
-            ctx.fireChannelRead(msg);
-        }
+    void onData(ByteBuf data) {
+        buffer.addComponent(true, data);
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        if (!future.completeExceptionally(cause)) {
-            ctx.fireExceptionCaught(cause);
+    void onComplete() {
+        if (!future.complete(buffer.retain())) {
+            buffer.release();
         }
+        buffer.release();
+        buffer = null;
     }
 }

@@ -2,6 +2,8 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,28 +37,30 @@ class StreamReadingHandlerTest {
     @Test
     public void simple() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
-        StreamReadingHandler handler = new StreamReadingHandler();
-        channel.pipeline().addLast(handler);
+        StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
         byte[] buffer = new byte[1024];
 
-        channel.writeInbound(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8)));
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertEquals(3, stream.read(buffer));
         Assertions.assertEquals("foo", new String(buffer, 0, 3, StandardCharsets.UTF_8));
 
-        channel.writeInbound(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertEquals(3, stream.read(buffer));
         Assertions.assertEquals("bar", new String(buffer, 0, 3, StandardCharsets.UTF_8));
 
-        channel.pipeline().remove(handler);
+        channel.writeInbound(new DefaultLastHttpContent());
         Assertions.assertEquals(-1, stream.read(buffer));
     }
 
     @Test
     public void blocking() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
-        StreamReadingHandler handler = new StreamReadingHandler();
-        channel.pipeline().addLast(handler);
+        StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
 
         LinkedBlockingQueue<String> queue = new LinkedBlockingQueue<>();
@@ -74,12 +78,12 @@ class StreamReadingHandlerTest {
             return null;
         });
 
-        channel.writeInbound(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8)));
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertEquals("foo", queue.take());
-        channel.writeInbound(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertEquals("bar", queue.take());
 
-        channel.pipeline().remove(handler);
+        channel.writeInbound(new DefaultLastHttpContent());
 
         future.get();
     }
@@ -87,13 +91,14 @@ class StreamReadingHandlerTest {
     @Test
     public void fullyBuffered() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
-        StreamReadingHandler handler = new StreamReadingHandler();
-        channel.pipeline().addLast(handler);
+        StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
         byte[] buffer = new byte[1024];
 
-        channel.writeInbound(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8)));
-        channel.pipeline().remove(handler);
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
+        channel.writeInbound(new DefaultLastHttpContent());
 
         Assertions.assertEquals(3, stream.read(buffer));
         Assertions.assertEquals("foo", new String(buffer, 0, 3, StandardCharsets.UTF_8));
@@ -103,8 +108,9 @@ class StreamReadingHandlerTest {
     @Test
     public void failure() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
-        StreamReadingHandler handler = new StreamReadingHandler();
-        channel.pipeline().addLast(handler);
+        StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
 
         channel.pipeline().fireExceptionCaught(new RuntimeException("foo"));

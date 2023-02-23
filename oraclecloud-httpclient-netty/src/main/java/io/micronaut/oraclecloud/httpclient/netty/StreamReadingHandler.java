@@ -16,26 +16,27 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.CompositeByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.embedded.EmbeddedChannel;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import java.util.NoSuchElementException;
 
 /**
  * Channel handler that exposes inbound data as an {@link InputStream}.
  */
-final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
+class StreamReadingHandler extends DecidedBodyHandler {
     private final Object monitor = new Object();
     private CompositeByteBuf buffer;
     private boolean done = false;
     private Throwable failure;
 
-    private ChannelHandlerContext context;
+    StreamReadingHandler(ByteBufAllocator alloc) {
+        synchronized (monitor) {
+            buffer = alloc.compositeBuffer();
+        }
+    }
 
     public InputStream getInputStream() throws Throwable {
         synchronized (monitor) {
@@ -50,27 +51,15 @@ final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void handlerAdded(ChannelHandlerContext ctx) {
+    void onData(ByteBuf data) {
         synchronized (monitor) {
-            this.context = ctx;
-            buffer = ctx.alloc().compositeBuffer();
+            buffer.addComponent(true, data);
+            monitor.notifyAll();
         }
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof ByteBuf) {
-            synchronized (monitor) {
-                buffer.addComponent(true, (ByteBuf) msg);
-                monitor.notifyAll();
-            }
-        } else {
-            super.channelRead(ctx, msg);
-        }
-    }
-
-    @Override
-    public void handlerRemoved(ChannelHandlerContext ctx) {
+    void onComplete() {
         synchronized (monitor) {
             done = true;
             monitor.notifyAll();
@@ -78,7 +67,7 @@ final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+    boolean onError(Throwable cause) {
         synchronized (monitor) {
             if (buffer != null) {
                 // the stream hasn't finished yet, it can handle the failure.
@@ -86,16 +75,10 @@ final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
                 buffer.release();
                 buffer = null;
                 monitor.notifyAll();
-                return;
+                return true;
+            } else {
+                return false;
             }
-        }
-        ctx.fireExceptionCaught(cause);
-    }
-
-    private void checkNotOnEventLoop() {
-        // embedded channel always returns true for inEventLoop
-        if (context.executor().inEventLoop() && !(context.channel() instanceof EmbeddedChannel)) {
-            throw new IllegalStateException("This method must not be called on the netty event loop");
         }
     }
 
@@ -128,7 +111,7 @@ final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
                         buffer.release();
                         buffer = null;
                     } else {
-                        context.read();
+                        triggerUpstreamRead();
                         checkNotOnEventLoop();
                         try {
                             monitor.wait();
@@ -152,10 +135,7 @@ final class StreamReadingHandler extends ChannelInboundHandlerAdapter {
 
         @Override
         public void close() throws IOException {
-            try {
-                context.pipeline().remove(StreamReadingHandler.this);
-            } catch (NoSuchElementException ignored) {
-            }
+            removeEarly();
         }
     }
 }
