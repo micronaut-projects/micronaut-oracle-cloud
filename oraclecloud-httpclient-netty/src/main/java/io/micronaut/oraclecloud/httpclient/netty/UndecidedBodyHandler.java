@@ -37,6 +37,7 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
     private Throwable failure;
 
     private boolean decided = false;
+    private boolean removed = false;
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -46,6 +47,7 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        removed = true;
         if (failure != null) {
             ctx.fireExceptionCaught(failure);
         }
@@ -100,45 +102,62 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
         decided = true;
 
         StreamReadingHandler streamReadingHandler = new StreamReadingHandler();
-        Future<?> addFuture = context.executor().submit(() -> {
-            context.pipeline()
-                    .addAfter(context.name(), null, streamReadingHandler)
-                    .addAfter(context.name(), null, new ChannelInboundHandlerAdapter() {
-                        @Override
-                        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                            if (msg instanceof HttpContent) {
-                                ctx.fireChannelRead(((HttpContent) msg).content().retain());
-                                ((HttpContent) msg).release();
-
-                                if (msg instanceof LastHttpContent) {
-                                    ctx.pipeline()
-                                            .remove(this)
-                                            .remove(streamReadingHandler);
-                                }
-                            } else {
-                                ctx.fireChannelRead(msg);
-                            }
-                        }
-                    })
-                    .remove(this);
-            context.read();
-        });
-        CompletableFuture<InputStream> streamFuture = new CompletableFuture<>();
-        addFuture.addListener(future -> {
-            if (future.isSuccess()) {
-                InputStream stream;
-                try {
-                    stream = streamReadingHandler.getInputStream();
-                } catch (Throwable e) {
-                    streamFuture.completeExceptionally(e);
-                    return;
-                }
-                streamFuture.complete(stream);
-            } else {
-                streamFuture.completeExceptionally(future.cause());
+        if (context.executor().inEventLoop()) {
+            replaceWithHandler(streamReadingHandler);
+            try {
+                return CompletableFuture.completedFuture(streamReadingHandler.getInputStream());
+            } catch (Throwable e) {
+                CompletableFuture<InputStream> cf = new CompletableFuture<>();
+                cf.completeExceptionally(e);
+                return cf;
             }
-        });
-        return streamFuture;
+        } else {
+            Future<?> addFuture = context.executor().submit(() -> replaceWithHandler(streamReadingHandler));
+            CompletableFuture<InputStream> streamFuture = new CompletableFuture<>();
+            addFuture.addListener(future -> {
+                if (future.isSuccess()) {
+                    InputStream stream;
+                    try {
+                        stream = streamReadingHandler.getInputStream();
+                    } catch (Throwable e) {
+                        streamFuture.completeExceptionally(e);
+                        return;
+                    }
+                    streamFuture.complete(stream);
+                } else {
+                    streamFuture.completeExceptionally(future.cause());
+                }
+            });
+            return streamFuture;
+        }
+    }
+
+    private void replaceWithHandler(StreamReadingHandler streamReadingHandler) {
+        if (removed) {
+            throw new IllegalStateException("UndecidedBodyHandler already removed");
+        }
+
+        context.pipeline()
+                .addAfter(context.name(), null, streamReadingHandler)
+                .addAfter(context.name(), null, new ChannelInboundHandlerAdapter() {
+                    @Override
+                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                        if (msg instanceof HttpContent) {
+                            ctx.fireChannelRead(((HttpContent) msg).content().retain());
+                            ((HttpContent) msg).release();
+
+                            if (msg instanceof LastHttpContent) {
+                                ctx.pipeline()
+                                        .remove(this)
+                                        .remove(streamReadingHandler);
+                            }
+                        } else {
+                            ctx.fireChannelRead(msg);
+                        }
+                    }
+                })
+                .remove(this);
+        context.read();
     }
 
     public CompletableFuture<ByteBuf> asBuffer() {
@@ -148,12 +167,23 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
         decided = true;
 
         BufferFutureHandler futureHandler = new BufferFutureHandler();
-        context.executor().execute(() -> {
-            context.pipeline()
-                    .addAfter(context.name(), null, futureHandler)
-                    .remove(this);
-            context.read();
-        });
+        if (context.executor().inEventLoop()) {
+            replaceWithHandler(futureHandler);
+        } else {
+            context.executor().execute(() -> replaceWithHandler(futureHandler));
+        }
         return futureHandler.future;
+    }
+
+    private void replaceWithHandler(BufferFutureHandler futureHandler) {
+        if (removed) {
+            futureHandler.future.completeExceptionally(new IllegalStateException("UndecidedBodyHandler already removed"));
+            return;
+        }
+
+        context.pipeline()
+                .addAfter(context.name(), null, futureHandler)
+                .remove(this);
+        context.read();
     }
 }

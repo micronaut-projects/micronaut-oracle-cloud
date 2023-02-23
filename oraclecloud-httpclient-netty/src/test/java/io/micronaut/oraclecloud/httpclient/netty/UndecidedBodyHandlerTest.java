@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 
 class UndecidedBodyHandlerTest {
@@ -41,5 +42,39 @@ class UndecidedBodyHandlerTest {
         channel.runPendingTasks();
         Assertions.assertTrue(future.isDone());
         Assertions.assertEquals(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8)), future.get());
+    }
+
+    @Test
+    public void closeImmediatelyAsBuffer() throws Exception {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        UndecidedBodyHandler handler = new UndecidedBodyHandler();
+        channel.pipeline().addLast(handler);
+        channel.writeInbound(new DefaultLastHttpContent());
+
+        CompletableFuture<?> future = handler.asBuffer();
+        try {
+            channel.pipeline().remove(handler);
+        } catch (NoSuchElementException ignored) {
+            // already removed by asBuffer
+        }
+        channel.runPendingTasks();
+        Assertions.assertTrue(future.isDone());
+    }
+
+    @Test
+    public void closeImmediatelyAsStream() throws Exception {
+        EmbeddedChannel channel = new EmbeddedChannel();
+        UndecidedBodyHandler handler = new UndecidedBodyHandler();
+        channel.pipeline().addLast(handler);
+        channel.writeInbound(new DefaultLastHttpContent());
+
+        CompletableFuture<?> future = handler.asInputStream();
+        try {
+            channel.pipeline().remove(handler);
+        } catch (NoSuchElementException ignored) {
+            // already removed by asInputStream
+        }
+        channel.runPendingTasks();
+        Assertions.assertTrue(future.isDone());
     }
 }
