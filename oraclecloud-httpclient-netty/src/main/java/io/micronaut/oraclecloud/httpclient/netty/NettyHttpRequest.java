@@ -389,7 +389,7 @@ final class NettyHttpRequest implements HttpRequest {
             ch.pipeline().addLast(sslHandler);
         }
         LimitedBufferingBodyHandler limitedBufferingBodyHandler = new LimitedBufferingBodyHandler(4096);
-        UndecidedBodyHandler undecidedBodyHandler = new UndecidedBodyHandler();
+        UndecidedBodyHandler undecidedBodyHandler = new UndecidedBodyHandler(ch.alloc());
         ch.pipeline()
                 .addLast(new HttpClientCodec())
                 .addLast(new ChannelInboundHandlerAdapter() {
