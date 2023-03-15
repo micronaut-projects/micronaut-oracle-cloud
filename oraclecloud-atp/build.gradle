@@ -6,16 +6,17 @@ dependencies {
     api libs.oci.database, {
         exclude group:'commons-logging', module:'commons-logging'
     }
+    annotationProcessor(mnValidation.micronaut.validation.processor)
     api libs.oracle.jdbc
     api mn.micronaut.inject
-    api mn.micronaut.validation
+    api mnValidation.micronaut.validation
     runtimeOnly libs.slf4j.jcl
 
     compileOnly mnSql.micronaut.jdbc.hikari
     compileOnly mnSql.micronaut.jdbc.ucp
     compileOnly mnSql.micronaut.jdbc
 
-    implementation projects.oraclecloudSdk
+    implementation projects.micronautOraclecloudSdk
     implementation platform(libs.oracle.jdbc.bom)
     implementation libs.oracle.security.oraclepki
     implementation libs.oracle.security.cert

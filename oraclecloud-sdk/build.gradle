@@ -4,14 +4,14 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor projects.oraclecloudSdkProcessor
-    api projects.oraclecloudCommon, {
+    annotationProcessor projects.micronautOraclecloudSdkProcessor
+    api projects.micronautOraclecloudCommon, {
         exclude group:'commons-logging', module:'commons-logging'
     }
     api(libs.oci.graalvm) {
         transitive = false
     }
-    api projects.oraclecloudHttpclientNetty
+    api projects.micronautOraclecloudHttpclientNetty
     compileOnly libs.graal.svm
     compileOnly mnRxjava2.rxjava2
     testImplementation libs.graal.svm

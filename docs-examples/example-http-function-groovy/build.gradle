@@ -7,12 +7,12 @@ plugins {
 dependencies {
     implementation mnGroovy.micronaut.runtime.groovy
     implementation mn.reactor
-    implementation projects.oraclecloudFunctionHttp
+    implementation projects.micronautOraclecloudFunctionHttp
     runtimeOnly libs.fn.runtime
     runtimeOnly mn.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.groovy
     testImplementation mnTest.micronaut.test.spock
-    testImplementation projects.oraclecloudFunctionHttpTest
+    testImplementation projects.micronautOraclecloudFunctionHttpTest
 }
 
 mainClassName = 'com.fnproject.fn.runtime.EntryPoint'

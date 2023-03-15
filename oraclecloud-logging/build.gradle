@@ -8,7 +8,7 @@ dependencies {
     }
     api mn.micronaut.inject
     api mnSerde.micronaut.serde.jackson
-    implementation projects.oraclecloudSdk
+    implementation projects.micronautOraclecloudSdk
     implementation libs.logback.json.classic
 
     testImplementation mn.snakeyaml

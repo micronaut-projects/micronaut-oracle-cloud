@@ -8,7 +8,7 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
-    testImplementation(projects.oraclecloudSdk) {
+    testImplementation(projects.micronautOraclecloudSdk) {
         exclude group: 'com.oracle.oci.sdk'
     }
     testImplementation(libs.oci.monitoring)

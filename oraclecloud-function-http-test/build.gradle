@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    compileOnly projects.oraclecloudFunctionHttp
+    compileOnly projects.micronautOraclecloudFunctionHttp
     implementation libs.fn.testing.junit4
     implementation libs.jetty
     implementation mn.micronaut.http.server

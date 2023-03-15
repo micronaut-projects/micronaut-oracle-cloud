@@ -6,7 +6,7 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "6.2.2"
+    id("io.micronaut.build.shared.settings") version "6.3.5"
 }
 
 rootProject.name = 'oracle-cloud'
@@ -41,6 +41,7 @@ enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
 micronautBuild {
     addSnapshotRepository()
+    useStandardizedProjectNames = true
     importMicronautCatalog()
     importMicronautCatalog("micronaut-groovy")
     importMicronautCatalog("micronaut-kotlin")
@@ -50,4 +51,5 @@ micronautBuild {
     importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-servlet")
     importMicronautCatalog("micronaut-sql")
+    importMicronautCatalog("micronaut-validation")
 }

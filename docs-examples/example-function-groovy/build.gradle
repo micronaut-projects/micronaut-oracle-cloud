@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     implementation mnGroovy.micronaut.runtime.groovy
-    implementation projects.oraclecloudFunction
+    implementation projects.micronautOraclecloudFunction
     runtimeOnly libs.fn.runtime
     runtimeOnly mn.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.groovy
