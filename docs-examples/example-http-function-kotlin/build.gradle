@@ -9,13 +9,13 @@ dependencies {
     implementation mnKotlin.micronaut.kotlin.runtime
     implementation mn.micronaut.runtime
     implementation mn.reactor
-    implementation projects.oraclecloudFunctionHttp
+    implementation projects.micronautOraclecloudFunctionHttp
     runtimeOnly libs.fn.runtime
     runtimeOnly mn.jackson.module.kotlin
     runtimeOnly mn.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mnTest.micronaut.test.junit5
-    testImplementation projects.oraclecloudFunctionHttpTest
+    testImplementation projects.micronautOraclecloudFunctionHttpTest
     testRuntimeOnly libs.junit.jupiter
 }
 
@@ -23,17 +23,4 @@ application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
 
 run {
     args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
-        javaParameters = true
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = '1.8'
-        javaParameters = true
-    }
 }

@@ -4,8 +4,8 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor projects.oraclecloudSdkProcessor
-    api projects.oraclecloudSdk
+    annotationProcessor projects.micronautOraclecloudSdkProcessor
+    api projects.micronautOraclecloudSdk
     implementation mnRxjava2.rxjava2
 
     // optional modules

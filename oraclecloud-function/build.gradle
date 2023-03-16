@@ -6,10 +6,10 @@ dependencies {
     annotationProcessor mn.micronaut.graal
     api libs.fn.api
     api mn.micronaut.function
-    api projects.oraclecloudCommon
+    api projects.micronautOraclecloudCommon
     compileOnly libs.graal.svm
     testImplementation libs.oci.objectstorage
     testImplementation libs.fn.testing.junit4
     testImplementation mnTest.micronaut.test.spock
-    testImplementation projects.oraclecloudSdk
+    testImplementation projects.micronautOraclecloudSdk
 }

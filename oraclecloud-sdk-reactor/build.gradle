@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor projects.oraclecloudSdkProcessor
+    annotationProcessor projects.micronautOraclecloudSdkProcessor
     api mn.reactor
-    api projects.oraclecloudSdk
+    api projects.micronautOraclecloudSdk
     implementation mnReactor.micronaut.reactor
 
     // optional modules

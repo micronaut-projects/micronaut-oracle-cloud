@@ -11,7 +11,7 @@ dependencies {
     implementation libs.kotlin.stdlib
     implementation mn.micronaut.http.server.netty
     implementation mnKotlin.micronaut.kotlin.runtime
-    implementation projects.oraclecloudSdkReactor
+    implementation projects.micronautOraclecloudSdkReactor
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson
     runtimeOnly mn.logback.classic

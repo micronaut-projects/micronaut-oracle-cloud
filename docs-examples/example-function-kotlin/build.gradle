@@ -7,7 +7,7 @@ dependencies {
     implementation libs.kotlin.stdlib
     implementation mnKotlin.micronaut.kotlin.runtime
     implementation mn.micronaut.runtime
-    implementation projects.oraclecloudFunction
+    implementation projects.micronautOraclecloudFunction
     runtimeOnly libs.fn.runtime
     runtimeOnly mn.jackson.module.kotlin
     runtimeOnly mn.slf4j.simple

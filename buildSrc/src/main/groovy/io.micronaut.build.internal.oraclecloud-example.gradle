@@ -7,8 +7,9 @@ dependencies {
     implementation(libs.oci.objectstorage) {
         exclude group: 'org.javassist', module: 'javassist'
     }
-    implementation mn.micronaut.validation
-    implementation projects.oraclecloudSdk
+    annotationProcessor mnValidation.micronaut.validation.processor
+    implementation mnValidation.micronaut.validation
+    implementation projects.micronautOraclecloudSdk
     testImplementation mn.micronaut.http.client
     testRuntimeOnly mn.micronaut.jackson.databind
 }

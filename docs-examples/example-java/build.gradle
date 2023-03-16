@@ -8,7 +8,7 @@ dependencies {
         exclude group: 'org.javassist', module: 'javassist'
     }
     implementation mn.micronaut.http.server.netty
-    implementation projects.oraclecloudSdkReactor
+    implementation projects.micronautOraclecloudSdkReactor
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson
     runtimeOnly mn.logback.classic
