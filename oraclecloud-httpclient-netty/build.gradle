@@ -2,21 +2,47 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-module'
 }
 
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
 dependencies {
     implementation("io.netty:netty-codec-http")
     api("com.oracle.oci.sdk:oci-java-sdk-common-httpclient:$oci3Version")
+    api mn.micronaut.serde.api
+    implementation mn.micronaut.serde.support
+
     testImplementation("io.micronaut:micronaut-http-server-netty")
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     testImplementation(projects.oraclecloudSdk) {
         exclude group: 'com.oracle.oci.sdk'
     }
-    testImplementation("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
-}
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
+    testImplementation "com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version"
+
+    testAnnotationProcessor mn.micronaut.inject.java
+    testAnnotationProcessor mn.micronaut.serde.processor
+    testAnnotationProcessor project(":oraclecloud-httpclient-netty-processor")
+
+    testImplementation mn.micronaut.inject.java.test
+    testImplementation mn.micronaut.serde.api
+    testImplementation mn.micronaut.serde.processor
+    testImplementation mn.micronaut.serde.jackson
+    testImplementation project(":oraclecloud-httpclient-netty-processor")
+    testImplementation mn.micronaut.management
 }
 
 micronautBuild {
     binaryCompatibility.enabled = false
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'io.micronaut.serde') {
+                details.useVersion "1.5.2-SNAPSHOT"
+            }
+        }
+    }
 }

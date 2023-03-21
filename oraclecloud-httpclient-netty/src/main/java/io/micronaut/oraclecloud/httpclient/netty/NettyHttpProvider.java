@@ -22,7 +22,11 @@ import com.oracle.bmc.http.client.HttpProvider;
  * Netty-based implementation of {@link HttpProvider}.
  */
 public final class NettyHttpProvider implements HttpProvider {
+    /**
+     * Construct a netty-based {@link HttpProvider}.
+     */
     public NettyHttpProvider() {
+
     }
 
     @Override

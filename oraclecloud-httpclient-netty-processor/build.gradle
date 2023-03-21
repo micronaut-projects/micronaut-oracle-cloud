@@ -1,0 +1,36 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation mn.micronaut.inject
+//    implementation("io.micronaut.serde:micronaut-serde-processor:$micronautSerializationVersion")
+
+    testImplementation mn.micronaut.inject
+    testImplementation mn.micronaut.inject.java.test
+    testCompileOnly mn.micronaut.inject.groovy
+
+    testAnnotationProcessor mn.micronaut.inject.java
+    testImplementation mn.micronaut.serde.api
+    testImplementation mn.micronaut.serde.jackson
+    testImplementation mn.micronaut.serde.processor
+    testAnnotationProcessor mn.micronaut.serde.processor
+
+    testImplementation("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
+    testCompileOnly("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
+}
+
+configurations.all {
+    resolutionStrategy {
+        eachDependency { DependencyResolveDetails details ->
+            if (details.requested.group == 'io.micronaut.serde') {
+                details.useVersion "1.5.2-SNAPSHOT"
+            }
+        }
+    }
+}

@@ -15,9 +15,9 @@
  */
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import com.fasterxml.jackson.databind.type.CollectionType;
 import com.oracle.bmc.http.client.HttpResponse;
-import com.oracle.bmc.http.client.Serialization;
+import io.micronaut.core.type.Argument;
+import io.micronaut.oraclecloud.serde.MicronautSerdeObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 
@@ -78,7 +78,7 @@ final class NettyHttpResponse implements HttpResponse {
     public <T> CompletionStage<T> body(Class<T> type) {
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                return Serialization.getObjectMapper().readValue((InputStream) new ByteBufInputStream(buf), type);
+                return MicronautSerdeObjectMapper.getObjectMapper().readValue(new ByteBufInputStream(buf), type);
             } catch (IOException e) {
                 throw new CompletionException(e);
             } finally {
@@ -89,10 +89,10 @@ final class NettyHttpResponse implements HttpResponse {
 
     @Override
     public <T> CompletionStage<List<T>> listBody(Class<T> type) {
-        CollectionType listType = Serialization.getObjectMapper().getTypeFactory().constructCollectionType(List.class, type);
+        Argument<List<T>> listArgument = Argument.listOf(type);
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                return Serialization.getObjectMapper().readValue((InputStream) new ByteBufInputStream(buf), listType);
+                return MicronautSerdeObjectMapper.getObjectMapper().readValue(new ByteBufInputStream(buf), listArgument);
             } catch (IOException e) {
                 throw new CompletionException(e);
             } finally {

@@ -25,6 +25,7 @@ include 'oraclecloud-function'
 include 'oraclecloud-function-http'
 include 'oraclecloud-function-http-test'
 include 'oraclecloud-httpclient-netty'
+include 'oraclecloud-httpclient-netty-processor'
 include 'oraclecloud-logging'
 include 'oraclecloud-micrometer'
 include 'oraclecloud-sdk'
@@ -47,6 +48,7 @@ enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots/") }
     }
     versionCatalogs {
         mn {
@@ -54,3 +56,6 @@ dependencyResolutionManagement {
         }
     }
 }
+
+include 'oraclecloud-httpnetty-client-processor'
+
