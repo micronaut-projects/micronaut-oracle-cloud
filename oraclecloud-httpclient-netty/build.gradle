@@ -5,6 +5,9 @@ plugins {
 dependencies {
     implementation(mn.netty.codec.http)
     api(libs.oci.common.httpclient)
+    api mn.micronaut.serde.api
+    implementation mn.micronaut.serde.support
+
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
@@ -12,6 +15,17 @@ dependencies {
         exclude group: 'com.oracle.oci.sdk'
     }
     testImplementation(libs.oci.monitoring)
+
+    testAnnotationProcessor mn.micronaut.inject.java
+    testAnnotationProcessor mn.micronaut.serde.processor
+    testAnnotationProcessor projects.oraclecloudHttpclientNettyProcessor
+
+    testImplementation mn.micronaut.inject.java.test
+    testImplementation mn.micronaut.serde.api
+    testImplementation mn.micronaut.serde.processor
+    testImplementation mn.micronaut.serde.jackson
+    testImplementation projects.oraclecloudHttpclientNettyProcessor
+    testImplementation mn.micronaut.management
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
