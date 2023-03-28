@@ -17,7 +17,6 @@ oci = "3.4.0"
 ojdbc = "21.9.0.0"
 
 micronaut-gradle-plugin = "4.0.0-SNAPSHOT"
-micronaut-validation = "4.0.0-SNAPSHOT"
 micronaut-groovy = "4.0.0-M1"
 micronaut-kotlin = "4.0.0-M1"
 micronaut-micrometer = "5.0.0-M1"
@@ -27,6 +26,7 @@ micronaut-serde = "2.0.0-M1"
 micronaut-servlet = "4.0.0-M1"
 micronaut-sql = "5.0.0-M1"
 micronaut-test = "4.0.0-M1"
+micronaut-validation = "4.0.0-M2"
 
 [libraries]
 # micronaut boms
