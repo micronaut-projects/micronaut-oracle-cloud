@@ -1,4 +1,4 @@
-package io.micronaut.oraclecloud.atp.jdbc.upc
+package io.micronaut.oraclecloud.atp.jdbc.ucp
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.atp.jdbc.upc;
+package io.micronaut.oraclecloud.atp.jdbc.ucp;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import io.micronaut.configuration.jdbc.ucp.DatasourceConfiguration;
@@ -49,7 +49,6 @@ import java.sql.SQLException;
  * @since 2.5
  */
 @Singleton
-@Requires(sdk = Requires.Sdk.JAVA, value = "11")
 @Requires(classes = PoolDataSource.class)
 @Internal
 public class UcpPoolConfigurationListener implements BeanInitializedEventListener<DatasourceConfiguration>, Ordered {
