@@ -3,6 +3,13 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-base'
 }
 
+repositories {
+    maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+micronaut {
+    version '4.0.0-SNAPSHOT'
+}
 dependencies {
     implementation(libs.oci.objectstorage) {
         exclude group: 'org.javassist', module: 'javassist'
