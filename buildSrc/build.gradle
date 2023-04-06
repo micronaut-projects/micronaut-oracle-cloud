@@ -12,4 +12,5 @@ dependencies {
     implementation libs.kotlin.gradle.plugin
     implementation libs.kotlin.gradle.allopen
     implementation libs.shadow.plugin
+    implementation libs.protobuf.gradle.plugin
 }
