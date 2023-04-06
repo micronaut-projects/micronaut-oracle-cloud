@@ -1,0 +1,43 @@
+// What we are going to publish is not the usual jar
+// But a jar which is stripped down to only contain
+// metadata. As a consequence, we use a custom publication
+// instead of the normal one, so that we are in control
+// of which dependencies it includes.
+
+plugins.withId('maven-publish') {
+    AdhocComponentWithVariants javaComponent = components["java"]
+    ["apiElements", "runtimeElements"].each {
+        javaComponent.withVariantsFromConfiguration(configurations.findByName(it)) {
+            skip()
+        }
+    }
+
+    def metadata = configurations.create("metadataElements") {
+        canBeConsumed = true
+        canBeResolved = false
+        attributes {
+            def runtimeElements = configurations.findByName('runtimeElements')
+            runtimeElements.attributes.keySet().each { attr ->
+                attribute(attr, runtimeElements.attributes.getAttribute(attr))
+            }
+        }
+    }
+    javaComponent.addVariantsFromConfiguration(metadata) {
+
+    }
+}
+
+// Workaround for variant selection problem
+def proto = Attribute.of("protobuf-compatble", Boolean)
+
+configurations.all {
+    if (canBeConsumed) {
+        attributes.attribute(proto, name == 'runtimeElements')
+    } else if (name == 'compileProtoPath') {
+        attributes.attribute(proto, Boolean.TRUE)
+    }
+}
+
+dependencies {
+    metadataElements projects.oraclecloudHttpclientNetty
+}
