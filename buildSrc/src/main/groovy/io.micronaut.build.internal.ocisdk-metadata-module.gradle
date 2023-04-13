@@ -1,0 +1,92 @@
+plugins {
+    id "io.micronaut.build.internal.module"
+    id 'io.micronaut.build.internal.ocisdk-metadata-published'
+}
+
+dependencies {
+    annotationProcessor(projects.oraclecloudHttpclientNettyProcessor)
+}
+
+java {
+    sourceCompatibility = "8"
+    targetCompatibility = "8"
+}
+
+def metadataJar = tasks.register("metadataJar", Jar) {
+    archiveClassifier = "metadata"
+    def suffixes = [
+            '$Introspection.class',
+            '$IntrospectionRef.class',
+    ]
+    from(sourceSets.main.output) {
+        include("META-INF/micronaut/**")
+        include { e ->
+            if (e.file.directory) {
+                return true
+            }
+            def fn = e.file.name
+            return suffixes.any {
+                fn.endsWith(it)
+            }
+        }
+    }
+}
+
+configurations.all {
+    if (name == "metadataElements") {
+        outgoing.artifact(metadataJar) {
+            classifier = null
+        }
+    }
+}
+
+tasks.withType(Test).configureEach {
+    // We don't convert tests from the OCI SDK
+    enabled = false
+}
+
+tasks.withType(Checkstyle).configureEach {
+    // The checkstyle rules of this project differ
+    enabled = false
+}
+
+tasks.withType(Javadoc).configureEach {
+    // not relevant for us
+    enabled = false
+}
+
+tasks.named("sourcesJar", Jar) {
+    // our modules don't have sources, but the sources jar is required for Maven Central
+    // so we build an empty one
+    exclude "**/*"
+}
+
+tasks.configureEach {
+    if (name.startsWith("spotless")) {
+        // The license and checkstyle rules differ from ours
+        enabled = false
+    }
+}
+
+micronautBuild {
+    binaryCompatibility.enabled = false
+}
+
+configurations.all {
+    resolutionStrategy.preferProjectModules()
+    ResolutionStrategy rs = resolutionStrategy
+    rs.dependencySubstitution.all {
+        if (requested instanceof ModuleComponentSelector) {
+            if (requested.group == "com.oracle.oci.sdk") {
+                def simpleName = requested.module - 'oci-java-sdk-'
+                if (simpleName == 'bom') {
+                    rs.dependencySubstitution {
+                        substitute(platform(requested)).using(platform(project(":oraclecloud-bom")))
+                    }
+                } else {
+                    useTarget(project(":oraclecloud-bmc-${simpleName}"))
+                }
+            }
+        }
+    }
+}
