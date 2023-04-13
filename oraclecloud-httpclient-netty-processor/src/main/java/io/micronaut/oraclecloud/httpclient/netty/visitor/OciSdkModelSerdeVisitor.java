@@ -18,15 +18,18 @@ package io.micronaut.oraclecloud.httpclient.netty.visitor;
 import io.micronaut.core.annotation.AnnotationUtil;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.inject.ast.ClassElement;
 import io.micronaut.inject.ast.ConstructorElement;
+import io.micronaut.inject.ast.Element;
 import io.micronaut.inject.ast.FieldElement;
 import io.micronaut.inject.ast.MethodElement;
 import io.micronaut.inject.ast.ParameterElement;
 import io.micronaut.inject.ast.TypedElement;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import io.micronaut.inject.visitor.VisitorContext;
+import io.micronaut.serde.annotation.Serdeable;
 
 import java.util.Optional;
 
@@ -63,15 +66,24 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
     public void visitClass(ClassElement element, VisitorContext context) {
         visitingOciSdkModel = isOciSdkModel(element);
         visitingOciSdkEnum = isOciSdkEnum(element);
+
+        context.info("Visiting class :  " + element.getName() + ", model: " + visitingOciSdkModel + ", enum: " + visitingOciSdkEnum);
         if (visitingOciSdkModel) {
-            element.annotate(ANN_SERDEABLE);
+            makeSerializable(element);
             ignoreMicronautSerdeValidation(element);
         } else if (visitingOciSdkEnum) {
-            element.annotate(ANN_SERDEABLE);
+            makeSerializable(element);
         }
     }
 
-    private void ignoreMicronautSerdeValidation(ClassElement element) {
+    private void makeSerializable(ClassElement element) {
+        element.annotate(Serdeable.class);
+        element.annotate(Serdeable.Serializable.class);
+        element.annotate(Serdeable.Deserializable.class);
+        element.annotate(Introspected.class);
+    }
+
+    private void ignoreMicronautSerdeValidation(Element element) {
         element.annotate(
             AnnotationValue.builder(ANN_SERDE_CONFIG)
                 .member("validate", false)
@@ -88,7 +100,7 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
 
     @Override
     public void visitConstructor(ConstructorElement element, VisitorContext context) {
-        if (visitingOciSdkModel) {
+        if (visitingOciSdkModel || visitingOciSdkEnum) {
             for (ParameterElement parameter: element.getParameters()) {
                 visitElement(parameter);
             }
