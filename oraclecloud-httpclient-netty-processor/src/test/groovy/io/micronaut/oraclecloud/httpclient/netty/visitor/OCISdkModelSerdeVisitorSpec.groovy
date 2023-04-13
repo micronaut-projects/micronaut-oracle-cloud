@@ -173,7 +173,11 @@ import com.oracle.bmc.http.internal.BmcEnum;
 enum TestEnum implements BmcEnum {
     STOPPED,
     RUNNING,
-    DEFAULT
+    DEFAULT;
+
+    public String getValue() {
+        return null;
+    }
 }
 ''')
         expect:
@@ -226,5 +230,31 @@ enum TestEnum implements BmcEnum {
 
         then:
         argument.isNullable()
+    }
+
+    void "test oci inner enum is serdeable"() {
+        given:
+        def introspection = buildBeanIntrospection('test.TestClass$TestEnum','''
+package test;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;import com.oracle.bmc.http.internal.BmcEnum;
+
+class TestClass {
+    enum TestEnum implements BmcEnum {
+        STOPPED,
+        RUNNING,
+        DEFAULT;
+
+        public String getValue() {
+            return null;
+        }
+    }
+}
+''')
+        expect:
+        introspection != null
+        introspection.hasStereotype(ANN_SERDEABLE)
     }
 }

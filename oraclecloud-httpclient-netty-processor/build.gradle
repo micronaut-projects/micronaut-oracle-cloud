@@ -3,6 +3,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
@@ -10,29 +11,34 @@ repositories {
 }
 
 dependencies {
+    // Transitive dependencies
     implementation mn.micronaut.inject
+    implementation mn.micronaut.inject.java
+    implementation mn.micronaut.serde.processor
+    implementation (mn.micronaut.serde.api) {
+        transitive = false
+    }
+
 //    implementation("io.micronaut.serde:micronaut-serde-processor:$micronautSerializationVersion")
 
-    testImplementation mn.micronaut.inject
+//    testImplementation mn.micronaut.inject
     testImplementation mn.micronaut.inject.java.test
     testCompileOnly mn.micronaut.inject.groovy
 
-    testAnnotationProcessor mn.micronaut.inject.java
+//    testAnnotationProcessor mn.micronaut.inject.java
     testImplementation mn.micronaut.serde.api
     testImplementation mn.micronaut.serde.jackson
-    testImplementation mn.micronaut.serde.processor
-    testAnnotationProcessor mn.micronaut.serde.processor
+//    testImplementation mn.micronaut.serde.processor
+//    testAnnotationProcessor mn.micronaut.serde.processor
 
     testImplementation("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
     testCompileOnly("com.oracle.oci.sdk:oci-java-sdk-monitoring:$oci3Version")
 }
 
-configurations.all {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'io.micronaut.serde') {
-                details.useVersion "1.5.2-SNAPSHOT"
-            }
+configurations.configureEach {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        if (details.requested.group == 'io.micronaut.serde') {
+            details.useVersion "1.5.2-SNAPSHOT"
         }
     }
 }

@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     implementation(mn.netty.codec.http)
+    implementation(libs.oci.common)
     api(libs.oci.common.httpclient)
     api mn.micronaut.serde.api
     implementation mn.micronaut.serde.support
@@ -14,7 +15,6 @@ dependencies {
     testImplementation(projects.micronautOraclecloudSdk) {
         exclude group: 'com.oracle.oci.sdk'
     }
-    testImplementation(libs.oci.monitoring)
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor mn.micronaut.serde.processor
@@ -26,6 +26,10 @@ dependencies {
     testImplementation mn.micronaut.serde.jackson
     testImplementation projects.oraclecloudHttpclientNettyProcessor
     testImplementation mn.micronaut.management
+
+    testImplementation (projects.oraclecloudBmcMonitoring) {
+        transitive = false
+    }
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
