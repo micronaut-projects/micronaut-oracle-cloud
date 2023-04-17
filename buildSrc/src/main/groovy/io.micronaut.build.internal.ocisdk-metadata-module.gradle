@@ -4,8 +4,15 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor(mn.micronaut.serde.processor)
-    annotationProcessor(projects.oraclecloudHttpclientNettyProcessor)
+    annotationProcessor(projects.oraclecloudSerdeProcessor)
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+    }
 }
 
 java {
@@ -91,3 +98,4 @@ configurations.all {
         }
     }
 }
+

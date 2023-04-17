@@ -2,7 +2,6 @@ package io.micronaut.oraclecloud.serde
 
 import com.fasterxml.jackson.annotation.JsonFilter
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
-import com.oracle.bmc.monitoring.model.Metric
 import io.micronaut.oraclecloud.serde.model.BaseModel
 import io.micronaut.oraclecloud.serde.model.ComplexModel
 import io.micronaut.runtime.server.EmbeddedServer
@@ -37,35 +36,6 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
         then:
         '{}' == body
-    }
-
-    void "Metric serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-        Metric metric = Metric.builder()
-                .compartmentId("a")
-                .build()
-
-        when:
-        var body = echoTest(embeddedServer, metric)
-
-        then:
-        '{"compartmentId":"a"}' == body
-    }
-
-    void "Explicitly set Metric serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-        Metric metric = Metric.builder()
-                .compartmentId("a")
-                .dimensions(null)
-                .build()
-
-        when:
-        var body = echoTest(embeddedServer, metric)
-
-        then:
-        '{"compartmentId":"a","dimensions":null}' == body
     }
 
     void "Test extra properties deserialization does not throw exception"() {

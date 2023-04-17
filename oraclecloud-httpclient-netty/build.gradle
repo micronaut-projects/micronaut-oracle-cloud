@@ -17,14 +17,13 @@ dependencies {
     }
 
     testAnnotationProcessor mn.micronaut.inject.java
-    testAnnotationProcessor mn.micronaut.serde.processor
-    testAnnotationProcessor projects.oraclecloudHttpclientNettyProcessor
+    testAnnotationProcessor projects.oraclecloudSerdeProcessor
 
     testImplementation mn.micronaut.inject.java.test
     testImplementation mn.micronaut.serde.api
     testImplementation mn.micronaut.serde.processor
     testImplementation mn.micronaut.serde.jackson
-    testImplementation projects.oraclecloudHttpclientNettyProcessor
+    testImplementation projects.oraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
 
     testImplementation (projects.oraclecloudBmcMonitoring) {

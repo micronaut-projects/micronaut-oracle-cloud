@@ -1,0 +1,24 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+    }
+}
+
+dependencies {
+    // Transitive dependencies
+    implementation mn.micronaut.inject
+    implementation mn.micronaut.inject.java
+    implementation mn.micronaut.serde.processor
+    implementation (mn.micronaut.serde.api) {
+        transitive = false
+    }
+
+    testImplementation mn.micronaut.inject.java.test
+    testImplementation("com.oracle.oci.sdk:oci-java-sdk-common:$oci3Version")
+}

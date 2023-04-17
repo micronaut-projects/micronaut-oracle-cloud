@@ -25,28 +25,40 @@ import io.micronaut.inject.ast.ConstructorElement;
 import io.micronaut.inject.ast.Element;
 import io.micronaut.inject.ast.FieldElement;
 import io.micronaut.inject.ast.MethodElement;
-import io.micronaut.inject.ast.ParameterElement;
 import io.micronaut.inject.ast.TypedElement;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import io.micronaut.inject.visitor.VisitorContext;
 import io.micronaut.serde.annotation.Serdeable;
+import io.micronaut.serde.config.annotation.SerdeConfig;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Type element visitor vising oci sdk models and enums.
+ * <br/>
+ * Initiates the creation of serializable introspections for the models and enums. The introspections
+ * are written to a separate .introspection package. The introspections need to be used with the
+ * oraclecloud-httpclient-netty which defines the explicitly set property filter required for
+ * correct serialization.
  *
  * @author Andriy Dmytruk
- * @since 4.0.0
+ * @since 2.3.2
  */
 @Internal
 public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Object> {
-
-    private static final String ANN_SERDEABLE = "io.micronaut.serde.annotation.Serdeable";
-    private static final String ANN_SERDE_CONFIG = "io.micronaut.serde.config.annotation.SerdeConfig";
     private static final String OCI_SDK_MODEL_CLASS_NAME = "com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel";
     private static final String OCI_SDK_ENUM_CLASS_NAME = "com.oracle.bmc.http.internal.BmcEnum";
     private static final String OCI_SDK_ENUM_CREATOR_NAME = "create";
+    private static final String INTROSPECTION_PACKAGE = ".introspection";
+
+    private static final Set<String> ADDITIONAL_MODELS = new HashSet<String>() {{
+        add("com.oracle.bmc.http.internal.ResponseHelper$ErrorCodeAndMessage");
+        add("com.oracle.bmc.model.RegionSchema");
+        add("com.oracle.bmc.auth.internal.X509FederationClient$SecurityToken");
+    }};
 
     private boolean visitingOciSdkModel;
     private boolean visitingOciSdkEnum;
@@ -67,80 +79,76 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
         visitingOciSdkModel = isOciSdkModel(element);
         visitingOciSdkEnum = isOciSdkEnum(element);
 
-        context.info("Visiting class :  " + element.getName() + ", model: " + visitingOciSdkModel + ", enum: " + visitingOciSdkEnum);
         if (visitingOciSdkModel) {
-            makeSerializable(element);
+            makeSerdeable(element);
+            // Ignore the validation because the Deserialize(builder=) is not supported
             ignoreMicronautSerdeValidation(element);
         } else if (visitingOciSdkEnum) {
-            makeSerializable(element);
+            makeSerdeable(element);
         }
-    }
-
-    private void makeSerializable(ClassElement element) {
-        element.annotate(Serdeable.class);
-        element.annotate(Serdeable.Serializable.class);
-        element.annotate(Serdeable.Deserializable.class);
-        element.annotate(Introspected.class);
-    }
-
-    private void ignoreMicronautSerdeValidation(Element element) {
-        element.annotate(
-            AnnotationValue.builder(ANN_SERDE_CONFIG)
-                .member("validate", false)
-                .build()
-        );
     }
 
     @Override
     public void visitField(FieldElement element, VisitorContext context) {
         if (visitingOciSdkModel) {
-            visitElement(element);
+            makeElementNullable(element);
         }
     }
 
     @Override
     public void visitConstructor(ConstructorElement element, VisitorContext context) {
-        if (visitingOciSdkModel || visitingOciSdkEnum) {
-            for (ParameterElement parameter: element.getParameters()) {
-                visitElement(parameter);
-            }
+        if (visitingOciSdkModel) {
+            makeParametersNullable(element);
         }
     }
 
     @Override
     public void visitMethod(MethodElement element, VisitorContext context) {
-        if (visitingOciSdkEnum) {
-            if (element.getName().equals(OCI_SDK_ENUM_CREATOR_NAME)) {
-                for (ParameterElement parameter: element.getParameters()) {
-                    visitElement(parameter);
-                }
-            }
+        if (visitingOciSdkEnum && element.getName().equals(OCI_SDK_ENUM_CREATOR_NAME)) {
+            makeParametersNullable(element);
         }
     }
 
-    private void visitElement(TypedElement element) {
+    private static void makeParametersNullable(MethodElement element) {
+        Arrays.stream(element.getParameters()).forEach(OciSdkModelSerdeVisitor::makeElementNullable);
+    }
+
+    private static void makeElementNullable(TypedElement element) {
         if (!element.isNonNull() && !element.isDeclaredNullable()) {
             element.annotate(AnnotationUtil.NULLABLE);
         }
     }
 
+    private void makeSerdeable(ClassElement element) {
+        // Add Serdeable annotation and all its stereotypes
+        element.annotate(Serdeable.class);
+        element.annotate(Serdeable.Serializable.class);
+        element.annotate(Serdeable.Deserializable.class);
+        // Write the introspections to a different package, to avoid different signers for classes
+        // in the save package, since the original classes are added as a dependency
+        element.annotate(Introspected.class,
+            builder -> builder.member("targetPackage", element.getPackageName() + INTROSPECTION_PACKAGE)
+        );
+    }
+
+    private void ignoreMicronautSerdeValidation(Element element) {
+        element.annotate(
+            AnnotationValue.builder(SerdeConfig.class)
+                .member("validate", false)
+                .build()
+        );
+    }
+
     private static boolean isOciSdkModel(ClassElement element) {
         Optional<ClassElement> parent = element.getSuperType();
-        boolean isOciSdkModel = false;
-
         while (parent.isPresent()) {
             if (parent.get().getName().equals(OCI_SDK_MODEL_CLASS_NAME)) {
-                isOciSdkModel = true;
-                break;
+                return true;
             }
             parent = parent.get().getSuperType();
         }
 
-        if (element.getName().equals("com.oracle.bmc.http.internal.ResponseHelper$ErrorCodeAndMessage")) {
-            return true;
-        }
-
-        return isOciSdkModel;
+        return ADDITIONAL_MODELS.contains(element.getName());
     }
 
     private static boolean isOciSdkEnum(ClassElement element) {
