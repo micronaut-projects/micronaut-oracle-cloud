@@ -24,14 +24,13 @@ dependencies {
     }
 
     testAnnotationProcessor mn.micronaut.inject.java
-    testAnnotationProcessor mn.micronaut.serde.processor
-    testAnnotationProcessor project(":oraclecloud-httpclient-netty-processor")
+    testAnnotationProcessor projects.oraclecloudSerdeProcessor
 
     testImplementation mn.micronaut.inject.java.test
     testImplementation mn.micronaut.serde.api
     testImplementation mn.micronaut.serde.processor
     testImplementation mn.micronaut.serde.jackson
-    testImplementation project(":oraclecloud-httpclient-netty-processor")
+    testImplementation projects.oraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
 
     testImplementation (projects.oraclecloudBmcMonitoring) {
@@ -41,14 +40,4 @@ dependencies {
 
 micronautBuild {
     binaryCompatibility.enabled = false
-}
-
-configurations.all {
-    resolutionStrategy {
-        eachDependency { DependencyResolveDetails details ->
-            if (details.requested.group == 'io.micronaut.serde') {
-                details.useVersion "1.5.2-SNAPSHOT"
-            }
-        }
-    }
 }

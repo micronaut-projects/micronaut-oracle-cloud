@@ -1,6 +1,8 @@
 package io.micronaut.oraclecloud.httpclient.netty.visitor
 
 import io.micronaut.annotation.processing.test.AbstractTypeElementSpec
+import io.micronaut.core.beans.BeanIntrospection
+import io.micronaut.core.naming.NameUtils
 import io.micronaut.core.type.Argument
 
 class OCISdkModelSerdeVisitorSpec extends AbstractTypeElementSpec {
@@ -13,7 +15,7 @@ package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 
-class Test extends ExplicitlySetBmcModel {
+public class Test extends ExplicitlySetBmcModel {
     String a;
 
     Test(String a) {
@@ -46,7 +48,7 @@ class TestModel extends ExplicitlySetBmcModel {
     }
 }
 
-class TestChild extends TestModel {
+public class TestChild extends TestModel {
     private String b;
 
     TestChild(String a, String b) {
@@ -72,11 +74,11 @@ package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 
-class TestModel extends ExplicitlySetBmcModel {
+public class TestModel extends ExplicitlySetBmcModel {
     private String a;
     private Integer b;
 
-    TestModel(String a, Integer b) {
+    public TestModel(String a, Integer b) {
         this.a = a;
         this.b = b;
     }
@@ -123,7 +125,7 @@ import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 class TestModel extends ExplicitlySetBmcModel {
     private String a;
 
-    TestModel(String a) {
+    public TestModel(String a) {
         this.a = a;
     }
 
@@ -132,10 +134,10 @@ class TestModel extends ExplicitlySetBmcModel {
     }
 }
 
-class ChildModel extends TestModel {
+public class ChildModel extends TestModel {
     private Integer b;
 
-    ChildModel(String a, Integer b) {
+    public ChildModel(String a, Integer b) {
         super(a);
         this.b = b;
     }
@@ -170,7 +172,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.oracle.bmc.http.internal.BmcEnum;
 
-enum TestEnum implements BmcEnum {
+public enum TestEnum implements BmcEnum {
     STOPPED,
     RUNNING,
     DEFAULT;
@@ -194,7 +196,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.oracle.bmc.http.internal.BmcEnum;
 
-enum TestEnum implements BmcEnum {
+public enum TestEnum implements BmcEnum {
     STOPPED("stopped"),
     RUNNING("running"),
     DEFAULT(null);
@@ -234,15 +236,15 @@ enum TestEnum implements BmcEnum {
 
     void "test oci inner enum is serdeable"() {
         given:
-        def introspection = buildBeanIntrospection('test.TestClass$TestEnum','''
+        def classLoader = buildClassLoader('test.TestClass','''
 package test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;import com.oracle.bmc.http.internal.BmcEnum;
 
-class TestClass {
-    enum TestEnum implements BmcEnum {
+public class TestClass {
+    public enum TestEnum implements BmcEnum {
         STOPPED,
         RUNNING,
         DEFAULT;
@@ -254,7 +256,15 @@ class TestClass {
 }
 ''')
         expect:
+        var introspectioName = 'test.introspection.$TestClass$TestEnum$Introspection'
+        var introspection = classLoader.loadClass(introspectioName).newInstance(new Object[0]) as BeanIntrospection
         introspection != null
         introspection.hasStereotype(ANN_SERDEABLE)
+    }
+
+    @Override
+    protected BeanIntrospection buildBeanIntrospection(String className, String cls) {
+        className = NameUtils.getPackageName(className) + '.introspection.' + NameUtils.getSimpleName(className)
+        return super.buildBeanIntrospection(className, cls)
     }
 }
