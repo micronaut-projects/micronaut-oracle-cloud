@@ -23,6 +23,7 @@ configurations.all {
 
 dependencies {
     annotationProcessor "io.micronaut.validation:micronaut-validation-processor"
+    annotationProcessor libs.oci.graalvm
     implementation mn.micronaut.jackson.databind
     implementation mn.micronaut.context
     implementation "io.micronaut.validation:micronaut-validation"
