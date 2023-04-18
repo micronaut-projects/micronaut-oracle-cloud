@@ -13,11 +13,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.Map;
-
-import static io.micronaut.context.env.PropertySource.mapOf;
-
 
 @MicronautTest
 @Requires(property = "atp.user")
@@ -38,7 +34,7 @@ public class HikariPoolAtpTest {
     void testConnectsToDb() throws SQLException {
         ApplicationContext context = ApplicationContext.run(
             PropertySource.of(
-                "test",
+                Environment.ORACLE_CLOUD,
                 Map.of(
                     "datasources.default.ocid", atpId,
                     "datasources.default.username", userName,
@@ -53,8 +49,5 @@ public class HikariPoolAtpTest {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL");
         resultSet.next();
         Assertions.assertEquals(resultSet.getString(1), "X");
-
     }
-
-
 }
