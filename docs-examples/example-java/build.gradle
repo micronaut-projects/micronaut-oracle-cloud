@@ -1,5 +1,6 @@
 plugins {
     id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'io.micronaut.build.internal.oraclecloud-native-tests'
     id 'io.micronaut.application'
 }
 
@@ -28,4 +29,12 @@ mainClassName = 'example.Application'
 graalvmNative.binaries.configureEach {
     buildArgs.add '--initialize-at-build-time=example'
     jvmArgs("--add-exports=org.graalvm.sdk/org.graalvm.nativeimage.impl=ALL-UNNAMED")
+}
+
+micronaut {
+    version "4.0.0-SNAPSHOT"
+    enableNativeImage false
+    processing {
+        incremental(true)
+    }
 }
