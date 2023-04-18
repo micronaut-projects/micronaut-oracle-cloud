@@ -1,6 +1,7 @@
 plugins {
     id 'io.micronaut.minimal.application'
     id 'io.micronaut.build.internal.oraclecloud-base'
+    id 'org.graalvm.buildtools.native'
 }
 
 micronaut {
@@ -33,6 +34,18 @@ tasks.named("check") { task ->
 
     if (graal && !project.name.contains("groovy")) {
         task.dependsOn("nativeTest")
+    }
+}
+
+graalvmNative {
+    toolchainDetection = false
+    metadataRepository {
+        enabled = true
+    }
+    binaries {
+        all {
+            resources.autodetect()
+        }
     }
 }
 
