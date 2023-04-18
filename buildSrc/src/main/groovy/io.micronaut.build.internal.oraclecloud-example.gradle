@@ -25,3 +25,4 @@ if (JavaVersion.current().isCompatibleWith(JavaVersion.toVersion(19))) {
         }
     }
 }
+
