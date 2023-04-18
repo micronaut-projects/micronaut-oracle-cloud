@@ -1,0 +1,36 @@
+plugins {
+    id "io.micronaut.application"
+    id 'io.micronaut.build.internal.oraclecloud-native-tests'
+}
+
+mainClassName = "helloworld.Application"
+micronaut {
+    version "4.0.0-SNAPSHOT"
+    testRuntime "junit5"
+    enableNativeImage false
+    processing {
+        incremental(true)
+        annotations("helloworld.*")
+    }
+}
+
+configurations.all {
+    resolutionStrategy.dependencySubstitution {
+        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-atp') using project(':micronaut-oraclecloud-atp')
+        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-sdk') using project(':micronaut-oraclecloud-sdk')
+    }
+}
+
+dependencies {
+
+    annotationProcessor("io.micronaut:micronaut-http-validation")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-jackson-databind")
+    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-atp")
+    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-sdk")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("jakarta.annotation:jakarta.annotation-api")
+    runtimeOnly("ch.qos.logback:logback-classic")
+    implementation("io.micronaut:micronaut-validation")
+
+}
