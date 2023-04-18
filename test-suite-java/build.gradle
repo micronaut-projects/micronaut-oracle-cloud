@@ -22,12 +22,13 @@ configurations.all {
 }
 
 dependencies {
-
-    implementation("io.micronaut:micronaut-jackson-databind")
-    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-atp")
-    implementation("io.micronaut.oraclecloud:micronaut-oraclecloud-sdk")
-    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
-    implementation("jakarta.annotation:jakarta.annotation-api")
-    runtimeOnly("ch.qos.logback:logback-classic")
-
+    annotationProcessor "io.micronaut.validation:micronaut-validation-processor"
+    implementation mn.micronaut.jackson.databind
+    implementation mn.micronaut.context
+    implementation "io.micronaut.validation:micronaut-validation"
+    implementation project(":micronaut-oraclecloud-atp")
+    implementation project(":micronaut-oraclecloud-sdk")
+    implementation "io.micronaut.sql:micronaut-jdbc-hikari"
+    implementation libs.oci.graalvm
+    runtimeOnly mn.logback.classic
 }
