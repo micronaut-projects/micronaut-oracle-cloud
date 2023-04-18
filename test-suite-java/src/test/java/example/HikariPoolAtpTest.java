@@ -4,6 +4,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
+import io.micronaut.context.env.PropertySource;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
+
+import static io.micronaut.context.env.PropertySource.mapOf;
 
 
 @MicronautTest
@@ -32,13 +36,16 @@ public class HikariPoolAtpTest {
 
     @Test
     void testConnectsToDb() throws SQLException {
-
-        ApplicationContext context = ApplicationContext.run(new HashMap<>(){{
-            put("datasources.default.ocid", atpId);
-            put("datasources.default.username", userName);
-            put("datasources.default.password", password);
-            put("datasources.default.walletPassword",  "FooBar.123");
-        }}, Environment.ORACLE_CLOUD);
+        ApplicationContext context = ApplicationContext.run(
+            PropertySource.of(
+                "test",
+                Map.of(
+                    "datasources.default.ocid", atpId,
+                    "datasources.default.username", userName,
+                    "datasources.default.password", password,
+                    "datasources.default.walletPassword",  "FooBar.123"
+                )
+            ), Environment.ORACLE_CLOUD);
 
         DataSource dataSource = context.getBean(DataSource.class);
 
