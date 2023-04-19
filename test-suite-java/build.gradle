@@ -7,7 +7,7 @@ mainClassName = "helloworld.Application"
 micronaut {
     testRuntime "junit5"
     enableNativeImage false
-    version "4.0.0-M1"
+    version '4.0.0-SNAPSHOT'
     processing {
         incremental(true)
         annotations("helloworld.*")
@@ -40,5 +40,5 @@ dependencies {
 }
 
 configurations.all {
-    resolutionStrategy.force 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:3.10.0'
+    resolutionStrategy.force 'com.oracle.oci.sdk:oci-java-sdk-bom:3.10.0'
 }
