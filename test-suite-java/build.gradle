@@ -33,6 +33,11 @@ dependencies {
     implementation project(":micronaut-oraclecloud-atp")
     implementation project(":micronaut-oraclecloud-sdk")
     implementation "io.micronaut.sql:micronaut-jdbc-hikari"
+    implementation "com.oracle.oci.sdk:oci-java-sdk-monitoring"
+    implementation "io.micronaut:micronaut-management"
+    implementation "io.micronaut.micrometer:micronaut-micrometer-core"
+    implementation "io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer"
+
     implementation(libs.oci.graalvm) {
         transitive = false
     }
