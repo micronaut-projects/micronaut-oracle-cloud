@@ -19,7 +19,7 @@ import java.util.Map;
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(property = "vault.secret.name")
 @Requires(property = "vault.secret.value")
-public class VaultTest {
+class VaultTest {
 
     @Property(name = "vault.ocid")
     String vaultOcid;

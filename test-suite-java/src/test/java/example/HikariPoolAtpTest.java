@@ -6,7 +6,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
@@ -19,7 +18,7 @@ import java.util.Map;
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
-public class HikariPoolAtpTest {
+class HikariPoolAtpTest {
 
     @Property(name = "atp.user")
     String userName;
@@ -33,18 +32,20 @@ public class HikariPoolAtpTest {
     @Test
     void testConnectsToDb() throws SQLException {
         ApplicationContext context = ApplicationContext.run(
-                Map.of(
-                    "datasources.default.ocid", atpId,
-                    "datasources.default.username", userName,
-                    "datasources.default.password", password,
-                    "datasources.default.walletPassword",  "FooBar.123"
-                ), Environment.ORACLE_CLOUD);
+            Map.of(
+                "datasources.default.ocid", atpId,
+                "datasources.default.username", userName,
+                "datasources.default.password", password,
+                "datasources.default.walletPassword",  "FooBar.123"
+            ), Environment.ORACLE_CLOUD
+        );
 
         DataSource dataSource = context.getBean(DataSource.class);
 
         Connection connection = dataSource.getConnection();
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL");
         resultSet.next();
-        Assertions.assertEquals(resultSet.getString(1), "X");
+        Assertions.assertEquals("X", resultSet.getString(1));
+
     }
 }
