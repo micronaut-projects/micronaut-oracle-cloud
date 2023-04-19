@@ -9,6 +9,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
@@ -21,6 +22,7 @@ class MicrometerTest {
     @Property(name = "monitoring.compartment.ocid")
     String compartmentOcid;
 
+    @Test
     void testMicrometer() {
         Assertions.assertDoesNotThrow(() -> {
             ApplicationContext context = ApplicationContext.run(Map.of(

@@ -14,10 +14,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
 
-@MicronautTest
+@MicronautTest(startApplication = false)
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 class HikariPoolAtpTest {
 
     @Property(name = "atp.user")

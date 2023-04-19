@@ -14,11 +14,12 @@ import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.Map;
 
-@MicronautTest
+@MicronautTest(startApplication = false)
 @Requires(property = "vault.ocid")
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(property = "vault.secret.name")
 @Requires(property = "vault.secret.value")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 class VaultTest {
 
     @Property(name = "vault.ocid")
