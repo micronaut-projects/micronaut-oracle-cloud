@@ -33,9 +33,9 @@ dependencies {
     implementation project(":micronaut-oraclecloud-atp")
     implementation project(":micronaut-oraclecloud-sdk")
     implementation "io.micronaut.sql:micronaut-jdbc-hikari"
-    testImplementation libs.graal.svm
-    api(libs.oci.graalvm) {
+    implementation(libs.oci.graalvm) {
         transitive = false
     }
+    testImplementation libs.graal.svm
     runtimeOnly mn.logback.classic
 }
