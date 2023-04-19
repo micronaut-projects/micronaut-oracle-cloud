@@ -7,6 +7,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
+@Disabled("wait for reflect config")
 public class HikariPoolAtpTest {
 
     @Property(name = "atp.user")
