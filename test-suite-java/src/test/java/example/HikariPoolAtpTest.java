@@ -6,6 +6,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
@@ -18,6 +19,7 @@ import java.util.Map;
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
+@Disabled("Disabled until reflect data fixed for micronaut-sql or hikari")
 class HikariPoolAtpTest {
 
     @Property(name = "atp.user")
@@ -47,6 +49,5 @@ class HikariPoolAtpTest {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL");
         resultSet.next();
         Assertions.assertEquals("X", resultSet.getString(1));
-
     }
 }
