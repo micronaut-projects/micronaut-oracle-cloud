@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @MicronautTest
@@ -34,21 +35,24 @@ public class VaultTest {
 
     @Test
     void testVaultLoadSecrets() {
+        ArrayList<Map<?,?>> vaults = new ArrayList<>();
+
+        vaults.add(Map.of(
+            "ocid", vaultOcid,
+            "compartment-ocid", compartmentOcid
+        ));
+
         ApplicationContext context = ApplicationContext.run(
-            PropertySource.of(
-                Environment.ORACLE_CLOUD,
                 Map.of(
                     "micronaut.config-client.enabled", true,
                     "oci.vault.config.enabled", true,
-                    "oci.vault.vaults.ocid", vaultOcid,
-                    "oci.vault.vaults.compartment-ocid",  compartmentOcid
-                )
+                    "oci.vault.vaults", vaults
             ), Environment.ORACLE_CLOUD);
 
         OracleCloudVaultConfigurationClient client = context.getBean(OracleCloudVaultConfigurationClient.class);
         PropertySource propertySource = Flux.from(client.getPropertySources(null)).blockFirst();
         Assertions.assertNotNull(propertySource);
-        Assertions.assertEquals(propertySource.get(secretName), secretValue);
+        Assertions.assertEquals(secretValue, propertySource.get(secretName));
         context.close();
     }
 
