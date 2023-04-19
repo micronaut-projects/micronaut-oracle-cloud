@@ -37,7 +37,6 @@ dependencies {
     testImplementation "io.micronaut.sql:micronaut-jdbc-hikari"
     testImplementation "io.micronaut:micronaut-management"
     testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
-    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer"
     testImplementation project(":micronaut-oraclecloud-micrometer")
 
     testImplementation(libs.oci.graalvm) {
