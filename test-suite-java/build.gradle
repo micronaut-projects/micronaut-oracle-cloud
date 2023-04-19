@@ -20,30 +20,26 @@ configurations.all {
         substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-sdk') using project(':micronaut-oraclecloud-sdk')
         substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-vault') using project(':micronaut-oraclecloud-vault')
         substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer') using project(':micronaut-oraclecloud-micrometer')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-processor') using project(':micronaut-oraclecloud-sdk-processor')
     }
 }
 
 dependencies {
     testAnnotationProcessor "io.micronaut.validation:micronaut-validation-processor"
-    testAnnotationProcessor libs.oci.graalvm
-    testAnnotationProcessor project(":micronaut-oraclecloud-sdk-processor")
     testImplementation mn.micronaut.jackson.databind
     testImplementation mn.micronaut.context
     testImplementation "io.micronaut.validation:micronaut-validation"
     testImplementation mn.reactor
-    testImplementation project(":micronaut-oraclecloud-vault")
-    testImplementation project(":micronaut-oraclecloud-atp")
-    testImplementation project(":micronaut-oraclecloud-sdk")
+    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-vault"
+    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-atp"
+    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-sdk"
     testImplementation "io.micronaut.sql:micronaut-jdbc-hikari"
     testImplementation "io.micronaut:micronaut-management"
     testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
-    testImplementation project(":micronaut-oraclecloud-micrometer")
+    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer"
 
-    testImplementation(libs.oci.graalvm) {
+    implementation("libs.oci.graalvm") {
         transitive = false
     }
-    testImplementation libs.graal.svm
 
     testRuntimeOnly mn.logback.classic
 }
