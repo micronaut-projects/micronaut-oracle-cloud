@@ -18,6 +18,7 @@ configurations.all {
     resolutionStrategy.dependencySubstitution {
         substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-atp') using project(':micronaut-oraclecloud-atp')
         substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-sdk') using project(':micronaut-oraclecloud-sdk')
+        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-vault') using project(':micronaut-oraclecloud-vault')
     }
 }
 
@@ -27,6 +28,8 @@ dependencies {
     implementation mn.micronaut.jackson.databind
     implementation mn.micronaut.context
     implementation "io.micronaut.validation:micronaut-validation"
+    implementation mn.reactor
+    implementation project(":micronaut-oraclecloud-vault")
     implementation project(":micronaut-oraclecloud-atp")
     implementation project(":micronaut-oraclecloud-sdk")
     implementation "io.micronaut.sql:micronaut-jdbc-hikari"
