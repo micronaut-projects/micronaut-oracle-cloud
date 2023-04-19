@@ -4,7 +4,6 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
-import io.micronaut.context.env.PropertySource;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -20,7 +19,6 @@ import java.util.Map;
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
-@Disabled("wait for reflect config")
 public class HikariPoolAtpTest {
 
     @Property(name = "atp.user")
@@ -35,15 +33,12 @@ public class HikariPoolAtpTest {
     @Test
     void testConnectsToDb() throws SQLException {
         ApplicationContext context = ApplicationContext.run(
-            PropertySource.of(
-                Environment.ORACLE_CLOUD,
                 Map.of(
                     "datasources.default.ocid", atpId,
                     "datasources.default.username", userName,
                     "datasources.default.password", password,
                     "datasources.default.walletPassword",  "FooBar.123"
-                )
-            ), Environment.ORACLE_CLOUD);
+                ), Environment.ORACLE_CLOUD);
 
         DataSource dataSource = context.getBean(DataSource.class);
 
