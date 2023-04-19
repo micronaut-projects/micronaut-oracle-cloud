@@ -24,7 +24,7 @@ configurations.all {
 
 dependencies {
     annotationProcessor "io.micronaut.validation:micronaut-validation-processor"
-    annotationProcessor libs.oci.graalvm
+    annotationProcessor projects.micronautOraclecloudSdkProcessor
     implementation mn.micronaut.jackson.databind
     implementation mn.micronaut.context
     implementation "io.micronaut.validation:micronaut-validation"
@@ -33,6 +33,9 @@ dependencies {
     implementation project(":micronaut-oraclecloud-atp")
     implementation project(":micronaut-oraclecloud-sdk")
     implementation "io.micronaut.sql:micronaut-jdbc-hikari"
-    implementation libs.oci.graalvm
+    testImplementation libs.graal.svm
+    api(libs.oci.graalvm) {
+        transitive = false
+    }
     runtimeOnly mn.logback.classic
 }
