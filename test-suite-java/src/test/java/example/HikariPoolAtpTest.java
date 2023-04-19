@@ -18,7 +18,6 @@ import java.util.Map;
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
-@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 class HikariPoolAtpTest {
 
     @Property(name = "atp.user")
@@ -37,7 +36,8 @@ class HikariPoolAtpTest {
                 "datasources.default.ocid", atpId,
                 "datasources.default.username", userName,
                 "datasources.default.password", password,
-                "datasources.default.walletPassword",  "FooBar.123"
+                "datasources.default.walletPassword",  "FooBar.123",
+                "micronaut.metrics.export.oraclecloud.enabled", false
             ), Environment.ORACLE_CLOUD
         );
 

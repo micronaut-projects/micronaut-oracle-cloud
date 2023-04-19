@@ -19,7 +19,6 @@ import java.util.Map;
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(property = "vault.secret.name")
 @Requires(property = "vault.secret.value")
-@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 class VaultTest {
 
     @Property(name = "vault.ocid")
@@ -47,8 +46,9 @@ class VaultTest {
                 Map.of(
                     "micronaut.config-client.enabled", true,
                     "oci.vault.config.enabled", true,
-                    "oci.vault.vaults", vaults
-            ), Environment.ORACLE_CLOUD);
+                    "oci.vault.vaults", vaults,
+                    "micronaut.metrics.export.oraclecloud.enabled",  false
+                ), Environment.ORACLE_CLOUD);
 
         OracleCloudVaultConfigurationClient client = context.getBean(OracleCloudVaultConfigurationClient.class);
         PropertySource propertySource = Flux.from(client.getPropertySources(null)).blockFirst();
