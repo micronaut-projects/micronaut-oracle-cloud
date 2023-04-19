@@ -5,41 +5,40 @@ plugins {
 
 mainClassName = "helloworld.Application"
 micronaut {
-    version "4.0.0-SNAPSHOT"
     testRuntime "junit5"
     enableNativeImage false
+    version "4.0.0-M1"
     processing {
         incremental(true)
         annotations("helloworld.*")
     }
 }
 
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-atp') using project(':micronaut-oraclecloud-atp')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-sdk') using project(':micronaut-oraclecloud-sdk')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-vault') using project(':micronaut-oraclecloud-vault')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer') using project(':micronaut-oraclecloud-micrometer')
+graalvmNative {
+    binaries {
+        all {
+            buildArgs.add("--features=com.oracle.bmc.graalvm.BouncyCastleFeature,com.oracle.bmc.graalvm.SdkAutomaticFeature")
+        }
     }
 }
 
+
 dependencies {
-    testAnnotationProcessor "io.micronaut.validation:micronaut-validation-processor"
-    testImplementation mn.micronaut.jackson.databind
-    testImplementation mn.micronaut.context
-    testImplementation "io.micronaut.validation:micronaut-validation"
-    testImplementation mn.reactor
-    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-vault"
-    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-atp"
-    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-sdk"
-    testImplementation "io.micronaut.sql:micronaut-jdbc-hikari"
-    testImplementation "io.micronaut:micronaut-management"
-    testImplementation "io.micronaut.micrometer:micronaut-micrometer-core"
-    testImplementation "io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer"
+    annotationProcessor "io.micronaut.validation:micronaut-validation-processor"
+    implementation mn.micronaut.jackson.databind
+    implementation mn.micronaut.context
+    implementation "io.micronaut.validation:micronaut-validation"
+    implementation mn.reactor
+    implementation project(':micronaut-oraclecloud-vault')
+    implementation project(':micronaut-oraclecloud-atp')
+    implementation project(':micronaut-oraclecloud-sdk')
+    implementation "io.micronaut.sql:micronaut-jdbc-hikari"
+    implementation "io.micronaut:micronaut-management"
+    implementation "io.micronaut.micrometer:micronaut-micrometer-core"
+    implementation project(':micronaut-oraclecloud-micrometer')
+    runtimeOnly mn.logback.classic
+}
 
-    implementation("libs.oci.graalvm") {
-        transitive = false
-    }
-
-    testRuntimeOnly mn.logback.classic
+configurations.all {
+    resolutionStrategy.force 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm:3.10.0'
 }

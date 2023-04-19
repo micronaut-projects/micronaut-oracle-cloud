@@ -14,7 +14,7 @@ import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.Map;
 
-@MicronautTest
+@MicronautTest(startApplication = false)
 @Requires(property = "vault.ocid")
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(property = "vault.secret.name")
