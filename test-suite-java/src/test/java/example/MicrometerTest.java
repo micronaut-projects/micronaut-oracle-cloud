@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Assertions;
 
 import java.util.Map;
 
-@MicronautTest
+@MicronautTest(startApplication = false)
 @Requires(beans = AuthenticationDetailsProvider.class)
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 @Requires(property = "monitoring.compartment.ocid")
@@ -27,7 +27,7 @@ class MicrometerTest {
                 "micronaut.metrics.export.oraclecloud.namespace", "micronaut_test",
                 "micronaut.metrics.export.oraclecloud.applicationName", "micronaut_test",
                 "micronaut.metrics.export.oraclecloud.compartmentId", compartmentOcid,
-                "micronaut.metrics.export.oraclecloud.enabled", false
+                "micronaut.metrics.export.oraclecloud.enabled", true
             ), Environment.ORACLE_CLOUD);
 
             OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class);
