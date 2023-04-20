@@ -14,7 +14,8 @@ shadow = '7.1.2'
 groovy = "4.0.10"
 spock = "2.3-groovy-4.0"
 oci = "3.10.0"
-ojdbc = "21.9.0.0"
+ojdbc = "23.2.0.0"
+ojdbc-security = "21.9.0.0"
 
 micronaut-gradle-plugin = "4.0.0-SNAPSHOT"
 micronaut-groovy = "4.0.0-M1"
@@ -68,10 +69,10 @@ oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', versi
 
 oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "ojdbc" }
 oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'ojdbc' }
-oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
-oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
-oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
-oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
+oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki', version.ref="ojdbc-security" }
+oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert', version.ref="ojdbc-security" }
+oracle-security-core = { module = 'com.oracle.database.security:osdt_core', version.ref="ojdbc-security" }
+oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb', version.ref="ojdbc" }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
