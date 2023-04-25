@@ -19,7 +19,7 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
-import io.micronaut.oraclecloud.serde.MicronautSerdeObjectMapper;
+import io.micronaut.oraclecloud.serde.MicronautSerdeSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -126,7 +126,7 @@ final class NettyHttpRequest implements HttpRequest {
             //  anything but String
             String json;
             try {
-                json = MicronautSerdeObjectMapper.getObjectMapper().writeValueAsString(body);
+                json = MicronautSerdeSerializer.getDefaultObjectMapper().writeValueAsString(body);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Unable to process JSON body", e);
             }

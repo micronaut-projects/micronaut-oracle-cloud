@@ -31,4 +31,4 @@ src/main/docs/resources/js/*.js
 src/main/docs/resources/style/*.html
 src/main/docs/resources/img/micronaut-logo-white.svg
 # ignore the checkouts directory
-checkouts
+checkouts/

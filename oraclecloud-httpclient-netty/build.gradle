@@ -8,6 +8,7 @@ dependencies {
     api(libs.oci.common.httpclient)
     api mn.micronaut.serde.api
     implementation mn.micronaut.serde.support
+    implementation mn.micronaut.serde.jackson // Includes ObjectMapper implementation
 
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
@@ -20,9 +21,7 @@ dependencies {
     testAnnotationProcessor projects.oraclecloudSerdeProcessor
 
     testImplementation mn.micronaut.inject.java.test
-    testImplementation mn.micronaut.serde.api
     testImplementation mn.micronaut.serde.processor
-    testImplementation mn.micronaut.serde.jackson
     testImplementation projects.oraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
 

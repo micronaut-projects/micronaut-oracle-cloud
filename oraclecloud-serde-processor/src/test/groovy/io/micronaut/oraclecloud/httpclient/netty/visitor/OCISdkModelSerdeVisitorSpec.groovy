@@ -29,6 +29,37 @@ public class Test extends ExplicitlySetBmcModel {
         introspection.getAnnotationNames().contains(ANN_SERDEABLE)
     }
 
+    void "test oci sdk inner model is serdeable"() {
+        given:
+        def classLoader = buildClassLoader('test.Test','''
+package test;
+
+import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+public class Test extends ExplicitlySetBmcModel {
+
+    @JsonDeserialize(builder = TestA.Builder.class)
+    public static class TestA {
+        String a;
+
+        Test(String a) {
+            this.a = a;
+        }
+
+        public static class Builder {
+        }
+    }
+}
+''')
+
+        expect:
+        var introspectionName = 'test.introspection.$Test$TestA$Introspection'
+        var introspection = classLoader.loadClass(introspectioName).newInstance(new Object[0]) as BeanIntrospection
+        introspection != null
+        introspection.hasStereotype(ANN_SERDEABLE)
+    }
+
     void "test oci sdk child model is serdeable"() {
         given:
         def introspection = buildBeanIntrospection('test.TestChild','''
