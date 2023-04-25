@@ -196,6 +196,9 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest header(String name, String value) {
+        if (name.equals("Expect") && value.equals("100-continue")) {
+            return this;
+        }
         headers.add(name, value);
         if (HttpHeaderNames.EXPECT.contentEqualsIgnoreCase(name)) {
             expectContinue = HttpHeaderValues.CONTINUE.contentEqualsIgnoreCase(value);

@@ -25,9 +25,10 @@ dependencies {
     testImplementation projects.oraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
 
-    testImplementation (projects.oraclecloudBmcMonitoring) {
-        transitive = false
-    }
+    testImplementation (projects.oraclecloudBmcMonitoring) { transitive = false }
+    testImplementation (projects.oraclecloudBmcIdentity) { transitive = false }
+    testImplementation (projects.oraclecloudBmcObjectstorageGenerated) { transitive = false }
+    testImplementation (projects.oraclecloudBmcObjectstorageExtensions) { transitive = false }
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
