@@ -109,7 +109,10 @@ private fun Settings.configureProject(
             dependencies.forEach {
                 if (it.configuration != null) {
                     when (it) {
-                        is Dependency.Project -> project.dependencies.add(it.configuration, project.project(it.path))
+                        is Dependency.Project -> {
+                            project.dependencies.add("metadataElements", project.project(it.path))
+                            project.dependencies.add(it.configuration, project.project(it.path))
+                        }
                         is Dependency.External -> project.dependencies.add(it.configuration, "${it.groupId}:${it.artifactId}:${it.version}")
                     }
                 }
@@ -122,13 +125,10 @@ private fun Settings.configureProject(
                     }
                 }
             }
-            project.configurations.all {
-                if (name == "metadataElements") {
-                    val bmsDependency = project.dependencies.create("${refModule.groupId}:${refModule.artifactId}:${refModule.version}") as ExternalModuleDependency
-                    bmsDependency.exclude(group = "com.fasterxml.jackson.core", module = "jackson-databind")
-                    this.dependencies.add(bmsDependency)
-                }
-            }
+
+            val bmcDependency = project.dependencies.create("${refModule.groupId}:${refModule.artifactId}:${refModule.version}") as ExternalModuleDependency
+            bmcDependency.exclude(group = "com.fasterxml.jackson.core", module = "jackson-databind")
+            project.dependencies.add("metadataElements", bmcDependency)
         }
     }
 }
