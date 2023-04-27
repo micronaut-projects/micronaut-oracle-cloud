@@ -120,6 +120,11 @@ class OracleCloudLoggingSpec extends Specification {
 
         }
 
+        @Override
+        void useRealmSpecificEndpointTemplate(boolean use) {
+
+        }
+
         boolean getSuccess() {
             return success
         }

@@ -54,8 +54,8 @@ public class Test extends ExplicitlySetBmcModel {
 ''')
 
         expect:
-        var introspectionName = 'test.introspection.$Test$TestA$Introspection'
-        var introspection = classLoader.loadClass(introspectioName).newInstance(new Object[0]) as BeanIntrospection
+        var introspectionName = 'test.$Test$TestA$Introspection'
+        var introspection = classLoader.loadClass(introspectionName).newInstance(new Object[0]) as BeanIntrospection
         introspection != null
         introspection.hasStereotype(ANN_SERDEABLE)
     }
@@ -290,7 +290,7 @@ public class TestClass extends ExplicitlySetBmcModel {
 }
 ''')
         expect:
-        var introspectionName = 'test.introspection.$TestClass$TestEnum$Introspection'
+        var introspectionName = 'test.$TestClass$TestEnum$Introspection'
         var introspection = classLoader.loadClass(introspectionName).newInstance(new Object[0]) as BeanIntrospection
         introspection != null
         introspection.hasStereotype(ANN_SERDEABLE)
@@ -298,7 +298,7 @@ public class TestClass extends ExplicitlySetBmcModel {
 
     @Override
     protected BeanIntrospection buildBeanIntrospection(String className, String cls) {
-        className = NameUtils.getPackageName(className) + '.introspection.' + NameUtils.getSimpleName(className)
+        className = NameUtils.getPackageName(className) + "." + NameUtils.getSimpleName(className)
         return super.buildBeanIntrospection(className, cls)
     }
 }

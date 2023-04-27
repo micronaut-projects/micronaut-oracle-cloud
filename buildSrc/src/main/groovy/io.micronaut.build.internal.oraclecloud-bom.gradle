@@ -9,15 +9,14 @@ static Collection<String> parseOciBomArtifacts(ArtifactRepository repo, String v
 
 if (!extraPropertiesExtension.has('ociArtifacts')) {
     String ociVersion = libs.oci.bom.get().version
+    def ociArtifacts = parseOciBomArtifacts(repositories.mavenLocal(), ociVersion)
+
     String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
     def ociProjectArtifacts = parseOciBomArtifacts(repositories.mavenCentral(), ociProjectVersion)
 
-    if (ociVersion != ociProjectVersion) {
-        throw new GradleException(
-                "The version of checked out from github repository oci java sdk (${ociProjectVersion})" +
-                " must match the one in the bom (${ociVersion})")
-    }
-
-    extraPropertiesExtension.set('ociArtifacts', ociProjectArtifacts)
+    // TODO make sure that both versions match and use only artifacts of one
+    // For now, intersect the artifacts, as there are 2 different versions of oci sdk
+    def commonOciArtifacts = ociProjectArtifacts.intersect(ociArtifacts)
+    extraPropertiesExtension.set('ociArtifacts', commonOciArtifacts)
     extraPropertiesExtension.set('ociVersion', ociVersion)
 }
