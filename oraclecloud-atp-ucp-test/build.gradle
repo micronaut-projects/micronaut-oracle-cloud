@@ -20,6 +20,7 @@ configurations {
     all {
         resolutionStrategy {
             force 'com.oracle.database.jdbc:ucp:21.9.0.0'
+            force 'com.oracle.database.jdbc:ojdbc11:21.9.0.0'
         }
     }
 }
