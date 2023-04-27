@@ -1,5 +1,6 @@
 [versions]
 micronaut = "4.0.0-M2"
+micronaut-platform = '4.0.0-M1'
 micronaut-docs = "2.0.0"
 fn = '1.0.169'
 graal-svm = "22.3.1"
@@ -23,7 +24,7 @@ micronaut-micrometer = "5.0.0-M1"
 micronaut-reactor = "3.0.0-M1"
 micronaut-rxjava2 = "2.0.0-M1"
 micronaut-serde = "2.0.0-M1"
-micronaut-servlet = "4.0.0-M1"
+micronaut-servlet = "4.0.0-M3"
 micronaut-sql = "5.0.0-M1"
 micronaut-test = "4.0.0-M2"
 micronaut-validation = "4.0.0-M4"
