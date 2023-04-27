@@ -84,7 +84,6 @@ final class MockFnHttpServer implements EmbeddedServer {
             this.port = port.get();
             if (this.port == -1) {
                 this.port = 0;
-            } else {
             }
         } else {
             if (applicationContext.getEnvironment().getActiveNames().contains(Environment.TEST)) {

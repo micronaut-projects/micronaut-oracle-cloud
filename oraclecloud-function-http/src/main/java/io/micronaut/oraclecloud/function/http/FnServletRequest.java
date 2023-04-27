@@ -60,7 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Internal
 final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent> {
-
+    @SuppressWarnings("rawtypes")
     private static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
