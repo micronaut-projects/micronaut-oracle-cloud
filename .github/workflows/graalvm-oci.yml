@@ -26,7 +26,7 @@ jobs:
           oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
           oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
       - name: Start runner
-        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@master
+        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@update/oci-runner
         id: start-runner
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -45,22 +45,22 @@ jobs:
         java: [ '17' ]
     steps:
       - uses: AutoModality/action-clean@1.1.0
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Setup GraalVM CE
-        uses: graalvm/setup-graalvm@v1.0.6
+        uses: graalvm/setup-graalvm@v1
         with:
           version: ${{ matrix.graalvm }}
           java-version: ${{ matrix.java }}
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2.4.0
+        uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         id: gradle
         run: |
@@ -95,7 +95,7 @@ jobs:
            GRADLE_ENTERPRISE_CACHE_PASSWORD: ${{ secrets.GRADLE_ENTERPRISE_CACHE_PASSWORD }}
            PREDICTIVE_TEST_SELECTION: "${{ github.event_name == 'pull_request' && 'true' || 'false' }}"
       - name: Add build scan URL as PR comment
-        uses: actions/github-script@v5
+        uses: actions/github-script@v6
         if: github.event_name == 'pull_request' && failure()
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -108,7 +108,7 @@ jobs:
             })
       - name: Publish Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v3.7.1
+        uses: mikepenz/action-junit-report@v3
         with:
           check_name: GraalVM CE CI / Test Report (Java ${{ matrix.java }})
           report_paths: '**/build/test-results/test/TEST-*.xml'
