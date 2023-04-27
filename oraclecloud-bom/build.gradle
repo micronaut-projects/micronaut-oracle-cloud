@@ -5,7 +5,7 @@ plugins {
 
 dependencies {
     constraints {
-        for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+        for (name in gradle.ociArtifacts) {
             api "com.oracle.oci.sdk:$name:$gradle.ociVersion"
         }
 

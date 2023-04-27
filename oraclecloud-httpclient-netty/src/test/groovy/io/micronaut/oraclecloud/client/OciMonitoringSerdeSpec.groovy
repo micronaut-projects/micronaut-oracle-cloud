@@ -63,11 +63,11 @@ class OciMonitoringSerdeSpec extends Specification {
         postResponse.postMetricDataResponseDetails.failedMetricsCount == 0
 
         when:
-        Thread.sleep(5000)
+        Thread.sleep(30_000)
         var body = SummarizeMetricsDataDetails.builder()
             .namespace("micronaut_test")
             .query(name + "[1m].mean()")
-            .startTime(Date.from(Instant.now().minus(1, ChronoUnit.MINUTES).minus(30, ChronoUnit.SECONDS)))
+            .startTime(Date.from(Instant.now().minus(5, ChronoUnit.MINUTES)))
             .endTime(new Date())
             .build()
         var client = createClient()

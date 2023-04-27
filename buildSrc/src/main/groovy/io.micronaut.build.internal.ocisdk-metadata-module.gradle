@@ -4,20 +4,14 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor(projects.oraclecloudSerdeProcessor)
+    annotationProcessor(projects.micronautOraclecloudSerdeProcessor)
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
         url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
     }
-}
-
-java {
-    sourceCompatibility = "8"
-    targetCompatibility = "8"
 }
 
 def metadataJar = tasks.register("metadataJar", Jar) {
@@ -89,10 +83,10 @@ configurations.all {
                 def simpleName = requested.module - 'oci-java-sdk-'
                 if (simpleName == 'bom') {
                     rs.dependencySubstitution {
-                        substitute(platform(requested)).using(platform(project(":oraclecloud-bom")))
+                        substitute(platform(requested)).using(platform(project(":micronaut-oraclecloud-bom")))
                     }
                 } else {
-                    useTarget(project(":oraclecloud-bmc-${simpleName}"))
+                    useTarget(project(":micronaut-oraclecloud-bmc-${simpleName}"))
                 }
             }
         }

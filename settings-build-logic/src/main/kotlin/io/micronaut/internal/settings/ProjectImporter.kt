@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 private const val SDK_GROUP_ID = "com.oracle.oci.sdk"
 private const val OCI_SDK_ARTIFACTID_PREFIX = "oci-java-sdk-"
-private const val PROJECT_NAME_PREFIX = "oraclecloud-bmc-"
+private const val PROJECT_NAME_PREFIX = "micronaut-oraclecloud-bmc-"
 
 /**
  * This method is called from `settings.gradle.kts` and is the entry

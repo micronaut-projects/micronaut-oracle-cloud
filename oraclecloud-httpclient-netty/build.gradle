@@ -6,9 +6,9 @@ dependencies {
     implementation(mn.netty.codec.http)
     implementation(libs.oci.common)
     api(libs.oci.common.httpclient)
-    api mn.micronaut.serde.api
-    implementation mn.micronaut.serde.support
-    implementation mn.micronaut.serde.jackson // Includes ObjectMapper implementation
+    api mnSerde.micronaut.serde.api
+    implementation mnSerde.micronaut.serde.support
+    implementation mnSerde.micronaut.serde.jackson // Includes ObjectMapper implementation
 
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
@@ -18,17 +18,21 @@ dependencies {
     }
 
     testAnnotationProcessor mn.micronaut.inject.java
-    testAnnotationProcessor projects.oraclecloudSerdeProcessor
+    testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
 
     testImplementation mn.micronaut.inject.java.test
-    testImplementation mn.micronaut.serde.processor
-    testImplementation projects.oraclecloudSerdeProcessor
+    testImplementation mnSerde.micronaut.serde.processor
+    testImplementation projects.micronautOraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
 
-    testImplementation (projects.oraclecloudBmcMonitoring) { transitive = false }
-    testImplementation (projects.oraclecloudBmcIdentity) { transitive = false }
-    testImplementation (projects.oraclecloudBmcObjectstorageGenerated) { transitive = false }
-    testImplementation (projects.oraclecloudBmcObjectstorageExtensions) { transitive = false }
+    [projects.micronautOraclecloudBmcMonitoring,
+     projects.micronautOraclecloudBmcIdentity,
+     projects.micronautOraclecloudBmcObjectstorage
+    ].forEach(module -> testImplementation(module) {
+        exclude group: "com.fasterxml.jackson.core"
+        exclude group: "org.slf4j"
+        exclude group: "com.fasterxml.jackson.datatype"
+    })
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()

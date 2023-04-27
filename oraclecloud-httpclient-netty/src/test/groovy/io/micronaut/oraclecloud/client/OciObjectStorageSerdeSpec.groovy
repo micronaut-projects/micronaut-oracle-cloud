@@ -43,15 +43,25 @@ class OciObjectStorageSerdeSpec extends Specification {
     static final String content = "content"
     static final String objectName = "micronaut/test/file.txt"
 
-    def setupSpec() {
-        bucketName = "micronaut_test_bucket_" + new Random().nextInt(0, Integer.MAX_VALUE)
+    @spock.lang.Requires({ instance.compartmentId && instance.authenticationDetailsProvider })
+    void "test get namespace"() {
+        given:
         client = buildClient()
+
         var getNamespaceRequest = GetNamespaceRequest.builder().compartmentId(compartmentId).build()
+
+        when:
         namespace = client.getNamespace(getNamespaceRequest).value
+
+        then:
+        namespace != null
+        !namespace.isBlank()
     }
 
     void "test create bucket"() {
         given:
+        bucketName = "micronaut_test_bucket_" + new Random().nextInt(0, Integer.MAX_VALUE)
+
         var body = CreateBucketDetails.builder()
             .compartmentId(compartmentId)
             .name(bucketName)

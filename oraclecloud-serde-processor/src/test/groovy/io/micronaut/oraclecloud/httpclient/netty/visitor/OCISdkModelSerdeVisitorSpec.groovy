@@ -40,10 +40,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 public class Test extends ExplicitlySetBmcModel {
 
     @JsonDeserialize(builder = TestA.Builder.class)
-    public static class TestA {
+    public static class TestA extends ExplicitlySetBmcModel {
         String a;
 
-        Test(String a) {
+        TestA(String a) {
             this.a = a;
         }
 
@@ -272,9 +272,12 @@ package test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;import com.oracle.bmc.http.internal.BmcEnum;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
+import com.oracle.bmc.http.internal.BmcEnum;
 
-public class TestClass {
+public class TestClass extends ExplicitlySetBmcModel {
+    @JsonDeserialize
     public enum TestEnum implements BmcEnum {
         STOPPED,
         RUNNING,
@@ -287,8 +290,8 @@ public class TestClass {
 }
 ''')
         expect:
-        var introspectioName = 'test.introspection.$TestClass$TestEnum$Introspection'
-        var introspection = classLoader.loadClass(introspectioName).newInstance(new Object[0]) as BeanIntrospection
+        var introspectionName = 'test.introspection.$TestClass$TestEnum$Introspection'
+        var introspection = classLoader.loadClass(introspectionName).newInstance(new Object[0]) as BeanIntrospection
         introspection != null
         introspection.hasStereotype(ANN_SERDEABLE)
     }

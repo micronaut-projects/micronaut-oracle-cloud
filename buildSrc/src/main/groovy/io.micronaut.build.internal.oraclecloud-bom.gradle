@@ -1,8 +1,23 @@
+import groovy.xml.XmlSlurper
+
 ExtraPropertiesExtension extraPropertiesExtension = gradle.ext
 
-if (!extraPropertiesExtension.has('ociBom')) {
-    def ociVersion = libs.oci.bom.get().version
-    def ociBom = new groovy.xml.XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${ociVersion}/oci-java-sdk-bom-${ociVersion}.pom")
-    extraPropertiesExtension.set('ociBom', ociBom)
+static Collection<String> parseOciBomArtifacts(ArtifactRepository repo, String version) {
+    def ociBom = new XmlSlurper().parse("${repo.url}com/oracle/oci/sdk/oci-java-sdk-bom/${version}/oci-java-sdk-bom-${version}.pom")
+    return ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()
+}
+
+if (!extraPropertiesExtension.has('ociArtifacts')) {
+    String ociVersion = libs.oci.bom.get().version
+    String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
+    def ociProjectArtifacts = parseOciBomArtifacts(repositories.mavenCentral(), ociProjectVersion)
+
+    if (ociVersion != ociProjectVersion) {
+        throw new GradleException(
+                "The version of checked out from github repository oci java sdk (${ociProjectVersion})" +
+                " must match the one in the bom (${ociVersion})")
+    }
+
+    extraPropertiesExtension.set('ociArtifacts', ociProjectArtifacts)
     extraPropertiesExtension.set('ociVersion', ociVersion)
 }

@@ -67,10 +67,10 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
         ComplexModel.builder()                                                                          | '{"type":"complex"}'
         ComplexModel.builder().string("one")                                                            | '{"type":"complex","string":"one"}'
         ComplexModel.builder().string(null)                                                             | '{"type":"complex","string":null}'
-        ComplexModel.builder().baseString("one").string("two").integer(null)                            | '{"type":"complex","string":"two","int":null,"baseString":"one"}'
-        ComplexModel.builder().baseInteger(null).integer(null).list(null)                               | '{"type":"complex","int":null,"list":null,"baseInt":null}'
-        ComplexModel.builder().string("one").baseInteger(1).integer(null).baseString(null).list(["1"])  | '{"type":"complex","string":"one","int":null,"list":["1"],"baseString":null,"baseInt":1}'
-        ComplexModel.builder().baseString(null).baseInteger(null).string(null).integer(null).list(null) | '{"type":"complex","string":null,"int":null,"list":null,"baseString":null,"baseInt":null}'
+        ComplexModel.builder().baseString("one").string("two").integer(null)                            | '{"type":"complex","baseString":"one","string":"two","int":null}'
+        ComplexModel.builder().baseInteger(null).integer(null).list(null)                               | '{"type":"complex","baseInt":null,"int":null,"list":null}'
+        ComplexModel.builder().string("one").baseInteger(1).integer(null).baseString(null).list(["1"])  | '{"type":"complex","baseString":null,"baseInt":1,"string":"one","int":null,"list":["1"]}'
+        ComplexModel.builder().baseString(null).baseInteger(null).string(null).integer(null).list(null) | '{"type":"complex","baseString":null,"baseInt":null,"string":null,"int":null,"list":null}'
     }
 
     @Unroll

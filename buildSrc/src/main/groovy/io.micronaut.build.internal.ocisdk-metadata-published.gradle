@@ -39,5 +39,5 @@ configurations.all {
 }
 
 dependencies {
-    metadataElements projects.oraclecloudHttpclientNetty
+    metadataElements projects.micronautOraclecloudHttpclientNetty
 }

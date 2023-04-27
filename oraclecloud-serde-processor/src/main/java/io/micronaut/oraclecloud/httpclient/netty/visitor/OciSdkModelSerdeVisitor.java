@@ -85,6 +85,10 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
             ignoreMicronautSerdeValidation(element);
         } else if (visitingOciSdkEnum) {
             makeSerdeable(element);
+            element.getMethods().stream()
+                .filter(m -> m.getName().equals(OCI_SDK_ENUM_CREATOR_NAME))
+                .findAny()
+                .ifPresent(OciSdkModelSerdeVisitor::makeParametersNullable);
         }
     }
 
