@@ -33,9 +33,9 @@ import java.util.Objects;
 
 final class NettyHttpClientBuilder implements HttpClientBuilder {
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
-    
+
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();
-    
+
     URI baseUri;
     Duration connectTimeout = DEFAULT_TIMEOUT;
     Duration readTimeout = DEFAULT_TIMEOUT;
@@ -50,6 +50,12 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     @Override
     public HttpClientBuilder baseUri(URI uri) {
         this.baseUri = Objects.requireNonNull(uri, "baseUri");
+        return this;
+    }
+
+    @Override
+    public HttpClientBuilder baseUri(String uri) {
+        this.baseUri = URI.create(Objects.requireNonNull(uri, "baseUri"));
         return this;
     }
 
