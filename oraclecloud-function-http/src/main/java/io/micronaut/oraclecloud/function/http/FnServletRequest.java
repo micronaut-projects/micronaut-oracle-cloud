@@ -60,7 +60,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Internal
 final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent> {
-
+    @SuppressWarnings("rawtypes")
+    private static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
     private final FnServletResponse<Object> response;
@@ -70,6 +71,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
     private final Map<Argument, Optional> consumedBodies = new ConcurrentHashMap<>();
+    private boolean bodyConsumed;
 
     public FnServletRequest(
         InputEvent inputEvent,
@@ -104,25 +106,36 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         if (arg == null) {
             return Optional.empty();
         }
-        //noinspection unchecked
-        return consumedBodies.computeIfAbsent(arg, argument -> inputEvent.consumeBody(inputStream -> {
-            final Class<T> type = arg.getType();
-            final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
+        if (!bodyConsumed) {
+            //noinspection unchecked
+            return consumedBodies.computeIfAbsent(arg, argument -> inputEvent.consumeBody(inputStream -> {
+                this.bodyConsumed = true;
+                final Class<T> type = arg.getType();
+                final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
 
-            final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
-            if (codec != null) {
-                if (ConvertibleValues.class == type) {
-                    final Map map = codec.decode(Map.class, inputStream);
-                    ConvertibleValues result = ConvertibleValues.of(map);
-                    return Optional.of(result);
-                } else {
-                    final T value = codec.decode(arg, inputStream);
-                    return Optional.ofNullable(value);
+                final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
+                if (codec != null) {
+                    if (ConvertibleValues.class == type || Object.class == type) {
+                        final Map map = codec.decode(Map.class, inputStream);
+                        ConvertibleValues result = ConvertibleValues.of(map);
+                        return Optional.of(result);
+                    } else {
+                        final T value = codec.decode(arg, inputStream);
+                        return Optional.ofNullable(value);
+                    }
+
                 }
-
+                return Optional.empty();
+            }));
+        } else {
+            Object body = consumedBodies.getOrDefault(CONVERTIBLE_VALUES_ARGUMENT, Optional.empty())
+                        .orElse(null);
+            if (body != null) {
+                return consumedBodies.computeIfAbsent(arg, argument -> conversionService.convert(body, argument));
+            } else {
+                return Optional.empty();
             }
-            return Optional.empty();
-        }));
+        }
     }
 
     @Override
@@ -195,7 +208,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     @NonNull
     @Override
     public Optional<B> getBody() {
-        return Optional.empty();
+        return (Optional<B>) getBody(CONVERTIBLE_VALUES_ARGUMENT);
     }
 
     @Override

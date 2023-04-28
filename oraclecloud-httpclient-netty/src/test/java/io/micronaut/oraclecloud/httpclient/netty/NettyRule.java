@@ -101,6 +101,16 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                     }
                                     return null;
                                 }
+
+                                @Override
+                                public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+                                    if (handleContinue) {
+                                        // don't throw an error when we shut down before the request is done
+                                        ctx.fireChannelInactive();
+                                    } else {
+                                        super.channelInactive(ctx);
+                                    }
+                                }
                             });
                         }
                         ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
