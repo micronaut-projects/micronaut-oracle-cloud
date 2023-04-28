@@ -15,6 +15,19 @@
  */
 package io.micronaut.oraclecloud.function.http.test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.testing.FnEventBuilder;
 import com.fnproject.fn.testing.FnResult;
@@ -25,7 +38,6 @@ import io.micronaut.context.annotation.Secondary;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.format.MapFormat;
-import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.core.naming.conventions.StringConvention;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpMethod;
@@ -36,26 +48,12 @@ import io.micronaut.http.server.exceptions.ServerStartupException;
 import io.micronaut.oraclecloud.function.http.HttpFunction;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.micronaut.runtime.server.EmbeddedServer;
-import org.eclipse.jetty.server.Request;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-
 import jakarta.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.BindException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 /**
  * A Mock HTTP server implementation for writing tests that simulate a Project.fn gateway.
@@ -68,7 +66,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 @Internal
 final class MockFnHttpServer implements EmbeddedServer {
     private final ApplicationContext applicationContext;
-    private final boolean randomPort;
     private final Map<String, String> testConfig;
     private int port;
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -86,17 +83,12 @@ final class MockFnHttpServer implements EmbeddedServer {
         if (port.isPresent()) {
             this.port = port.get();
             if (this.port == -1) {
-                this.port = SocketUtils.findAvailableTcpPort();
-                this.randomPort = true;
-            } else {
-                this.randomPort = false;
+                this.port = 0;
             }
         } else {
             if (applicationContext.getEnvironment().getActiveNames().contains(Environment.TEST)) {
-                this.randomPort = true;
-                this.port = SocketUtils.findAvailableTcpPort();
+                this.port = 0;
             } else {
-                this.randomPort = false;
                 this.port = 8080;
             }
         }
@@ -105,28 +97,15 @@ final class MockFnHttpServer implements EmbeddedServer {
     @Override
     public EmbeddedServer start() {
         if (running.compareAndSet(false, true)) {
-            int retryCount = 0;
-            while (retryCount <= 3) {
-                try {
-                    this.server = new Server(port);
-                    this.server.setHandler(new FnHandler(
-                            this.testConfig,
-                            this.applicationContext.getEnvironment().getActiveNames()));
-                    this.server.start();
-                    break;
-                } catch (BindException e) {
-                    if (randomPort) {
-                        this.port = SocketUtils.findAvailableTcpPort();
-                        retryCount++;
-                    } else {
-                        throw new ServerStartupException(e.getMessage(), e);
-                    }
-                } catch (Exception e) {
-                    throw new ServerStartupException(e.getMessage(), e);
-                }
-            }
-            if (server == null) {
-                throw new HttpServerException("No available ports");
+            this.server = new Server(port);
+            this.server.setHandler(new FnHandler(
+                this.testConfig,
+                this.applicationContext.getEnvironment().getActiveNames()));
+            try {
+                this.server.start();
+                this.port = server.getURI().getPort();
+            } catch (Exception e) {
+                throw new ServerStartupException(e.getMessage(), e);
             }
         }
         return this;
