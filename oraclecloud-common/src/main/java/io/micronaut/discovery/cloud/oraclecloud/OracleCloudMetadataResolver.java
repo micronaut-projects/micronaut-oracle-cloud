@@ -15,8 +15,6 @@
  */
 package io.micronaut.discovery.cloud.oraclecloud;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
@@ -24,6 +22,8 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.discovery.cloud.ComputeInstanceMetadata;
 import io.micronaut.discovery.cloud.ComputeInstanceMetadataResolver;
 import io.micronaut.discovery.cloud.NetworkInterface;
+import io.micronaut.json.JsonMapper;
+import io.micronaut.json.tree.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +34,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,18 +75,18 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
     private static final int READ_TIMEOUT_IN_MILLS = 5000;
     private static final int CONNECTION_TIMEOUT_IN_MILLS = 5000;
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper jsonMapper;
     private final OracleCloudMetadataConfiguration configuration;
     private OracleCloudInstanceMetadata cachedMetadata;
 
     /**
      *
-     * @param objectMapper To read and write JSON
+     * @param jsonMapper To read and write JSON
      * @param configuration Oracle Cloud Metadata configuration
      */
     @Inject
-    public OracleCloudMetadataResolver(ObjectMapper objectMapper, OracleCloudMetadataConfiguration configuration) {
-        this.objectMapper = objectMapper;
+    public OracleCloudMetadataResolver(JsonMapper jsonMapper, OracleCloudMetadataConfiguration configuration) {
+        this.jsonMapper = jsonMapper;
         this.configuration = configuration;
     }
 
@@ -95,7 +94,7 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
      * Construct with default settings.
      */
     public OracleCloudMetadataResolver() {
-        objectMapper = new ObjectMapper();
+        jsonMapper = JsonMapper.createDefault();
         configuration = new OracleCloudMetadataConfiguration();
     }
 
@@ -113,7 +112,7 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
 
         try {
             String metadataUrl = configuration.getUrl();
-            JsonNode metadataJson = readMetadataUrl(new URL(metadataUrl), CONNECTION_TIMEOUT_IN_MILLS, READ_TIMEOUT_IN_MILLS, objectMapper, new HashMap<>());
+            JsonNode metadataJson = readMetadataUrl(new URL(metadataUrl), CONNECTION_TIMEOUT_IN_MILLS, READ_TIMEOUT_IN_MILLS, jsonMapper, new HashMap<>());
             if (metadataJson != null) {
                 instanceMetadata.setInstanceId(textValue(metadataJson, ID));
                 instanceMetadata.setName(textValue(metadataJson, DISPLAY_NAME));
@@ -122,17 +121,20 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
                 instanceMetadata.setImageId(textValue(metadataJson, IMAGE));
                 instanceMetadata.setMachineType(textValue(metadataJson, SHAPE));
 
-                Map<String, String> metadata = objectMapper.convertValue(metadataJson, Map.class);
+                Map<String, String> metadata = jsonMapper.readValueFromTree(metadataJson, Map.class);
 
-                JsonNode agentConfig = metadataJson.findValue(AGENT_CONFIG.getName());
+                JsonNode agentConfig = metadataJson.get(AGENT_CONFIG.getName());
                 metadata.put("timeCreated", textValue(metadataJson, TIME_CREATED));
-                metadata.put("monitoringDisabled", textValue(agentConfig, MONITORING_DISABLED));
-                JsonNode userMeta = metadataJson.findValue(USER_METADATA.getName());
-                Iterator<String> userMetaFieldNames = userMeta.fieldNames();
-                userMeta.forEach(userNode -> {
-                    String fieldName = userMetaFieldNames.next();
-                    metadata.put(fieldName, userNode.asText());
-                });
+                if (agentConfig != null) {
+                    metadata.put("monitoringDisabled", textValue(agentConfig, MONITORING_DISABLED));
+                }
+                JsonNode userMeta = metadataJson.get(USER_METADATA.getName());
+                if (userMeta != null) {
+                    userMeta.entries().forEach(userNode -> {
+                        String fieldName = userNode.getKey();
+                        metadata.put(fieldName, userNode.getValue().coerceStringValue());
+                    });
+                }
                 // override the 'region' in metadata in favor of canonicalRegionName
                 metadata.put(REGION.getName(), textValue(metadataJson, CANONICAL_REGION_NAME));
                 metadata.put("zone", textValue(metadataJson, AVAILABILITY_DOMAIN));
@@ -145,16 +147,17 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
                     new URL(vnicUrl),
                     CONNECTION_TIMEOUT_IN_MILLS,
                     READ_TIMEOUT_IN_MILLS,
-                    objectMapper,
+                    jsonMapper,
                     new HashMap<>());
 
             if (vnicJson != null) {
                 List<NetworkInterface> networkInterfaces = new ArrayList<>();
-                vnicJson.elements().forEachRemaining(vnicNode -> {
+                vnicJson.entries().forEach(vnicNode -> {
                     OracleCloudNetworkInterface networkInterface = new OracleCloudNetworkInterface();
-                    networkInterface.setId(textValue(vnicJson, VNIC_ID));
-                    networkInterface.setIpv4(textValue(vnicJson, PRIVATE_IP));
-                    networkInterface.setMac(textValue(vnicJson, MAC));
+                    JsonNode jn = vnicNode.getValue();
+                    networkInterface.setId(textValue(jn, VNIC_ID));
+                    networkInterface.setIpv4(textValue(jn, PRIVATE_IP));
+                    networkInterface.setMac(textValue(jn, MAC));
                     networkInterfaces.add(networkInterface);
                 });
                 instanceMetadata.setInterfaces(networkInterfaces);
@@ -173,9 +176,9 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
     }
 
     private String textValue(JsonNode node, OracleCloudMetadataKeys key) {
-        JsonNode value = node.findValue(key.getName());
+        JsonNode value = node.get(key.getName());
         if (value != null) {
-            return value.asText();
+            return value.coerceStringValue();
         } else {
             return null;
         }
