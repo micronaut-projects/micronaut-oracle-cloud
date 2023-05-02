@@ -20,7 +20,7 @@ import spock.lang.Stepwise
 @Requires(bean = ConfigFileAuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
-class OciObjectStorageSerdeSpec extends Specification {
+class OciObjectStorageSpec extends Specification {
 
     @Shared
     @Property(name = "test.compartment.id")

@@ -5,6 +5,8 @@ plugins {
 
 dependencies {
     annotationProcessor(projects.micronautOraclecloudSerdeProcessor)
+    // The dependency is required for annotations and their metadata
+    implementation(mnSerde.micronaut.serde.api)
 }
 
 repositories {

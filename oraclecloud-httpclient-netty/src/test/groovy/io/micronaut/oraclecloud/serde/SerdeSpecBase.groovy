@@ -1,7 +1,9 @@
 package io.micronaut.oraclecloud.serde
 
 import com.oracle.bmc.http.client.HttpClient
+import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
 import io.micronaut.context.ApplicationContext
+import io.micronaut.core.beans.BeanIntrospection
 import io.micronaut.oraclecloud.httpclient.netty.NettyHttpClientBuilder
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Specification
@@ -32,4 +34,23 @@ class SerdeSpecBase extends Specification {
         }
     }
 
+    ExplicitlySetBmcModel copyExplicitlySet(ExplicitlySetBmcModel from, ExplicitlySetBmcModel to) {
+        return ModelUtils.copyExplicitlySet(from, to)
+    }
+
+    boolean equalsIgnoreExplicitlySet(ExplicitlySetBmcModel expected, ExplicitlySetBmcModel model) {
+        return expected == copyExplicitlySet(expected, model)
+    }
+
+    // Class that has access to ExplicitlySetBmcModel protected methods
+    private static abstract class ModelUtils extends ExplicitlySetBmcModel {
+        static ExplicitlySetBmcModel copyExplicitlySet(ExplicitlySetBmcModel from, ExplicitlySetBmcModel to) {
+            BeanIntrospection.getIntrospection(((Object) from).getClass()).beanProperties.forEach(p -> {
+                if (from.wasPropertyExplicitlySet(p.getName())) {
+                    to.markPropertyAsExplicitlySet(p.getName())
+                }
+            })
+            return from
+        }
+    }
 }

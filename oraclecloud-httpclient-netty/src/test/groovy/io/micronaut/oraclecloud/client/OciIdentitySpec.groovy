@@ -20,7 +20,7 @@ import static com.oracle.bmc.identity.requests.ListCompartmentsRequest.AccessLev
 @Requires(property = "test.compartment.id")
 @Requires(bean = ConfigFileAuthenticationDetailsProvider)
 @MicronautTest
-class OciIdentitySerdeSpec extends Specification {
+class OciIdentitySpec extends Specification {
 
     @Property(name = "test.compartment.id")
     String compartmentId

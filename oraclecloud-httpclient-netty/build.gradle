@@ -3,9 +3,9 @@ plugins {
 }
 
 dependencies {
-    implementation(mn.netty.codec.http)
-    implementation(libs.oci.common)
-    api(libs.oci.common.httpclient)
+    implementation mn.netty.codec.http
+    implementation libs.oci.common
+    api libs.oci.common.httpclient
     api mnSerde.micronaut.serde.api
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson // Includes ObjectMapper implementation
@@ -27,7 +27,13 @@ dependencies {
 
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,
-     projects.micronautOraclecloudBmcObjectstorage
+     projects.micronautOraclecloudBmcObjectstorage,
+     projects.micronautOraclecloudBmcKeymanagement,
+     projects.micronautOraclecloudBmcSecrets,
+     projects.micronautOraclecloudBmcVault,
+     projects.micronautOraclecloudBmcLogging,
+     projects.micronautOraclecloudBmcLoggingingestion,
+     projects.micronautOraclecloudBmcLoggingsearch
     ].forEach(module -> testImplementation(module) {
         exclude group: "com.fasterxml.jackson.core"
         exclude group: "org.slf4j"

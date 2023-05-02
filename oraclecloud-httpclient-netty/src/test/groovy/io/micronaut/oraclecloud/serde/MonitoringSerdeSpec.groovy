@@ -1,9 +1,8 @@
 package io.micronaut.oraclecloud.serde
 
-import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
+
 import com.oracle.bmc.monitoring.model.Alarm
 import com.oracle.bmc.monitoring.model.Metric
-import io.micronaut.core.beans.BeanIntrospection
 import io.micronaut.runtime.server.EmbeddedServer
 
 class MonitoringSerdeSpec extends SerdeSpecBase {
@@ -51,7 +50,7 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
                 .dimensions(null)
                 .namespace("name")
                 .build()
-        ModelUtils.equalsIgnoreExplicitlySet(expected, metric)
+        equalsIgnoreExplicitlySet(expected, metric)
     }
 
     void "Alarm.Severity serialization test"() throws Exception {
@@ -119,7 +118,7 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
         def alarm = echoTest(embeddedServer, body, Alarm)
 
         then:
-        ModelUtils.equalsIgnoreExplicitlySet(expected, alarm)
+        equalsIgnoreExplicitlySet(expected, alarm)
 
         where:
         expected   | body
@@ -133,21 +132,6 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
                 | '{"id":"1","severity":"Invalid Value"}'
         Alarm.builder().id("1").severity(Alarm.Severity.Critical).query("find all").displayName("name").build()
                 | '{"id":"1","displayName":"name","query":"find all","severity":"CRITICAL"}'
-    }
-
-    static abstract class ModelUtils extends ExplicitlySetBmcModel {
-        static ExplicitlySetBmcModel copyExplicitlySet(ExplicitlySetBmcModel from, ExplicitlySetBmcModel to) {
-            BeanIntrospection.getIntrospection(((Object) from).getClass()).beanProperties.forEach(p -> {
-                if (from.wasPropertyExplicitlySet(p.getName())) {
-                    to.markPropertyAsExplicitlySet(p.getName())
-                }
-            })
-            return from
-        }
-
-        static boolean equalsIgnoreExplicitlySet(ExplicitlySetBmcModel expected, ExplicitlySetBmcModel model) {
-            return expected == copyExplicitlySet(expected, model)
-        }
     }
 
 }

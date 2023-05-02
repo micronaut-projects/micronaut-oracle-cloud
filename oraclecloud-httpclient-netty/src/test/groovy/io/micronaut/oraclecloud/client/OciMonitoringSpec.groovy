@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit
 @Requires(property = "test.compartment.id")
 @Requires(bean = ConfigFileAuthenticationDetailsProvider)
 @MicronautTest
-class OciMonitoringSerdeSpec extends Specification {
+class OciMonitoringSpec extends Specification {
 
     @Property(name = "test.compartment.id")
     String compartmentId
