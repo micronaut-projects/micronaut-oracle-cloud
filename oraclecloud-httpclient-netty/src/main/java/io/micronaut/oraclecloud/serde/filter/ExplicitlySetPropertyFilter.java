@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.serde.filter;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.serde.PropertyFilter;
 import io.micronaut.serde.Serializer;
 import jakarta.inject.Named;
@@ -32,9 +33,10 @@ import jakarta.inject.Singleton;
  * {@link com.fasterxml.jackson.annotation.JsonTypeInfo#property} field, which is required for
  * serialization with inheritance.
  */
+@Internal
 @Singleton
 @Named(ExplicitlySetBmcModel.EXPLICITLY_SET_FILTER_NAME)
-public class ExplicitlySetPropertyFilter implements PropertyFilter {
+final class ExplicitlySetPropertyFilter implements PropertyFilter {
 
     @Override
     public boolean shouldInclude(Serializer.EncoderContext encoderContext, Serializer<Object> propertySerializer, Object bean, String propertyName, Object propertyValue) {

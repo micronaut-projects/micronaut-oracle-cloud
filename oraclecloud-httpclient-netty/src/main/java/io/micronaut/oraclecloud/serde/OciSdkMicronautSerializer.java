@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.serde;
 
 import com.oracle.bmc.http.client.Serializer;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.serde.ObjectMapper;
 
 import java.io.IOException;
@@ -25,10 +26,11 @@ import java.util.Map;
 /**
  * Implementation of {@link Serializer} based on micronaut serde using {@link ObjectMapper}.
  * <br/>
- * Use {@link MicronautSerdeSerializer#getDefaultSerializer()} method to get the default implementation
+ * Use {@link OciSdkMicronautSerializer#getDefaultSerializer()} method to get the default implementation
  * configured for use inside an Oracle Cloud SDK HTTP client.
  */
-public class MicronautSerdeSerializer implements Serializer {
+@Internal
+public final class OciSdkMicronautSerializer implements Serializer {
 
     private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = new HashMap<String, Object>() {{
         put("micronaut.serde.writeDatesAsTimestamps", false);
@@ -40,7 +42,7 @@ public class MicronautSerdeSerializer implements Serializer {
         "io.micronaut.oraclecloud.serde.serializers"
     );
 
-    private static final Serializer DEFAULT_SERIALIZER = new MicronautSerdeSerializer(DEFAULT_MAPPER);
+    private static final Serializer DEFAULT_SERIALIZER = new OciSdkMicronautSerializer(DEFAULT_MAPPER);
 
     private final ObjectMapper objectMapper;
 
@@ -48,7 +50,7 @@ public class MicronautSerdeSerializer implements Serializer {
      * Create Serializer from micronaut serde {@link ObjectMapper}
      * @param objectMapper the object mapper
      */
-    public MicronautSerdeSerializer(ObjectMapper objectMapper) {
+    public OciSdkMicronautSerializer(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

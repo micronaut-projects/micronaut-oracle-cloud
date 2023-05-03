@@ -17,7 +17,7 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpResponse;
 import io.micronaut.core.type.Argument;
-import io.micronaut.oraclecloud.serde.MicronautSerdeSerializer;
+import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 
@@ -78,7 +78,7 @@ final class NettyHttpResponse implements HttpResponse {
     public <T> CompletionStage<T> body(Class<T> type) {
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                return MicronautSerdeSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), type);
+                return OciSdkMicronautSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), type);
             } catch (IOException e) {
                 throw new CompletionException(e);
             } finally {
@@ -92,7 +92,7 @@ final class NettyHttpResponse implements HttpResponse {
         Argument<List<T>> listArgument = Argument.listOf(type);
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                return MicronautSerdeSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), listArgument);
+                return OciSdkMicronautSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), listArgument);
             } catch (IOException e) {
                 throw new CompletionException(e);
             } finally {

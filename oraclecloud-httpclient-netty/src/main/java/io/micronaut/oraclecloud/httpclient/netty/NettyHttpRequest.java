@@ -19,7 +19,7 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
-import io.micronaut.oraclecloud.serde.MicronautSerdeSerializer;
+import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -126,7 +126,7 @@ final class NettyHttpRequest implements HttpRequest {
             //  anything but String
             String json;
             try {
-                json = MicronautSerdeSerializer.getDefaultObjectMapper().writeValueAsString(body);
+                json = OciSdkMicronautSerializer.getDefaultObjectMapper().writeValueAsString(body);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Unable to process JSON body", e);
             }
@@ -196,9 +196,6 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest header(String name, String value) {
-        if (name.equals("Expect") && value.equals("100-continue")) {
-            return this;
-        }
         headers.add(name, value);
         if (HttpHeaderNames.EXPECT.contentEqualsIgnoreCase(name)) {
             expectContinue = HttpHeaderValues.CONTINUE.contentEqualsIgnoreCase(value);

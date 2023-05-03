@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.serde.serializers;
 
 import com.oracle.bmc.http.internal.ResponseHelper;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.type.Argument;
 import io.micronaut.serde.Decoder;
@@ -30,8 +31,9 @@ import java.util.Map;
  * since micronaut serde doesn't support builder deserialization and the constructor is package-private,
  * and cannot be read as introspections are generated in a different package.
  */
+@Internal
 @Singleton
-public class ErrorCodeAndMessageDeserializer implements Deserializer<ResponseHelper.ErrorCodeAndMessage> {
+final class ErrorCodeAndMessageDeserializer implements Deserializer<ResponseHelper.ErrorCodeAndMessage> {
 
     @Override
     public ResponseHelper.ErrorCodeAndMessage deserialize(Decoder decoder, @NonNull DecoderContext context, @NonNull Argument type) throws IOException {
@@ -55,7 +57,10 @@ public class ErrorCodeAndMessageDeserializer implements Deserializer<ResponseHel
                     break;
                 case "messageArguments":
                     response.messageArguments(deserializeMap(decoder, context));
+                    break;
                 default:
+                    decoder.skipValue();
+                    break;
             }
             prop = objectDecoder.decodeKey();
         }
