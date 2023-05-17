@@ -1,5 +1,6 @@
 package io.micronaut.oraclecloud.client
 
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.monitoring.MonitoringClient
@@ -19,17 +20,17 @@ import spock.lang.Specification
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-@Requires(property = "test.compartment.id")
-@Requires(bean = ConfigFileAuthenticationDetailsProvider)
+@Requires(property = "monitoring.compartment.ocid")
+@Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 class OciMonitoringSpec extends Specification {
 
-    @Property(name = "test.compartment.id")
+    @Property(name = "monitoring.compartment.ocid")
     String compartmentId
 
     @Inject
     @NonNull
-    ConfigFileAuthenticationDetailsProvider authenticationDetailsProvider
+    AuthenticationDetailsProvider authenticationDetailsProvider
 
     @Inject
     RegionProvider regionProvider

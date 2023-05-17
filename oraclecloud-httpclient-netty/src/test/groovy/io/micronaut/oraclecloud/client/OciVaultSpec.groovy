@@ -1,5 +1,6 @@
 package io.micronaut.oraclecloud.client
 
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.keymanagement.KmsManagementClient
 import com.oracle.bmc.keymanagement.KmsVaultClient
@@ -22,20 +23,20 @@ import spock.lang.Stepwise
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-@Requires(property = "test.compartment.id")
-@Requires(bean = ConfigFileAuthenticationDetailsProvider)
+@Requires(property = "vault.secrets.compartment.ocid")
+@Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
 class OciVaultSpec extends Specification {
 
     @Shared
-    @Property(name = "test.compartment.id")
+    @Property(name = "vault.secrets.compartment.ocid")
     String compartmentId
 
     @Shared
     @Inject
     @NonNull
-    ConfigFileAuthenticationDetailsProvider authenticationDetailsProvider
+    AuthenticationDetailsProvider authenticationDetailsProvider
 
     @Shared KmsVaultClient vaultClient
     @Shared KmsManagementClient keyClient
