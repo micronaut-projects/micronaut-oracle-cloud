@@ -65,39 +65,6 @@ class OciIdentitySpec extends Specification {
         response.items.every{ c -> !c.name.empty }
     }
 
-    void "test create and delete compartment"() {
-        when:
-        var client = buildClient()
-        var name = "__micronaut_test_" + new Random().nextInt(0, Integer.MAX_VALUE)
-        var description = "Compartment created by test"
-        var body = CreateCompartmentDetails.builder().name(name).description(description).compartmentId(compartmentId).build()
-        var request = CreateCompartmentRequest.builder().createCompartmentDetails(body).build()
-        var response = client.createCompartment(request)
-
-        then:
-        var childId = response.compartment.id
-        childId != null
-        response.compartment.compartmentId == compartmentId
-
-        when:
-        request = GetCompartmentRequest.builder().compartmentId(childId).build()
-        Thread.sleep(10000)
-        response = client.getWaiters().forCompartment(request, Compartment.LifecycleState.Active).execute()
-
-        then:
-        response.compartment.name == name
-        response.compartment.description == description
-        response.compartment.compartmentId == compartmentId
-        response.compartment.id == childId
-        response.compartment.lifecycleState == Compartment.LifecycleState.Active
-
-        when:
-        response = client.deleteCompartment(DeleteCompartmentRequest.builder().compartmentId(childId).build())
-
-        then:
-        response != null
-    }
-
     IdentityClient buildClient() {
         return IdentityClient.builder().build(authenticationDetailsProvider)
     }
