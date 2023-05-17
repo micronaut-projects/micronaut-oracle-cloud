@@ -1,6 +1,6 @@
 package io.micronaut.oraclecloud.client
 
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.identity.IdentityClient
 import com.oracle.bmc.identity.model.Compartment
 import com.oracle.bmc.identity.model.CreateCompartmentDetails
@@ -17,17 +17,17 @@ import spock.lang.Specification
 
 import static com.oracle.bmc.identity.requests.ListCompartmentsRequest.AccessLevel.Accessible
 
-@Requires(property = "test.compartment.id")
-@Requires(bean = ConfigFileAuthenticationDetailsProvider)
+@Requires(property = "vault.secrets.compartment.ocid")
+@Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 class OciIdentitySpec extends Specification {
 
-    @Property(name = "test.compartment.id")
+    @Property(name = "vault.secrets.compartment.ocid")
     String compartmentId
 
     @Inject
     @NonNull
-    ConfigFileAuthenticationDetailsProvider authenticationDetailsProvider
+    AuthenticationDetailsProvider authenticationDetailsProvider
 
     void "test get compartment"() {
         when:

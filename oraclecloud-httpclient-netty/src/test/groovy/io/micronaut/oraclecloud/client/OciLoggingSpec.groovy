@@ -1,6 +1,6 @@
 package io.micronaut.oraclecloud.client
 
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.logging.LoggingManagement
 import com.oracle.bmc.logging.LoggingManagementClient
 import com.oracle.bmc.logging.model.*
@@ -27,20 +27,20 @@ import spock.lang.Stepwise
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-@Requires(property = "test.compartment.id")
-@Requires(bean = ConfigFileAuthenticationDetailsProvider)
+@Requires(property = "vault.secrets.compartment.ocid")
+@Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
 class OciLoggingSpec extends Specification {
 
     @Shared
-    @Property(name = "test.compartment.id")
+    @Property(name = "vault.secrets.compartment.ocid")
     String compartmentId
 
     @Shared
     @Inject
     @NonNull
-    ConfigFileAuthenticationDetailsProvider authenticationDetailsProvider
+    AuthenticationDetailsProvider authenticationDetailsProvider
 
     @Shared LoggingManagement loggingClient
 
