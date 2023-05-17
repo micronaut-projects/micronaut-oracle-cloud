@@ -133,6 +133,9 @@ private fun Settings.configureProject(
             val bmcDependency = project.dependencies.create("${refModule.groupId}:${refModule.artifactId}:${refModule.version}") as ExternalModuleDependency
             bmcDependency.exclude(group = "com.fasterxml.jackson.core", module = "jackson-databind")
             project.dependencies.add("metadataElements", bmcDependency)
+            project.configurations.getByName("metadataElements") {
+                exclude(group = "com.fasterxml.jackson.core", module = "jackson-databind")
+            }
         }
     }
 }
