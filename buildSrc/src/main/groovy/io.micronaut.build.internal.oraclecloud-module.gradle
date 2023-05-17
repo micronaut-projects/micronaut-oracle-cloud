@@ -7,3 +7,6 @@ dependencies {
     api platform(libs.oci.bom)
     annotationProcessor mn.micronaut.inject.java
 }
+configurations.all {
+    resolutionStrategy.preferProjectModules()
+}
