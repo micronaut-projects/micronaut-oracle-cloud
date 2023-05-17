@@ -43,24 +43,14 @@ final class ErrorCodeAndMessageDeserializer implements Deserializer<ResponseHelp
         String prop = objectDecoder.decodeKey();
         while (prop != null) {
             switch (prop) {
-                case "code":
-                    response.code(deserializeString(decoder, context));
-                    break;
-                case "message":
-                    response.message(deserializeString(decoder, context));
-                    break;
-                case "originalMessage":
-                    response.originalMessage(deserializeString(decoder, context));
-                    break;
-                case "originalMessageTemplate":
-                    response.originalMessageTemplate(deserializeString(decoder, context));
-                    break;
-                case "messageArguments":
+                case "code" -> response.code(deserializeString(decoder));
+                case "message" -> response.message(deserializeString(decoder));
+                case "originalMessage" -> response.originalMessage(deserializeString(decoder));
+                case "originalMessageTemplate" ->
+                    response.originalMessageTemplate(deserializeString(decoder));
+                case "messageArguments" ->
                     response.messageArguments(deserializeMap(decoder, context));
-                    break;
-                default:
-                    decoder.skipValue();
-                    break;
+                default -> decoder.skipValue();
             }
             prop = objectDecoder.decodeKey();
         }
@@ -68,9 +58,8 @@ final class ErrorCodeAndMessageDeserializer implements Deserializer<ResponseHelp
         return response.build();
     }
 
-    private String deserializeString(Decoder decoder, DecoderContext context) throws IOException {
-        return context.findDeserializer(Argument.STRING)
-            .deserialize(decoder, context, Argument.STRING);
+    private String deserializeString(Decoder decoder) throws IOException {
+        return decoder.decodeStringNullable();
     }
 
     private Map<String, String> deserializeMap(Decoder decoder, DecoderContext context) throws IOException {
