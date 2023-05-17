@@ -3,12 +3,7 @@ plugins {
 }
 
 dependencies {
-    api projects.micronautOraclecloudBmcDatabase, {
-        exclude group:'commons-logging', module:'commons-logging'
-        exclude group: "org.slf4j", module:'slf4j-api'
-        exclude group: "com.fasterxml.jackson.core"
-        exclude group: "com.fasterxml.jackson.datatype"
-    }
+    api projects.micronautOraclecloudBmcDatabase
     annotationProcessor(mnValidation.micronaut.validation.processor)
     api libs.oracle.jdbc
     api mn.micronaut.inject

@@ -35,11 +35,7 @@ dependencies {
      projects.micronautOraclecloudBmcLogging,
      projects.micronautOraclecloudBmcLoggingingestion,
      projects.micronautOraclecloudBmcLoggingsearch
-    ].forEach(module -> testImplementation(module) {
-        exclude group: "com.fasterxml.jackson.core"
-        exclude group: "org.slf4j"
-        exclude group: "com.fasterxml.jackson.datatype"
-    })
+    ].forEach(module -> testImplementation(module))
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()

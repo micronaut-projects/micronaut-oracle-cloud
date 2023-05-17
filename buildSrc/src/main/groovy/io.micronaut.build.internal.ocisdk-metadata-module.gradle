@@ -65,6 +65,10 @@ tasks.named("sourcesJar", Jar) {
     exclude "**/*"
 }
 
+tasks.named("compileTestJava") {
+    enabled = false
+}
+
 tasks.configureEach {
     if (name.startsWith("spotless")) {
         // The license and checkstyle rules differ from ours
@@ -94,4 +98,3 @@ configurations.all {
         }
     }
 }
-

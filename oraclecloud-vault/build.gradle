@@ -3,18 +3,8 @@ plugins {
 }
 
 dependencies {
-    api projects.micronautOraclecloudBmcSecrets, {
-        exclude group:'commons-logging', module:'commons-logging'
-        exclude group: "org.slf4j", module:'slf4j-api'
-        exclude group: "com.fasterxml.jackson.core"
-        exclude group: "com.fasterxml.jackson.datatype"
-    }
-    api projects.micronautOraclecloudBmcVault, {
-        exclude group:'commons-logging', module:'commons-logging'
-        exclude group: "org.slf4j", module:'slf4j-api'
-        exclude group: "com.fasterxml.jackson.core"
-        exclude group: "com.fasterxml.jackson.datatype"
-    }
+    api projects.micronautOraclecloudBmcSecrets
+    api projects.micronautOraclecloudBmcVault
     api mn.micronaut.discovery.core
     api mn.micronaut.inject
     implementation mn.reactor
