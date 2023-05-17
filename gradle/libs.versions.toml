@@ -14,11 +14,11 @@ commons-lang3 = '3.12.0'
 shadow = '7.1.2'
 groovy = "4.0.10"
 spock = "2.3-groovy-4.0"
-oci = "3.12.1-preview1-SNAPSHOT"
+oci = "3.14.0"
 ojdbc = "21.9.0.0"
 protobuf = '0.9.2'
 
-micronaut-gradle-plugin = "4.0.0-M1"
+micronaut-gradle-plugin = "4.0.0-M2"
 micronaut-groovy = "4.0.0-M1"
 micronaut-kotlin = "4.0.0-M1"
 micronaut-micrometer = "5.0.0-M1"
