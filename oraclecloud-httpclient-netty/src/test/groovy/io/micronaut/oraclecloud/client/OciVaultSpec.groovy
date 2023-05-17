@@ -1,7 +1,6 @@
 package io.micronaut.oraclecloud.client
 
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.keymanagement.KmsManagementClient
 import com.oracle.bmc.keymanagement.KmsVaultClient
 import com.oracle.bmc.keymanagement.model.*
@@ -24,6 +23,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 @Requires(property = "vault.secrets.compartment.ocid")
+@Requires(property = "vault.ocid")
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
@@ -34,6 +34,10 @@ class OciVaultSpec extends Specification {
     String compartmentId
 
     @Shared
+    @Property(name = "vault.ocid")
+    String vaultId
+
+    @Shared
     @Inject
     @NonNull
     AuthenticationDetailsProvider authenticationDetailsProvider
@@ -42,38 +46,23 @@ class OciVaultSpec extends Specification {
     @Shared KmsManagementClient keyClient
     @Shared VaultsClient secretsClient
 
-    @Shared String vaultName
-    @Shared String vaultId
     @Shared Vault vault
+    @Shared String keyName = "micronaut_test_key"
     @Shared String keyId
+    @Shared String secretName
     @Shared String secretId
 
     final String secretContent = '{"key":"1","value":"12345"}'
     final String secretContentEncoded = Base64.getEncoder().encodeToString(secretContent.getBytes())
 
-    @spock.lang.Requires({ instance.compartmentId && instance.authenticationDetailsProvider })
-    void "create vault"() {
+    @spock.lang.Requires({
+        instance.compartmentId &&
+        instance.authenticationDetailsProvider &&
+        instance.vaultId
+    })
+    void "get vault"() {
         given:
         vaultClient = buildVaultClient()
-        vaultName = "micronaut_test_" + new Random().nextInt(0, Integer.MAX_VALUE)
-
-        var body = CreateVaultDetails.builder()
-            .compartmentId(compartmentId)
-            .displayName(vaultName)
-            .vaultType(CreateVaultDetails.VaultType.Default)
-            .build()
-
-        when:
-        var response = vaultClient.createVault(CreateVaultRequest.builder().createVaultDetails(body).build())
-        vaultId = response.vault.id
-
-        then:
-        response.vault.compartmentId == compartmentId
-        response.vault.displayName == vaultName
-        response.vault.id != null
-    }
-
-    void "wait for vault creation"() {
         var request = GetVaultRequest.builder().vaultId(vaultId).build()
 
         when:
@@ -87,12 +76,31 @@ class OciVaultSpec extends Specification {
         response.vault.lifecycleState == Vault.LifecycleState.Active
     }
 
-    void "create key"() {
+    void "find existing key"() {
         given:
         keyClient = buildKeyClient(vault)
+        var request = ListKeysRequest.builder()
+                .compartmentId(compartmentId)
+                .limit(100)
+                .build()
 
+        when:
+        var response = keyClient.listKeys(request)
+        var testKeys = response.items.findAll{ it.displayName == keyName }
+        if (!testKeys.empty) {
+            keyId = testKeys[0].id
+        }
+
+        then:
+        response.__httpStatusCode__ < 300
+    }
+
+    // There is a limit of 100 keys in vault, so we reuse existing if found
+    @spock.lang.Requires({ instance.keyId == null })
+    void "create key if not found"() {
+        given:
         var body = CreateKeyDetails.builder()
-            .displayName("micronaut_test")
+            .displayName(keyName)
             .keyShape(KeyShape.builder().algorithm(KeyShape.Algorithm.Aes).length(16).build())
             .compartmentId(compartmentId)
             .build()
@@ -105,6 +113,7 @@ class OciVaultSpec extends Specification {
         response.__httpStatusCode__ < 300
         response.key.compartmentId == compartmentId
         response.key.id != null
+        response.key.displayName == keyName
     }
 
     void "wait for key"() {
@@ -115,19 +124,21 @@ class OciVaultSpec extends Specification {
 
         then:
         response.__httpStatusCode__ < 300
-        response.key.displayName == "micronaut_test"
+        response.key.displayName == keyName
         response.key.keyShape.algorithm == KeyShape.Algorithm.Aes
         response.key.keyShape.length == 16
     }
 
+    // There is a limit of 5000 secrets in tenancy, so we can create new one and shedule it for deletion afterwards
     void "create secret"() {
         given:
         secretsClient = buildSecretsClient()
+        secretName = "micronaut_test_secret_" + new Random().nextInt(0, Integer.MAX_VALUE)
 
         var expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS).plus(1, ChronoUnit.MINUTES))
         var body = CreateSecretDetails.builder()
             .vaultId(vaultId).compartmentId(compartmentId)
-            .secretName("test_secret")
+            .secretName(secretName)
             .secretRules([
                     SecretExpiryRule.builder().timeOfAbsoluteExpiry(expiryDate).build(),
                     SecretReuseRule.builder().isEnforcedOnDeletedSecretVersions(true).build()
@@ -144,7 +155,7 @@ class OciVaultSpec extends Specification {
         secretId = response.secret.id
 
         then:
-        response.secret.secretName == "test_secret"
+        response.secret.secretName == secretName
         response.secret.compartmentId == compartmentId
         response.secret.id != null
     }
@@ -158,7 +169,7 @@ class OciVaultSpec extends Specification {
         then:
         response.__httpStatusCode__ < 300
         response.secret.vaultId == vaultId
-        response.secret.secretName == "test_secret"
+        response.secret.secretName == secretName
         response.secret.id == secretId
         response.secret.secretRules.size() == 2
         response.secret.lifecycleState == Secret.LifecycleState.Active
@@ -177,38 +188,6 @@ class OciVaultSpec extends Specification {
 
         then:
         response.__httpStatusCode__ < 300
-    }
-
-    void "schedule key deletion"() {
-        when:
-        var deletionDate = Date.from(Instant.now().plus(7, ChronoUnit.DAYS).plus(1, ChronoUnit.MINUTES))
-        var body = ScheduleKeyDeletionDetails.builder().timeOfDeletion(deletionDate).build()
-        var request = ScheduleKeyDeletionRequest.builder().keyId(keyId).scheduleKeyDeletionDetails(body).build()
-        var response = keyClient.scheduleKeyDeletion(request)
-
-        then:
-        response.__httpStatusCode__ < 300
-        response.key.id == keyId
-    }
-
-    void "schedule vault deletion"() {
-        given:
-        var time = Date.from(Instant.now().plus(7, ChronoUnit.DAYS).plus(5, ChronoUnit.MINUTES))
-        var body = ScheduleVaultDeletionDetails.builder().timeOfDeletion(time).build()
-
-        when:
-        var request = ScheduleVaultDeletionRequest.builder()
-                .scheduleVaultDeletionDetails(body)
-                .vaultId(vaultId)
-                .build()
-        var response = vaultClient.scheduleVaultDeletion(request)
-
-        then:
-        response.__httpStatusCode__ < 300
-        response.vault != null
-        response.vault.compartmentId == compartmentId
-        response.vault.displayName == vaultName
-        response.vault.id == vaultId
     }
 
     KmsVaultClient buildVaultClient() {
