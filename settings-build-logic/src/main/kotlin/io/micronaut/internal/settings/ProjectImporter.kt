@@ -69,7 +69,10 @@ private fun Settings.importProject(
                         val moduleArtifactId = doc.documentElement.findFirst("artifactId")?.textContent
                         if (moduleArtifactId != null) {
                             val moduleName = PROJECT_NAME_PREFIX + moduleArtifactId.substringAfter(OCI_SDK_ARTIFACTID_PREFIX)
-                            if (!moduleName.contains("examples") && !moduleName.endsWith("-full")) {
+                            if (!moduleName.contains("examples") && 
+                            !moduleName.contains("-addons") && 
+                            !moduleName.endsWith("-enforcer-rules") &&
+                            !moduleName.endsWith("-full")) {
                                 include(":$moduleName")
                                 project(":$moduleName").setProjectDir(projectDir)
                                 configureProject(moduleName, doc, properties, constraints, Dependency.External(parentGroupId, moduleArtifactId, parentVersion, null))
