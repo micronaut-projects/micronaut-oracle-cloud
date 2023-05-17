@@ -32,7 +32,6 @@ import io.micronaut.serde.annotation.Serdeable;
 import io.micronaut.serde.config.annotation.SerdeConfig;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,11 +53,11 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
     private static final String OCI_SDK_ENUM_CREATOR_NAME = "create";
     private static final String INTROSPECTION_PACKAGE = ".introspection";
 
-    private static final Set<String> ADDITIONAL_MODELS = new HashSet<String>() {{
-        add("com.oracle.bmc.http.internal.ResponseHelper$ErrorCodeAndMessage");
-        add("com.oracle.bmc.model.RegionSchema");
-        add("com.oracle.bmc.auth.internal.X509FederationClient$SecurityToken");
-    }};
+    private static final Set<String> ADDITIONAL_MODELS = Set.of(
+        "com.oracle.bmc.http.internal.ResponseHelper$ErrorCodeAndMessage",
+        "com.oracle.bmc.model.RegionSchema",
+        "com.oracle.bmc.auth.internal.X509FederationClient$SecurityToken"
+    );
 
     private boolean visitingOciSdkModel;
     private boolean visitingOciSdkEnum;

@@ -23,7 +23,6 @@ import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.SerdeImport;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -37,9 +36,9 @@ import java.util.Map;
 @SerdeImport(RegionSchema.class)
 public final class OciSdkMicronautSerializer implements Serializer {
 
-    private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = new HashMap<String, Object>() {{
-        put("micronaut.serde.writeDatesAsTimestamps", false);
-    }};
+    private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(
+        "micronaut.serde.writeDatesAsTimestamps", false
+    );
 
     private static final ObjectMapper DEFAULT_MAPPER = ObjectMapper.create(
         DEFAULT_MAPPER_CONFIG,
