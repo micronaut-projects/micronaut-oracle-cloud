@@ -7,7 +7,7 @@ dependencies {
     implementation mnGroovy.micronaut.runtime.groovy
     implementation projects.micronautOraclecloudFunction
     runtimeOnly libs.fn.runtime
-    runtimeOnly mn.slf4j.simple
+    runtimeOnly mnLogging.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.groovy
     testImplementation libs.fn.testing.junit4
     testImplementation mnTest.micronaut.test.spock

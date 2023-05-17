@@ -1,6 +1,6 @@
 [versions]
-micronaut = "4.0.0-M2"
-micronaut-platform = '4.0.0-M1'
+micronaut = "4.0.0-M3"
+micronaut-platform = '4.0.0-M2'
 micronaut-docs = "2.0.0"
 fn = '1.0.171'
 graal-svm = "22.3.1"
@@ -18,23 +18,25 @@ oci = "3.14.0"
 ojdbc = "21.9.0.0"
 protobuf = '0.9.2'
 
-micronaut-gradle-plugin = "4.0.0-M2"
+micronaut-gradle-plugin = "4.0.0-M3"
 micronaut-groovy = "4.0.0-M1"
 micronaut-kotlin = "4.0.0-M1"
 micronaut-micrometer = "5.0.0-M1"
 micronaut-reactor = "3.0.0-M1"
 micronaut-rxjava2 = "2.0.0-M1"
-micronaut-serde = "2.0.0-M1"
-micronaut-servlet = "4.0.0-M3"
+micronaut-serde = "2.0.0-M6"
+micronaut-servlet = "4.0.0-M5"
 micronaut-sql = "5.0.0-M1"
 micronaut-test = "4.0.0-M2"
-micronaut-validation = "4.0.0-M4"
+micronaut-logging = "1.0.0-M1"
+micronaut-validation = "4.0.0-M7"
 
 [libraries]
 # micronaut boms
 micronaut-groovy = { module = "io.micronaut.groovy:micronaut-groovy-bom", version.ref = "micronaut-groovy" }
 micronaut-kotlin = { module = "io.micronaut.kotlin:micronaut-kotlin-bom", version.ref = "micronaut-kotlin" }
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
+micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 micronaut-reactor = { module = "io.micronaut.reactor:micronaut-reactor-bom", version.ref = "micronaut-reactor" }
 micronaut-rxjava2 = { module = "io.micronaut.rxjava2:micronaut-rxjava2-bom", version.ref = "micronaut-rxjava2" }
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
