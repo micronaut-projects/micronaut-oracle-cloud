@@ -124,7 +124,7 @@ private fun Settings.configureProject(
             (parentConstraints + constraints).forEach {
                 if (it.configuration != null) {
                     when (it) {
-                        is Dependency.External -> project.dependencies.constraints.add(it.configuration, "${it.groupId}:${it.artifactId}:${it.version}!!")
+                        is Dependency.External -> project.dependencies.constraints.add(it.configuration, "${it.groupId}:${it.artifactId}:${it.version}")
                         else -> {}
                     }
                 }
