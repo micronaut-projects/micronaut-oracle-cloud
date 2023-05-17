@@ -10,7 +10,7 @@ class OCISdkModelSerdeVisitorSpec extends AbstractTypeElementSpec {
 
     void "test oci sdk model is serdeable"() {
         given:
-        def introspection = buildBeanIntrospection('test.Test','''
+        def introspection = buildBeanIntrospection('test.introspection.Test','''
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
@@ -31,7 +31,7 @@ public class Test extends ExplicitlySetBmcModel {
 
     void "test oci sdk inner model is serdeable"() {
         given:
-        def classLoader = buildClassLoader('test.Test','''
+        def classLoader = buildClassLoader('test.introspection.Test','''
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
@@ -54,7 +54,7 @@ public class Test extends ExplicitlySetBmcModel {
 ''')
 
         expect:
-        var introspectionName = 'test.$Test$TestA$Introspection'
+        var introspectionName = 'test.introspection.$Test$TestA$Introspection'
         var introspection = classLoader.loadClass(introspectionName).newInstance(new Object[0]) as BeanIntrospection
         introspection != null
         introspection.hasStereotype(ANN_SERDEABLE)
@@ -62,7 +62,7 @@ public class Test extends ExplicitlySetBmcModel {
 
     void "test oci sdk child model is serdeable"() {
         given:
-        def introspection = buildBeanIntrospection('test.TestChild','''
+        def introspection = buildBeanIntrospection('test.introspection.TestChild','''
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
@@ -100,7 +100,7 @@ public class TestChild extends TestModel {
 
     void "test oci model elements are nullable by default"() {
         given:
-        def introspection = buildBeanIntrospection('test.TestModel','''
+        def introspection = buildBeanIntrospection('test.introspection.TestModel','''
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
@@ -148,7 +148,7 @@ public class TestModel extends ExplicitlySetBmcModel {
 
     void "test oci model elements are nullable by default for child model"() {
         given:
-        def introspection = buildBeanIntrospection('test.ChildModel','''
+        def introspection = buildBeanIntrospection('test.introspection.ChildModel','''
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
@@ -196,7 +196,7 @@ public class ChildModel extends TestModel {
 
     void "test oci enum is serdeable"() {
         given:
-        def introspection = buildBeanIntrospection('test.TestEnum','''
+        def introspection = buildBeanIntrospection('test.introspection.TestEnum','''
 package test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -220,7 +220,7 @@ public enum TestEnum implements BmcEnum {
 
     void "test oci enum creator is nullable"() {
         given:
-        def introspection = buildBeanIntrospection('test.TestEnum','''
+        def introspection = buildBeanIntrospection('test.introspection.TestEnum','''
 package test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -267,7 +267,7 @@ public enum TestEnum implements BmcEnum {
 
     void "test oci inner enum is serdeable"() {
         given:
-        def classLoader = buildClassLoader('test.TestClass','''
+        def classLoader = buildClassLoader('test.introspection.TestClass','''
 package test;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -290,7 +290,7 @@ public class TestClass extends ExplicitlySetBmcModel {
 }
 ''')
         expect:
-        var introspectionName = 'test.$TestClass$TestEnum$Introspection'
+        var introspectionName = 'test.introspection.$TestClass$TestEnum$Introspection'
         var introspection = classLoader.loadClass(introspectionName).newInstance(new Object[0]) as BeanIntrospection
         introspection != null
         introspection.hasStereotype(ANN_SERDEABLE)
