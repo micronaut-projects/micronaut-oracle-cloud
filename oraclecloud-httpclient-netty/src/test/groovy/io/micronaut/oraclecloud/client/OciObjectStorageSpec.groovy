@@ -1,5 +1,6 @@
 package io.micronaut.oraclecloud.client
 
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.objectstorage.ObjectStorageClient
 import com.oracle.bmc.objectstorage.model.CommitMultipartUploadDetails
@@ -16,20 +17,20 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
 
-@Requires(property = "test.compartment.id")
-@Requires(bean = ConfigFileAuthenticationDetailsProvider)
+@Requires(property = "vault.secrets.compartment.ocid")
+@Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
 class OciObjectStorageSpec extends Specification {
 
     @Shared
-    @Property(name = "test.compartment.id")
+    @Property(name = "vault.secrets.compartment.ocid")
     String compartmentId
 
     @Shared
     @Inject
     @NonNull
-    ConfigFileAuthenticationDetailsProvider authenticationDetailsProvider
+    AuthenticationDetailsProvider authenticationDetailsProvider
 
     @Shared
     String namespace

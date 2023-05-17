@@ -39,5 +39,4 @@ dependencies {
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
-    //it.systemProperty("test.compartment.id", "ocid1.compartment.oc1..aaaaaaaaqpsmu5vcjf75ejqwvhhg75ndjpjdmxihi2gltvb5zazhv2oe7wea")
 }
