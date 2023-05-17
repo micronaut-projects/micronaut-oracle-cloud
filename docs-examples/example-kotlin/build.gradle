@@ -14,7 +14,7 @@ dependencies {
     implementation projects.micronautOraclecloudSdkReactor
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson
-    runtimeOnly mn.logback.classic
+    runtimeOnly mnLogging.logback.classic
     runtimeOnly mn.jackson.module.kotlin
     runtimeOnly mn.snakeyaml
     testAnnotationProcessor mn.micronaut.inject.java
