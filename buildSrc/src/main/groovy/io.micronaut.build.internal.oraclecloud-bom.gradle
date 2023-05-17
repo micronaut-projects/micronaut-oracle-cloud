@@ -3,7 +3,7 @@ import groovy.xml.XmlSlurper
 ExtraPropertiesExtension extraPropertiesExtension = gradle.ext
 
 static Collection<String> parseOciBomArtifacts(ArtifactRepository repo, String version) {
-    def ociBom = new XmlSlurper().parse("${repo.url}com/oracle/oci/sdk/oci-java-sdk-bom/${version}/oci-java-sdk-bom-${version}.pom")
+    def ociBom = new XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${version}/oci-java-sdk-bom-${version}.pom")
     return ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()
 }
 

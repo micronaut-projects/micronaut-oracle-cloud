@@ -148,11 +148,6 @@ class OracleCloudLoggingSpec extends Specification {
 
         }
 
-        @Override
-        void useRealmSpecificEndpointTemplate(boolean b) {
-
-        }
-
         List<PutLogsRequest> getPutLogsRequestList() {
             synchronized (putLogsRequestList) {
                 return new ArrayList<PutLogsRequest>(putLogsRequestList)
