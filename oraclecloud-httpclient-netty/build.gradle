@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    annotationProcessor mnSerde.micronaut.serde.processor
     implementation mn.netty.codec.http
     implementation libs.oci.common
     api libs.oci.common.httpclient

@@ -16,8 +16,11 @@
 package io.micronaut.oraclecloud.serde;
 
 import com.oracle.bmc.http.client.Serializer;
+import com.oracle.bmc.http.internal.ResponseHelper;
+import com.oracle.bmc.model.RegionSchema;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.serde.ObjectMapper;
+import io.micronaut.serde.annotation.SerdeImport;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,6 +33,8 @@ import java.util.Map;
  * configured for use inside an Oracle Cloud SDK HTTP client.
  */
 @Internal
+@SerdeImport(ResponseHelper.ErrorCodeAndMessage.class)
+@SerdeImport(RegionSchema.class)
 public final class OciSdkMicronautSerializer implements Serializer {
 
     private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = new HashMap<String, Object>() {{
