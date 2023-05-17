@@ -1,5 +1,6 @@
 plugins {
-    id 'io.micronaut.build.internal.oraclecloud-module'
+    id 'io.micronaut.build.internal.common'
+    id 'io.micronaut.build.internal.oraclecloud-base'
 }
 
 dependencies {
