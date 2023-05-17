@@ -1,0 +1,15 @@
+plugins {
+    id 'io.micronaut.build.internal.common'
+    id 'io.micronaut.build.internal.oraclecloud-base'
+}
+
+dependencies {
+    // Transitive dependencies
+    implementation mn.micronaut.inject
+    implementation mn.micronaut.inject.java
+    implementation mnSerde.micronaut.serde.processor
+    implementation mnSerde.micronaut.serde.api
+
+    testImplementation mn.micronaut.inject.java.test
+    testImplementation libs.oci.common
+}

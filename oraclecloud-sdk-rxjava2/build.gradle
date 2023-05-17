@@ -9,7 +9,7 @@ dependencies {
     implementation mnRxjava2.rxjava2
 
     // optional modules
-    for (name in gradle.ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()) {
+    for (name in gradle.ociArtifacts) {
         compileOnly "com.oracle.oci.sdk:$name:$gradle.ociVersion"
         testImplementation "com.oracle.oci.sdk:$name:$gradle.ociVersion"
         annotationProcessor "com.oracle.oci.sdk:$name:$gradle.ociVersion"

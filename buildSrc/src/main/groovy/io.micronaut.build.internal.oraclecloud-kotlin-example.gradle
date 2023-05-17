@@ -4,3 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
     id 'io.micronaut.build.internal.oraclecloud-example'
 }
+
+dependencies {
+    kapt "io.micronaut:micronaut-graal:${libs.versions.micronaut.asProvider().get()}"
+}

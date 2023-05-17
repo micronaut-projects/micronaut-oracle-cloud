@@ -3,15 +3,39 @@ plugins {
 }
 
 dependencies {
-    implementation(mn.netty.codec.http)
-    api(libs.oci.common.httpclient)
+    annotationProcessor mnSerde.micronaut.serde.processor
+    implementation mn.netty.codec.http
+    implementation libs.oci.common
+    api libs.oci.common.httpclient
+    api mnSerde.micronaut.serde.api
+    implementation mnSerde.micronaut.serde.support
+    implementation mnSerde.micronaut.serde.jackson // Includes ObjectMapper implementation
+
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
     testImplementation(projects.micronautOraclecloudSdk) {
         exclude group: 'com.oracle.oci.sdk'
     }
-    testImplementation(libs.oci.monitoring)
+
+    testAnnotationProcessor mn.micronaut.inject.java
+    testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
+
+    testImplementation mn.micronaut.inject.java.test
+    testImplementation mnSerde.micronaut.serde.processor
+    testImplementation projects.micronautOraclecloudSerdeProcessor
+    testImplementation mn.micronaut.management
+
+    [projects.micronautOraclecloudBmcMonitoring,
+     projects.micronautOraclecloudBmcIdentity,
+     projects.micronautOraclecloudBmcObjectstorage,
+     projects.micronautOraclecloudBmcKeymanagement,
+     projects.micronautOraclecloudBmcSecrets,
+     projects.micronautOraclecloudBmcVault,
+     projects.micronautOraclecloudBmcLogging,
+     projects.micronautOraclecloudBmcLoggingingestion,
+     projects.micronautOraclecloudBmcLoggingsearch
+    ].forEach(module -> testImplementation(module))
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()

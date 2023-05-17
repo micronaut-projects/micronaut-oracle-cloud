@@ -3,9 +3,7 @@ plugins {
 }
 
 dependencies {
-    api libs.oci.database, {
-        exclude group:'commons-logging', module:'commons-logging'
-    }
+    api projects.micronautOraclecloudBmcDatabase
     annotationProcessor(mnValidation.micronaut.validation.processor)
     api libs.oracle.jdbc
     api mn.micronaut.inject

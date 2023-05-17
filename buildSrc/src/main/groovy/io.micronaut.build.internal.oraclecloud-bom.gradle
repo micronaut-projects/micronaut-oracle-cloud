@@ -1,8 +1,22 @@
+import groovy.xml.XmlSlurper
+
 ExtraPropertiesExtension extraPropertiesExtension = gradle.ext
 
-if (!extraPropertiesExtension.has('ociBom')) {
-    def ociVersion = libs.oci.bom.get().version
-    def ociBom = new groovy.xml.XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${ociVersion}/oci-java-sdk-bom-${ociVersion}.pom")
-    extraPropertiesExtension.set('ociBom', ociBom)
+static Collection<String> parseOciBomArtifacts(ArtifactRepository repo, String version) {
+    def ociBom = new XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${version}/oci-java-sdk-bom-${version}.pom")
+    return ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()
+}
+
+if (!extraPropertiesExtension.has('ociArtifacts')) {
+    String ociVersion = libs.oci.bom.get().version
+    def ociArtifacts = parseOciBomArtifacts(repositories.mavenLocal(), ociVersion)
+
+    String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
+    def ociProjectArtifacts = parseOciBomArtifacts(repositories.mavenCentral(), ociProjectVersion)
+
+    // TODO make sure that both versions match and use only artifacts of one
+    // For now, intersect the artifacts, as there are 2 different versions of oci sdk
+    def commonOciArtifacts = ociProjectArtifacts.intersect(ociArtifacts)
+    extraPropertiesExtension.set('ociArtifacts', commonOciArtifacts)
     extraPropertiesExtension.set('ociVersion', ociVersion)
 }

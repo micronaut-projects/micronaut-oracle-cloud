@@ -10,6 +10,12 @@ Provides the common functionality and sets up the following beans:
 * link:{ocidocs}/com/oracle/bmc/ClientConfiguration.html[ClientConfiguration] - Common configuration for all clients
 * api:oci.core.TenancyIdProvider[] - Interface to resolve current tenancy
 
+=== micronaut-oraclecloud-httpclient-netty
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[version={ociVersion}]
+
+Provides an implementation of the OCI SDK client based on Netty and Micronaut Serialization.
+
 === micronaut-oraclecloud-sdk
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={ociVersion}]

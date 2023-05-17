@@ -120,6 +120,11 @@ class OracleCloudLoggingSpec extends Specification {
 
         }
 
+        @Override
+        void useRealmSpecificEndpointTemplate(boolean use) {
+
+        }
+
         boolean getSuccess() {
             return success
         }
@@ -140,11 +145,6 @@ class OracleCloudLoggingSpec extends Specification {
 
         @Override
         void setRegion(String regionId) {
-
-        }
-
-        @Override
-        void useRealmSpecificEndpointTemplate(boolean b) {
 
         }
 

@@ -49,9 +49,11 @@ import java.util.Optional;
  * @since 1.0.0
  */
 @Internal
-final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
+final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
     private static final Logger LOG = LoggerFactory.getLogger(FnBodyBinder.class);
     private final MediaTypeCodecRegistry mediaTypeCodeRegistry;
+    private final DefaultBodyAnnotationBinder<T> defaultBodyBinder;
+    private final ConversionService conversionService;
 
     /**
      * Default constructor.
@@ -61,15 +63,13 @@ final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements An
      */
     protected FnBodyBinder(
             ConversionService conversionService,
-            MediaTypeCodecRegistry mediaTypeCodecRegistry) {
-        super(conversionService);
+            MediaTypeCodecRegistry mediaTypeCodecRegistry,
+            DefaultBodyAnnotationBinder<T> defaultBodyAnnotationBinder) {
+        this.defaultBodyBinder = defaultBodyAnnotationBinder;
         this.mediaTypeCodeRegistry = mediaTypeCodecRegistry;
+        this.conversionService = conversionService;
     }
 
-    @Override
-    public Class<Body> getAnnotationType() {
-        return Body.class;
-    }
 
     @Override
     public BindingResult<T> bind(ArgumentConversionContext<T> context, HttpRequest<?> source) {
@@ -164,6 +164,11 @@ final class FnBodyBinder<T> extends DefaultBodyAnnotationBinder<T> implements An
             }
         }
         LOG.trace("Not a function request, falling back to default body decoding");
-        return super.bind(context, source);
+        return defaultBodyBinder.bind(context, source);
+    }
+
+    @Override
+    public Class<Body> getAnnotationType() {
+        return Body.class;
     }
 }

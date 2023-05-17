@@ -1,0 +1,39 @@
+This module provides a netty client implementation for the Java OCI SDK. The client uses link:https://micronaut-projects.github.io/micronaut-serialization/latest/guide/[Micronaut Serialization].
+
+Add a dependency to the `micronaut-oraclecloud-httpclient-netty` module:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[]
+
+For serialization to work correctly, use one of the micronaut OCI SDK modules instead of the OCI SDK modules. For example, for Object Store define the dependency:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-objectstorage[]
+
+### Migrate
+
+Replace the `com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey` with the `micronaut-oraclecloud-httpclient-netty` client and the `com.oracle.oci.sdk:oci-java-sdk-bom` with `micronaut-oraclecloud-bom`.
+
+Then replace other OCI SDK modules with micronaut ones. To simplify the process, you can utilize the following regular expression:
+
+For Maven replace
+[source,regex]
+----
+<dependency>(\s*)<groupId>com.oracle.oci.sdk</groupId>(\s*)<artifactId>oci-java-sdk-([^<]+)</artifactId>(((?!</dependency>)[\s\S])+)</dependency>
+----
+with
+[source,regex]
+----
+<dependency>$1<groupId>io.micronaut.oraclecloud</groupId>$2<artifactId>micronaut-oraclecloud-bmc-$3</artifactId>$4</dependency>
+----
+
+For Gradle replace
+[source,regex]
+----
+com.oracle.oci.sdk:oci-java-sdk-([^:"')]+)
+----
+with
+[source,regex]
+----
+io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-$1
+----
+
+If you plan to use the modules in a Micronaut application, add one of the `micronaut-oraclecloud-sdk`, `micronaut-oraclecloud-sdk-rxjava2` or `micronaut-oraclecloud-sdk-reactor` modules.

@@ -4,6 +4,7 @@ breaks: Breaking Changes
 quickStart: Quick Start
 authentication: Authentication
 modules: Available Modules
+httpclient: OCI SDK Netty HTTP Client
 reactive: Reactive Support
 functions: Oracle Functions (Serverless)
 httpFunctions: Oracle Functions HTTP (Serverless)

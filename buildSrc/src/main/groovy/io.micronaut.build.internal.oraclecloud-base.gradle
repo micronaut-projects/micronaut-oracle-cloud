@@ -40,6 +40,10 @@ afterEvaluate {
     }
 }
 
+configurations.all {
+    resolutionStrategy.preferProjectModules()
+}
+
 // configurations.all {
 //     resolutionStrategy.dependencySubstitution {
 //         substitute(module('commons-logging:commons-logging'))

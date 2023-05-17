@@ -10,7 +10,7 @@ dependencies {
     implementation projects.micronautOraclecloudFunction
     runtimeOnly libs.fn.runtime
     runtimeOnly mn.jackson.module.kotlin
-    runtimeOnly mn.slf4j.simple
+    runtimeOnly mnLogging.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.java
     testImplementation libs.fn.testing.junit4
     testImplementation mnTest.micronaut.test.junit5

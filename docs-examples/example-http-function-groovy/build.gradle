@@ -9,7 +9,7 @@ dependencies {
     implementation mn.reactor
     implementation projects.micronautOraclecloudFunctionHttp
     runtimeOnly libs.fn.runtime
-    runtimeOnly mn.slf4j.simple
+    runtimeOnly mnLogging.slf4j.simple
     testAnnotationProcessor mn.micronaut.inject.groovy
     testImplementation mnTest.micronaut.test.spock
     testImplementation projects.micronautOraclecloudFunctionHttpTest

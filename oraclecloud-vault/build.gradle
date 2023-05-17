@@ -3,12 +3,8 @@ plugins {
 }
 
 dependencies {
-    api libs.oci.secrets, {
-        exclude group:'commons-logging', module:'commons-logging'
-    }
-    api libs.oci.vault, {
-        exclude group:'commons-logging', module:'commons-logging'
-    }
+    api projects.micronautOraclecloudBmcSecrets
+    api projects.micronautOraclecloudBmcVault
     api mn.micronaut.discovery.core
     api mn.micronaut.inject
     implementation mn.reactor
