@@ -152,12 +152,11 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
 
             if (vnicJson != null) {
                 List<NetworkInterface> networkInterfaces = new ArrayList<>();
-                vnicJson.entries().forEach(vnicNode -> {
+                vnicJson.values().forEach(vnicNode -> {
                     OracleCloudNetworkInterface networkInterface = new OracleCloudNetworkInterface();
-                    JsonNode jn = vnicNode.getValue();
-                    networkInterface.setId(textValue(jn, VNIC_ID));
-                    networkInterface.setIpv4(textValue(jn, PRIVATE_IP));
-                    networkInterface.setMac(textValue(jn, MAC));
+                    networkInterface.setId(textValue(vnicNode, VNIC_ID));
+                    networkInterface.setIpv4(textValue(vnicNode, PRIVATE_IP));
+                    networkInterface.setMac(textValue(vnicNode, MAC));
                     networkInterfaces.add(networkInterface);
                 });
                 instanceMetadata.setInterfaces(networkInterfaces);
