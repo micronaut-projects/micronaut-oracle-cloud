@@ -1,26 +1,8 @@
 plugins {
-    id "io.micronaut.application"
     id 'io.micronaut.build.internal.oraclecloud-native-tests'
 }
 
 mainClassName = "helloworld.Application"
-micronaut {
-    testRuntime "junit5"
-    enableNativeImage false
-    processing {
-        incremental(true)
-        annotations("helloworld.*")
-    }
-}
-
-graalvmNative {
-    binaries {
-        all {
-            buildArgs.add("--features=com.oracle.bmc.graalvm.BouncyCastleFeature,com.oracle.bmc.graalvm.SdkAutomaticFeature")
-        }
-    }
-}
-
 dependencies {
     implementation(platform(libs.oci.bom))
     implementation mn.micronaut.jackson.databind
@@ -35,14 +17,5 @@ dependencies {
     implementation mnMicrometer.micrometer.core
     implementation project(':micronaut-oraclecloud-micrometer')
     implementation libs.oci.graalvm
-    runtimeOnly mn.logback.classic
-}
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-vault') using project(':micronaut-oraclecloud-vault')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-sdk') using project(':micronaut-oraclecloud-sdk')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-atp') using project(':micronaut-oraclecloud-atp')
-        substitute module('io.micronaut.oraclecloud:micronaut-oraclecloud-micrometer') using project(':micronaut-oraclecloud-micrometer')
-    }
+    runtimeOnly mnLogging.logback.classic
 }

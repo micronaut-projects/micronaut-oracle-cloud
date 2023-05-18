@@ -28,9 +28,5 @@ mainClassName = 'example.Application'
 
 
 micronaut {
-    version "4.0.0-SNAPSHOT"
     enableNativeImage false
-    processing {
-        incremental(true)
-    }
 }
