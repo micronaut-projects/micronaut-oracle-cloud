@@ -126,7 +126,7 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
             for (ListSecretsResponse response : responses) {
                 retrieved += response.getItems().size();
                 response.getItems().forEach(summary -> {
-                    String secretValue = getSecretValue(summary.getId());
+                    byte[] secretValue = getSecretValue(summary.getId());
                     secrets.put(
                             summary.getSecretName(),
                             secretValue
@@ -164,7 +164,7 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
         return request.build();
     }
 
-    private String getSecretValue(String secretOcid) {
+    private byte[] getSecretValue(String secretOcid) {
         GetSecretBundleRequest getSecretBundleRequest = GetSecretBundleRequest
                 .builder()
                 .secretId(secretOcid)
@@ -178,8 +178,7 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
                 (Base64SecretBundleContentDetails) getSecretBundleResponse.
                         getSecretBundle().getSecretBundleContent();
 
-        byte[] secretValueDecoded = Base64.getDecoder().decode(base64SecretBundleContentDetails.getContent());
-        return new String(secretValueDecoded);
+        return Base64.getDecoder().decode(base64SecretBundleContentDetails.getContent());
     }
 
     @Override

@@ -41,7 +41,8 @@ class OracleCloudVaultConfigurationClientSpec extends Specification {
 
         then:
         !propertySource.isEmpty()
-        propertySource.get(secretName) == secretValue
+        propertySource.get(secretName) instanceof byte[]
+        new String((byte[]) propertySource.get(secretName)) == secretValue
 
         cleanup:
         ctx.close()
