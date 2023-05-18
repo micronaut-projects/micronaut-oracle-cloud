@@ -2,20 +2,26 @@ import groovy.xml.XmlSlurper
 
 ExtraPropertiesExtension extraPropertiesExtension = gradle.ext
 
-static Collection<String> parseOciBomArtifacts(ArtifactRepository repo, String version) {
-    def ociBom = new XmlSlurper().parse("https://repo.maven.apache.org/maven2/com/oracle/oci/sdk/oci-java-sdk-bom/${version}/oci-java-sdk-bom-${version}.pom")
+static Collection<String> parseOciBomArtifacts(String version) {
+    final def CENTRAL_REPO_URL = "https://repo.maven.apache.org/maven2"
+    def ociBom = new XmlSlurper().parse("${CENTRAL_REPO_URL}/com/oracle/oci/sdk/oci-java-sdk-bom/${version}/oci-java-sdk-bom-${version}.pom")
     return ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()
 }
 
 if (!extraPropertiesExtension.has('ociArtifacts')) {
     String ociVersion = libs.oci.bom.get().version
-    def ociArtifacts = parseOciBomArtifacts(repositories.mavenLocal(), ociVersion)
+    def ociArtifacts = parseOciBomArtifacts(ociVersion)
 
     String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
-    def ociProjectArtifacts = parseOciBomArtifacts(repositories.mavenCentral(), ociProjectVersion)
+    def ociProjectArtifacts = parseOciBomArtifacts(ociProjectVersion)
 
-    // TODO make sure that both versions match and use only artifacts of one
-    // For now, intersect the artifacts, as there are 2 different versions of oci sdk
+    if (ociVersion != ociProjectVersion) {
+        logger.error("The version of checked out from github repository oci java sdk (${ociProjectVersion}) " +
+                    "does not match the one in the bom (${ociVersion}). Either change the repository URL in " +
+                    "gradle settings or the OCI SDK version in libs.versions.toml file")
+    }
+
+    // Make sure that both the repository and dependency contain the same artifacts by taking an intersection
     def commonOciArtifacts = ociProjectArtifacts.intersect(ociArtifacts)
     extraPropertiesExtension.set('ociArtifacts', commonOciArtifacts)
     extraPropertiesExtension.set('ociVersion', ociVersion)
