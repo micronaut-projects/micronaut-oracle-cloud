@@ -5,9 +5,9 @@ import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
-import com.oracle.bmc.http.client.Serialization;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.io.DuplicatableInputStream;
+import io.micronaut.oraclecloud.serialization.jackson.JacksonSerializer;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 
 @ExtendWith(NettyRule.class)
 public class NettyTest {
-    private static final ObjectMapper MAPPER = Serialization.getObjectMapper();
+    private static final ObjectMapper MAPPER = JacksonSerializer.getDefaultObjectMapper();
     private static final HttpProvider PROVIDER = new NettyHttpProvider();
 
     public NettyRule netty;

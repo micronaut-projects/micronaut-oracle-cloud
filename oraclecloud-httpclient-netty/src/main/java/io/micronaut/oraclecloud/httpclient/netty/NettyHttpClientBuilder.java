@@ -54,6 +54,13 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     }
 
     @Override
+    public HttpClientBuilder baseUri(String uri) {
+        Objects.requireNonNull(uri, "baseUri");
+        this.baseUri = URI.create(uri);
+        return this;
+    }
+
+    @Override
     public <T> HttpClientBuilder property(ClientProperty<T> key, T value) {
         if (key == StandardClientProperties.CONNECT_TIMEOUT) {
             connectTimeout = (Duration) value;

@@ -17,6 +17,8 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
+import com.oracle.bmc.http.client.Serializer;
+import io.micronaut.oraclecloud.serialization.jackson.JacksonSerializer;
 
 /**
  * Netty-based implementation of {@link HttpProvider}.
@@ -28,6 +30,11 @@ public final class NettyHttpProvider implements HttpProvider {
     @Override
     public HttpClientBuilder newBuilder() {
         return new NettyHttpClientBuilder();
+    }
+
+    @Override
+    public Serializer getSerializer() {
+        return JacksonSerializer.getDefaultSerializer();
     }
 }
 

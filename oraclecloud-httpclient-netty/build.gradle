@@ -5,6 +5,9 @@ plugins {
 dependencies {
     implementation("io.netty:netty-codec-http")
     api("com.oracle.oci.sdk:oci-java-sdk-common-httpclient:$oci3Version")
+    implementation("com.fasterxml.jackson.core:jackson-core")
+    implementation("com.fasterxml.jackson.core:jackson-databind")
+
     testImplementation("io.micronaut:micronaut-http-server-netty")
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
