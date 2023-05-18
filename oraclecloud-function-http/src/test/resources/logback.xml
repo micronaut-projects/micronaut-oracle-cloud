@@ -11,7 +11,7 @@
     </root>
 
     <!-- <logger name="io.micronaut.servlet" level="trace" /> -->
-    <!-- <logger name="io.micronaut.http.client" level="trace" /> -->
+     <logger name="io.micronaut.http.client" level="trace" />
      <logger name="io.micronaut.oraclecloud" level="trace" />
      <logger name="com.fnproject" level="trace" />
 

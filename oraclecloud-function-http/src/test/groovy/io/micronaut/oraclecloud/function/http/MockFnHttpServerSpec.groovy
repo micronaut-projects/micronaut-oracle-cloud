@@ -1,5 +1,6 @@
 package io.micronaut.oraclecloud.function.http
 
+import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
@@ -23,7 +24,7 @@ class MockFnHttpServerSpec extends Specification {
 
     void "test env forwarded"() {
         given:
-        def response = Mono.from(client.exchange(HttpRequest.GET("/"), Set<String>)).block()
+        def response = Mono.from(client.exchange(HttpRequest.GET("/"), Argument.setOf(String))).block()
 
         expect:
         response.status == HttpStatus.OK

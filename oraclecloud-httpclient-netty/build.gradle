@@ -5,6 +5,7 @@ plugins {
 dependencies {
     annotationProcessor mnSerde.micronaut.serde.processor
     implementation mn.netty.codec.http
+
     implementation libs.oci.common
     api libs.oci.common.httpclient
     api mnSerde.micronaut.serde.api
@@ -20,11 +21,14 @@ dependencies {
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
+    testRuntimeOnly mn.micronaut.jackson.databind
+    testRuntimeOnly mn.micronaut.runtime
 
     testImplementation mn.micronaut.inject.java.test
     testImplementation mnSerde.micronaut.serde.processor
     testImplementation projects.micronautOraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
+    testImplementation mn.micronaut.context
 
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,

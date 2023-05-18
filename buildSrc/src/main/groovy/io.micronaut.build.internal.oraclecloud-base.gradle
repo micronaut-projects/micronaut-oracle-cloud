@@ -12,7 +12,7 @@ dependencies {
     testImplementation mnTest.micronaut.test.junit5
     testRuntimeOnly libs.junit.jupiter
     testAnnotationProcessor mn.micronaut.inject.java
-    testRuntimeOnly mn.micronaut.jackson.databind
+    testRuntimeOnly mnSerde.micronaut.serde.jackson
 }
 
 tasks.withType(JavaCompile).configureEach {
