@@ -3,6 +3,10 @@ plugins {
 }
 
 mainClassName = "helloworld.Application"
+// ensure Jackson databind is not on the classpath for tests
+configurations.all {
+    exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
+}
 dependencies {
     implementation(platform(libs.oci.bom))
     implementation mnSerde.micronaut.serde.jackson

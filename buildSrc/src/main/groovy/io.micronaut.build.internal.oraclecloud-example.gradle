@@ -15,7 +15,7 @@ dependencies {
     implementation mnValidation.micronaut.validation
     implementation projects.micronautOraclecloudSdk
     testImplementation mn.micronaut.http.client
-    testRuntimeOnly mn.micronaut.jackson.databind
+    testRuntimeOnly mnSerde.micronaut.serde.jackson
 }
 
 if (JavaVersion.current().isCompatibleWith(JavaVersion.toVersion(19))) {

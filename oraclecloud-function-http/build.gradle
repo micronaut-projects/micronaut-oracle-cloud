@@ -12,6 +12,7 @@ dependencies {
     implementation mnReactor.micronaut.reactor
     testImplementation mn.micronaut.http.client
     testImplementation mnTest.micronaut.test.spock
+    testImplementation "ch.qos.logback:logback-classic:1.4.7"
     testImplementation projects.micronautOraclecloudFunctionHttpTest
 }
 
