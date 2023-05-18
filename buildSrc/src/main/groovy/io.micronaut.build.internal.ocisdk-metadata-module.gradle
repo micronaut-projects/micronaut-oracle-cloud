@@ -92,7 +92,7 @@ configurations.all {
                     rs.dependencySubstitution {
                         substitute(platform(requested)).using(platform(project(":micronaut-oraclecloud-bom")))
                     }
-                } else {
+                } else if (!requested.module.contains("-common")) {
                     useTarget(project(":micronaut-oraclecloud-bmc-${simpleName}"))
                 }
             }

@@ -71,9 +71,9 @@ private fun Settings.importProject(
                             val moduleName = PROJECT_NAME_PREFIX + moduleArtifactId.substringAfter(OCI_SDK_ARTIFACTID_PREFIX)
                             if (!moduleName.contains("examples") &&
                                 !moduleName.contains("-addons") &&
-                                !moduleName.contains("-commons") &&
+                                !moduleName.contains("-common") &&
                                 !moduleName.endsWith("-enforcer-rules") &&
-                            !moduleName.endsWith("-full")) {
+                                !moduleName.endsWith("-full")) {
                                 include(":$moduleName")
                                 project(":$moduleName").setProjectDir(projectDir)
                                 configureProject(moduleName, doc, properties, constraints, Dependency.External(parentGroupId, moduleArtifactId, parentVersion, null))
@@ -154,8 +154,9 @@ private fun parseDependencies(dependenciesNode: Node?, properties: Map<String, S
         val version = findFirst("version")?.textContent ?: ""
         val scope = findFirst("scope")?.textContent
         if (groupId != null && artifactId != null) {
-            if (groupId == SDK_GROUP_ID && artifactId.startsWith(OCI_SDK_ARTIFACTID_PREFIX)) {
+            if (groupId == SDK_GROUP_ID && artifactId.startsWith(OCI_SDK_ARTIFACTID_PREFIX) && !artifactId.contains("-common")) {
                 val projectPath = ":${PROJECT_NAME_PREFIX}${artifactId.substringAfter(OCI_SDK_ARTIFACTID_PREFIX)}"
+                println("Add $projectPath for $artifactId")
                 result.add(Dependency.Project(projectPath, scope))
             } else {
                 val fixedVersion = if (version.startsWith("\${")) {
