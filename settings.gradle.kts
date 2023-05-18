@@ -57,7 +57,7 @@ include("docs-examples:example-function-kotlin")
 include("docs-examples:example-http-function-java")
 include("docs-examples:example-http-function-groovy")
 include("docs-examples:example-http-function-kotlin")
-
+include("test-suite-java")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 configure<io.micronaut.build.MicronautBuildSettingsExtension> {

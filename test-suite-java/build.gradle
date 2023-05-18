@@ -1,0 +1,20 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-native-tests'
+}
+
+mainClassName = "helloworld.Application"
+dependencies {
+    implementation(platform(libs.oci.bom))
+    implementation mn.micronaut.jackson.databind
+    implementation mn.micronaut.context
+    implementation mn.reactor
+    implementation project(':micronaut-oraclecloud-vault')
+    implementation project(':micronaut-oraclecloud-atp')
+    implementation project(':micronaut-oraclecloud-sdk')
+    implementation mnSql.micronaut.jdbc.hikari
+    implementation mn.micronaut.management
+    implementation mnMicrometer.micronaut.micrometer.core
+    implementation mnMicrometer.micrometer.core
+    implementation project(':micronaut-oraclecloud-micrometer')
+    runtimeOnly mnLogging.logback.classic
+}
