@@ -16,6 +16,5 @@ dependencies {
     implementation mnMicrometer.micronaut.micrometer.core
     implementation mnMicrometer.micrometer.core
     implementation project(':micronaut-oraclecloud-micrometer')
-    implementation libs.oci.graalvm
     runtimeOnly mnLogging.logback.classic
 }

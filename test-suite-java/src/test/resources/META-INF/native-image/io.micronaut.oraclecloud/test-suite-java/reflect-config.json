@@ -1,61 +1,11 @@
 [
   {
-    "name": "com.zaxxer.hikari.HikariConfig",
-    "condition": {
-      "typeReachable": "com.zaxxer.hikari.util.PropertyElf"
-    },
-    "queryAllPublicMethods": true,
-    "methods": [
-      {
-        "name": "getExceptionOverrideClassName",
-        "parameterTypes": []
-      },
-      {
-        "name": "getInitializationFailTimeout",
-        "parameterTypes": []
-      },
-      {
-        "name": "getKeepaliveTime",
-        "parameterTypes": []
-      },
-      {
-        "name": "getScheduledExecutor",
-        "parameterTypes": []
-      },
-      {
-        "name": "getSchema",
-        "parameterTypes": []
-      },
-      {
-        "name": "setExceptionOverrideClassName",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      },
-      {
-        "name": "setInitializationFailTimeout",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "setKeepaliveTime",
-        "parameterTypes": [
-          "long"
-        ]
-      },
-      {
-        "name": "setScheduledExecutor",
-        "parameterTypes": [
-          "java.util.concurrent.ScheduledExecutorService"
-        ]
-      },
-      {
-        "name": "setSchema",
-        "parameterTypes": [
-          "java.lang.String"
-        ]
-      }
-    ]
+    "name": "javax.ws.rs.core.Context",
+    "allDeclaredConstructors" : true,
+    "allPublicConstructors" : true,
+    "allDeclaredFields" : true,
+    "allPublicFields" : true,
+    "allDeclaredMethods" : true,
+    "allPublicMethods" : true
   }
 ]

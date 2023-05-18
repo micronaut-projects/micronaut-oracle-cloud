@@ -8,9 +8,6 @@ dependencies {
     api projects.micronautOraclecloudCommon, {
         exclude group:'commons-logging', module:'commons-logging'
     }
-    api(libs.oci.graalvm) {
-        transitive = false
-    }
     api projects.micronautOraclecloudHttpclientNetty
     compileOnly libs.graal.svm
     compileOnly mnRxjava2.rxjava2
