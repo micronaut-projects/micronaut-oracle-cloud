@@ -4,8 +4,8 @@ Then add a dependency on the `micronaut-oraclecloud-sdk` module:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={version}]
 
-followed by adding dependencies on the OCI SDK clients you wish to use, for example for Object Store:
+followed by adding dependencies on the OCI SDK clients you wish to use, for example for Vault:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
 
 All OCI SDK clients are supported.

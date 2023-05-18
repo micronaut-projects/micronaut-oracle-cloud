@@ -12,50 +12,40 @@ Provides the common functionality and sets up the following beans:
 
 === micronaut-oraclecloud-httpclient-netty
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[]
 
 Provides an implementation of the OCI SDK client based on Netty and Micronaut Serialization.
 
 === micronaut-oraclecloud-sdk
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[]
 
 Provides support for injecting any of the available SDK client interfaces.
 
-NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
 
-It is important to note that if you plan to build native images you also need to ensure the transitive `javassist` dependency is not included when adding dependencies on SDK modules using dependency exclusions. For example with Gradle:
-
-.Excluding javassist
-[source,groovy]
-----
-implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-    exclude module:'javassist'
-}
-----
 
 === micronaut-oraclecloud-sdk-rxjava2
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[]
 
 Provides support for injecting inject RxJava 2 client implementations.
 
-NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
 
 === micronaut-oraclecloud-sdk-reactor
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[]
 
 Provides support for injecting inject Reactor client implementations.
 
-NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
 
-dependency:com.oracle.oci.sdk:oci-java-sdk-objectstorage[version={ociVersion}]
-
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
 
 
 === micronaut-oraclecloud-function

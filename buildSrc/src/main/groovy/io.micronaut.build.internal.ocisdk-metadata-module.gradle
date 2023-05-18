@@ -11,9 +11,6 @@ dependencies {
 
 repositories {
     mavenCentral()
-    maven {
-        url = "https://s01.oss.sonatype.org/content/repositories/snapshots"
-    }
 }
 
 def metadataJar = tasks.register("metadataJar", Jar) {
@@ -54,6 +51,10 @@ tasks.withType(Checkstyle).configureEach {
     enabled = false
 }
 
+tasks.named("prepareJavadocAggregation") {
+    // not relevant for us
+    enabled = false
+}
 tasks.withType(Javadoc).configureEach {
     // not relevant for us
     enabled = false
