@@ -53,7 +53,9 @@ class VaultTest {
         OracleCloudVaultConfigurationClient client = context.getBean(OracleCloudVaultConfigurationClient.class);
         PropertySource propertySource = Flux.from(client.getPropertySources(null)).blockFirst();
         Assertions.assertNotNull(propertySource);
-        Assertions.assertEquals(secretValue, propertySource.get(secretName));
+        Object value = propertySource.get(secretName);
+        Assertions.assertTrue(value instanceof byte[]);
+        Assertions.assertEquals(secretValue, new String((byte[]) value));
         context.close();
     }
 
