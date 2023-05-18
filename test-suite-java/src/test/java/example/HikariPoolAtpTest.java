@@ -20,7 +20,6 @@ import java.util.Map;
 @Requires(property = "atp.pass")
 @Requires(property = "atp.ocid")
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
-@Disabled("Disabled until reflect data fixed for micronaut-sql or hikari")
 class HikariPoolAtpTest {
 
     @Property(name = "atp.user")
