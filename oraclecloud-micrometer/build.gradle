@@ -3,9 +3,7 @@ plugins {
 }
 
 dependencies {
-    api libs.oci.monitoring, {
-        exclude group:'commons-logging', module:'commons-logging'
-    }
+    api projects.micronautOraclecloudBmcMonitoring
     api mnMicrometer.micronaut.micrometer.core
     api mnMicrometer.micrometer.core
     api mn.micronaut.inject
