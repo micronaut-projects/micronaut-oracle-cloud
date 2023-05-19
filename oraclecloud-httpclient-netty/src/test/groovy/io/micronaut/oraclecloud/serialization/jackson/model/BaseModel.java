@@ -87,7 +87,9 @@ public class BaseModel extends ExplicitlySetBmcModel {
 
         public BaseModel build() {
             BaseModel model = new BaseModel(baseString, baseInteger);
-            explicitlySet.forEach(model::markPropertyAsExplicitlySet);
+            for (String property: explicitlySet) {
+                model.markPropertyAsExplicitlySet(property);
+            }
             return model;
         }
 

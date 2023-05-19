@@ -56,11 +56,12 @@ public final class ExplicitlySetFilter extends SimpleBeanPropertyFilter {
                 if (fieldValue != null) {
                     // not null, definitely serialize
                     writer.serializeAsField(pojo, jgen, provider);
-                } else if (pojo instanceof ExplicitlySetBmcModel) {
+                } else if (
+                        pojo instanceof ExplicitlySetBmcModel &&
+                        ((ExplicitlySetBmcModel) pojo).wasPropertyExplicitlySet(writer.getName())
+                ) {
                     // null, find out if null was explicitly set using the method from BmcModel common class
-                    if (((ExplicitlySetBmcModel) pojo).wasPropertyExplicitlySet(writer.getName())) {
-                        writer.serializeAsField(pojo, jgen, provider);
-                    }
+                    writer.serializeAsField(pojo, jgen, provider);
                 }
             } finally {
                 field.setAccessible(accessible);

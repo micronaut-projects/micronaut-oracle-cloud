@@ -32,10 +32,6 @@ import java.util.Date;
 @SuppressWarnings({"deprecation"})
 public class Rfc3339DateFormat extends StdDateFormat {
 
-    public Rfc3339DateFormat() {
-
-    }
-
     @Override
     public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
         // Same as ISO8601DateFormat but we always serialize millis
