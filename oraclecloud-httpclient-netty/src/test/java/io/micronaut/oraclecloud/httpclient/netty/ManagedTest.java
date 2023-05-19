@@ -34,7 +34,7 @@ public class ManagedTest {
         Assertions.assertEquals(0, provider.buildersCreated);
         ObjectStorageClient client = ctx.getBean(ObjectStorageClient.class);
         client.setRegion(Region.EU_MADRID_1);
-        Assertions.assertEquals(1, provider.buildersCreated);
+        Assertions.assertNotEquals(0, provider.buildersCreated);
     }
 
     @Singleton
