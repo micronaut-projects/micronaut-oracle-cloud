@@ -7,6 +7,7 @@ import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.io.DuplicatableInputStream;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -22,6 +23,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.Set;
 
 @ExtendWith(NettyRule.class)
 public class NettyTest {
@@ -31,6 +34,10 @@ public class NettyTest {
 
     public static void computeContentLength(FullHttpResponse response) {
         response.headers().add(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+    }
+
+    HttpProvider provider() {
+        return PROVIDER;
     }
 
     @Test
@@ -45,13 +52,13 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = PROVIDER.newBuilder()
-                .baseUri(netty.getEndpoint())
-                .build()) {
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .build()) {
             try (HttpResponse response = client.createRequest(Method.GET)
-                    .appendPathPart("foo")
-                    .execute().toCompletableFuture()
-                    .get()) {
+                .appendPathPart("foo")
+                .execute().toCompletableFuture()
+                .get()) {
                 String s = response.textBody().toCompletableFuture().get();
                 Assertions.assertEquals("bar", s);
             }
@@ -71,14 +78,14 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = PROVIDER.newBuilder()
-                .baseUri(netty.getEndpoint())
-                .build()) {
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
-                    .appendPathPart("foo")
-                    .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
-                    .execute().toCompletableFuture()
-                    .get()) {
+                .appendPathPart("foo")
+                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .execute().toCompletableFuture()
+                .get()) {
                 Assertions.assertEquals(200, response.status());
             }
         }
@@ -97,15 +104,15 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = PROVIDER.newBuilder()
-                .baseUri(netty.getEndpoint())
-                .property(StandardClientProperties.BUFFER_REQUEST, false)
-                .build()) {
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .property(StandardClientProperties.BUFFER_REQUEST, false)
+            .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
-                    .appendPathPart("foo")
-                    .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
-                    .execute().toCompletableFuture()
-                    .get()) {
+                .appendPathPart("foo")
+                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .execute().toCompletableFuture()
+                .get()) {
                 Assertions.assertEquals(200, response.status());
             }
         }
@@ -124,15 +131,15 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = PROVIDER.newBuilder()
-                .baseUri(netty.getEndpoint())
-                .property(StandardClientProperties.BUFFER_REQUEST, false)
-                .build()) {
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .property(StandardClientProperties.BUFFER_REQUEST, false)
+            .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
-                    .appendPathPart("foo")
-                    .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)), 3)
-                    .execute().toCompletableFuture()
-                    .get()) {
+                .appendPathPart("foo")
+                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)), 3)
+                .execute().toCompletableFuture()
+                .get()) {
                 Assertions.assertEquals(200, response.status());
             }
         }
@@ -164,7 +171,7 @@ public class NettyTest {
             }
         }
 
-        try (HttpClient client = PROVIDER.newBuilder()
+        try (HttpClient client = provider().newBuilder()
             .baseUri(netty.getEndpoint())
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
@@ -199,7 +206,7 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = PROVIDER.newBuilder()
+        try (HttpClient client = provider().newBuilder()
             .baseUri(netty.getEndpoint())
             .property(StandardClientProperties.BUFFER_REQUEST, true)
             .build()) {
@@ -234,7 +241,7 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = PROVIDER.newBuilder()
+        try (HttpClient client = provider().newBuilder()
             .baseUri(netty.getEndpoint())
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
@@ -247,5 +254,38 @@ public class NettyTest {
                 Assertions.assertEquals(200, response.status());
             }
         }
+    }
+
+    @Test
+    public void connectionReuse() throws Exception {
+        Set<Channel> channels = new HashSet<>();
+        netty.channelCustomizer = channels::add;
+        for (int i = 0; i < 2; i++) {
+            netty.handleOneRequest((ctx, request) -> {
+                Assertions.assertEquals(HttpMethod.GET, request.method());
+                Assertions.assertEquals("/foo", request.uri());
+
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+                response.headers().add("Content-Type", "text/plain");
+                computeContentLength(response);
+                ctx.writeAndFlush(response);
+            });
+        }
+
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .build()) {
+            for (int i = 0; i < 2; i++) {
+                try (HttpResponse response = client.createRequest(Method.GET)
+                    .appendPathPart("foo")
+                    .execute().toCompletableFuture()
+                    .get()) {
+                    String s = response.textBody().toCompletableFuture().get();
+                    Assertions.assertEquals("bar", s);
+                }
+            }
+        }
+        // only one connection
+        Assertions.assertEquals(1, channels.size());
     }
 }

@@ -19,21 +19,19 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
+import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.ChannelInitializer;
+import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
-import io.netty.handler.codec.http.HttpClientCodec;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -41,10 +39,9 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.codec.http.LastHttpContent;
+import reactor.core.publisher.Mono;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLParameters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
@@ -60,6 +57,10 @@ import java.util.concurrent.Executor;
 
 final class NettyHttpRequest implements HttpRequest {
     private static final long UNKNOWN_CONTENT_LENGTH = -1;
+
+    private static final String HANDLER_PREFACE = "preface";
+    private static final String HANDLER_UNDECIDED_BODY = "undecided-body";
+    private static final String HANDLER_LIMITED_BUFFERING = "limited-buffering";
 
     private final NettyHttpClient client;
 
@@ -255,28 +256,18 @@ final class NettyHttpRequest implements HttpRequest {
             interceptor.intercept(this);
         }
 
-        io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest();
-
         CompletableFuture<HttpResponse> future = new CompletableFuture<>();
 
-        ChannelFuture connectFuture = client.bootstrap.clone()
-                .handler(new ChannelInitializer<Channel>() {
-                    @Override
-                    protected void initChannel(Channel ch) {
-                        initializeChannel(ch, nettyRequest, future);
-                    }
-                })
-                .connect();
-        connectFuture.addListener((ChannelFutureListener) cf -> {
-            if (!cf.isSuccess()) {
-                future.completeExceptionally(cf.cause());
+        Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, null);
+        connect.subscribe(ph -> {
+            try {
+                io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
+                initializeChannel(ph, nettyRequest, future);
+            } catch (Exception e) {
+                future.completeExceptionally(e);
+                ph.release();
             }
-        });
-        // close channel on any failure, including cancellation
-        future.exceptionally(t -> {
-            connectFuture.channel().close();
-            return null;
-        });
+        }, future::completeExceptionally);
         return future;
     }
 
@@ -305,36 +296,28 @@ final class NettyHttpRequest implements HttpRequest {
         return expectContinue && immediateBody != null && immediateBody.isReadable();
     }
 
-    private io.netty.handler.codec.http.HttpRequest buildNettyRequest() {
+    private io.netty.handler.codec.http.HttpRequest buildNettyRequest(ConnectionManager.PoolHandle poolHandle) {
         String uriString = buildUri();
 
-        HttpMethod method;
-        switch (this.method) {
-            case GET:
-                method = HttpMethod.GET;
-                break;
-            case HEAD:
-                method = HttpMethod.HEAD;
-                break;
-            case DELETE:
-                method = HttpMethod.DELETE;
-                break;
-            case POST:
-                method = HttpMethod.POST;
-                break;
-            case PUT:
-                method = HttpMethod.PUT;
-                break;
-            case PATCH:
-                method = HttpMethod.PATCH;
-                break;
-            default:
-                throw new AssertionError(this.method);
-        }
+        HttpMethod method = switch (this.method) {
+            case GET -> HttpMethod.GET;
+            case HEAD -> HttpMethod.HEAD;
+            case DELETE -> HttpMethod.DELETE;
+            case POST -> HttpMethod.POST;
+            case PUT -> HttpMethod.PUT;
+            case PATCH -> HttpMethod.PATCH;
+        };
 
         URI uri = URI.create(uriString);
         if (!headers.contains(HttpHeaderNames.HOST)) {
             headers.add(HttpHeaderNames.HOST, uri.getHost());
+        }
+        if (!poolHandle.http2()) {
+            if (poolHandle.canReturn()) {
+                headers.set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
+            } else {
+                headers.set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+            }
         }
 
         String pathAndQuery = uri.getRawPath();
@@ -377,31 +360,29 @@ final class NettyHttpRequest implements HttpRequest {
         return nettyRequest;
     }
 
-    private void initializeChannel(Channel ch, io.netty.handler.codec.http.HttpRequest nettyRequest, CompletableFuture<HttpResponse> future) {
-        if (client.sslContext != null) {
-            SslHandler sslHandler = client.sslContext.newHandler(ch.alloc(), client.host, client.port);
-            // enable host verification
-            SSLEngine engine = sslHandler.engine();
-            SSLParameters params = engine.getSSLParameters();
-            params.setEndpointIdentificationAlgorithm("HTTPS");
-            engine.setSSLParameters(params);
-
-            ch.pipeline().addLast(sslHandler);
-        }
+    private void initializeChannel(ConnectionManager.PoolHandle ph, io.netty.handler.codec.http.HttpRequest nettyRequest, CompletableFuture<HttpResponse> future) {
         LimitedBufferingBodyHandler limitedBufferingBodyHandler = new LimitedBufferingBodyHandler(4096);
-        UndecidedBodyHandler undecidedBodyHandler = new UndecidedBodyHandler(ch.alloc());
-        ch.pipeline()
-                .addLast(new HttpClientCodec())
-                .addLast(new ChannelInboundHandlerAdapter() {
+        UndecidedBodyHandler undecidedBodyHandler = new UndecidedBodyHandler(() -> {
+            ph.channel().pipeline().remove(HANDLER_LIMITED_BUFFERING);
+            ph.release();
+        }, ph.channel().alloc());
+        ph.channel().pipeline()
+                .addLast(HANDLER_PREFACE, new ChannelInboundHandlerAdapter() {
+                    boolean skipLast = false;
+
                     @Override
                     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-                        if (msg instanceof io.netty.handler.codec.http.HttpResponse) {
-                            if (((io.netty.handler.codec.http.HttpResponse) msg).status().equals(HttpResponseStatus.CONTINUE)) {
+                        if (msg instanceof io.netty.handler.codec.http.HttpResponse response) {
+                            if (response.status().equals(HttpResponseStatus.CONTINUE)) {
                                 if (expectContinue) {
-                                    sendBodyIfNecessary(ctx);
+                                    sendBodyIfNecessary(ctx.channel());
+                                }
+                                if (!(msg instanceof LastHttpContent)) {
+                                    // skip the LastHttpContent associated with the continue response
+                                    skipLast = true;
                                 }
                             } else {
-                                future.complete(new NettyHttpResponse((io.netty.handler.codec.http.HttpResponse) msg, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
+                                future.complete(new NettyHttpResponse(response, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
                                 ctx.pipeline().remove(this);
                             }
 
@@ -409,41 +390,45 @@ final class NettyHttpRequest implements HttpRequest {
                                 ctx.fireChannelRead(msg);
                             }
                         } else {
-                            ctx.fireChannelRead(msg);
+                            if (!skipLast || !(msg instanceof LastHttpContent)) {
+                                ctx.fireChannelRead(msg);
+                            }
                         }
                     }
 
                     @Override
                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                        ph.taint();
                         future.completeExceptionally(cause);
                         ctx.pipeline().remove(this);
                     }
-                })
-                .addLast(limitedBufferingBodyHandler)
-                .addLast(undecidedBodyHandler)
-                .addLast(new ChannelInboundHandlerAdapter() {
+
                     @Override
-                    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-                        ctx.pipeline().remove(this);
-                        ctx.writeAndFlush(nettyRequest, ch.voidPromise());
-
-                        if (!expectContinue) {
-                            sendBodyIfNecessary(ctx);
+                    public void handlerRemoved(ChannelHandlerContext ctx) {
+                        if (!future.isDone()) {
+                            ph.taint();
+                            future.completeExceptionally(new PrematureChannelClosureException());
                         }
-
-                        ctx.read();
-                        super.channelActive(ctx);
                     }
-                });
+                })
+                .addLast(HANDLER_LIMITED_BUFFERING, limitedBufferingBodyHandler)
+                .addLast(HANDLER_UNDECIDED_BODY, undecidedBodyHandler);
+        ph.channel().writeAndFlush(nettyRequest, ph.channel().voidPromise());
+
+        if (!expectContinue) {
+            sendBodyIfNecessary(ph.channel());
+        }
+
+        ph.channel().read();
     }
 
-    private void sendBodyIfNecessary(ChannelHandlerContext ctx) {
+    private void sendBodyIfNecessary(Channel ch) {
         if (blockingBody != null) {
-            ctx.pipeline()
+            ch.pipeline()
                     .addLast(new StreamWritingHandler(
                             blockingBody, client.blockingIoExecutor, new DefaultLastHttpContent()));
         } else if (delayImmediateBody()) {
-            ctx.writeAndFlush(new DefaultLastHttpContent(immediateBody), ctx.voidPromise());
+            ch.writeAndFlush(new DefaultLastHttpContent(immediateBody), ch.voidPromise());
         }
     }
 }

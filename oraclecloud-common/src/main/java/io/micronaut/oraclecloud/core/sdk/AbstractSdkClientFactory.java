@@ -19,9 +19,12 @@ import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
 import com.oracle.bmc.http.ClientConfigurator;
+import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
+import jakarta.inject.Inject;
 
 import java.util.Objects;
 
@@ -68,4 +71,18 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      * @return The client to build
      */
     protected abstract @NonNull T build(@NonNull AbstractAuthenticationDetailsProvider authenticationDetailsProvider);
+
+    /**
+     * Set the HTTP provider for this client. This is injected by the application context, in order
+     * to reuse the HTTP provider.
+     *
+     * @param provider The provider to inject
+     */
+    @Inject
+    @Internal
+    public final void setProvider(@Nullable HttpProvider provider) {
+        if (provider != null) {
+            builder.httpProvider(provider);
+        }
+    }
 }

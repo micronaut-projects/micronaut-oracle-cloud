@@ -10,21 +10,25 @@ import org.junit.jupiter.api.Test;
 import java.io.EOFException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class BufferFutureHandlerTest {
     @Test
     public void normal() throws Exception {
         EmbeddedChannel embeddedChannel = new EmbeddedChannel();
         BufferFutureHandler handler = new BufferFutureHandler(embeddedChannel.alloc());
-        embeddedChannel.pipeline().addLast(handler.new HandlerImpl());
+        AtomicBoolean released = new AtomicBoolean();
+        embeddedChannel.pipeline().addLast(handler.new HandlerImpl(() -> released.set(true)));
 
         Assertions.assertFalse(handler.future.isDone());
         embeddedChannel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertFalse(handler.future.isDone());
         embeddedChannel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertFalse(handler.future.isDone());
+        Assertions.assertFalse(released.get());
         embeddedChannel.writeInbound(new DefaultLastHttpContent());
         Assertions.assertTrue(handler.future.isDone());
+        Assertions.assertTrue(released.get());
         Assertions.assertEquals(Unpooled.wrappedBuffer("foobar".getBytes(StandardCharsets.UTF_8)), handler.future.get());
     }
 
@@ -32,13 +36,16 @@ class BufferFutureHandlerTest {
     public void exception() throws Exception {
         EmbeddedChannel embeddedChannel = new EmbeddedChannel();
         BufferFutureHandler handler = new BufferFutureHandler(embeddedChannel.alloc());
-        embeddedChannel.pipeline().addLast(handler.new HandlerImpl());
+        AtomicBoolean released = new AtomicBoolean();
+        embeddedChannel.pipeline().addLast(handler.new HandlerImpl(() -> released.set(true)));
 
         Assertions.assertFalse(handler.future.isDone());
         embeddedChannel.writeInbound(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8)));
         Assertions.assertFalse(handler.future.isDone());
+        Assertions.assertFalse(released.get());
         embeddedChannel.pipeline().fireExceptionCaught(new RuntimeException("test"));
         Assertions.assertTrue(handler.future.isDone());
+        Assertions.assertTrue(released.get());
         embeddedChannel.writeInbound(new DefaultLastHttpContent());
         Assertions.assertTrue(handler.future.isDone());
 
@@ -54,10 +61,13 @@ class BufferFutureHandlerTest {
     public void doubleException() throws Exception {
         EmbeddedChannel embeddedChannel = new EmbeddedChannel();
         BufferFutureHandler handler = new BufferFutureHandler(embeddedChannel.alloc());
-        embeddedChannel.pipeline().addLast(handler.new HandlerImpl());
+        AtomicBoolean released = new AtomicBoolean();
+        embeddedChannel.pipeline().addLast(handler.new HandlerImpl(() -> released.set(true)));
 
+        Assertions.assertFalse(released.get());
         Assertions.assertFalse(handler.future.isDone());
         embeddedChannel.pipeline().fireExceptionCaught(new RuntimeException("foo"));
+        Assertions.assertTrue(released.get());
         Assertions.assertTrue(handler.future.isDone());
         embeddedChannel.pipeline().fireExceptionCaught(new RuntimeException("bar"));
 
@@ -80,14 +90,17 @@ class BufferFutureHandlerTest {
     public void cancel() throws Exception {
         EmbeddedChannel embeddedChannel = new EmbeddedChannel();
         BufferFutureHandler handler = new BufferFutureHandler(embeddedChannel.alloc());
-        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        AtomicBoolean released = new AtomicBoolean();
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl(() -> released.set(true));
         embeddedChannel.pipeline().addLast(handlerImpl);
 
         Assertions.assertFalse(handler.future.isDone());
         embeddedChannel.writeInbound(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8)));
         Assertions.assertFalse(handler.future.isDone());
+        Assertions.assertFalse(released.get());
         embeddedChannel.pipeline().remove(handlerImpl);
         Assertions.assertTrue(handler.future.isDone());
+        Assertions.assertTrue(released.get());
 
         try {
             handler.future.get();

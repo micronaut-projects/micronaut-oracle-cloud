@@ -9,6 +9,8 @@ dependencies {
     implementation libs.oci.common
     api libs.oci.common.httpclient
     api mnSerde.micronaut.serde.api
+    implementation mn.micronaut.http.client
+    implementation mn.reactor
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson // Includes ObjectMapper implementation
 

@@ -28,7 +28,7 @@ class NettyHttpClientTest {
         EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class);
         embeddedServer.start();
 
-        try (HttpClient client = new NettyHttpClientBuilder()
+        try (HttpClient client = new NettyHttpClientBuilder(null)
                 .baseUri(embeddedServer.getURI())
                 .build()) {
             Map body = client.createRequest(Method.GET)
@@ -49,7 +49,7 @@ class NettyHttpClientTest {
         EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class);
         embeddedServer.start();
 
-        try (HttpClient client = new NettyHttpClientBuilder()
+        try (HttpClient client = new NettyHttpClientBuilder(null)
                 .baseUri(embeddedServer.getURI())
                 .build()) {
             InputStream responseStream = client.createRequest(Method.POST)
@@ -81,7 +81,7 @@ class NettyHttpClientTest {
         EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class);
         embeddedServer.start();
 
-        try (HttpClient client = new NettyHttpClientBuilder()
+        try (HttpClient client = new NettyHttpClientBuilder(null)
                 .baseUri(embeddedServer.getURI())
                 .build()) {
             String response = client.createRequest(Method.POST)

@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 class StreamReadingHandlerTest {
     private ExecutorService executor;
@@ -38,7 +39,8 @@ class StreamReadingHandlerTest {
     public void simple() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
         StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
-        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        AtomicBoolean released = new AtomicBoolean();
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl(() -> released.set(true));
         channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
         byte[] buffer = new byte[1024];
@@ -51,15 +53,20 @@ class StreamReadingHandlerTest {
         Assertions.assertEquals(3, stream.read(buffer));
         Assertions.assertEquals("bar", new String(buffer, 0, 3, StandardCharsets.UTF_8));
 
+        Assertions.assertFalse(released.get());
+
         channel.writeInbound(new DefaultLastHttpContent());
         Assertions.assertEquals(-1, stream.read(buffer));
+
+        Assertions.assertTrue(released.get());
     }
 
     @Test
     public void blocking() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
         StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
-        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        AtomicBoolean released = new AtomicBoolean();
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl(() -> released.set(true));
         channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
 
@@ -83,22 +90,29 @@ class StreamReadingHandlerTest {
         channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8))));
         Assertions.assertEquals("bar", queue.take());
 
+        Assertions.assertFalse(released.get());
+
         channel.writeInbound(new DefaultLastHttpContent());
 
         future.get();
+
+        Assertions.assertTrue(released.get());
     }
 
     @Test
     public void fullyBuffered() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
         StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
-        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        AtomicBoolean released = new AtomicBoolean();
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl(() -> released.set(true));
         channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
         byte[] buffer = new byte[1024];
 
         channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
+        Assertions.assertFalse(released.get());
         channel.writeInbound(new DefaultLastHttpContent());
+        Assertions.assertTrue(released.get());
 
         Assertions.assertEquals(3, stream.read(buffer));
         Assertions.assertEquals("foo", new String(buffer, 0, 3, StandardCharsets.UTF_8));
@@ -109,11 +123,14 @@ class StreamReadingHandlerTest {
     public void failure() throws Throwable {
         EmbeddedChannel channel = new EmbeddedChannel();
         StreamReadingHandler handler = new StreamReadingHandler(channel.alloc());
-        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl();
+        AtomicBoolean released = new AtomicBoolean();
+        DecidedBodyHandler.HandlerImpl handlerImpl = handler.new HandlerImpl(() -> released.set(true));
         channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
 
+        Assertions.assertFalse(released.get());
         channel.pipeline().fireExceptionCaught(new RuntimeException("foo"));
+        Assertions.assertTrue(released.get());
         channel.pipeline().fireExceptionCaught(new RuntimeException("bar"));
 
         try {

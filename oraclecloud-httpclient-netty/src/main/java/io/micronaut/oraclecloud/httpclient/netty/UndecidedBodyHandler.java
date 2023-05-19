@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.concurrent.Future;
 
 import java.io.InputStream;
@@ -32,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
  * that, handling is delegated to {@link StreamReadingHandler} or {@link BufferFutureHandler}.
  */
 final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
+    private final Runnable release;
     private final ByteBufAllocator alloc;
     private ChannelHandlerContext context;
     private List<HttpContent> buffer;
@@ -40,7 +42,8 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
     private boolean decided = false;
     private boolean removed = false;
 
-    UndecidedBodyHandler(ByteBufAllocator alloc) {
+    UndecidedBodyHandler(Runnable release, ByteBufAllocator alloc) {
+        this.release = release;
         this.alloc = alloc;
     }
 
@@ -59,6 +62,10 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpContent && buffer != null) {
             buffer.add((HttpContent) msg);
+            if (msg instanceof LastHttpContent) {
+                ctx.pipeline().remove(this);
+                release.run();
+            }
         } else {
             context.fireChannelRead(msg);
         }
@@ -152,7 +159,7 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
             handler.onCancel();
         } else {
             context.pipeline()
-                    .addAfter(context.name(), null, handler.new HandlerImpl())
+                    .addAfter(context.name(), null, handler.new HandlerImpl(release))
                     .remove(this);
         }
     }
