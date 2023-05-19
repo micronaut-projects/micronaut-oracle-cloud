@@ -15,11 +15,11 @@
  */
 package io.micronaut.oraclecloud.discovery.vault;
 
-import com.oracle.bmc.secrets.SecretsClient;
+import com.oracle.bmc.secrets.Secrets;
 import com.oracle.bmc.secrets.model.Base64SecretBundleContentDetails;
 import com.oracle.bmc.secrets.requests.GetSecretBundleRequest;
 import com.oracle.bmc.secrets.responses.GetSecretBundleResponse;
-import com.oracle.bmc.vault.VaultsClient;
+import com.oracle.bmc.vault.Vaults;
 import com.oracle.bmc.vault.model.SecretSummary;
 import com.oracle.bmc.vault.requests.ListSecretsRequest;
 import com.oracle.bmc.vault.responses.ListSecretsResponse;
@@ -54,10 +54,11 @@ import java.util.concurrent.ExecutorService;
  */
 @Singleton
 @Requires(classes = {
-        SecretsClient.class,
-        VaultsClient.class
+        Secrets.class,
+        Vaults.class
 })
-@Requires(beans = {VaultsClient.class, SecretsClient.class})
+@Requires(beans = {Vaults.class, Secrets.class})
+@Requires(property = OracleCloudVaultConfiguration.PREFIX)
 @BootstrapContextCompatible
 public class OracleCloudVaultConfigurationClient implements ConfigurationClient {
 
@@ -65,8 +66,8 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
 
     private final OracleCloudVaultConfiguration oracleCloudVaultClientConfiguration;
     private final ExecutorService executorService;
-    private final SecretsClient secretsClient;
-    private final VaultsClient vaultsClient;
+    private final Secrets secretsClient;
+    private final Vaults vaultsClient;
 
     /**
      * Default Constructor.
@@ -79,8 +80,8 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
     public OracleCloudVaultConfigurationClient(
             OracleCloudVaultConfiguration oracleCloudVaultClientConfiguration,
             @Named(TaskExecutors.IO) @Nullable ExecutorService executorService,
-            SecretsClient secretsClient,
-            VaultsClient vaultsClient) {
+            Secrets secretsClient,
+            Vaults vaultsClient) {
         this.oracleCloudVaultClientConfiguration = oracleCloudVaultClientConfiguration;
         this.executorService = executorService;
         this.secretsClient = secretsClient;
@@ -183,6 +184,6 @@ public class OracleCloudVaultConfigurationClient implements ConfigurationClient 
 
     @Override
     public String getDescription() {
-        return "Retrieves secrets from Oracle Cloud vaults";
+        return "oraclecloud-vault";
     }
 }

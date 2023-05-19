@@ -30,6 +30,7 @@ micronaut-sql = "5.0.0-M5"
 micronaut-test = "4.0.0-M2"
 micronaut-logging = "1.0.0-M1"
 micronaut-validation = "4.0.0-M7"
+micronaut-discovery-client = "4.0.0-M1"
 
 [libraries]
 # micronaut boms
@@ -44,6 +45,7 @@ micronaut-servlet = { module = "io.micronaut.servlet:micronaut-servlet-bom", ver
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
 micronaut-docs = { module = "io.micronaut.docs:micronaut-docs-asciidoc-config-props", version.ref = "micronaut-docs" }
 micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-bom", version.ref = "micronaut-validation" }
+micronaut-discovery-client = { module = "io.micronaut.discovery:micronaut-discovery-client-bom", version.ref = "micronaut-discovery-client" }
 
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }

@@ -73,6 +73,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-servlet")
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-validation")
+    importMicronautCatalog("micronaut-discovery-client")
 }
 
 gitRepositories {
