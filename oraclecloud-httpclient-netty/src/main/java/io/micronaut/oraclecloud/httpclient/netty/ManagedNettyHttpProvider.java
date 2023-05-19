@@ -18,6 +18,7 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.json.JsonMapper;
@@ -37,6 +38,7 @@ import java.util.concurrent.ExecutorService;
  * @author Jonas Konrad
  */
 @Singleton
+@Internal
 class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
