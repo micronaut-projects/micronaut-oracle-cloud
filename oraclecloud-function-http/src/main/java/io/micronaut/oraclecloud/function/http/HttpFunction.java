@@ -24,6 +24,8 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.DefaultMutableConversionService;
+import io.micronaut.core.propagation.PropagatedContext;
+import io.micronaut.http.context.ServerHttpRequestContext;
 import io.micronaut.oraclecloud.function.OciFunction;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
@@ -98,13 +100,16 @@ public class HttpFunction extends OciFunction {
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
         FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
+        FnServletRequest<Object> servletRequest = new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry());
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-                new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry()),
+            servletRequest,
                 response
         );
-        this.httpHandler.service(
+        try (PropagatedContext.Scope ignore = PropagatedContext.newContext(new ServerHttpRequestContext(servletRequest)).propagate()) {
+            this.httpHandler.service(
                 exchange
-        );
-        return response.getNativeResponse();
+            );
+            return response.getNativeResponse();
+        }
     }
 }

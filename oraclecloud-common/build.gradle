@@ -5,14 +5,18 @@ plugins {
 dependencies {
     api(libs.oci.common) {
         exclude group: 'org.javassist', module: 'javassist'
+        exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
     }
     api mn.micronaut.inject
     api mn.micronaut.json.core
 
     compileOnly libs.graal.svm
-    compileOnly mn.micronaut.runtime
+    compileOnly mn.micronaut.context
+    compileOnly mn.micronaut.discovery.core
+    compileOnly mn.micronaut.jackson.databind
     runtimeOnly libs.slf4j.jcl
     testImplementation libs.mockito
-    testImplementation mn.micronaut.runtime
+    testImplementation mn.micronaut.context
+    testImplementation mn.micronaut.discovery.core
     testImplementation mnTest.micronaut.test.spock
 }

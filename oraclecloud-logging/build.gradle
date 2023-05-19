@@ -3,9 +3,7 @@ plugins {
 }
 
 dependencies {
-    api libs.oci.loggingingestion, {
-        exclude group:'commons-logging', module:'commons-logging'
-    }
+    api projects.micronautOraclecloudBmcLoggingingestion
     api mn.micronaut.inject
     api mnSerde.micronaut.serde.jackson
     implementation projects.micronautOraclecloudSdk

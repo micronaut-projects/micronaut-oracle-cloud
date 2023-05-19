@@ -15,7 +15,6 @@
  */
 package io.micronaut.discovery.cloud
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.micronaut.context.env.ComputePlatform
 import io.micronaut.context.env.Environment
 import io.micronaut.discovery.cloud.oraclecloud.OracleCloudInstanceMetadata
@@ -48,7 +47,6 @@ class OracleCloudMetadataResolverSpec extends Specification {
         String currentPath = Paths.get("").toAbsolutePath().toString()
         configuration.url = "file:///${currentPath}/src/test/groovy/io/micronaut/discovery/cloud/oracleCloudInstanceMetadata.json"
         configuration.vnicUrl = "file:///${currentPath}/src/test/groovy/io/micronaut/discovery/cloud/oracleCloudInstanceNetworkMetadata.json"
-        ObjectMapper mapper = new ObjectMapper()
         return new OracleCloudMetadataResolver(JsonMapper.createDefault(), configuration)
     }
 }

@@ -4,9 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.oci.database) {
-        exclude group: 'org.javassist', module: 'javassist'
-    }
+    implementation(projects.micronautOraclecloudBmcDatabase)
     implementation mnGroovy.micronaut.runtime.groovy
     implementation mn.micronaut.http.server.netty
     implementation projects.micronautOraclecloudSdkReactor
