@@ -4,7 +4,7 @@ import com.oracle.bmc.http.client.HttpClient
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.beans.BeanIntrospection
-import io.micronaut.oraclecloud.httpclient.netty.NettyHttpClientBuilder
+import io.micronaut.oraclecloud.httpclient.netty.NettyHttpProvider
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Specification
 
@@ -20,7 +20,7 @@ class SerdeSpecBase extends Specification {
     }
 
     static <T> T echoTest(EmbeddedServer embeddedServer, Object requestBody, Class<T> bodyType = String) throws Exception {
-        try (HttpClient client = new NettyHttpClientBuilder()
+        try (HttpClient client = new NettyHttpProvider().newBuilder()
                 .baseUri(embeddedServer.URI)
                 .build()) {
             var response = client.createRequest(POST)

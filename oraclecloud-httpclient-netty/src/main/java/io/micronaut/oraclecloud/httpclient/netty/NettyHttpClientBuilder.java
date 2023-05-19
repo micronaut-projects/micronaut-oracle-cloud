@@ -18,34 +18,28 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
-import com.oracle.bmc.http.client.KeyStoreWithPassword;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.core.annotation.Nullable;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
 import java.net.URI;
-import java.security.KeyStore;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 final class NettyHttpClientBuilder implements HttpClientBuilder {
-    private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(30);
-
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();
-
+    @Nullable
+    final ManagedNettyHttpProvider managedProvider;
+    final Map<ClientProperty<?>, Object> properties = new HashMap<>();
     URI baseUri;
-    Duration connectTimeout = DEFAULT_TIMEOUT;
-    Duration readTimeout = DEFAULT_TIMEOUT;
-    int asyncPoolSize = 0;
     boolean buffered = true;
 
-    KeyStoreWithPassword keyStore;
-    KeyStore trustStore;
-    HostnameVerifier hostnameVerifier;
-    SSLContext sslContext;
+    NettyHttpClientBuilder(@Nullable ManagedNettyHttpProvider managedProvider) {
+        this.managedProvider = managedProvider;
+    }
 
     @Override
     public HttpClientBuilder baseUri(URI uri) {
@@ -61,26 +55,20 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
 
     @Override
     public <T> HttpClientBuilder property(ClientProperty<T> key, T value) {
-        if (key == StandardClientProperties.CONNECT_TIMEOUT) {
-            connectTimeout = (Duration) value;
-        } else if (key == StandardClientProperties.READ_TIMEOUT) {
-            readTimeout = (Duration) value;
-        } else if (key == StandardClientProperties.ASYNC_POOL_SIZE) {
-            asyncPoolSize = (Integer) value;
+        if (key == StandardClientProperties.READ_TIMEOUT ||
+            key == StandardClientProperties.CONNECT_TIMEOUT ||
+            key == StandardClientProperties.ASYNC_POOL_SIZE) {
+            properties.put(key, value);
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;
-        } else if (key == StandardClientProperties.KEY_STORE) {
-            keyStore = (KeyStoreWithPassword) value;
-        } else if (key == StandardClientProperties.TRUST_STORE) {
-            trustStore = (KeyStore) value;
-        } else if (key == StandardClientProperties.HOSTNAME_VERIFIER) {
-            hostnameVerifier = (HostnameVerifier) value;
-        } else if (key == StandardClientProperties.SSL_CONTEXT) {
-            sslContext = (SSLContext) value;
+        } else if (key == StandardClientProperties.KEY_STORE ||
+            key == StandardClientProperties.TRUST_STORE ||
+            key == StandardClientProperties.HOSTNAME_VERIFIER ||
+            key == StandardClientProperties.SSL_CONTEXT) {
+            throw new IllegalArgumentException("The OCI SDK netty client does not support changing the this setting (" + key + ") directly. Please go through the Micronaut HTTP client configuration.");
         } else {
             // todo: support all standard client properties
-            throw new IllegalArgumentException(
-                    "Unknown or unsupported HTTP client property " + key);
+            throw new IllegalArgumentException("Unknown or unsupported HTTP client property " + key);
         }
         return this;
     }

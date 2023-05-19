@@ -124,6 +124,12 @@ abstract class DecidedBodyHandler {
      * {@link io.netty.channel.ChannelHandler} that forwards to this {@link DecidedBodyHandler}.
      */
     final class HandlerImpl extends ChannelInboundHandlerAdapter {
+        private final Runnable release;
+
+        HandlerImpl(Runnable release) {
+            this.release = release;
+        }
+
         @Override
         public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
             context = ctx;
@@ -161,6 +167,7 @@ abstract class DecidedBodyHandler {
         @Override
         public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
             onCancel();
+            release.run();
         }
     }
 }

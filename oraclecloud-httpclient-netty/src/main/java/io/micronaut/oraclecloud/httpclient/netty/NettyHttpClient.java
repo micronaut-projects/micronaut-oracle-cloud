@@ -16,113 +16,96 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.fasterxml.jackson.core.JacksonException;
+import com.oracle.bmc.ClientConfiguration;
+import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
-import io.netty.bootstrap.Bootstrap;
+import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.http.client.DefaultHttpClientConfiguration;
+import io.micronaut.http.client.netty.ConnectionManager;
+import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.ssl.ClientAuth;
-import io.netty.handler.ssl.IdentityCipherSuiteFilter;
-import io.netty.handler.ssl.JdkSslContext;
-import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.KeyStoreBuilderParameters;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.TrustManagerFactory;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 final class NettyHttpClient implements HttpClient {
+    /**
+     * Default settings of {@link com.oracle.bmc.ClientConfiguration}. They are set by BaseClient,
+     * so we ignore them if they are the default value.
+     */
+    private static final Map<ClientProperty<?>, Object> EXPECTED_PROPERTIES;
+
+    final boolean hasContext;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
-    final Bootstrap bootstrap;
-    final NioEventLoopGroup group;
     final ExecutorService blockingIoExecutor;
-    final SslContext sslContext;
     final String host;
     final int port;
     final boolean buffered;
+    final Closeable upstreamHttpClient;
+    final ConnectionManager connectionManager;
+    final DefaultHttpClient.RequestKey requestKey;
+
+    static {
+        ClientConfiguration cfg = ClientConfiguration.builder().build();
+        EXPECTED_PROPERTIES = Map.of(
+            StandardClientProperties.CONNECT_TIMEOUT, Duration.ofMillis(cfg.getConnectionTimeoutMillis()),
+            StandardClientProperties.READ_TIMEOUT, Duration.ofMillis(cfg.getReadTimeoutMillis()),
+            StandardClientProperties.ASYNC_POOL_SIZE, cfg.getMaxAsyncThreads()
+        );
+    }
 
     NettyHttpClient(NettyHttpClientBuilder builder) {
+        DefaultHttpClient mnClient;
+        if (builder.managedProvider == null) {
+            hasContext = false;
+            DefaultHttpClientConfiguration cfg = new DefaultHttpClientConfiguration();
+            if (builder.properties.containsKey(StandardClientProperties.CONNECT_TIMEOUT)) {
+                cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.CONNECT_TIMEOUT));
+            }
+            if (builder.properties.containsKey(StandardClientProperties.READ_TIMEOUT)) {
+                cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.READ_TIMEOUT));
+            }
+            mnClient = new DefaultHttpClient(null, cfg);
+            blockingIoExecutor = Executors.newCachedThreadPool();
+        } else {
+            hasContext = true;
+            for (Map.Entry<ClientProperty<?>, Object> entry : builder.properties.entrySet()) {
+                if (!entry.getValue().equals(EXPECTED_PROPERTIES.get(entry.getKey()))) {
+                    throw new IllegalArgumentException("Cannot change property " + entry.getKey() + " in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is '" + ManagedNettyHttpProvider.SERVICE_ID + "'.");
+                }
+            }
+            mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
+            blockingIoExecutor = builder.managedProvider.ioExecutor;
+        }
+        upstreamHttpClient = mnClient;
+        connectionManager = mnClient.connectionManager();
         baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
         requestInterceptors = builder.requestInterceptors.stream()
-                .sorted(Comparator.comparingInt(p -> p.priority))
-                .map(p -> p.value)
-                .collect(Collectors.toList());
-        int defaultPort;
-        if (builder.baseUri.getScheme().equalsIgnoreCase("http")) {
-            defaultPort = 80;
-            sslContext = null;
-        } else {
-            defaultPort = 443;
-            try {
-                if (builder.sslContext == null) {
-                    SslContextBuilder sslBuilder = SslContextBuilder.forClient();
-                    if (builder.keyStore != null) {
-                        KeyManagerFactory kmf = KeyManagerFactory.getInstance("PKIX");
-                        kmf.init(new KeyStoreBuilderParameters(KeyStore.Builder.newInstance(
-                                builder.keyStore.getKeyStore(),
-                                new KeyStore.PasswordProtection(builder.keyStore.getPassword().toCharArray())
-                        )));
-                        sslBuilder.keyManager(kmf);
-                    }
-
-                    TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-                    tmf.init(builder.trustStore);
-                    if (builder.hostnameVerifier != null) {
-                        tmf = new CustomTrustManagerFactory(tmf, builder.hostnameVerifier);
-                    }
-                    sslBuilder.trustManager(tmf);
-
-                    sslContext = sslBuilder.build();
-                } else {
-                    sslContext = new JdkSslContext(
-                            builder.sslContext,
-                            true,
-                            null,
-                            IdentityCipherSuiteFilter.INSTANCE,
-                            null,
-                            ClientAuth.NONE, // ignored for isClient=true
-                            null,
-                            false
-                    );
-                }
-            } catch (SSLException | GeneralSecurityException e) {
-                throw new IllegalStateException("Couldn't set up ssl context", e);
-            }
-        }
-        int port = builder.baseUri.getPort();
-        if (port == -1) {
-            port = defaultPort;
-        }
-        this.port = port;
+            .sorted(Comparator.comparingInt(p -> p.priority))
+            .map(p -> p.value)
+            .collect(Collectors.toList());
+        requestKey = new DefaultHttpClient.RequestKey(mnClient, builder.baseUri);
+        this.port = builder.baseUri.getPort();
         this.host = builder.baseUri.getHost();
-        bootstrap = new Bootstrap()
-                .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Math.toIntExact(builder.connectTimeout.toMillis()))
-                .remoteAddress(host, port);
-
-        group = new NioEventLoopGroup(builder.asyncPoolSize);
-        bootstrap.group(group);
-        blockingIoExecutor = Executors.newCachedThreadPool();
         this.buffered = builder.buffered;
     }
 
     ByteBufAllocator alloc() {
-        return (ByteBufAllocator) bootstrap.config().options().getOrDefault(ChannelOption.ALLOCATOR, ByteBufAllocator.DEFAULT);
+        return connectionManager.alloc();
     }
 
     @Override
@@ -137,7 +120,13 @@ final class NettyHttpClient implements HttpClient {
 
     @Override
     public void close() {
-        group.shutdownGracefully();
-        blockingIoExecutor.shutdown();
+        if (!hasContext) {
+            try {
+                upstreamHttpClient.close();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+            blockingIoExecutor.shutdown();
+        }
     }
 }

@@ -21,7 +21,8 @@ import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 
 /**
- * Netty-based implementation of {@link HttpProvider}.
+ * Netty-based implementation of {@link HttpProvider}. This is only used for SPI
+ * ({@link HttpProvider#getDefault()}), there is also {@link ManagedNettyHttpProvider}.
  */
 public final class NettyHttpProvider implements HttpProvider {
     /**
@@ -33,7 +34,7 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Override
     public HttpClientBuilder newBuilder() {
-        return new NettyHttpClientBuilder();
+        return new NettyHttpClientBuilder(null);
     }
 
     @Override

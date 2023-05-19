@@ -51,7 +51,7 @@ public final class OciSdkMicronautSerializer implements Serializer {
     private final ObjectMapper objectMapper;
 
     /**
-     * Create Serializer from micronaut serde {@link ObjectMapper}
+     * Create Serializer from micronaut serde {@link ObjectMapper}.
      * @param objectMapper the object mapper
      */
     public OciSdkMicronautSerializer(ObjectMapper objectMapper) {
