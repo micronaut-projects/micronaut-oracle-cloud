@@ -125,6 +125,11 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBuilder()" class="member-name-link">getBuilder</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setProvider(com.oracle.bmc.http.client.HttpProvider)" class="member-name-link">setProvider</a><wbr>(com.oracle.bmc.http.client.HttpProvider&nbsp;provider)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Set the HTTP provider for this client.</div>
+</div>
 </div>
 </div>
 </div>
@@ -192,6 +197,21 @@ loadScripts(document, 'script');</script>
 <dd><code>authenticationDetailsProvider</code> - The authentication details provider</dd>
 <dt>Returns:</dt>
 <dd>The client to build</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="setProvider(com.oracle.bmc.http.client.HttpProvider)">
+<h3>setProvider</h3>
+<div class="member-signature"><span class="annotations">@Inject
+@Internal
+</span><span class="modifiers">public final</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setProvider</span><wbr><span class="parameters">(@Nullable
+ com.oracle.bmc.http.client.HttpProvider&nbsp;provider)</span></div>
+<div class="block">Set the HTTP provider for this client. This is injected by the application context, in order
+ to reuse the HTTP provider.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>provider</code> - The provider to inject</dd>
 </dl>
 </section>
 </li>
