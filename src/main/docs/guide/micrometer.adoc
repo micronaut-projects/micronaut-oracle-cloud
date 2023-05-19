@@ -29,7 +29,7 @@ You can configure this Micrometer reporter using `micronaut.metrics.export.oracl
 |=======
 
 .Example Oracle Cloud Config
-[source,yml]
+[configuration]
 ----
 micronaut:
   metrics:

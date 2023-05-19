@@ -40,6 +40,7 @@ import jakarta.inject.Singleton;
  * @since 1.0.0
  */
 @Singleton
+@ReflectiveAccess
 public class HttpFunction extends OciFunction {
     private ServletHttpHandler<InputEvent, OutputEvent> httpHandler;
 
@@ -48,7 +49,6 @@ public class HttpFunction extends OciFunction {
     /**
      * Default constructor.
      */
-    @ReflectiveAccess
     public HttpFunction() {
         this.conversionService = new DefaultMutableConversionService();
     }

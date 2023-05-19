@@ -104,12 +104,7 @@ final class OciFunctionFeature implements Feature {
                 }
             }
         }
-        Class<?> clbClass;
-        try {
-            clbClass = Class.forName("org.glassfish.jersey.client.JerseyClientBuilder");
-        } catch (ReflectiveOperationException e) {
-            clbClass = null;
-        }
+        Class<?> clbClass = access.findClassByName("org.glassfish.jersey.client.JerseyClientBuilder");
         if (clbClass != null) {
             registerIfNecessary(clbClass);
         }

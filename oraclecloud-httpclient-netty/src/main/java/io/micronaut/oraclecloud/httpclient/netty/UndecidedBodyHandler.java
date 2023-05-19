@@ -16,10 +16,10 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpContent;
-import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.concurrent.Future;
 
 import java.io.InputStream;
@@ -32,11 +32,17 @@ import java.util.concurrent.CompletableFuture;
  * that, handling is delegated to {@link StreamReadingHandler} or {@link BufferFutureHandler}.
  */
 final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
+    private final ByteBufAllocator alloc;
     private ChannelHandlerContext context;
     private List<HttpContent> buffer;
     private Throwable failure;
 
     private boolean decided = false;
+    private boolean removed = false;
+
+    UndecidedBodyHandler(ByteBufAllocator alloc) {
+        this.alloc = alloc;
+    }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
@@ -46,15 +52,7 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        if (failure != null) {
-            ctx.fireExceptionCaught(failure);
-        }
-        if (buffer != null) {
-            for (HttpContent message : buffer) {
-                ctx.fireChannelRead(message);
-            }
-            buffer = null;
-        }
+        removed = true;
     }
 
     @Override
@@ -80,80 +78,82 @@ final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
     }
 
     public void discard() {
-        if (decided) {
-            throw new IllegalStateException("Already replaced");
-        }
-        decided = true;
-
-        context.executor().execute(() -> {
-            context.pipeline()
-                    .addAfter(context.name(), null, DiscardingHandler.INSTANCE)
-                    .remove(this);
-            context.read();
-        });
+        replaceWithHandler(DiscardingHandler.INSTANCE);
     }
 
     public CompletableFuture<InputStream> asInputStream() {
+        StreamReadingHandler streamReadingHandler = new StreamReadingHandler(alloc);
+        if (context.executor().inEventLoop()) {
+            replaceWithHandler(streamReadingHandler);
+            try {
+                return CompletableFuture.completedFuture(streamReadingHandler.getInputStream());
+            } catch (Throwable e) {
+                CompletableFuture<InputStream> cf = new CompletableFuture<>();
+                cf.completeExceptionally(e);
+                return cf;
+            }
+        } else {
+            Future<?> addFuture = context.executor().submit(() -> replaceWithHandler(streamReadingHandler));
+            CompletableFuture<InputStream> streamFuture = new CompletableFuture<>();
+            addFuture.addListener(future -> {
+                if (future.isSuccess()) {
+                    InputStream stream;
+                    try {
+                        stream = streamReadingHandler.getInputStream();
+                    } catch (Throwable e) {
+                        streamFuture.completeExceptionally(e);
+                        return;
+                    }
+                    streamFuture.complete(stream);
+                } else {
+                    streamFuture.completeExceptionally(future.cause());
+                }
+            });
+            return streamFuture;
+        }
+    }
+
+    private void replaceWithHandler(DecidedBodyHandler handler) {
         if (decided) {
             throw new IllegalStateException("Already replaced");
         }
         decided = true;
 
-        StreamReadingHandler streamReadingHandler = new StreamReadingHandler();
-        Future<?> addFuture = context.executor().submit(() -> {
-            context.pipeline()
-                    .addAfter(context.name(), null, streamReadingHandler)
-                    .addAfter(context.name(), null, new ChannelInboundHandlerAdapter() {
-                        @Override
-                        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                            if (msg instanceof HttpContent) {
-                                ctx.fireChannelRead(((HttpContent) msg).content().retain());
-                                ((HttpContent) msg).release();
-
-                                if (msg instanceof LastHttpContent) {
-                                    ctx.pipeline()
-                                            .remove(this)
-                                            .remove(streamReadingHandler);
-                                }
-                            } else {
-                                ctx.fireChannelRead(msg);
-                            }
-                        }
-                    })
-                    .remove(this);
-            context.read();
-        });
-        CompletableFuture<InputStream> streamFuture = new CompletableFuture<>();
-        addFuture.addListener(future -> {
-            if (future.isSuccess()) {
-                InputStream stream;
-                try {
-                    stream = streamReadingHandler.getInputStream();
-                } catch (Throwable e) {
-                    streamFuture.completeExceptionally(e);
-                    return;
-                }
-                streamFuture.complete(stream);
-            } else {
-                streamFuture.completeExceptionally(future.cause());
-            }
-        });
-        return streamFuture;
+        if (context.executor().inEventLoop()) {
+            replaceWithHandler0(handler);
+        } else {
+            context.executor().submit(() -> replaceWithHandler0(handler));
+        }
     }
 
     public CompletableFuture<ByteBuf> asBuffer() {
-        if (decided) {
-            throw new IllegalStateException("Already replaced");
-        }
-        decided = true;
-
-        BufferFutureHandler futureHandler = new BufferFutureHandler();
-        context.executor().execute(() -> {
-            context.pipeline()
-                    .addAfter(context.name(), null, futureHandler)
-                    .remove(this);
-            context.read();
-        });
+        BufferFutureHandler futureHandler = new BufferFutureHandler(alloc);
+        replaceWithHandler(futureHandler);
         return futureHandler.future;
+    }
+
+    private void replaceWithHandler0(DecidedBodyHandler handler) {
+        if (failure != null) {
+            handler.onError(failure);
+            if (buffer != null) {
+                for (HttpContent httpContent : buffer) {
+                    httpContent.release();
+                }
+            }
+            return;
+        }
+        if (buffer != null) {
+            for (HttpContent message : buffer) {
+                handler.onContent(message);
+            }
+            buffer = null;
+        }
+        if (removed) {
+            handler.onCancel();
+        } else {
+            context.pipeline()
+                    .addAfter(context.name(), null, handler.new HandlerImpl())
+                    .remove(this);
+        }
     }
 }
