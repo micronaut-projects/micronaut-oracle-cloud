@@ -46,13 +46,13 @@ Here you'll need to grab a few values, so copy the data upload endpoint (#1), pr
 
 image::oci_console_apm_domain_details.png[Create APM Domain]
 
-Now we have what we need to construct a URL to plug in to our application config files.
+Now we have what we need to construct a URL to plug in to our application configuration files.
 The `Collector URL` format requires us to construct a URL by using the `data upload endpoint` as our base URL and generate the path based on some choices including values from our private or public key.
 The format is https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html#APMGN-GUID-B5EDE254-C854-436D-B844-B986A4E077AA[documented here].
-Once we've constructed the URL path, we can add it to our `application-oraclecloud.yml` config.
+Once we've constructed the URL path, we can add it to our `application-oraclecloud` configuration file.
 
 .Example Oracle Cloud Config
-[source,yml]
+[configuration]
 ----
 micronaut:
   application:
