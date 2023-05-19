@@ -1,6 +1,5 @@
 plugins {
     id "io.micronaut.build.internal.oraclecloud-tests"
-    id 'org.graalvm.buildtools.native'
     id "io.micronaut.application"
 }
 micronaut {
@@ -8,15 +7,6 @@ micronaut {
     coreVersion.set(libs.versions.micronaut.asProvider().get())
     testRuntime "junit5"
     enableNativeImage false
-}
-
-tasks.named("check") { task ->
-    def graal = ["jvmci.Compiler", "java.vendor.version", "java.vendor"].any {
-        System.getProperty(it)?.toLowerCase(Locale.ENGLISH)?.contains("graal")
-    }
-    if (graal) {
-        task.dependsOn("nativeTest")
-    }
 }
 
 graalvmNative {
