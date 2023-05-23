@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.discovery.vault;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
@@ -37,7 +38,7 @@ public class OracleCloudVaultConfiguration {
 
     private final OracleCloudVaultClientDiscoveryConfiguration oracleCloudVaultClientDiscoveryConfiguration = new OracleCloudVaultClientDiscoveryConfiguration();
 
-    private List<OracleCloudVault> vaults;
+    private List<OracleCloudVault> vaults = Collections.emptyList();
 
     /**
      * @return The discovery service configuration
@@ -61,7 +62,9 @@ public class OracleCloudVaultConfiguration {
      * @param vaults A list of Vaults
      */
     public void setVaults(List<OracleCloudVault> vaults) {
-        this.vaults = vaults;
+        if (vaults != null) {
+            this.vaults = vaults;
+        }
     }
 
        /**

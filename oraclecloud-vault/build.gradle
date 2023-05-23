@@ -7,6 +7,7 @@ dependencies {
     api projects.micronautOraclecloudBmcVault
     api mn.micronaut.discovery.core
     api mn.micronaut.inject
+    implementation mnDiscoveryClient.micronaut.discovery.client
     implementation mn.reactor
     implementation projects.micronautOraclecloudSdk
     testImplementation mnTest.micronaut.test.spock
