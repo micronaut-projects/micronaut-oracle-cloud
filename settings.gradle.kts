@@ -24,7 +24,7 @@ buildscript {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "6.4.4"
+    id("io.micronaut.build.shared.settings") version "6.5.0"
     id("me.champeau.includegit") version "0.1.6"
     id("io.micronaut.build.internal.ocisdk")
 }
