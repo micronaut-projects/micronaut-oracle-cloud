@@ -80,7 +80,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="annotations">@Singleton
-@Requires(classes={com.oracle.bmc.secrets.SecretsClient.class,com.oracle.bmc.vault.VaultsClient.class}) @Requires(beans={com.oracle.bmc.vault.VaultsClient.class,com.oracle.bmc.secrets.SecretsClient.class})
+@Requires(classes={com.oracle.bmc.secrets.Secrets.class,com.oracle.bmc.vault.Vaults.class}) @Requires(beans={com.oracle.bmc.vault.Vaults.class,com.oracle.bmc.secrets.Secrets.class}) @Requires(property="oci.vault")
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">OracleCloudVaultConfigurationClient</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements io.micronaut.discovery.config.ConfigurationClient</span></div>
@@ -111,10 +111,10 @@ implements io.micronaut.discovery.config.ConfigurationClient</span></div>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration,java.util.concurrent.ExecutorService,com.oracle.bmc.secrets.SecretsClient,com.oracle.bmc.vault.VaultsClient)" class="member-name-link">OracleCloudVaultConfigurationClient</a><wbr>(<a href="OracleCloudVaultConfiguration.html" title="class in io.micronaut.oraclecloud.discovery.vault">OracleCloudVaultConfiguration</a>&nbsp;oracleCloudVaultClientConfiguration,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration,java.util.concurrent.ExecutorService,com.oracle.bmc.secrets.Secrets,com.oracle.bmc.vault.Vaults)" class="member-name-link">OracleCloudVaultConfigurationClient</a><wbr>(<a href="OracleCloudVaultConfiguration.html" title="class in io.micronaut.oraclecloud.discovery.vault">OracleCloudVaultConfiguration</a>&nbsp;oracleCloudVaultClientConfiguration,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ExecutorService</a>&nbsp;executorService,
- com.oracle.bmc.secrets.SecretsClient&nbsp;secretsClient,
- com.oracle.bmc.vault.VaultsClient&nbsp;vaultsClient)</code></div>
+ com.oracle.bmc.secrets.Secrets&nbsp;secretsClient,
+ com.oracle.bmc.vault.Vaults&nbsp;vaultsClient)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Default Constructor.</div>
 </div>
@@ -159,13 +159,13 @@ implements io.micronaut.discovery.config.ConfigurationClient</span></div>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration,java.util.concurrent.ExecutorService,com.oracle.bmc.secrets.SecretsClient,com.oracle.bmc.vault.VaultsClient)">
+<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration,java.util.concurrent.ExecutorService,com.oracle.bmc.secrets.Secrets,com.oracle.bmc.vault.Vaults)">
 <h3>OracleCloudVaultConfigurationClient</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">OracleCloudVaultConfigurationClient</span><wbr><span class="parameters">(<a href="OracleCloudVaultConfiguration.html" title="class in io.micronaut.oraclecloud.discovery.vault">OracleCloudVaultConfiguration</a>&nbsp;oracleCloudVaultClientConfiguration,
  @Named("io") @Nullable
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ExecutorService</a>&nbsp;executorService,
- com.oracle.bmc.secrets.SecretsClient&nbsp;secretsClient,
- com.oracle.bmc.vault.VaultsClient&nbsp;vaultsClient)</span></div>
+ com.oracle.bmc.secrets.Secrets&nbsp;secretsClient,
+ com.oracle.bmc.vault.Vaults&nbsp;vaultsClient)</span></div>
 <div class="block">Default Constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
