@@ -33,6 +33,9 @@ micronaut-validation = "4.0.0-M7"
 micronaut-discovery-client = "4.0.0-M2"
 
 [libraries]
+# Core
+micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'micronaut' }
+
 # micronaut boms
 micronaut-groovy = { module = "io.micronaut.groovy:micronaut-groovy-bom", version.ref = "micronaut-groovy" }
 micronaut-kotlin = { module = "io.micronaut.kotlin:micronaut-kotlin-bom", version.ref = "micronaut-kotlin" }
