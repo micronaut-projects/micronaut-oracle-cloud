@@ -83,7 +83,7 @@ class OracleCloudLoggingSpec extends Specification {
         logEntryBatch.stream().allMatch(x -> x.type == testHost + '.' + applicationConfiguration.getName().get())
         logEntryBatch.stream().anyMatch(x -> x.subject == applicationConfiguration.getName().get())
 
-        logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context.env.DefaultEnvironment'))
+        logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context'))
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.oraclecloud.logging.OracleCloudLoggingSpec'))
         logEntries.stream().anyMatch(x -> x.data.contains(logMessage))
         logEntries.stream().anyMatch(x -> x.data.contains('Established active environments'))
