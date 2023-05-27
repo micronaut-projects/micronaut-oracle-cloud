@@ -15,7 +15,7 @@ shadow = '8.0.0'
 groovy = "4.0.10"
 spock = "2.3-groovy-4.0"
 oci = "3.15.0"
-ojdbc = "21.9.0.0"
+ojdbc = "21.10.0.0"
 protobuf = '0.9.3'
 
 micronaut-gradle-plugin = "4.0.0-M3"
