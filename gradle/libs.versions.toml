@@ -20,7 +20,7 @@ protobuf = '0.9.3'
 
 micronaut-gradle-plugin = "4.0.0-M4"
 micronaut-groovy = "4.0.0-M1"
-micronaut-kotlin = "4.0.0-M2"
+micronaut-kotlin = "4.0.0-M3"
 micronaut-micrometer = "5.0.0-M1"
 micronaut-reactor = "3.0.0-M3"
 micronaut-rxjava2 = "2.0.0-M1"
