@@ -73,7 +73,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
 
     def "refresh certificate"() {
         given:
-            def oracleCloudCertificationsConfiguration =  new OracleCloudCertificationsConfiguration()
+            def oracleCloudCertificationsConfiguration =  new OracleCloudCertificationsConfiguration("testId", 0, "testName", true)
             def mockCertificates = Mock(Certificates)
             def mockApplicationEventPublisher = Mock(ApplicationEventPublisher)
 
@@ -81,10 +81,6 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
                     oracleCloudCertificationsConfiguration, mockCertificates, mockApplicationEventPublisher)
 
         when:
-        oracleCloudCertificationsConfiguration.setCertificateId("testId")
-        oracleCloudCertificationsConfiguration.setCertificateVersionName("testName")
-        oracleCloudCertificationsConfiguration.setVersionNumber(0)
-
         service.refreshCertificate()
 
         then:
