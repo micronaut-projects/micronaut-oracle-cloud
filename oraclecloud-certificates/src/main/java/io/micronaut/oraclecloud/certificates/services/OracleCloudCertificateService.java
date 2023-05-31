@@ -56,7 +56,7 @@ public class OracleCloudCertificateService {
 
     private final OracleCloudCertificationsConfiguration oracleCloudCertificationsConfiguration;
     private final Certificates certificates;
-    private final ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher<CertificateEvent> eventPublisher;
 
     /**
      * Constructs a new Oracle Cloud cert service.
@@ -67,7 +67,7 @@ public class OracleCloudCertificateService {
      */
     public OracleCloudCertificateService(OracleCloudCertificationsConfiguration oracleCloudCertificationsConfiguration,
                                          Certificates certificates,
-                                         ApplicationEventPublisher eventPublisher) {
+                                         ApplicationEventPublisher<CertificateEvent> eventPublisher) {
         this.oracleCloudCertificationsConfiguration = oracleCloudCertificationsConfiguration;
         this.certificates = certificates;
         this.eventPublisher = eventPublisher;
@@ -93,7 +93,7 @@ public class OracleCloudCertificateService {
 
             CertificateEvent certificateEvent = new CertificateEvent(
                 getPrivateKey(certificateBundle),
-                (X509Certificate) cf.generateCertificate( new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes()))
+                (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes()))
             );
 
             return Optional.of(certificateEvent);
@@ -143,10 +143,10 @@ public class OracleCloudCertificateService {
         PrivateKeyInfo privateKeyInfo;
         try (var parser = new PEMParser(new StringReader(privateKeyPem))) {
             Object parsedObject = parser.readObject();
-            if (parsedObject instanceof PEMKeyPair) {
-                privateKeyInfo = ((PEMKeyPair) parsedObject).getPrivateKeyInfo();
-            } else if (parsedObject instanceof PrivateKeyInfo) {
-                privateKeyInfo = (PrivateKeyInfo) parsedObject;
+            if (parsedObject instanceof PEMKeyPair pemkeypair) {
+                privateKeyInfo = pemkeypair.getPrivateKeyInfo();
+            } else if (parsedObject instanceof PrivateKeyInfo privateKeyInfoParsed) {
+                privateKeyInfo = privateKeyInfoParsed;
             } else {
                 throw new IllegalStateException("Unexpected value: " + parser.readObject());
             }

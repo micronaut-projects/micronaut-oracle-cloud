@@ -33,7 +33,7 @@ class OracleCloudCertificateIntegrationSpec extends Specification {
     @Inject
     EmbeddedServer embeddedServer
 
-    def "task test https"() {
+    def "test HTTPS call"() {
         given:
         def asyncClient = embeddedServer.applicationContext.createBean(HttpClient, embeddedServer.getURL())
         BlockingHttpClient client = asyncClient.toBlocking()
