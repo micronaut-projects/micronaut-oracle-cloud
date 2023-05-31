@@ -20,6 +20,9 @@ import java.security.cert.X509Certificate;
 
 /**
  * Event used to alert when a new Oracle Cloud certificate is ready for use.
+ *
+ * @param privateKey private key
+ * @param certificate certificates
  */
 public record CertificateEvent(PrivateKey privateKey, X509Certificate... certificate) {
     /**

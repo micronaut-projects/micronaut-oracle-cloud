@@ -17,72 +17,22 @@ package io.micronaut.oraclecloud.certificates;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.util.Toggleable;
+import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
+import jakarta.annotation.Nullable;
+
+import static io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration.PREFIX;
 
 /**
  * Allows the configuration of the Oracle Cloud certificate process.
+ * @param certificateId ocid of certificate
+ * @param versionNumber version number of certificate
+ * @param certificateVersionName certificate name
+ * @param enabled flag for enabling feature
  */
-@ConfigurationProperties("oci.certificates")
-public class OracleCloudCertificationsConfiguration implements Toggleable {
+@ConfigurationProperties(PREFIX)
+public record OracleCloudCertificationsConfiguration(String certificateId, @Nullable Long versionNumber, @Nullable String certificateVersionName, @Nullable Boolean enabled)  implements Toggleable  {
 
-    private static final boolean DEFAULT_ORACLE_CLOUD_CERT_ENABLED = true;
-    private boolean enabled = DEFAULT_ORACLE_CLOUD_CERT_ENABLED;
-    private String certificateId;
-    private Long versionNumber;
-    private String certificateVersionName;
-
-    /**
-     * Certificate Version number on Oracle Cloud Certificate service.
-     *
-     * @return version number from certificate
-     */
-    public Long getVersionNumber() {
-        return versionNumber;
-    }
-
-    /**
-     * Sets version number of certificate from Oracle Cloud Certificate service.
-     *
-     * @param versionNumber The version number
-     */
-    public void setVersionNumber(Long versionNumber) {
-        this.versionNumber = versionNumber;
-    }
-
-    /**
-     * Certificate name from Oracle Cloud Certificate service.
-     *
-     * @return certificate name
-     */
-    public String getCertificateVersionName() {
-        return certificateVersionName;
-    }
-
-    /**
-     * Sets name of certificate from Oracle Cloud Certificate service.
-     *
-     * @param certificateVersionName The certificate name
-     */
-    public void setCertificateVersionName(String certificateVersionName) {
-        this.certificateVersionName = certificateVersionName;
-    }
-
-    /**
-     * Certificate ocid from Oracle Cloud Certificate service.
-     *
-     * @return ocid of certificate
-     */
-    public String getCertificateId() {
-        return certificateId;
-    }
-
-    /**
-     * Sets ocid of certificate from Oracle Cloud Certificate Service.
-     *
-     * @param certificateId The certificate ocid.
-     */
-    public void setCertificateId(String certificateId) {
-        this.certificateId = certificateId;
-    }
+    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".certificates";
 
     /**
      * If Oracle Cloud certificate background and setup process should be enabled.
@@ -91,15 +41,6 @@ public class OracleCloudCertificationsConfiguration implements Toggleable {
      */
     @Override
     public boolean isEnabled() {
-        return enabled;
-    }
-
-    /**
-     * Sets if Oracle Cloud certificate background and setup process is enabled. Default {@value #DEFAULT_ORACLE_CLOUD_CERT_ENABLED}.
-     *
-     * @param enabled The enablement flag
-     */
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
+        return enabled != null ? enabled : false;
     }
 }

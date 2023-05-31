@@ -15,6 +15,8 @@
  */
 package io.micronaut.oraclecloud.certificates.background;
 
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateService;
 import io.micronaut.runtime.event.ApplicationStartupEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
@@ -28,11 +30,13 @@ import org.slf4j.LoggerFactory;
  * Background task to automatically refresh the certificates from an Oracle Cloud Certificate server on a configurable interval.
  */
 @Singleton
+@Requires(property = OracleCloudCertificationsConfiguration.PREFIX + ".enabled", value = "true")
 public final class OracleCloudCertRefresherTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertRefresherTask.class);
 
     private final OracleCloudCertificateService oracleCloudCertificateService;
+
     /**
      * Constructs a new Oracle Certificate cert refresher background task.
      *

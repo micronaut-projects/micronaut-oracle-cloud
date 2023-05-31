@@ -19,6 +19,7 @@ import com.oracle.bmc.certificates.Certificates;
 import com.oracle.bmc.certificates.model.CertificateBundleWithPrivateKey;
 import com.oracle.bmc.certificates.requests.GetCertificateBundleRequest;
 import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
@@ -45,6 +46,9 @@ import java.util.Optional;
  * Service to contact an Oracle Cloud Certificate service and setup a certificate on a given basis.
  */
 @Singleton
+@Requires(classes = {Certificates.class})
+@Requires(beans = {Certificates.class})
+@Requires(property = OracleCloudCertificationsConfiguration.PREFIX + ".enabled", value = "true")
 public class OracleCloudCertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateService.class);
@@ -81,13 +85,13 @@ public class OracleCloudCertificateService {
             CertificateFactory cf = CertificateFactory.getInstance(X509_CERT);
 
             GetCertificateBundleResponse certificateBundle = certificates.getCertificateBundle(GetCertificateBundleRequest.builder()
-                .certificateId(oracleCloudCertificationsConfiguration.getCertificateId())
-                .versionNumber(oracleCloudCertificationsConfiguration.getVersionNumber())
-                .certificateVersionName(oracleCloudCertificationsConfiguration.getCertificateVersionName())
+                .certificateId(oracleCloudCertificationsConfiguration.certificateId())
+                .versionNumber(oracleCloudCertificationsConfiguration.versionNumber())
+                .certificateVersionName(oracleCloudCertificationsConfiguration.certificateVersionName())
                 .certificateBundleType(GetCertificateBundleRequest.CertificateBundleType.CertificateContentWithPrivateKey)
                 .build());
 
-            CertificateData certificateData = new CertificateData( cf.generateCertificates(
+            CertificateData certificateData = new CertificateData(cf.generateCertificates(
                 new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes())).stream()
                 .map(X509Certificate.class::cast)
                 .toArray(X509Certificate[]::new),
@@ -105,7 +109,7 @@ public class OracleCloudCertificateService {
     }
 
     /**
-     * Extracts private key from GetCertificateBundleResponse
+     * Extracts private key from GetCertificateBundleResponse.
      * @param getCertificateBundleResponse response from OCI service
      * @return private key
      */
