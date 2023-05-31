@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Requires(property = OracleCloudCertificationsConfiguration.PREFIX + ".enabled", value = "true")
-public final class OracleCloudCertRefresherTask {
+public final class OracleCloudCertificationRefresherTask {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertRefresherTask.class);
+    private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationRefresherTask.class);
 
     private final OracleCloudCertificateService oracleCloudCertificateService;
 
@@ -42,7 +42,7 @@ public final class OracleCloudCertRefresherTask {
      *
      * @param oracleCloudCertificateService       Oracle Cloud Certificate service
      */
-    public OracleCloudCertRefresherTask(OracleCloudCertificateService oracleCloudCertificateService) {
+    public OracleCloudCertificationRefresherTask(OracleCloudCertificateService oracleCloudCertificateService) {
         this.oracleCloudCertificateService = oracleCloudCertificateService;
     }
 

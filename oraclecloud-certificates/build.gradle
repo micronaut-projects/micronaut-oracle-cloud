@@ -4,14 +4,15 @@ plugins {
 
 dependencies {
     api projects.micronautOraclecloudBmcCertificates
-    api mn.micronaut.inject
     implementation projects.micronautOraclecloudSdk
-    implementation mn.micronaut.http.server
     implementation mn.micronaut.http.server.netty
+    implementation mn.micronaut.inject.java
+
     compileOnly libs.netty.incubator.codec.http3
 
-    testImplementation mn.micronaut.inject.groovy
     testImplementation mnTest.micronaut.test.spock
+    testImplementation mn.micronaut.http.client
+    testImplementation mn.micronaut.inject.groovy
 }
 
 micronautBuild {

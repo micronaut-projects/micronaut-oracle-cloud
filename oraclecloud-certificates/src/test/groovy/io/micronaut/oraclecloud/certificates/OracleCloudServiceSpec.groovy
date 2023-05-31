@@ -10,7 +10,7 @@ import spock.lang.Specification
 
 class OracleCloudServiceSpec extends Specification {
 
-    def privateKey = """-----BEGIN PRIVATE KEY-----
+    public static String PRIVATE_KEY = """-----BEGIN PRIVATE KEY-----
 MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDaz3fk1bp7xmAY
 7wRYdu6998ioDEkwemwvr3/8OR5Ij+56tGcOgSAu7HALtcGHYB91NCO3UlDgnauB
 Z5Crm7HMFdBLUCxfBoxn4s+oNO5EocPbPqrun++V5FMcXCmj5FagO+TshSzyBl/Q
@@ -39,7 +39,7 @@ wtwwYtxhvSnWfryIWktYfzWyFpgNkw4Vmuk9ohcvAoGBAK74NeUJthS+l4fyHwSI
 BacFNyeD1OERw6rlzg8pA0YI
 -----END PRIVATE KEY-----"""
 
-    def certificateString = """-----BEGIN CERTIFICATE-----
+    public static String CERTIFICATE_STRING = """-----BEGIN CERTIFICATE-----
 MIIFajCCBFKgAwIBAgIUdqm3iigytoj0A4qjzeqqcyUUiQQwDQYJKoZIhvcNAQEL
 BQAwEDEOMAwGA1UEAwwFdGVzdDEwHhcNMjMwNTMwMTcyMDQyWhcNMjMwODE1MDAw
 MDAwWjAUMRIwEAYDVQQDDAlNaWNyb25hdXQwggEiMA0GCSqGSIb3DQEBAQUAA4IB
@@ -87,12 +87,12 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
         1 * mockCertificates.getCertificateBundle(*_) >> GetCertificateBundleResponse.builder()
         .certificateBundle(
                 CertificateBundleWithPrivateKey.builder()
-                .privateKeyPem(privateKey)
+                .privateKeyPem(PRIVATE_KEY)
                 .certificateId("testId")
                 .serialNumber("test")
                 .timeCreated(new Date())
                 .validity(Validity.builder().timeOfValidityNotBefore(new Date()).timeOfValidityNotAfter(new Date()).build())
-                .certificatePem(certificateString).build())
+                .certificatePem(CERTIFICATE_STRING).build())
         .build()
 
         1 * mockApplicationEventPublisher.publishEvent(*_)

@@ -21,19 +21,8 @@ import java.security.cert.X509Certificate;
 /**
  * Event used to alert when a new Oracle Cloud certificate is ready for use.
  *
- * @param privateKey private key
- * @param certificate certificates
+ * @param privateKey           private key
+ * @param certificate          X509 certificate file
  */
-public record CertificateEvent(PrivateKey privateKey, X509Certificate... certificate) {
-    /**
-     * Creates a new CertificateEvent containing the full certificate chain.
-     *
-     * @param privateKey           key pair used to encrypt the certificate
-     * @param certificate          X509 certificate file
-     */
-    public CertificateEvent {
-        if (certificate == null || certificate.length == 0) {
-            throw new IllegalArgumentException("Certificate chain must not be empty");
-        }
-    }
+public record CertificateEvent(PrivateKey privateKey, X509Certificate certificate) {
 }

@@ -75,12 +75,12 @@ public class OracleCloudCertificateService {
 
 
     /**
-     * Returns the full certificate chain.
+     * Returns the certificate event.
      *
-     * @return data of Certificate
+     * @return certificate event
      */
     @NonNull
-    protected Optional<CertificateData> getCertificateData() {
+    protected Optional<CertificateEvent> getCertificateEvent() {
         try {
             CertificateFactory cf = CertificateFactory.getInstance(X509_CERT);
 
@@ -91,14 +91,12 @@ public class OracleCloudCertificateService {
                 .certificateBundleType(GetCertificateBundleRequest.CertificateBundleType.CertificateContentWithPrivateKey)
                 .build());
 
-            CertificateData certificateData = new CertificateData(cf.generateCertificates(
-                new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes())).stream()
-                .map(X509Certificate.class::cast)
-                .toArray(X509Certificate[]::new),
-                getPrivateKey(certificateBundle)
+            CertificateEvent certificateEvent = new CertificateEvent(
+                getPrivateKey(certificateBundle),
+                (X509Certificate) cf.generateCertificate( new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes()))
             );
 
-            return Optional.of(certificateData);
+            return Optional.of(certificateEvent);
 
         } catch (CertificateException e) {
             if (LOG.isWarnEnabled()) {
@@ -126,9 +124,9 @@ public class OracleCloudCertificateService {
      * Setup the certificate that has been saved to disk and configures it for use.
      */
     public void refreshCertificate() {
-        Optional<CertificateData> fullCertificateChain = getCertificateData();
-        if (fullCertificateChain.isPresent()) {
-            eventPublisher.publishEvent(new CertificateEvent(fullCertificateChain.get().keyPair(), fullCertificateChain.get().x509Certificates()));
+        Optional<CertificateEvent> certificateEvent = getCertificateEvent();
+        if (certificateEvent.isPresent()) {
+            eventPublisher.publishEvent(certificateEvent.get());
         } else {
             if (LOG.isErrorEnabled()) {
                 LOG.error("Oracle Cloud certificate could not be loaded from service.");
@@ -156,11 +154,5 @@ public class OracleCloudCertificateService {
         } catch (PEMException ex) {
             throw new IOException("Invalid PEM file", ex);
         }
-    }
-
-    private record CertificateData(
-        X509Certificate[] x509Certificates,
-        PrivateKey keyPair
-    ) {
     }
 }
