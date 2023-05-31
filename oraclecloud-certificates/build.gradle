@@ -1,0 +1,19 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+dependencies {
+    api projects.micronautOraclecloudBmcCertificates
+    annotationProcessor(mnValidation.micronaut.validation.processor)
+    api mn.micronaut.inject
+    api mnSerde.micronaut.serde.jackson
+    implementation projects.micronautOraclecloudSdk
+    implementation(mnValidation.micronaut.validation)
+    implementation mn.micronaut.http.server
+    implementation mn.micronaut.http.server.netty
+    compileOnly libs.netty.incubator.codec.http3
+
+    testImplementation mn.snakeyaml
+    testImplementation mn.micronaut.inject.groovy
+    testImplementation mnTest.micronaut.test.spock
+}
