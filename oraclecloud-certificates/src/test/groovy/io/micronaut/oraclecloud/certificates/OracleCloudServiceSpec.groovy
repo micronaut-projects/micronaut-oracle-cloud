@@ -97,4 +97,58 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
 
         1 * mockApplicationEventPublisher.publishEvent(*_)
     }
+
+    def "refresh certificate with invalid private key"() {
+        given:
+        def oracleCloudCertificationsConfiguration =  new OracleCloudCertificationsConfiguration("testId", 0, "testName", true)
+        def mockCertificates = Mock(Certificates)
+        def mockApplicationEventPublisher = Mock(ApplicationEventPublisher)
+
+        def service = new OracleCloudCertificateService(
+                oracleCloudCertificationsConfiguration, mockCertificates, mockApplicationEventPublisher)
+
+        when:
+        service.refreshCertificate()
+
+        then:
+        1 * mockCertificates.getCertificateBundle(*_) >> GetCertificateBundleResponse.builder()
+                .certificateBundle(
+                        CertificateBundleWithPrivateKey.builder()
+                                .privateKeyPem("Invalid private key")
+                                .certificateId("testId")
+                                .serialNumber("test")
+                                .timeCreated(new Date())
+                                .validity(Validity.builder().timeOfValidityNotBefore(new Date()).timeOfValidityNotAfter(new Date()).build())
+                                .certificatePem(CERTIFICATE_STRING).build())
+                .build()
+        final IllegalStateException exception = thrown()
+        exception.message == 'Unexpected value: null'
+    }
+
+    def "refresh certificate with invalid certificate"() {
+        given:
+        def oracleCloudCertificationsConfiguration =  new OracleCloudCertificationsConfiguration("testId", 0, "testName", true)
+        def mockCertificates = Mock(Certificates)
+        def mockApplicationEventPublisher = Mock(ApplicationEventPublisher)
+
+        def service = new OracleCloudCertificateService(
+                oracleCloudCertificationsConfiguration, mockCertificates, mockApplicationEventPublisher)
+
+        when:
+        service.refreshCertificate()
+
+        then:
+        1 * mockCertificates.getCertificateBundle(*_) >> GetCertificateBundleResponse.builder()
+                .certificateBundle(
+                        CertificateBundleWithPrivateKey.builder()
+                                .privateKeyPem(PRIVATE_KEY)
+                                .certificateId("testId")
+                                .serialNumber("test")
+                                .timeCreated(new Date())
+                                .validity(Validity.builder().timeOfValidityNotBefore(new Date()).timeOfValidityNotAfter(new Date()).build())
+                                .certificatePem("Invalid Cert").build())
+                .build()
+        0 * mockApplicationEventPublisher.publishEvent(*_)
+    }
+
 }

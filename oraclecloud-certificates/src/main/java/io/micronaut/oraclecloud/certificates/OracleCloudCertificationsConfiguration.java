@@ -41,6 +41,6 @@ public record OracleCloudCertificationsConfiguration(String certificateId, @Null
      */
     @Override
     public boolean isEnabled() {
-        return enabled !=null && enabled;
+        return enabled != null && enabled;
     }
 }
