@@ -12,7 +12,7 @@ class OracleCloudCertificateRefresherTaskSpec extends Specification {
         def task = new OracleCloudCertificationRefresherTask(mockOracleCloudService)
 
         when:
-        task.refreshCertificate()
+        task.backgroundRenewal()
 
         then:
         1 * mockOracleCloudService.refreshCertificate()

@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.certificates.ssl;
 
+import io.micronaut.core.annotation.Internal;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.ssl.ApplicationProtocolNegotiator;
 import io.netty.handler.ssl.SslContext;
@@ -26,6 +27,7 @@ import java.util.List;
 /**
  * Allows for netty SslContext to be delegated to another as well as switched out at runtime.
  */
+@Internal
 public class DelegatedSslContext extends SslContext {
 
     private SslContext ctx;

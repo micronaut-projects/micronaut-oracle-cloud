@@ -59,7 +59,7 @@ public class OracleCloudCertificateService {
     private final ApplicationEventPublisher<CertificateEvent> eventPublisher;
 
     /**
-     * Constructs a new Oracle Cloud cert service.
+     * Constructs a new Oracle Cloud Certificate service.
      *
      * @param oracleCloudCertificationsConfiguration Oracle Cloud Certificate configuration
      * @param certificates                           Oracle Cloud Certificate client
@@ -121,7 +121,7 @@ public class OracleCloudCertificateService {
     }
 
     /**
-     * Setup the certificate that has been saved to disk and configures it for use.
+     * Setup the certificate for HTTPS
      */
     public void refreshCertificate() {
         Optional<CertificateEvent> certificateEvent = getCertificateEvent();

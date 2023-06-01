@@ -15,12 +15,11 @@
  */
 package io.micronaut.oraclecloud.certificates.background;
 
+import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateService;
-import io.micronaut.runtime.event.ApplicationStartupEvent;
-import io.micronaut.runtime.event.annotation.EventListener;
-import io.micronaut.runtime.exceptions.ApplicationStartupException;
 import io.micronaut.scheduling.annotation.Scheduled;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
@@ -31,6 +30,8 @@ import org.slf4j.LoggerFactory;
  */
 @Singleton
 @Requires(property = OracleCloudCertificationsConfiguration.PREFIX + ".enabled", value = "true")
+@Context
+@Internal
 public final class OracleCloudCertificationRefresherTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationRefresherTask.class);
@@ -44,6 +45,7 @@ public final class OracleCloudCertificationRefresherTask {
      */
     public OracleCloudCertificationRefresherTask(OracleCloudCertificateService oracleCloudCertificateService) {
         this.oracleCloudCertificateService = oracleCloudCertificateService;
+        oracleCloudCertificateService.refreshCertificate();
     }
 
     /**
@@ -53,35 +55,10 @@ public final class OracleCloudCertificationRefresherTask {
     @Scheduled(
             fixedDelay = "${oci.certificates.refresh.frequency:24h}",
             initialDelay = "${oci.certificates.refresh.delay:24h}")
-    void backgroundRenewal() {
+    public void backgroundRenewal() {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Running background/scheduled renewal process");
         }
-        refreshCertificate();
-    }
-
-    /**
-     * Checks to see if certificate needs renewed on app startup.
-     *
-     * @param startupEvent Startup event
-     */
-    @EventListener
-    void onStartup(ApplicationStartupEvent startupEvent) {
-        try {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Running startup renewal process");
-            }
-            refreshCertificate();
-        } catch (Exception e) { //NOSONAR
-            LOG.error("Failed to initialize certificate for SSL no requests would be secure. Stopping application", e);
-            throw new ApplicationStartupException("Failed to start due to SSL configuration issue.", e);
-        }
-    }
-
-    /**
-     * Does the work to actually renew the certificate if it needs to be done.
-     */
-    public void refreshCertificate() {
         oracleCloudCertificateService.refreshCertificate();
     }
 }
