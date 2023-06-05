@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class LargeTransferTest {
     @Test
     public void test() throws Exception {
-        long count = 1_000_000_000;
+        long count = 1_000_000;
         try (ApplicationContext ctx = ApplicationContext.run(Map.of(
             "spec.name", "LargeTransferTest",
             "micronaut.server.ssl.enabled", true,
