@@ -7,6 +7,7 @@ dependencies {
     implementation projects.micronautOraclecloudSdk
     implementation mn.micronaut.http.server.netty
     implementation mn.micronaut.inject.java
+    implementation mn.micronaut.retry
 
     compileOnly libs.netty.incubator.codec.http3
 

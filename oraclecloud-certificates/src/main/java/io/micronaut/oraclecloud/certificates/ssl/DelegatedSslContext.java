@@ -28,7 +28,7 @@ import java.util.List;
  * Allows for netty SslContext to be delegated to another as well as switched out at runtime.
  */
 @Internal
-public class DelegatedSslContext extends SslContext {
+public final class DelegatedSslContext extends SslContext {
 
     private SslContext ctx;
 

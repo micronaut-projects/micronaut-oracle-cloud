@@ -40,32 +40,45 @@ In next table you can find useful parameters to further customize integration wi
 |Enable/Disable OCI Certificate feature
 
 |`oci.certificates.certificate-id`
-|`boolean`
+|`java.lang.String`
 |true
 |/
 |the Ocid of the certificate
 
 |`oci.certificates.version-number`
-|`Long`
+|`long`
 |false
 |/
 |Version number of the certificate
 
 |`oci.certificates.certificate-version-name`
-|`String`
+|`java.lang.String`
 |false
 |/
 |Version name of the certificate
 
 |`oci.certificates.refresh.frequency`
-|`String`
+|`java.time.Duration`
 |false
 |24h
 |Refresh frequency for SSL Certificate
 
 |`oci.certificates.refresh.delay`
-|`String`
+|`java.time.Duration`
 |false
 |24h
 |Initial refresh delay for refreshing SSL Certificate
+
+|`oci.certificates.refresh.attempts`
+|`int`
+|false
+|3
+|How many attempts to retry if refresh certificate process fails
+
+|`oci.certificates.refresh.delay`
+|`java.time.Duration`
+|false
+|3
+|How much to delay attempts in between retry if refresh certificate process fails
+
 |===

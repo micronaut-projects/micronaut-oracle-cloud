@@ -59,6 +59,10 @@ public final class OracleCloudCertificationRefresherTask {
         if (LOG.isDebugEnabled()) {
             LOG.debug("Running background/scheduled renewal process");
         }
-        oracleCloudCertificateService.refreshCertificate();
+        try {
+            oracleCloudCertificateService.refreshCertificate();
+        } catch (Exception e){
+            LOG.error("There was error during refreshing certificate process", e);
+        }
     }
 }

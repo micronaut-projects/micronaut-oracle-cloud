@@ -15,6 +15,9 @@
  */
 package io.micronaut.oraclecloud.certificates.events;
 
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
+
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
@@ -24,5 +27,6 @@ import java.security.cert.X509Certificate;
  * @param privateKey           private key
  * @param certificate          X509 certificate file
  */
-public record CertificateEvent(PrivateKey privateKey, X509Certificate certificate) {
+public record CertificateEvent(@NonNull PrivateKey privateKey, @NonNull X509Certificate certificate) {
+
 }

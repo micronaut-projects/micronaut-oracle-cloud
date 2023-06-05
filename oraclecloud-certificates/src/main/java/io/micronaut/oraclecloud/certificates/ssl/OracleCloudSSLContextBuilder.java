@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 @Singleton
 @Replaces(CertificateProvidedSslBuilder.class)
-public class OracleCloudSSLContextBuilder implements ServerSslBuilder {
+public final class OracleCloudSSLContextBuilder implements ServerSslBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudSSLContextBuilder.class);
 

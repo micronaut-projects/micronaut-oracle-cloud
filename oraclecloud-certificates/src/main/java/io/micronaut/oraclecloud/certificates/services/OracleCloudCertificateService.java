@@ -24,6 +24,7 @@ import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
+import io.micronaut.retry.annotation.Retryable;
 import jakarta.inject.Singleton;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMException;
@@ -123,6 +124,10 @@ public class OracleCloudCertificateService {
     /**
      * Setup the certificate for HTTPS
      */
+    @Retryable(
+        attempts = "${oci.certificates.refresh.attempts:3}",
+        delay = "${oci.certificates.refresh.delay:1s}"
+    )
     public void refreshCertificate() {
         Optional<CertificateEvent> certificateEvent = getCertificateEvent();
         if (certificateEvent.isPresent()) {
