@@ -105,7 +105,7 @@ public class HttpFunction extends OciFunction {
             servletRequest,
                 response
         );
-        try (PropagatedContext.Scope ignore = PropagatedContext.newContext(new ServerHttpRequestContext(servletRequest)).propagate()) {
+        try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {
             this.httpHandler.service(
                 exchange
             );
