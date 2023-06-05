@@ -28,7 +28,7 @@ import java.util.concurrent.Future;
  * Channel handler that writes data from a given {@link InputStream} to the channel.
  */
 final class StreamWritingHandler extends ChannelInboundHandlerAdapter {
-    public static final int MAX_WRITE_TARGET = 8192;
+    public static final int MAX_WRITE_TARGET = 1024 * 16;
     private final InputStream stream;
     private final ExecutorService blockingIoExecutor;
     private final Object terminationMessage;
@@ -103,7 +103,7 @@ final class StreamWritingHandler extends ChannelInboundHandlerAdapter {
                     target.retain();
                     ctx.channel().eventLoop().execute(() -> {
                         currentFuture = null;
-                        ctx.write(target, ctx.voidPromise());
+                        ctx.writeAndFlush(target, ctx.voidPromise());
                         writeIfPossible(ctx);
                     });
                 }
