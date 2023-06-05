@@ -16,7 +16,6 @@
 package io.micronaut.oraclecloud.certificates.events;
 
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Nullable;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;

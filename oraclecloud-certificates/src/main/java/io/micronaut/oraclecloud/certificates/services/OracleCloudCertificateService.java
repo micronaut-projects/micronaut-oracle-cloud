@@ -122,7 +122,7 @@ public class OracleCloudCertificateService {
     }
 
     /**
-     * Setup the certificate for HTTPS
+     * Setup the certificate for HTTPS.
      */
     @Retryable(
         attempts = "${oci.certificates.refresh.retry.attempts:3}",

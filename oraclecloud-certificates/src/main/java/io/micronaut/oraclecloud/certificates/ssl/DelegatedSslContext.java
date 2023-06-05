@@ -46,47 +46,47 @@ public final class DelegatedSslContext extends SslContext {
      *
      * @param sslContext {@link SslContext}
      */
-    final void setNewSslContext(SslContext sslContext) {
+    void setNewSslContext(SslContext sslContext) {
         this.ctx = sslContext;
     }
 
     @Override
-    public final boolean isClient() {
+    public boolean isClient() {
         return ctx.isClient();
     }
 
     @Override
-    public final List<String> cipherSuites() {
+    public List<String> cipherSuites() {
         return ctx.cipherSuites();
     }
 
     @Override
-    public final long sessionCacheSize() {
+    public long sessionCacheSize() {
         return ctx.sessionCacheSize();
     }
 
     @Override
-    public final long sessionTimeout() {
+    public long sessionTimeout() {
         return ctx.sessionTimeout();
     }
 
     @Override
-    public final ApplicationProtocolNegotiator applicationProtocolNegotiator() {
+    public ApplicationProtocolNegotiator applicationProtocolNegotiator() {
         return ctx.applicationProtocolNegotiator();
     }
 
     @Override
-    public final SSLEngine newEngine(ByteBufAllocator alloc) {
+    public SSLEngine newEngine(ByteBufAllocator alloc) {
         return ctx.newEngine(alloc);
     }
 
     @Override
-    public final SSLEngine newEngine(ByteBufAllocator alloc, String peerHost, int peerPort) {
+    public SSLEngine newEngine(ByteBufAllocator alloc, String peerHost, int peerPort) {
         return ctx.newEngine(alloc, peerHost, peerPort);
     }
 
     @Override
-    public final SSLSessionContext sessionContext() {
+    public SSLSessionContext sessionContext() {
         return ctx.sessionContext();
     }
 

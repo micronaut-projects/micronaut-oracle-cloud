@@ -61,7 +61,7 @@ public final class OracleCloudCertificationRefresherTask {
         }
         try {
             oracleCloudCertificateService.refreshCertificate();
-        } catch (Exception e){
+        } catch (Exception e) {
             LOG.error("There was error during refreshing certificate process", e);
         }
     }
