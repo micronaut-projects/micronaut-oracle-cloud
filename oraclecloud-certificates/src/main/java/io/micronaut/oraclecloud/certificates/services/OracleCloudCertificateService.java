@@ -125,8 +125,8 @@ public class OracleCloudCertificateService {
      * Setup the certificate for HTTPS
      */
     @Retryable(
-        attempts = "${oci.certificates.refresh.attempts:3}",
-        delay = "${oci.certificates.refresh.delay:1s}"
+        attempts = "${oci.certificates.refresh.retry.attempts:3}",
+        delay = "${oci.certificates.refresh.retry.delay:1s}"
     )
     public void refreshCertificate() {
         Optional<CertificateEvent> certificateEvent = getCertificateEvent();

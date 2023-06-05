@@ -69,13 +69,13 @@ In next table you can find useful parameters to further customize integration wi
 |24h
 |Initial refresh delay for refreshing SSL Certificate
 
-|`oci.certificates.refresh.attempts`
+|`oci.certificates.refresh.retry.attempts`
 |`int`
 |false
 |3
 |How many attempts to retry if refresh certificate process fails
 
-|`oci.certificates.refresh.delay`
+|`oci.certificates.refresh.retry.delay`
 |`java.time.Duration`
 |false
 |3
