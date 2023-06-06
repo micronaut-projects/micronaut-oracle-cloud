@@ -76,7 +76,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#cloudStorage"><strong>16</strong><span>Oracle Cloud Storage Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>17</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>18</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -139,7 +141,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-cloudStorage"><a href="#cloudStorage"><strong>16</strong><span>Oracle Cloud Storage Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>17</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-certificates"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>18</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -3349,7 +3353,241 @@ public class Config {
 <p>For more information, check the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>17 Repository</h1>
+<h1 id="certificates"><a class="anchor" href="#certificates"></a>17 OCI Certificate SSL Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/certificates.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To start using <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm">Oracle Cloud Certificates</a> service first create certificate on OCI platform, add the following dependency to your project:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-certificates")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-certificates&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Copy ocid of your certificate:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_certificate_ocid.png" alt="Certificate OCID">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Before you create Certificate make sure that you have created <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm">required polices</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Add the following to the <code>application</code> configuration file to enable ssl and Oracle Cloud Certificate support:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.server.ssl.enabled=true
+oci.certificates.enabled=true
+oci.certificates.certificate-id=ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  server:
+    ssl:
+      enabled : true
+oci:
+  certificates:
+    enabled: true
+    certificate-id: ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.server]
+    [micronaut.server.ssl]
+      enabled=true
+[oci]
+  [oci.certificates]
+    enabled=true
+    certificate-id="ocid1.certificate.oc1....."</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  server {
+    ssl {
+      enabled = true
+    }
+  }
+}
+oci {
+  certificates {
+    enabled = true
+    certificateId = "ocid1.certificate.oc1....."
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    server {
+      ssl {
+        enabled = true
+      }
+    }
+  }
+  oci {
+    certificates {
+      enabled = true
+      certificate-id = "ocid1.certificate.oc1....."
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "server": {
+      "ssl": {
+        "enabled": true
+      }
+    }
+  },
+  "oci": {
+    "certificates": {
+      "enabled": true,
+      "certificate-id": "ocid1.certificate.oc1....."
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file <code>application-oraclecloud</code> (with the appropriate extension, such as .yml).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In next table you can find useful parameters to further customize integration with Oracle Cloud Certificates:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configurable Oracle Cloud Certificate properties</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/Disable OCI Certificate feature</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.certificate-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the Ocid of the certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.version-number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version number of the certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.certificate-version-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version name of the certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.frequency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh frequency for SSL Certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.delay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initial refresh delay for refreshing SSL Certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.retry.attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How many attempts to retry if refresh certificate process fails</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.retry.delay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How much to delay attempts in between retry if refresh certificate process fails</p></td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>18 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/repository.adoc"'>

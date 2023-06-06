@@ -4,6 +4,11 @@ io.micronaut.oraclecloud.atp.jdbc.hikari
 io.micronaut.oraclecloud.atp.jdbc.ucp
 io.micronaut.oraclecloud.atp.wallet
 io.micronaut.oraclecloud.atp.wallet.datasource
+io.micronaut.oraclecloud.certificates
+io.micronaut.oraclecloud.certificates.background
+io.micronaut.oraclecloud.certificates.events
+io.micronaut.oraclecloud.certificates.services
+io.micronaut.oraclecloud.certificates.ssl
 io.micronaut.oraclecloud.clients
 io.micronaut.oraclecloud.clients.processor
 io.micronaut.oraclecloud.clients.reactor
