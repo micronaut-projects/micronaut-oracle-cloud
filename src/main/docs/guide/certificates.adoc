@@ -1,0 +1,82 @@
+To start using https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm[Oracle Cloud Certificates] service first create certificate on OCI platform, add the following dependency to your project:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-certificates[]
+
+Copy ocid of your certificate:
+
+image::oci_certificate_ocid.png[Certificate OCID]
+
+NOTE: Before you create Certificate make sure that you have created https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm[required polices].
+
+
+Add the following to the `application` configuration file to enable ssl and Oracle Cloud Certificate support:
+
+[configuration]
+----
+micronaut:
+  server:
+    ssl:
+      enabled : true
+oci:
+  certificates:
+    enabled: true
+    certificate-id: ocid1.certificate.oc1.....
+----
+
+NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file `application-oraclecloud` (with the appropriate extension, such as .yml).
+
+In next table you can find useful parameters to further customize integration with Oracle Cloud Certificates:
+
+.Configurable Oracle Cloud Certificate properties
+|===
+|Property|Type|Required|Default value|Description
+
+|`oci.certificates.enabled`
+|`boolean`
+|false
+|false
+|Enable/Disable OCI Certificate feature
+
+|`oci.certificates.certificate-id`
+|`java.lang.String`
+|true
+|/
+|the Ocid of the certificate
+
+|`oci.certificates.version-number`
+|`long`
+|false
+|/
+|Version number of the certificate
+
+|`oci.certificates.certificate-version-name`
+|`java.lang.String`
+|false
+|/
+|Version name of the certificate
+
+|`oci.certificates.refresh.frequency`
+|`java.time.Duration`
+|false
+|24h
+|Refresh frequency for SSL Certificate
+
+|`oci.certificates.refresh.delay`
+|`java.time.Duration`
+|false
+|24h
+|Initial refresh delay for refreshing SSL Certificate
+
+|`oci.certificates.refresh.retry.attempts`
+|`int`
+|false
+|3
+|How many attempts to retry if refresh certificate process fails
+
+|`oci.certificates.refresh.retry.delay`
+|`java.time.Duration`
+|false
+|3
+|How much to delay attempts in between retry if refresh certificate process fails
+
+|===
