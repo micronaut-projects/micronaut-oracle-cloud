@@ -15,8 +15,6 @@ Add the following to the `application` configuration file to enable ssl and Orac
 ----
 micronaut:
   server:
-    port: 80
-    dual-protocol: true
     ssl:
       enabled : true
 oci:
