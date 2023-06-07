@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,13 @@
  */
 package io.micronaut.oraclecloud.function;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fnproject.fn.api.FnConfiguration;
 import com.fnproject.fn.api.RuntimeContext;
-import io.micronaut.core.annotation.NonNull;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,13 +73,6 @@ public abstract class OciFunction implements AutoCloseable {
                         .start();
             }
             applicationContext.inject(this);
-            if (enableSharedJackson()) {
-                applicationContext.findBean(ObjectMapper.class).ifPresent(
-                        objectMapper -> ctx.setAttribute(
-                        "com.fnproject.fn.runtime.coercion.jackson.JacksonCoercion.om",
-                        objectMapper));
-
-            }
             setup(ctx);
         } catch (Throwable e) {
             LOG.error("An error occurred initializing the function: " + e.getMessage(), e);
@@ -94,13 +86,6 @@ public abstract class OciFunction implements AutoCloseable {
      */
     protected void setup(RuntimeContext ctx) {
         // no-op
-    }
-
-    /**
-     * @return Whether Micronaut's shared Jackson object mapper should be used.
-     */
-    protected boolean enableSharedJackson() {
-        return true;
     }
 
     /**

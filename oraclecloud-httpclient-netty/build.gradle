@@ -23,7 +23,6 @@ dependencies {
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
-    testRuntimeOnly mn.micronaut.jackson.databind
     testRuntimeOnly mn.micronaut.runtime
 
     testImplementation mn.micronaut.inject.java.test

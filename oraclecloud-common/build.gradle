@@ -13,7 +13,6 @@ dependencies {
     compileOnly libs.graal.svm
     compileOnly mn.micronaut.context
     compileOnly mn.micronaut.discovery.core
-    compileOnly mn.micronaut.jackson.databind
     runtimeOnly libs.slf4j.jcl
     testImplementation libs.mockito
     testImplementation mn.micronaut.context

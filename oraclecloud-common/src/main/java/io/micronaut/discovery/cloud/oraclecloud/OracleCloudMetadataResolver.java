@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import io.micronaut.discovery.cloud.ComputeInstanceMetadataResolver;
 import io.micronaut.discovery.cloud.NetworkInterface;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.json.tree.JsonNode;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,8 +38,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static io.micronaut.discovery.cloud.ComputeInstanceMetadataResolverUtils.populateMetadata;
-import static io.micronaut.discovery.cloud.ComputeInstanceMetadataResolverUtils.readMetadataUrl;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudInstanceMetadataResolverUtils.populateMetadata;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudInstanceMetadataResolverUtils.readMetadataUrl;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.AGENT_CONFIG;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.AVAILABILITY_DOMAIN;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.CANONICAL_REGION_NAME;

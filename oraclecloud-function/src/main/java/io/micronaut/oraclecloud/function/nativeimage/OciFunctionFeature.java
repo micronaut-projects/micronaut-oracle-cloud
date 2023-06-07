@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2023 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package io.micronaut.oraclecloud.function.nativeimage;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fnproject.fn.api.FnConfiguration;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Introspected;
@@ -26,10 +25,9 @@ import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.ArrayUtils;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
-import org.graalvm.nativeimage.hosted.RuntimeReflection;
 import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
+import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Field;
@@ -116,7 +114,6 @@ final class OciFunctionFeature implements Feature {
             return;
         }
 
-        checkDeserialize(type);
         final JsonTypeInfo ti = type.getAnnotation(JsonTypeInfo.class);
         if (ti != null) {
             final Class<?> di = ti.defaultImpl();
@@ -134,17 +131,6 @@ final class OciFunctionFeature implements Feature {
                     registerIfNecessary(v);
                 }
             }
-        }
-    }
-
-    private static void checkDeserialize(AnnotatedElement type) {
-        JsonDeserialize deser = type.getAnnotation(JsonDeserialize.class);
-        if (deser != null) {
-            registerIfNecessary(deser.builder());
-            registerIfNecessary(deser.as());
-            registerIfNecessary(deser.contentAs());
-            registerIfNecessary(deser.keyAs());
-            registerIfNecessary(deser.using());
         }
     }
 
@@ -190,14 +176,12 @@ final class OciFunctionFeature implements Feature {
 
     private static void registerMethodsForRuntimeReflection(Class<?> clazz) {
         for (Method method : clazz.getDeclaredMethods()) {
-            checkDeserialize(method);
             RuntimeReflection.register(method);
         }
     }
 
     private static void registerFieldsForRuntimeReflection(Class<?> clazz) {
         for (Field field : clazz.getDeclaredFields()) {
-            checkDeserialize(field);
             RuntimeReflection.register(field);
         }
     }
