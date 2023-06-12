@@ -127,7 +127,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final io.micronaut.servlet.http.ServletHttpHandler&lt;com.fnproject.fn.api.InputEvent,<wbr>com.fnproject.fn.api.OutputEvent&gt;</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final @NonNull io.micronaut.servlet.http.ServletHttpHandler&lt;com.fnproject.fn.api.InputEvent,<wbr>com.fnproject.fn.api.OutputEvent&gt;</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHttpHandler()" class="member-name-link">getHttpHandler</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.fnproject.fn.api.OutputEvent</code></div>
@@ -142,7 +142,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Setup method that can be overridden by users to add customizations.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setupGateway(com.fnproject.fn.api.RuntimeContext)" class="member-name-link">setupGateway</a><wbr>(com.fnproject.fn.api.RuntimeContext&nbsp;ctx)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setupGateway(com.fnproject.fn.api.RuntimeContext)" class="member-name-link">setupGateway</a><wbr>(@NonNull com.fnproject.fn.api.RuntimeContext&nbsp;ctx)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Method that subclasses can override to customize gateway setup.</div>
 </div>
@@ -211,7 +211,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setupGateway(com.fnproject.fn.api.RuntimeContext)">
 <h3>setupGateway</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setupGateway</span><wbr><span class="parameters">(@NonNull
- com.fnproject.fn.api.RuntimeContext&nbsp;ctx)</span></div>
+ @NonNull com.fnproject.fn.api.RuntimeContext&nbsp;ctx)</span></div>
 <div class="block">Method that subclasses can override to customize gateway setup.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -223,7 +223,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getHttpHandler()">
 <h3>getHttpHandler</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public final</span>&nbsp;<span class="return-type">io.micronaut.servlet.http.ServletHttpHandler&lt;com.fnproject.fn.api.InputEvent,<wbr>com.fnproject.fn.api.OutputEvent&gt;</span>&nbsp;<span class="element-name">getHttpHandler</span>()</div>
+</span><span class="modifiers">public final</span>&nbsp;<span class="return-type">@NonNull io.micronaut.servlet.http.ServletHttpHandler&lt;com.fnproject.fn.api.InputEvent,<wbr>com.fnproject.fn.api.OutputEvent&gt;</span>&nbsp;<span class="element-name">getHttpHandler</span>()</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>The HTTP handler.</dd>

@@ -98,8 +98,8 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color"><code>protected </code></div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory)" class="member-name-link">AbstractSdkClientFactory</a><wbr>(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
  com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
- com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
- com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory)</code></div>
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
+ @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory)</code></div>
 <div class="col-last even-row-color">
 <div class="block">Default constructor.</div>
 </div>
@@ -118,7 +118,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract <a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">T</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#build(com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider)" class="member-name-link">build</a><wbr>(com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#build(com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider)" class="member-name-link">build</a><wbr>(@NonNull com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Builds the client.</div>
 </div>
@@ -126,7 +126,7 @@ loadScripts(document, 'script');</script>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBuilder()" class="member-name-link">getBuilder</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>final void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setProvider(com.oracle.bmc.http.client.HttpProvider)" class="member-name-link">setProvider</a><wbr>(com.oracle.bmc.http.client.HttpProvider&nbsp;provider)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setProvider(com.oracle.bmc.http.client.HttpProvider)" class="member-name-link">setProvider</a><wbr>(@Nullable com.oracle.bmc.http.client.HttpProvider&nbsp;provider)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Set the HTTP provider for this client.</div>
 </div>
@@ -153,9 +153,9 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractSdkClientFactory</span><wbr><span class="parameters">(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
  com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
  @Nullable
- com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
  @Nullable
- com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory)</span></div>
+ @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory)</span></div>
 <div class="block">Default constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -190,7 +190,7 @@ loadScripts(document, 'script');</script>
 <h3>build</h3>
 <div class="member-signature"><span class="annotations">@NonNull
 </span><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type"><a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">T</a></span>&nbsp;<span class="element-name">build</span><wbr><span class="parameters">(@NonNull
- com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</span></div>
+ @NonNull com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</span></div>
 <div class="block">Builds the client.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -206,7 +206,7 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations">@Inject
 @Internal
 </span><span class="modifiers">public final</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setProvider</span><wbr><span class="parameters">(@Nullable
- com.oracle.bmc.http.client.HttpProvider&nbsp;provider)</span></div>
+ @Nullable com.oracle.bmc.http.client.HttpProvider&nbsp;provider)</span></div>
 <div class="block">Set the HTTP provider for this client. This is injected by the application context, in order
  to reuse the HTTP provider.</div>
 <dl class="notes">

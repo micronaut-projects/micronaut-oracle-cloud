@@ -129,8 +129,8 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -186,7 +186,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)" class="member-name-link">tenantIdProvider</a><wbr>(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)" class="member-name-link">tenantIdProvider</a><wbr>(@Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Provides a <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core"><code>TenancyIdProvider</code></a> bean.</div>
 </div>
@@ -261,9 +261,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String)">
 <h3>OracleCloudCoreFactory</h3>
 <div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">OracleCloudCoreFactory</span><wbr><span class="parameters">(@Nullable @Property(name="oci.config.profile")
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
  @Nullable @Property(name="oci.config.path")
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</span></div>
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>profile</code> - The configured profile</dd>
@@ -391,7 +391,7 @@ loadScripts(document, 'script');</script>
 @Primary
 @Context
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></span>&nbsp;<span class="element-name">tenantIdProvider</span><wbr><span class="parameters">(@Nullable
- com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</span></div>
+ @Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</span></div>
 <div class="block">Provides a <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core"><code>TenancyIdProvider</code></a> bean.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
