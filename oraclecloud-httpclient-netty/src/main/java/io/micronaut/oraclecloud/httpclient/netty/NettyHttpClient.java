@@ -79,7 +79,7 @@ final class NettyHttpClient implements HttpClient {
             if (builder.properties.containsKey(StandardClientProperties.READ_TIMEOUT)) {
                 cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.READ_TIMEOUT));
             }
-            mnClient = new DefaultHttpClient(null, cfg);
+            mnClient = new DefaultHttpClient((URI) null, cfg);
             blockingIoExecutor = Executors.newCachedThreadPool();
         } else {
             hasContext = true;
