@@ -103,7 +103,7 @@ final class StreamWritingHandler extends ChannelInboundHandlerAdapter {
                     target.retain();
                     ctx.channel().eventLoop().execute(() -> {
                         currentFuture = null;
-                        ctx.write(target, ctx.voidPromise());
+                        ctx.writeAndFlush(target, ctx.voidPromise());
                         writeIfPossible(ctx);
                     });
                 }
