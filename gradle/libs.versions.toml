@@ -20,7 +20,7 @@ protobuf = '0.9.3'
 netty-http3 = "0.0.16.Final"
 
 micronaut-gradle-plugin = "4.0.0-M4"
-micronaut-groovy = "4.0.0-M3"
+micronaut-groovy = "4.0.0-M4"
 micronaut-kotlin = "4.0.0-M5"
 micronaut-micrometer = "5.0.0-M4"
 micronaut-reactor = "3.0.0-M6"
