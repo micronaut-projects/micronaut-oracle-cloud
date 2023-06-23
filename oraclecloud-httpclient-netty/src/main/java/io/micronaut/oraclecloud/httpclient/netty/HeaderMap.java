@@ -58,6 +58,16 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
     }
 
     @Override
+    public List<String> remove(Object key) {
+        if (!(key instanceof String)) {
+            return null;
+        }
+        List<String> items = headers.getAll((String) key);
+        headers.remove((String) key);
+        return items;
+    }
+
+    @Override
     public boolean containsKey(Object key) {
         return key instanceof String && headers.contains((String) key);
     }
