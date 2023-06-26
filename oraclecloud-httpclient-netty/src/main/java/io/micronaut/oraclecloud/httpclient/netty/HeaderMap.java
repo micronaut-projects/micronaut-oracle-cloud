@@ -59,12 +59,12 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
 
     @Override
     public List<String> remove(Object key) {
-        if (!(key instanceof String)) {
+        if (!(key instanceof String s)) {
             return null;
         }
-        List<String> items = headers.getAll((String) key);
-        headers.remove((String) key);
-        return items;
+        List<String> items = headers.getAll(s);
+        headers.remove(s);
+        return items.isEmpty() ? null : items; // follow remove() contract
     }
 
     @Override
@@ -81,6 +81,11 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
         @Override
         public boolean contains(Object o) {
             return containsKey(o);
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            return HeaderMap.this.remove(o) != null;
         }
 
         @Override

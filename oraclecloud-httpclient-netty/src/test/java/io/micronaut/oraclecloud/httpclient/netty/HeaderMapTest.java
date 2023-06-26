@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,5 +31,7 @@ class HeaderMapTest {
         Assertions.assertFalse(map.keySet().contains("foo"));
         Assertions.assertFalse(map.keySet().contains("FOO"));
         Assertions.assertFalse(map.keySet().contains("Foo"));
+
+        Assertions.assertNull(map.remove("Foo"));
     }
 }
