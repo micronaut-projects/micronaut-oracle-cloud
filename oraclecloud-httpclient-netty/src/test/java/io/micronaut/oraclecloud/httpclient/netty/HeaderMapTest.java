@@ -4,6 +4,8 @@ import io.netty.handler.codec.http.DefaultHttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 @SuppressWarnings({"RedundantCollectionOperation", "MismatchedQueryAndUpdateOfCollection"})
 class HeaderMapTest {
     @Test
@@ -18,5 +20,18 @@ class HeaderMapTest {
         Assertions.assertTrue(map.keySet().contains("foo"));
         Assertions.assertTrue(map.keySet().contains("FOO"));
         Assertions.assertTrue(map.keySet().contains("Foo"));
+
+        List<String> foo = map.remove("Foo");
+
+        Assertions.assertEquals(foo.size(), 1);
+        Assertions.assertEquals(foo.get(0), "bar");
+        Assertions.assertFalse(map.containsKey("foo"));
+        Assertions.assertFalse(map.containsKey("FOO"));
+        Assertions.assertFalse(map.containsKey("Foo"));
+        Assertions.assertFalse(map.keySet().contains("foo"));
+        Assertions.assertFalse(map.keySet().contains("FOO"));
+        Assertions.assertFalse(map.keySet().contains("Foo"));
+
+        Assertions.assertNull(map.remove("Foo"));
     }
 }
