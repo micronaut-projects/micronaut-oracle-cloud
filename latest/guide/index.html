@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <title>Micronaut Oracle Cloud</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="../css/main.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
     <link rel="stylesheet" href="../css/custom.css" type="text/css" media="screen, print" title="Style" charset="utf-8" />
@@ -55,25 +56,29 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#modules"><strong>6</strong><span>Available Modules</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#reactive"><strong>7</strong><span>Reactive Support</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#httpclient"><strong>7</strong><span>OCI SDK Netty HTTP Client</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#functions"><strong>8</strong><span>Oracle Functions (Serverless)</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#reactive"><strong>8</strong><span>Reactive Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#httpFunctions"><strong>9</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#functions"><strong>9</strong><span>Oracle Functions (Serverless)</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#autonomousDatabase"><strong>10</strong><span>Oracle Autonomous Database</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#httpFunctions"><strong>10</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#micrometer"><strong>11</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#autonomousDatabase"><strong>11</strong><span>Oracle Autonomous Database</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#tracing"><strong>12</strong><span>OCI Application Performance Monitoring as a Tracing Endpoint</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#micrometer"><strong>12</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#logging"><strong>13</strong><span>OCI Logging service</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#tracing"><strong>13</strong><span>OCI Application Performance Monitoring as a Tracing Endpoint</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#vault"><strong>14</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#logging"><strong>14</strong><span>OCI Logging service</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#cloudStorage"><strong>15</strong><span>Oracle Cloud Storage Support</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#vault"><strong>15</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>16</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#cloudStorage"><strong>16</strong><span>Oracle Cloud Storage Support</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>18</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -116,25 +121,29 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-modules"><a href="#modules"><strong>6</strong><span>Available Modules</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-reactive"><a href="#reactive"><strong>7</strong><span>Reactive Support</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-httpclient"><a href="#httpclient"><strong>7</strong><span>OCI SDK Netty HTTP Client</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-functions"><a href="#functions"><strong>8</strong><span>Oracle Functions (Serverless)</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-reactive"><a href="#reactive"><strong>8</strong><span>Reactive Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-httpFunctions"><a href="#httpFunctions"><strong>9</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-functions"><a href="#functions"><strong>9</strong><span>Oracle Functions (Serverless)</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-autonomousDatabase"><a href="#autonomousDatabase"><strong>10</strong><span>Oracle Autonomous Database</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-httpFunctions"><a href="#httpFunctions"><strong>10</strong><span>Oracle Functions HTTP (Serverless)</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-micrometer"><a href="#micrometer"><strong>11</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-autonomousDatabase"><a href="#autonomousDatabase"><strong>11</strong><span>Oracle Autonomous Database</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-tracing"><a href="#tracing"><strong>12</strong><span>OCI Application Performance Monitoring as a Tracing Endpoint</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-micrometer"><a href="#micrometer"><strong>12</strong><span>Micrometer Support For Oracle Monitoring</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-logging"><a href="#logging"><strong>13</strong><span>OCI Logging service</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-tracing"><a href="#tracing"><strong>13</strong><span>OCI Application Performance Monitoring as a Tracing Endpoint</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-vault"><a href="#vault"><strong>14</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-logging"><a href="#logging"><strong>14</strong><span>OCI Logging service</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-cloudStorage"><a href="#cloudStorage"><strong>15</strong><span>Oracle Cloud Storage Support</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-vault"><a href="#vault"><strong>15</strong><span>Secure Distributed Configuration with Oracle Cloud Vault</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>16</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-cloudStorage"><a href="#cloudStorage"><strong>16</strong><span>Oracle Cloud Storage Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-certificates"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>18</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -144,13 +153,13 @@
         <h1>Micronaut Oracle Cloud</h1>
         <p></p>
         <p>Provides integration between Micronaut and Oracle Cloud</p>
-        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/index.html'>SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/latest/guide/index.html'>LATEST</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M11/guide/index.html'>3.0.0-M11</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M10/guide/index.html'>3.0.0-M10</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M9/guide/index.html'>3.0.0-M9</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M8/guide/index.html'>3.0.0-M8</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M7/guide/index.html'>3.0.0-M7</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M6/guide/index.html'>3.0.0-M6</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M5/guide/index.html'>3.0.0-M5</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M4/guide/index.html'>3.0.0-M4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M3/guide/index.html'>3.0.0-M3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M2/guide/index.html'>3.0.0-M2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/3.0.0-M1/guide/index.html'>3.0.0-M1</option><option selected='selected' value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.4.0/guide/index.html'>2.4.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.3.4/guide/index.html'>2.3.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.3.3/guide/index.html'>2.3.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.3.2/guide/index.html'>2.3.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.3.1/guide/index.html'>2.3.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.3.0/guide/index.html'>2.3.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.2.1/guide/index.html'>2.2.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.2.0/guide/index.html'>2.2.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.5/guide/index.html'>2.1.5</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.4/guide/index.html'>2.1.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.3/guide/index.html'>2.1.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.2/guide/index.html'>2.1.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.1/guide/index.html'>2.1.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.1.0/guide/index.html'>2.1.0</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.4/guide/index.html'>2.0.4</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.3/guide/index.html'>2.0.3</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.2/guide/index.html'>2.0.2</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.1/guide/index.html'>2.0.1</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/2.0.0/guide/index.html'>2.0.0</option></select> </p>
+        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/index.html'>SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/latest/guide/index.html'>LATEST</option></select> </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -164,7 +173,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/releaseHistory.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/releaseHistory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -180,7 +189,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <h1 id="breaks"><a class="anchor" href="#breaks"></a>3 Breaking Changes</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/breaks.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/breaks.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -207,7 +216,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 Quick Start</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/quickStart.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/quickStart.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -223,7 +232,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:2.4.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:3.0.0")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -231,27 +240,26 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
-    &lt;version&gt;2.4.0&lt;/version&gt;
+    &lt;version&gt;3.0.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
 </div>
 <div class="paragraph">
-<p>followed by adding dependencies on the OCI SDK clients you wish to use, for example for Object Store:</p>
+<p>followed by adding dependencies on the OCI SDK clients you wish to use, for example for Vault:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
-    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-bmc-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -263,7 +271,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <h1 id="authentication"><a class="anchor" href="#authentication"></a>5 Authentication</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/authentication.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/authentication.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -565,7 +573,7 @@ oci.user-id=&lt;value&gt;</code></pre>
 <h1 id="modules"><a class="anchor" href="#modules"></a>6 Available Modules</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/modules.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/modules.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -580,7 +588,7 @@ oci.user-id=&lt;value&gt;</code></pre>
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-common:2.4.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-common:3.0.0")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -588,7 +596,7 @@ oci.user-id=&lt;value&gt;</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-common&lt;/artifactId&gt;
-    &lt;version&gt;2.4.0&lt;/version&gt;
+    &lt;version&gt;3.0.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -611,12 +619,34 @@ oci.user-id=&lt;value&gt;</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="_micronaut_oraclecloud_httpclient_netty">micronaut-oraclecloud-httpclient-netty</h3>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-httpclient-netty&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Provides an implementation of the OCI SDK client based on Netty and Micronaut Serialization.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_micronaut_oraclecloud_sdk">micronaut-oraclecloud-sdk</h3>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -624,7 +654,6 @@ oci.user-id=&lt;value&gt;</code></pre>
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -639,7 +668,7 @@ oci.user-id=&lt;value&gt;</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -648,29 +677,17 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
-    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-bmc-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
-</div>
-<div class="paragraph">
-<p>It is important to note that if you plan to build native images you also need to ensure the transitive <code>javassist</code> dependency is not included when adding dependencies on SDK modules using dependency exclusions. For example with Gradle:</p>
-</div>
-<div class="listingblock">
-<div class="title">Excluding javassist</div>
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">implementation "com.oracle.oci.sdk:oci-java-sdk-objectstorage", {
-    exclude module:'javassist'
-}</code></pre>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -679,7 +696,7 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -687,7 +704,6 @@ This module does not have a dependency on any one module. You should add these t
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk-rxjava2&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -702,7 +718,7 @@ This module does not have a dependency on any one module. You should add these t
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -711,15 +727,14 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
-    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-bmc-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -731,7 +746,7 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -739,7 +754,6 @@ This module does not have a dependency on any one module. You should add these t
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk-reactor&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -754,7 +768,7 @@ This module does not have a dependency on any one module. You should add these t
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Storage you would define a dependency on this module as well as:
+This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -763,15 +777,14 @@ This module does not have a dependency on any one module. You should add these t
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"com.oracle.oci.sdk:oci-java-sdk-objectstorage:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
-    &lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;
-    &lt;artifactId&gt;oci-java-sdk-objectstorage&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-bmc-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -900,10 +913,105 @@ The module generates the OracleWallet on startup.
 </div>
 </div>
 
-<h1 id="reactive"><a class="anchor" href="#reactive"></a>7 Reactive Support</h1>
+<h1 id="httpclient"><a class="anchor" href="#httpclient"></a>7 OCI SDK Netty HTTP Client</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/reactive.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/httpclient.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>This module provides a netty client implementation for the Java OCI SDK. The client uses <a href="https://micronaut-projects.github.io/micronaut-serialization/latest/guide/">Micronaut Serialization</a>.</p>
+</div>
+<div class="paragraph">
+<p>Add a dependency to the <code>micronaut-oraclecloud-httpclient-netty</code> module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-httpclient-netty&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>For serialization to work correctly, use one of the micronaut OCI SDK modules instead of the OCI SDK modules. For example, for Object Store define the dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-objectstorage")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-bmc-objectstorage&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="sect2">
+<h3 id="_migrate">Migrate</h3>
+<div class="paragraph">
+<p>Replace the <code>com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey</code> with the <code>micronaut-oraclecloud-httpclient-netty</code> client and the <code>com.oracle.oci.sdk:oci-java-sdk-bom</code> with <code>micronaut-oraclecloud-bom</code>.</p>
+</div>
+<div class="paragraph">
+<p>Then replace other OCI SDK modules with micronaut ones. To simplify the process, you can utilize the following regular expression:</p>
+</div>
+<div class="paragraph">
+<p>For Maven replace</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-regex hljs" data-lang="regex">&lt;dependency&gt;(\s*)&lt;groupId&gt;com.oracle.oci.sdk&lt;/groupId&gt;(\s*)&lt;artifactId&gt;oci-java-sdk-([^&lt;]+)&lt;/artifactId&gt;(((?!&lt;/dependency&gt;)[\s\S])+)&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-regex hljs" data-lang="regex">&lt;dependency&gt;$1&lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;$2&lt;artifactId&gt;micronaut-oraclecloud-bmc-$3&lt;/artifactId&gt;$4&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Gradle replace</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-regex hljs" data-lang="regex">com.oracle.oci.sdk:oci-java-sdk-([^:"')]+)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-regex hljs" data-lang="regex">io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-$1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you plan to use the modules in a Micronaut application, add one of the <code>micronaut-oraclecloud-sdk</code>, <code>micronaut-oraclecloud-sdk-rxjava2</code> or <code>micronaut-oraclecloud-sdk-reactor</code> modules.</p>
+</div>
+</div>
+
+<h1 id="reactive"><a class="anchor" href="#reactive"></a>8 Reactive Support</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/reactive.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -919,7 +1027,7 @@ The module generates the OracleWallet on startup.
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2:{ociVersion}")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -927,7 +1035,7 @@ The module generates the OracleWallet on startup.
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk-rxjava2&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
+    &lt;version&gt;{ociVersion}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -939,7 +1047,7 @@ The module generates the OracleWallet on startup.
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor:2.41.0")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor:{ociVersion}")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -947,7 +1055,7 @@ The module generates the OracleWallet on startup.
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
     &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
     &lt;artifactId&gt;micronaut-oraclecloud-sdk-reactor&lt;/artifactId&gt;
-    &lt;version&gt;2.41.0&lt;/version&gt;
+    &lt;version&gt;{ociVersion}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
@@ -1167,10 +1275,10 @@ override fun createBucket(name: String): Mono&lt;String&gt; {
 </table>
 </div>
 
-<h1 id="functions"><a class="anchor" href="#functions"></a>8 Oracle Functions (Serverless)</h1>
+<h1 id="functions"><a class="anchor" href="#functions"></a>9 Oracle Functions (Serverless)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/functions.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/functions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1489,10 +1597,10 @@ For Java functions that do not use Native Image you will need to pass <code>--me
 </div>
 </div>
 
-<h1 id="httpFunctions"><a class="anchor" href="#httpFunctions"></a>9 Oracle Functions HTTP (Serverless)</h1>
+<h1 id="httpFunctions"><a class="anchor" href="#httpFunctions"></a>10 Oracle Functions HTTP (Serverless)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/httpFunctions.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/httpFunctions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1831,10 +1939,10 @@ The path prefix must match the path you used in your controller (e.g. <code>@Con
 </div>
 </div>
 
-<h1 id="autonomousDatabase"><a class="anchor" href="#autonomousDatabase"></a>10 Oracle Autonomous Database</h1>
+<h1 id="autonomousDatabase"><a class="anchor" href="#autonomousDatabase"></a>11 Oracle Autonomous Database</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/autonomousDatabase.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/autonomousDatabase.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2066,10 +2174,10 @@ The <code>username</code> and <code>password</code> are not automatically genera
 <p>The wallet is of type <code>SINGLE</code>. Use the <code>walletType</code> property to configure different types. See other valid options at <a href="https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails" class="bare">https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails</a>.</p>
 </div>
 
-<h1 id="micrometer"><a class="anchor" href="#micrometer"></a>11 Micrometer Support For Oracle Monitoring</h1>
+<h1 id="micrometer"><a class="anchor" href="#micrometer"></a>12 Micrometer Support For Oracle Monitoring</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/micrometer.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/micrometer.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2263,10 +2371,10 @@ micronaut.metrics.export.oraclecloud.resourceGroup=foo</code></pre>
 </div>
 </div>
 
-<h1 id="tracing"><a class="anchor" href="#tracing"></a>12 OCI Application Performance Monitoring as a Tracing Endpoint</h1>
+<h1 id="tracing"><a class="anchor" href="#tracing"></a>13 OCI Application Performance Monitoring as a Tracing Endpoint</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/tracing.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/tracing.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2609,10 +2717,10 @@ tracing {
 </div>
 </div>
 
-<h1 id="logging"><a class="anchor" href="#logging"></a>13 OCI Logging service</h1>
+<h1 id="logging"><a class="anchor" href="#logging"></a>14 OCI Logging service</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/logging.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/logging.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2912,10 +3020,10 @@ The <code>logId</code> is also configurable through the <code>application</code>
 </div>
 </div>
 
-<h1 id="vault"><a class="anchor" href="#vault"></a>14 Secure Distributed Configuration with Oracle Cloud Vault</h1>
+<h1 id="vault"><a class="anchor" href="#vault"></a>15 Secure Distributed Configuration with Oracle Cloud Vault</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/vault.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/vault.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3210,10 +3318,10 @@ public class Config {
 </div>
 </div>
 
-<h1 id="cloudStorage"><a class="anchor" href="#cloudStorage"></a>15 Oracle Cloud Storage Support</h1>
+<h1 id="cloudStorage"><a class="anchor" href="#cloudStorage"></a>16 Oracle Cloud Storage Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/cloudStorage.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/cloudStorage.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3245,10 +3353,244 @@ public class Config {
 <p>For more information, check the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>16 Repository</h1>
+<h1 id="certificates"><a class="anchor" href="#certificates"></a>17 OCI Certificate SSL Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/2.4.x/src/main/docs/guide/repository.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/certificates.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>To start using <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm">Oracle Cloud Certificates</a> service first create certificate on OCI platform, add the following dependency to your project:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-certificates")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-certificates&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Copy ocid of your certificate:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../img/oci_certificate_ocid.png" alt="Certificate OCID">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Before you create Certificate make sure that you have created <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm">required polices</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Add the following to the <code>application</code> configuration file to enable ssl and Oracle Cloud Certificate support:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.server.ssl.enabled=true
+oci.certificates.enabled=true
+oci.certificates.certificate-id=ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  server:
+    ssl:
+      enabled : true
+oci:
+  certificates:
+    enabled: true
+    certificate-id: ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.server]
+    [micronaut.server.ssl]
+      enabled=true
+[oci]
+  [oci.certificates]
+    enabled=true
+    certificate-id="ocid1.certificate.oc1....."</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  server {
+    ssl {
+      enabled = true
+    }
+  }
+}
+oci {
+  certificates {
+    enabled = true
+    certificateId = "ocid1.certificate.oc1....."
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    server {
+      ssl {
+        enabled = true
+      }
+    }
+  }
+  oci {
+    certificates {
+      enabled = true
+      certificate-id = "ocid1.certificate.oc1....."
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "server": {
+      "ssl": {
+        "enabled": true
+      }
+    }
+  },
+  "oci": {
+    "certificates": {
+      "enabled": true,
+      "certificate-id": "ocid1.certificate.oc1....."
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file <code>application-oraclecloud</code> (with the appropriate extension, such as .yml).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In next table you can find useful parameters to further customize integration with Oracle Cloud Certificates:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Configurable Oracle Cloud Certificate properties</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/Disable OCI Certificate feature</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.certificate-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the Ocid of the certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.version-number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version number of the certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.certificate-version-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version name of the certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.frequency</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh frequency for SSL Certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.delay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24h</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Initial refresh delay for refreshing SSL Certificate</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.retry.attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How many attempts to retry if refresh certificate process fails</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.retry.delay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How much to delay attempts in between retry if refresh certificate process fails</p></td>
+</tr>
+</tbody>
+</table>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>18 Repository</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
