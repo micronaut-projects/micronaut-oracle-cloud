@@ -31,7 +31,7 @@ micronaut-sql = "5.0.0-M12"
 micronaut-test = "4.0.0-M9"
 micronaut-logging = "1.0.0-M5"
 micronaut-validation = "4.0.0-M12"
-micronaut-discovery-client = "4.0.0-M4"
+micronaut-discovery-client = "4.0.0-M5"
 
 [libraries]
 # Core
