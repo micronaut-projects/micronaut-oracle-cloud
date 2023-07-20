@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 @ExtendWith(NettyRule.class)
 public class NettyTest {
@@ -287,5 +288,41 @@ public class NettyTest {
         }
         // only one connection
         Assertions.assertEquals(1, channels.size());
+    }
+
+    @Test
+    public void emptyJsonBody() throws ExecutionException, InterruptedException {
+        // we diverge from jax-rs behavior here
+        //Assertions.assertArrayEquals(new byte[0], emptyResponseBody(byte[].class));
+        Assertions.assertNull(emptyResponseBody(byte[].class));
+        //Assertions.assertEquals("", emptyResponseBody(String.class));
+        Assertions.assertNull(emptyResponseBody(String.class));
+
+        Assertions.assertNull(emptyResponseBody(Object[].class));
+        Assertions.assertNull(emptyResponseBody(MyBean.class));
+    }
+
+    private <T> T emptyResponseBody(Class<T> type) throws ExecutionException, InterruptedException {
+        netty.handleOneRequest((ctx, request) -> {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                Unpooled.EMPTY_BUFFER
+            );
+            response.headers().add("Content-Type", "application/json");
+            response.headers().add("Content-Length", "0");
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient lowLevelClient = HttpProvider.getDefault().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .build()) {
+            try (HttpResponse response = lowLevelClient.createRequest(Method.GET).execute().toCompletableFuture().get()) {
+                return response.body(type).toCompletableFuture().get();
+            }
+        }
+    }
+
+    public static class MyBean {
+        public String s;
     }
 }
