@@ -78,6 +78,26 @@ final class NettyHttpResponse implements HttpResponse {
     public <T> CompletionStage<T> body(Class<T> type) {
         return thenApply(bodyAsBuffer(), buf -> {
             try {
+                if (!buf.isReadable()) {
+                    /* This is a bit weird. jax-rs Response.readEntity says:
+                     * "for a zero-length response entities returns a corresponding Java object
+                     * that represents zero-length data."
+                     * This appears to refer to types like byte[] and String, which return an empty
+                     * array or string when the body is empty.
+                     *
+                     * For complex types, this behavior comes from jackson, and is explicitly
+                     * against the jax-rs standard:
+                     * https://github.com/FasterXML/jackson-jaxrs-providers/issues/49
+                     * Basically, by default (which oci-sdk uses), jackson returns null when the
+                     * body is empty.
+                     *
+                     * We replicate the jackson behavior here. We don't replicate the behavior for
+                     * byte[] and String, those should usually go through textBody or other body
+                     * methods anyway.
+                     */
+                    return null;
+                }
+
                 return OciSdkMicronautSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), type);
             } catch (IOException e) {
                 throw new CompletionException(e);
