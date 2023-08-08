@@ -2,7 +2,7 @@ The following modules are provided.
 
 === micronaut-oraclecloud-common
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-common[version={version}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-common[]
 
 Provides the common functionality and sets up the following beans:
 
