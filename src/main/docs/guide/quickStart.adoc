@@ -2,7 +2,7 @@ To get started quickly, https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDK
 
 Then add a dependency on the `micronaut-oraclecloud-sdk` module:
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[version={version}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[]
 
 followed by adding dependencies on the OCI SDK clients you wish to use, for example for Vault:
 

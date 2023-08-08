@@ -2,11 +2,11 @@ In addition to the blocking clients, this module provides clients that use RxJav
 
 For RxJava 2 add the following module:
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[]
 
 For Reactor add:
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[version={ociVersion}]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[]
 
 
 NOTE: You need to add the relevant OCI SDK dependency to use these clients.
