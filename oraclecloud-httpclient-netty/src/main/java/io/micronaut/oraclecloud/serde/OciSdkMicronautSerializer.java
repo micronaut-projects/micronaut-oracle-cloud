@@ -15,6 +15,9 @@
  */
 package io.micronaut.oraclecloud.serde;
 
+import com.oracle.bmc.auth.internal.GetResourcePrincipalSessionTokenRequest;
+import com.oracle.bmc.auth.internal.JWK;
+import com.oracle.bmc.auth.internal.X509FederationClient;
 import com.oracle.bmc.http.client.Serializer;
 import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.bmc.model.RegionSchema;
@@ -32,8 +35,12 @@ import java.util.Map;
  * configured for use inside an Oracle Cloud SDK HTTP client.
  */
 @Internal
-@SerdeImport(ResponseHelper.ErrorCodeAndMessage.class)
+@SerdeImport(GetResourcePrincipalSessionTokenRequest.class)
+@SerdeImport(JWK.class)
 @SerdeImport(RegionSchema.class)
+@SerdeImport(ResponseHelper.ErrorCodeAndMessage.class)
+@SerdeImport(X509FederationClient.SecurityToken.class)
+@SerdeImport(X509FederationClient.X509FederationRequest.class)
 public final class OciSdkMicronautSerializer implements Serializer {
 
     private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(
