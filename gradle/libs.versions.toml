@@ -1,9 +1,9 @@
 [versions]
-micronaut = "4.0.0"
+micronaut = "4.0.4"
 micronaut-platform = "4.0.0-RC1"
 micronaut-docs = "2.0.0"
 fn = '1.0.175'
-graal-svm = "23.0.0"
+graal-svm = "23.0.1"
 javapoet = '1.13.0'
 jetty = '11.0.15'
 kotlin = '1.8.22'
@@ -19,19 +19,19 @@ ojdbc = "21.10.0.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.16.Final"
 
-micronaut-gradle-plugin = "4.0.0"
+micronaut-gradle-plugin = "4.0.2"
 micronaut-groovy = "4.0.1"
-micronaut-kotlin = "4.0.0"
+micronaut-kotlin = "4.0.1"
 micronaut-micrometer = "5.0.1"
 micronaut-reactor = "3.0.1"
-micronaut-rxjava2 = "2.0.0"
+micronaut-rxjava2 = "2.0.1"
 micronaut-serde = "2.0.0"
 micronaut-servlet = "4.0.0"
-micronaut-sql = "5.0.0"
+micronaut-sql = "5.0.1"
 micronaut-test = "4.0.0"
 micronaut-logging = "1.0.0"
-micronaut-validation = "4.0.0"
-micronaut-discovery-client = "4.0.0"
+micronaut-validation = "4.0.1"
+micronaut-discovery-client = "4.0.1"
 
 [libraries]
 # Core
