@@ -39,7 +39,7 @@ import jakarta.inject.Singleton;
 @Context
 @Internal
 @Singleton
-@Requires(bean=Logging.class)
+@Requires(bean = Logging.class)
 @Requires(property = OracleCloudLoggingClient.ENABLED, value = "true", defaultValue = "true")
 final class OracleCloudLoggingClient implements ApplicationEventListener<ServerStartupEvent> {
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".logging";
