@@ -24,6 +24,7 @@ import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
+import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
@@ -146,6 +147,14 @@ public class OracleCloudCoreFactory {
     @BootstrapContextCompatible
     protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
         return instancePrincipalConfiguration.getBuilder().build();
+    }
+
+    @Singleton
+    @Requires(beans = OkeWorkloadIdentityConfiguration.class)
+    @Primary
+    @BootstrapContextCompatible
+    protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {
+        return okeWorkloadIdentityConfiguration.getBuilder().build();
     }
 
     /**

@@ -9,6 +9,7 @@ dependencies {
     }
     api mn.micronaut.inject
     api mn.micronaut.json.core
+    implementation (libs.oci.oke.workload.identity)
 
     compileOnly libs.graal.svm
     compileOnly mn.micronaut.context
