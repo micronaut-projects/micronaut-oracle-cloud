@@ -22,6 +22,7 @@ import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthentica
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeWorkloadIdentityResourcePrincipalsFederationClient;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
+import com.oracle.bmc.http.client.StandardClientProperties;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -122,7 +123,9 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
                 "Kubernetes service account ca cert doesn't exist.");
         }
 
-        ClientConfigurator configurator = builder -> { };
+        ClientConfigurator configurator = builder -> {
+            builder.property(StandardClientProperties.BUFFER_REQUEST, false);
+        };
 
         List<ClientConfigurator> additionalConfigurators = new ArrayList<>();
         if (this.federationClientConfigurator != null) {
