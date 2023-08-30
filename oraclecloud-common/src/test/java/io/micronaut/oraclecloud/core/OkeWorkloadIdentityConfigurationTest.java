@@ -30,6 +30,7 @@ public class OkeWorkloadIdentityConfigurationTest {
         BasicAuthenticationDetailsProvider basicAuthenticationDetailsProvider = detailsProvider.get();
         BasicAuthenticationDetailsProvider target = ((InterceptedProxy<BasicAuthenticationDetailsProvider>) basicAuthenticationDetailsProvider).interceptedTarget();
         assertTrue(target instanceof OkeWorkloadIdentityAuthenticationDetailsProvider);
+        ((OkeWorkloadIdentityAuthenticationDetailsProvider) target).refresh();
     }
 
     @MockBean(BasicAuthenticationDetailsProvider.class)

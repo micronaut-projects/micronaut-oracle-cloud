@@ -24,7 +24,6 @@ import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.StandardClientProperties;
 
-import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -55,7 +53,8 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
      Sets value for the circuit breaker configuration".
      @param circuitBreakerConfig the CircuitBreakerConfiguration
      */
-    public OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder circuitBreakerConfig(
+     @Override
+     public OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder circuitBreakerConfig(
         CircuitBreakerConfiguration circuitBreakerConfig) {
         this.circuitBreakerConfig = circuitBreakerConfig;
         return this;
@@ -67,7 +66,6 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
             new OkeTenancyOnlyAuthenticationDetailsProvider();
 
         // Set ca cert when talking to proxymux using https.
-        SSLContext sslCtx;
         if (Files.exists(Paths.get(KUBERNETES_SERVICE_ACCOUNT_CERT_PATH))) {
             InputStream inputStream = null;
             try {
@@ -85,8 +83,6 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
                         TrustManagerFactory.getDefaultAlgorithm());
                 keyStore.setCertificateEntry("ocp-cert", certificate);
                 tmf.init(keyStore);
-                sslCtx = SSLContext.getInstance("TLS");
-                sslCtx.init(null, tmf.getTrustManagers(), null);
             } catch (CertificateException e) {
                 throw new IllegalArgumentException(
                     "Invalid Kubernetes ca certification. Please contact OKE Foundation team for help.",
@@ -105,10 +101,6 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
             } catch (NoSuchAlgorithmException e) {
                 throw new IllegalArgumentException(
                     "Cannot load keystore. Please contact OKE Foundation team for help.",
-                    e);
-            } catch (KeyManagementException e) {
-                throw new IllegalArgumentException(
-                    "Failed to load ssl context when trying to request rpst token. Please contact OKE Foundation team for help.",
                     e);
             } finally {
                 try {
