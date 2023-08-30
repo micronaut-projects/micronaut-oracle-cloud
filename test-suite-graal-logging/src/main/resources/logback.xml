@@ -1,0 +1,15 @@
+<configuration>
+
+    <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <logId>testLogId</logId>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="ORACLE" />
+    </root>
+</configuration>
