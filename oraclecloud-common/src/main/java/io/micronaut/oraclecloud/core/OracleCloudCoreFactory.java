@@ -149,6 +149,14 @@ public class OracleCloudCoreFactory {
         return instancePrincipalConfiguration.getBuilder().build();
     }
 
+    /**
+     * Configures a {@link com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present and
+     * the specified by the user with {@code oci.config.use-instance-principal}.
+     *
+     * @param okeWorkloadIdentityConfiguration The configuration
+     * @return The {@link OkeWorkloadIdentityAuthenticationDetailsProvider}.
+     * @see com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider
+     */
     @Singleton
     @Requires(beans = OkeWorkloadIdentityConfiguration.class)
     @Primary
