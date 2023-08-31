@@ -23,7 +23,6 @@ import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeWorkloadIdentityResou
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.StandardClientProperties;
-import io.micronaut.core.util.StringUtils;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;

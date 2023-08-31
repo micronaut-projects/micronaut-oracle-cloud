@@ -24,6 +24,9 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.Toggleable;
 
 
+/**
+ * Allows configuration of the {@link OkeWorkloadIdentityAuthenticationDetailsProvider}.
+ */
 @ConfigurationProperties(OkeWorkloadIdentityConfiguration.PREFIX)
 @BootstrapContextCompatible
 @Requires(property = OkeWorkloadIdentityConfiguration.PREFIX + ".enabled", value = StringUtils.TRUE)
