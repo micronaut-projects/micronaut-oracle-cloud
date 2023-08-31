@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
+@SuppressWarnings("java:S1143")
 public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {
 
     private static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
@@ -114,7 +115,9 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
                     e);
             } finally {
                 try {
-                    inputStream.close();
+                    if (inputStream != null) {
+                        inputStream.close();
+                    }
                 } catch (IOException e) {
                     throw new RuntimeException(
                         "Kubernetes service account ca cert doesn't exist.", e);
