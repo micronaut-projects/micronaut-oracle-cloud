@@ -90,6 +90,7 @@ public class OracleCloudCoreFactory {
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
+    @Requires(missingProperty = OkeWorkloadIdentityConfiguration.PREFIX)
     @Primary
     @BootstrapContextCompatible
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
@@ -109,6 +110,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
+    @Requires(missingProperty = OkeWorkloadIdentityConfiguration.PREFIX)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     @BootstrapContextCompatible
@@ -126,6 +128,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
+    @Requires(missingProperty = OkeWorkloadIdentityConfiguration.PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
     @Primary
     @BootstrapContextCompatible
