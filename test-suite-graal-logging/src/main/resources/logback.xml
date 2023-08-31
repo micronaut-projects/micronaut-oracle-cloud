@@ -1,11 +1,20 @@
 <configuration>
 
+    <appender name='STDOUT' class='ch.qos.logback.core.ConsoleAppender'>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
+        <appender-ref ref="STDOUT"/>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
                 <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
             </layout>
         </encoder>
+        <blackListLoggerName>testLogger1</blackListLoggerName>
+        <blackListLoggerName>testLogger2</blackListLoggerName>
         <logId>testLogId</logId>
         <source>testSource</source>
         <subject>testSubject</subject>

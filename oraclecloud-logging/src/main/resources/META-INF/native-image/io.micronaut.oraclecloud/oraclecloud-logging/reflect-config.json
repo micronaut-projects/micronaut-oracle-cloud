@@ -10,6 +10,12 @@
         ]
       },
       {
+        "name": "addBlackListLoggerName",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
         "name": "setEncoder",
         "parameterTypes": [
           "ch.qos.logback.core.encoder.Encoder"
