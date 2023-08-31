@@ -23,6 +23,7 @@ import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeWorkloadIdentityResou
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.core.util.StringUtils;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
@@ -46,8 +47,18 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
     private static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 
+    private final String certPath;
+
     /** The configuration for the circuit breaker. */
     private CircuitBreakerConfiguration circuitBreakerConfig;
+
+    public MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder() {
+        certPath = KUBERNETES_SERVICE_ACCOUNT_CERT_PATH;
+    }
+
+    public MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder(String path) {
+        certPath = path;
+    }
 
      /**
      Sets value for the circuit breaker configuration".
@@ -66,12 +77,12 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
             new OkeTenancyOnlyAuthenticationDetailsProvider();
 
         // Set ca cert when talking to proxymux using https.
-        if (Files.exists(Paths.get(KUBERNETES_SERVICE_ACCOUNT_CERT_PATH))) {
+        if (Files.exists(Paths.get(certPath))) {
             InputStream inputStream = null;
             try {
                 inputStream =
                     new FileInputStream(
-                        Paths.get(KUBERNETES_SERVICE_ACCOUNT_CERT_PATH).toFile());
+                        Paths.get(certPath).toFile());
                 CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
                 X509Certificate certificate =
                     (X509Certificate) certFactory.generateCertificate(inputStream);
