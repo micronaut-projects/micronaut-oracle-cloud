@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import static io.micronaut.oraclecloud.core.MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE;
 import static org.mockito.Mockito.mock;
 
 public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilderTest {
@@ -52,7 +53,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder micronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder = new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder();
         micronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.circuitBreakerConfig(CircuitBreakerConfiguration.builder().build());
         Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> micronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.createFederationClient(mock(SessionKeySupplier.class)));
-        Assertions.assertEquals( "Kubernetes service account ca cert doesn't exist.", exception.getMessage());
+        Assertions.assertEquals( KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE, exception.getMessage());
     }
 
     @Test

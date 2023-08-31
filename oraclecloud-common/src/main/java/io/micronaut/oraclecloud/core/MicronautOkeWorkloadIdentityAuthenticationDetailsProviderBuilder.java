@@ -41,11 +41,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
-@SuppressWarnings("java:S1143")
+@SuppressWarnings(value = {"java:S1143", "java:S1163", "java:S3776"})
 public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {
 
     private static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
+
+    public static String KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE = "Kubernetes service account ca cert doesn't exist.";
 
     private final String certPath;
 
@@ -78,11 +80,7 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
 
         // Set ca cert when talking to proxymux using https.
         if (Files.exists(Paths.get(certPath))) {
-            InputStream inputStream = null;
-            try {
-                inputStream =
-                    new FileInputStream(
-                        Paths.get(certPath).toFile());
+            try (InputStream inputStream = new FileInputStream(Paths.get(certPath).toFile())) {
                 CertificateFactory certFactory = CertificateFactory.getInstance("X.509");
                 X509Certificate certificate =
                     (X509Certificate) certFactory.generateCertificate(inputStream);
@@ -100,7 +98,7 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
                     e);
             } catch (FileNotFoundException e) {
                 throw new IllegalArgumentException(
-                    "Kubernetes service account ca cert doesn't exist.", e);
+                    KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE, e);
             } catch (KeyStoreException e) {
                 throw new IllegalArgumentException(
                     "Cannot create keystore based on Kubernetes ca cert. Please contact OKE Foundation team for help.",
@@ -113,19 +111,9 @@ public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder ex
                 throw new IllegalArgumentException(
                     "Cannot load keystore. Please contact OKE Foundation team for help.",
                     e);
-            } finally {
-                try {
-                    if (inputStream != null) {
-                        inputStream.close();
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(
-                        "Kubernetes service account ca cert doesn't exist.", e);
-                }
             }
         } else {
-            throw new IllegalArgumentException(
-                "Kubernetes service account ca cert doesn't exist.");
+            throw new IllegalArgumentException(KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE);
         }
 
         ClientConfigurator configurator = builder -> {
