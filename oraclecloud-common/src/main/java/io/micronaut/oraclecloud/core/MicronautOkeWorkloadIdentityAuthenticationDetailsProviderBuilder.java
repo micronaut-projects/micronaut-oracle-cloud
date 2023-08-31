@@ -43,11 +43,10 @@ import java.util.List;
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
 @SuppressWarnings(value = {"java:S1143", "java:S1163", "java:S3776"})
 public class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {
+    public static final String KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE = "Kubernetes service account ca cert doesn't exist.";
 
     private static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
-
-    public static String KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE = "Kubernetes service account ca cert doesn't exist.";
 
     private final String certPath;
 
