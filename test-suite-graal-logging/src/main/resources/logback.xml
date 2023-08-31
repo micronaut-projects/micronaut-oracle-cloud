@@ -1,12 +1,18 @@
 <configuration>
 
     <appender name="ORACLE" class="io.micronaut.oraclecloud.logging.OracleCloudAppender">
-        <logId>testLogId</logId>
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
                 <jsonFormatter class="io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" />
             </layout>
         </encoder>
+        <logId>testLogId</logId>
+        <source>testSource</source>
+        <subject>testSubject</subject>
+        <type>testType</type>
+        <queueSize>50</queueSize>
+        <publishPeriod>200</publishPeriod>
+        <maxBatchSize>15</maxBatchSize>
     </appender>
 
     <root level="INFO">

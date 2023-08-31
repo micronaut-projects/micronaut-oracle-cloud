@@ -20,6 +20,42 @@
         "parameterTypes": [
           "java.lang.String"
         ]
+      },
+      {
+        "name": "setMaxBatchSize",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setPublishPeriod",
+        "parameterTypes": [
+          "long"
+        ]
+      },
+      {
+        "name": "setQueueSize",
+        "parameterTypes": [
+          "int"
+        ]
+      },
+      {
+        "name": "setSource",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setSubject",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
+      },
+      {
+        "name": "setType",
+        "parameterTypes": [
+          "java.lang.String"
+        ]
       }
     ]
   },
