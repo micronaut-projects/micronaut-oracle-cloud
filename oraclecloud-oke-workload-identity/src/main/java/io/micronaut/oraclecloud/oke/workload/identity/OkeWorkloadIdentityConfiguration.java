@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.core;
+package io.micronaut.oraclecloud.oke.workload.identity;
 
 import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
@@ -22,23 +22,35 @@ import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.Toggleable;
+import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
+import io.micronaut.scheduling.TaskExecutors;
+import jakarta.inject.Named;
+
+import java.util.concurrent.ExecutorService;
 
 
 /**
  * Allows configuration of the {@link OkeWorkloadIdentityAuthenticationDetailsProvider}.
  */
-@ConfigurationProperties(OkeWorkloadIdentityConfiguration.PREFIX)
+@ConfigurationProperties(OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
 @BootstrapContextCompatible
-@Requires(property = OkeWorkloadIdentityConfiguration.PREFIX + ".enabled", value = StringUtils.TRUE)
+@Requires(property = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX + ".enabled", value = StringUtils.TRUE)
 public class OkeWorkloadIdentityConfiguration implements Toggleable {
-
-    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
 
     private boolean enabled = true;
 
+    private final ExecutorService ioExecutor;
+
+    private final OkeHttpClientConfiguration okeHttpClientConfiguration;
+
     @ConfigurationBuilder(prefixes = "")
-    private final OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder =
+    private final MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder =
         new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder();
+
+    public OkeWorkloadIdentityConfiguration(@Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor, OkeHttpClientConfiguration okeHttpClientConfiguration) {
+        this.ioExecutor = ioExecutor;
+        this.okeHttpClientConfiguration = okeHttpClientConfiguration;
+    }
 
     @Override
     public boolean isEnabled() {
@@ -56,6 +68,8 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
      * @return The builder
      */
     public OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder getBuilder() {
+        MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.setOkeHttpClientConfiguration(okeHttpClientConfiguration);
+        MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.setIoExecutor(ioExecutor);
         return builder;
     }
 }

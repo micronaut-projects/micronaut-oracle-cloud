@@ -10,7 +10,6 @@ dependencies {
     api mn.micronaut.inject
     api mn.micronaut.json.core
 
-    compileOnly libs.oci.oke.workload.identity
     compileOnly libs.graal.svm
     compileOnly mn.micronaut.context
     compileOnly mn.micronaut.discovery.core
@@ -18,7 +17,6 @@ dependencies {
     runtimeOnly libs.slf4j.jcl
     testImplementation libs.mockito
     testImplementation mn.micronaut.context
-    testImplementation libs.oci.oke.workload.identity
     testImplementation mn.micronaut.discovery.core
     testImplementation mnTest.micronaut.test.spock
 }

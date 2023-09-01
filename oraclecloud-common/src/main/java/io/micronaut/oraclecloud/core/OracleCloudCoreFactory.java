@@ -24,7 +24,6 @@ import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
-import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
@@ -65,6 +64,9 @@ public class OracleCloudCoreFactory {
     // CHECKSTYLE:OFF
     public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
     // CHECKSTYLE:ON
+
+    public static final String OKE_WORKLOAD_IDENTITY_PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
+
     private final String profile;
     private final String configPath;
 
@@ -90,7 +92,7 @@ public class OracleCloudCoreFactory {
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
-    @Requires(missingProperty = OkeWorkloadIdentityConfiguration.PREFIX)
+    @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Primary
     @BootstrapContextCompatible
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
@@ -110,7 +112,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
-    @Requires(missingProperty = OkeWorkloadIdentityConfiguration.PREFIX)
+    @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     @BootstrapContextCompatible
@@ -128,7 +130,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
-    @Requires(missingProperty = OkeWorkloadIdentityConfiguration.PREFIX)
+    @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
     @Primary
     @BootstrapContextCompatible
@@ -150,22 +152,6 @@ public class OracleCloudCoreFactory {
     @BootstrapContextCompatible
     protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
         return instancePrincipalConfiguration.getBuilder().build();
-    }
-
-    /**
-     * Configures a {@link com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider} if no other {@link com.oracle.bmc.auth.AuthenticationDetailsProvider} is present and
-     * the specified by the user with {@code oci.config.use-instance-principal}.
-     *
-     * @param okeWorkloadIdentityConfiguration The configuration
-     * @return The {@link OkeWorkloadIdentityAuthenticationDetailsProvider}.
-     * @see com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider
-     */
-    @Singleton
-    @Requires(beans = OkeWorkloadIdentityConfiguration.class)
-    @Primary
-    @BootstrapContextCompatible
-    protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {
-        return okeWorkloadIdentityConfiguration.getBuilder().build();
     }
 
     /**

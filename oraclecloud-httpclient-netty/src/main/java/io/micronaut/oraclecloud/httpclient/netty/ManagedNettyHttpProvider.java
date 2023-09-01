@@ -39,7 +39,7 @@ import java.util.concurrent.ExecutorService;
  */
 @Singleton
 @Internal
-class ManagedNettyHttpProvider implements HttpProvider {
+public class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
     final HttpClient mnHttpClient;
