@@ -13,10 +13,8 @@ import static com.oracle.bmc.http.client.Method.POST
 class SerdeSpecBase extends Specification {
 
     EmbeddedServer initContext() {
-        ApplicationContext ctx = ApplicationContext.run([
-                'micronaut.server.port': '-1'
-        ])
-        return ctx.getBean(EmbeddedServer.class).start()
+        Map<String, Object> properties = ['micronaut.server.port': -1]
+        ApplicationContext.run(EmbeddedServer, properties)
     }
 
     static <T> T echoTest(EmbeddedServer embeddedServer, Object requestBody, Class<T> bodyType = String) throws Exception {
