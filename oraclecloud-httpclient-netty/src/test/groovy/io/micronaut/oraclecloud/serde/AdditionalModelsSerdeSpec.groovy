@@ -21,6 +21,9 @@ class AdditionalModelsSerdeSpec extends SerdeSpecBase {
         then:
         noExceptionThrown()
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         value | json
         new RegionSchema("key", "comp", "region key", "identifier")

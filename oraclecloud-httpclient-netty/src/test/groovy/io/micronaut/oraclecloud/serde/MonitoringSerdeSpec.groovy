@@ -19,6 +19,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
 
         then:
         '{"compartmentId":"a"}' == body
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "Explicitly set Metric serialization test"() throws Exception {
@@ -34,6 +37,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
 
         then:
         '{"compartmentId":"a","dimensions":null}' == body
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "Metric deserialization test"() throws Exception {
@@ -51,6 +57,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
                 .namespace("name")
                 .build()
         equalsIgnoreExplicitlySet(expected, metric)
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "Alarm.Severity serialization test"() throws Exception {
@@ -62,6 +71,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
 
         then:
         expected == body
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         severity                        | expected
@@ -80,6 +92,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
         then:
         expected == severity
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         body         | expected
         '"CRITICAL"' | Alarm.Severity.Critical
@@ -97,6 +112,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
 
         then:
         expected == body
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         alarm   | expected
@@ -119,6 +137,9 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
 
         then:
         equalsIgnoreExplicitlySet(expected, alarm)
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         expected   | body
