@@ -63,6 +63,11 @@ jobs:
         run: |
           ./gradlew javadoc
 
+      - name: "📃 docs"
+        id: gradle
+        run: |
+          ./gradlew docs
+
       - name: "🛠 Build with Gradle"
         id: gradle
         run: |
