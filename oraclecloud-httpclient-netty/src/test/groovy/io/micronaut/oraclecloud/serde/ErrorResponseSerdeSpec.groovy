@@ -16,6 +16,9 @@ class ErrorResponseSerdeSpec extends SerdeSpecBase {
         then:
         builder.build() == response
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         body    | builder
         '{"code":"Unauthorized","message":"Access not allowed"}'
