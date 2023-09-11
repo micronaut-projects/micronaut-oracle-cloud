@@ -15,6 +15,9 @@ class EnumSerdeSpec extends SerdeSpecBase {
         echoTest(embeddedServer, TestStateEnum.Inactive) == '"inactive"'
         echoTest(embeddedServer, TestStateEnum.Deleted) == '"deleted"'
         echoTest(embeddedServer, TestStateEnum.UnknownEnumValue) == 'null'
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "test enum deserializatioin"() {
@@ -27,6 +30,9 @@ class EnumSerdeSpec extends SerdeSpecBase {
         echoTest(embeddedServer, '"deleted"', TestStateEnum) == TestStateEnum.Deleted
         echoTest(embeddedServer, 'null', TestStateEnum) == TestStateEnum.UnknownEnumValue
         echoTest(embeddedServer, '"unknown value"', TestStateEnum) == TestStateEnum.UnknownEnumValue
+
+        cleanup:
+        embeddedServer.close()
     }
 
 }

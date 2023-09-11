@@ -19,6 +19,9 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
         then:
         '{"string":"value"}' == body
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "Explicitly set OCI SDK Model serialization test"() throws Exception {
@@ -36,6 +39,9 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
         then:
         '{}' == body
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "Test extra properties deserialization does not throw exception"() {
@@ -49,6 +55,9 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
         then:
         notThrown(Exception)
         myModel.string == "value"
+
+        cleanup:
+        embeddedServer.close()
     }
 
     @Unroll
@@ -61,6 +70,9 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
         then:
         response == json
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         modelBuilder                                                                                    | json
@@ -83,6 +95,9 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
         then:
         modelBuilder.build().equals(response, false)
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         modelBuilder                                            | json
         BaseModel.builder()                                     | '{}'
@@ -103,6 +118,9 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
         then:
         modelBuilder.build().equals(response, false)
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         modelBuilder                                                                                    | json
