@@ -59,12 +59,12 @@ jobs:
           [ -f ./setup.sh ] && ./setup.sh || [ ! -f ./setup.sh ]
 
       - name: "📑 Javadoc"
-        id: gradle
+        id: javadoc
         run: |
           ./gradlew javadoc
 
       - name: "📃 docs"
-        id: gradle
+        id: docs
         run: |
           ./gradlew docs
 
