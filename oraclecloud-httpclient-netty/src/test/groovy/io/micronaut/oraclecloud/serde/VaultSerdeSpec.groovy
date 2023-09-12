@@ -21,6 +21,9 @@ class VaultSerdeSpec extends SerdeSpecBase {
         then:
         serialized == body
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         content | serialized
         Base64SecretContentDetails.builder().content("secret content").build()
@@ -39,6 +42,9 @@ class VaultSerdeSpec extends SerdeSpecBase {
         then:
         equalsIgnoreExplicitlySet(expected, content)
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         expected   | body
         Base64SecretContentDetails.builder().content("secret content").build()
@@ -56,6 +62,9 @@ class VaultSerdeSpec extends SerdeSpecBase {
 
         then:
         serialized.replace("'", '"') == body
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         content | serialized
@@ -78,6 +87,9 @@ class VaultSerdeSpec extends SerdeSpecBase {
 
         then:
         equalsIgnoreExplicitlySet(expected, content)
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         expected  | body

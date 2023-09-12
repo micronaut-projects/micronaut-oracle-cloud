@@ -27,6 +27,9 @@ class DateSerdeSpec extends SerdeSpecBase {
 
         then:
         requiredValue == value
+
+        cleanup:
+        embeddedServer.close()
     }
 
     void "test Date deserialization '#dateString'"() {
@@ -47,6 +50,9 @@ class DateSerdeSpec extends SerdeSpecBase {
         then:
         requiredDate == dateModel.date
 
+        cleanup:
+        embeddedServer.close()
+
         where:
         dateString                                       | _
         '{"date":"2000-01-02T03:04:56.789-05:00"}'        | _
@@ -65,6 +71,9 @@ class DateSerdeSpec extends SerdeSpecBase {
 
         then:
         date == dateModel.date
+
+        cleanup:
+        embeddedServer.close()
 
         where:
         dateText | _

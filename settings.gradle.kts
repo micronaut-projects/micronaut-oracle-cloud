@@ -24,7 +24,7 @@ buildscript {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "6.5.3"
+    id("io.micronaut.build.shared.settings") version "6.5.6"
     id("me.champeau.includegit") version "0.1.6"
     id("io.micronaut.build.internal.ocisdk")
 }
@@ -59,6 +59,7 @@ include("docs-examples:example-http-function-java")
 include("docs-examples:example-http-function-groovy")
 include("docs-examples:example-http-function-kotlin")
 include("test-suite-java")
+include("test-suite-graal-logging")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 configure<io.micronaut.build.MicronautBuildSettingsExtension> {

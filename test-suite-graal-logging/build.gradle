@@ -1,0 +1,15 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-native-tests'
+}
+
+dependencies {
+    implementation(projects.micronautOraclecloudLogging)
+}
+
+application {
+    mainClass.set("example.Application")
+}
+
+micronaut {
+    runtime("netty")
+}

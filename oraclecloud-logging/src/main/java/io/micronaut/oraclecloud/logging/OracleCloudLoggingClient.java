@@ -20,6 +20,7 @@ import com.oracle.bmc.loggingingestion.requests.PutLogsRequest;
 import com.oracle.bmc.loggingingestion.responses.PutLogsResponse;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
@@ -38,10 +39,11 @@ import jakarta.inject.Singleton;
 @Context
 @Internal
 @Singleton
+@Requires(bean = Logging.class)
+@Requires(property = OracleCloudLoggingClient.ENABLED, value = "true", defaultValue = "true")
 final class OracleCloudLoggingClient implements ApplicationEventListener<ServerStartupEvent> {
-
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".logging";
-
+    public static final String ENABLED = PREFIX + ".enabled";
     private static Logging logging;
     private static String host;
     private static String appName;
