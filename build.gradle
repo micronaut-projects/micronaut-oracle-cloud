@@ -3,7 +3,7 @@ plugins {
     id 'io.micronaut.build.internal.quality-reporting'
 }
 
-tasks.withType(Javadoc) {
+tasks.withType(Javadoc).configureEach {
     options.jFlags("-Djdk.jar.maxSignatureFileSize=16000000")
 }
 
