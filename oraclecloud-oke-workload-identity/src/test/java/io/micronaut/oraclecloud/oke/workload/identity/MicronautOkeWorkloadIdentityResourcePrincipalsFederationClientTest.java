@@ -1,6 +1,8 @@
 package io.micronaut.oraclecloud.oke.workload.identity;
 
+import com.oracle.bmc.auth.DefaultServiceAccountTokenProvider;
 import com.oracle.bmc.auth.SessionKeySupplier;
+import com.oracle.bmc.auth.SuppliedServiceAccountTokenProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthenticationDetailsProvider;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
@@ -65,6 +67,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
 
             new MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
                 mock(SessionKeySupplier.class),
+                new DefaultServiceAccountTokenProvider(file.getAbsolutePath()),
                 mock(OkeTenancyOnlyAuthenticationDetailsProvider.class),
                 mock(ClientConfigurator.class),
                 mock(CircuitBreakerConfiguration.class),

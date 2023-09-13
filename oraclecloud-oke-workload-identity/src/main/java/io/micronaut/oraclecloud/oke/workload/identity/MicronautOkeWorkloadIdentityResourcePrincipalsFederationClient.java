@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.oke.workload.identity;
 
+import com.oracle.bmc.auth.ServiceAccountTokenSupplier;
 import com.oracle.bmc.auth.SessionKeySupplier;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeWorkloadIdentityResourcePrincipalsFederationClient;
@@ -87,12 +88,13 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
      */
     public MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
         SessionKeySupplier sessionKeySupplier,
+        ServiceAccountTokenSupplier serviceAccountTokenSupplier,
         OkeTenancyOnlyAuthenticationDetailsProvider okeTenancyOnlyAuthenticationDetailsProvider,
         ClientConfigurator clientConfigurator,
         CircuitBreakerConfiguration circuitBreakerConfiguration,
         List<ClientConfigurator> additionalClientConfigurators
     ) {
-        super(sessionKeySupplier, okeTenancyOnlyAuthenticationDetailsProvider, clientConfigurator, circuitBreakerConfiguration, additionalClientConfigurators);
+        super(sessionKeySupplier, serviceAccountTokenSupplier, okeTenancyOnlyAuthenticationDetailsProvider, clientConfigurator, circuitBreakerConfiguration, additionalClientConfigurators);
     }
 
     public static OkeNettyClientSslBuilder okeNettyClientSslBuilder(String path) {

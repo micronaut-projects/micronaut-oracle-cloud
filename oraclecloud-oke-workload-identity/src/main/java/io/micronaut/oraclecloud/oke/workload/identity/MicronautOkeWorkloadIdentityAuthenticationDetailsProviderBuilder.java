@@ -15,7 +15,10 @@
  */
 package io.micronaut.oraclecloud.oke.workload.identity;
 
+import com.oracle.bmc.auth.DefaultServiceAccountTokenProvider;
+import com.oracle.bmc.auth.ServiceAccountTokenSupplier;
 import com.oracle.bmc.auth.SessionKeySupplier;
+import com.oracle.bmc.auth.SuppliedServiceAccountTokenProvider;
 import com.oracle.bmc.auth.internal.FederationClient;
 import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthenticationDetailsProvider;
@@ -36,6 +39,8 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
 
     /** The configuration for the circuit breaker. */
     private CircuitBreakerConfiguration circuitBreakerConfig;
+
+    private ServiceAccountTokenSupplier serviceAccountTokenSupplier = new DefaultServiceAccountTokenProvider();
 
     public static void setIoExecutor(ExecutorService ioExecutor) {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.ioExecutor = ioExecutor;
@@ -82,6 +87,7 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
         // create federation client
         return new MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
             sessionKeySupplier,
+            serviceAccountTokenSupplier,
             provider,
             configurator,
             circuitBreakerConfig,
