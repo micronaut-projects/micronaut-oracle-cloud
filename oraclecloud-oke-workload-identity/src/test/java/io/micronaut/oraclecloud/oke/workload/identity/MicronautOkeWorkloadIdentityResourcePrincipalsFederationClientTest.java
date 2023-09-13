@@ -6,6 +6,7 @@ import com.oracle.bmc.auth.SuppliedServiceAccountTokenProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthenticationDetailsProvider;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -65,7 +66,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
         try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class)) {
             utilities.when(() -> MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.KUBERNETES_SERVICE_ACCOUNT_CERT_PATH)).thenReturn(okeNettyClientSslBuilder);
 
-            new MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
+            MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient micronautOkeWorkloadIdentityResourcePrincipalsFederationClient = new MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
                 mock(SessionKeySupplier.class),
                 new DefaultServiceAccountTokenProvider(file.getAbsolutePath()),
                 mock(OkeTenancyOnlyAuthenticationDetailsProvider.class),
@@ -73,6 +74,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
                 mock(CircuitBreakerConfiguration.class),
                 new ArrayList<>()
             );
+            Assertions.assertNotNull(micronautOkeWorkloadIdentityResourcePrincipalsFederationClient.defaultHttpClient());
         }
 
         file.deleteOnExit();
