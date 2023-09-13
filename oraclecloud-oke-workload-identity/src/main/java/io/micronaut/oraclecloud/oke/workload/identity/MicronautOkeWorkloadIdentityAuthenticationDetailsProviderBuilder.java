@@ -18,7 +18,6 @@ package io.micronaut.oraclecloud.oke.workload.identity;
 import com.oracle.bmc.auth.DefaultServiceAccountTokenProvider;
 import com.oracle.bmc.auth.ServiceAccountTokenSupplier;
 import com.oracle.bmc.auth.SessionKeySupplier;
-import com.oracle.bmc.auth.SuppliedServiceAccountTokenProvider;
 import com.oracle.bmc.auth.internal.FederationClient;
 import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthenticationDetailsProvider;
