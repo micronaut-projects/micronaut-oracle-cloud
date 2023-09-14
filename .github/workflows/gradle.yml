@@ -40,7 +40,7 @@ jobs:
          df -h
 
       - name: "📥 Checkout repository"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -58,16 +58,6 @@ jobs:
         run: |
           [ -f ./setup.sh ] && ./setup.sh || [ ! -f ./setup.sh ]
 
-      - name: "📑 Javadoc"
-        id: javadoc
-        run: |
-          ./gradlew javadoc
-
-      - name: "📃 docs"
-        id: docs
-        run: |
-          ./gradlew docs
-
       - name: "🛠 Build with Gradle"
         id: gradle
         run: |
@@ -80,7 +70,7 @@ jobs:
 
       - name: "📊 Publish Test Report"
         if: always()
-        uses: mikepenz/action-junit-report@v3
+        uses: mikepenz/action-junit-report@v4
         with:
           check_name: Java CI / Test Report (${{ matrix.java }})
           report_paths: '**/build/test-results/test/TEST-*.xml'
