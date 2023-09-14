@@ -31,9 +31,6 @@ import java.util.concurrent.ExecutorService;
 
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
 class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {
-
-    private static ExecutorService ioExecutor;
-
     private static OkeHttpClientConfiguration okeHttpClientConfiguration;
 
     /** The configuration for the circuit breaker. */
@@ -41,16 +38,8 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
 
     private ServiceAccountTokenSupplier serviceAccountTokenSupplier = new DefaultServiceAccountTokenProvider();
 
-    public static void setIoExecutor(ExecutorService ioExecutor) {
-        MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.ioExecutor = ioExecutor;
-    }
-
     public static void setOkeHttpClientConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration) {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.okeHttpClientConfiguration = okeHttpClientConfiguration;
-    }
-
-    static ExecutorService getIoExecutor() {
-        return ioExecutor;
     }
 
     static OkeHttpClientConfiguration getOkeHttpClientConfiguration() {

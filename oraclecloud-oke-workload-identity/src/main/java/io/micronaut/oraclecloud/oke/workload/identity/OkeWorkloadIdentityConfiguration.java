@@ -23,11 +23,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
-import io.micronaut.scheduling.TaskExecutors;
-import jakarta.inject.Named;
-
-import java.util.concurrent.ExecutorService;
-
 
 /**
  * Allows configuration of the {@link OkeWorkloadIdentityAuthenticationDetailsProvider}.
@@ -38,17 +33,13 @@ import java.util.concurrent.ExecutorService;
 public class OkeWorkloadIdentityConfiguration implements Toggleable {
 
     private boolean enabled = true;
-
-    private final ExecutorService ioExecutor;
-
     private final OkeHttpClientConfiguration okeHttpClientConfiguration;
 
     @ConfigurationBuilder(prefixes = "")
     private final MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder =
         new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder();
 
-    public OkeWorkloadIdentityConfiguration(@Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor, OkeHttpClientConfiguration okeHttpClientConfiguration) {
-        this.ioExecutor = ioExecutor;
+    public OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration) {
         this.okeHttpClientConfiguration = okeHttpClientConfiguration;
     }
 
@@ -69,7 +60,6 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
      */
     public OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder getBuilder() {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.setOkeHttpClientConfiguration(okeHttpClientConfiguration);
-        MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.setIoExecutor(ioExecutor);
         return builder;
     }
 }

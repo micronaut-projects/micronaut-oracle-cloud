@@ -32,6 +32,7 @@ import com.oracle.bmc.util.internal.StringUtils;
 import io.micronaut.buffer.netty.NettyByteBufferFactory;
 import io.micronaut.core.annotation.AnnotationMetadataResolver;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.body.ContextlessMessageBodyHandlerRegistry;
 import io.micronaut.http.client.netty.DefaultHttpClient;
@@ -65,8 +66,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
 
-import static io.micronaut.oraclecloud.oke.workload.identity.MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.getIoExecutor;
 import static io.micronaut.oraclecloud.oke.workload.identity.MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.getOkeHttpClientConfiguration;
 
 final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient extends OkeWorkloadIdentityResourcePrincipalsFederationClient {
@@ -112,7 +113,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
                         TrustManagerFactory.getDefaultAlgorithm());
                 keyStore.setCertificateEntry("ocp-cert", certificate);
                 tmf.init(keyStore);
-                return new OkeNettyClientSslBuilder(tmf, keyStore);
+                return new OkeNettyClientSslBuilder(new ResourceResolver(), tmf, keyStore);
             } catch (CertificateException e) {
                 throw new IllegalArgumentException(
                     "Invalid Kubernetes ca certification. Please contact OKE Foundation team for help.",
@@ -170,7 +171,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
             return null;
         }
 
-        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), getIoExecutor(),  JsonMapper.createDefault())
+        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), Executors.newCachedThreadPool(),  JsonMapper.createDefault())
                 .newBuilder()
                 .baseUri(URI.create(endpoint))
                 .registerRequestInterceptor(

@@ -15,30 +15,14 @@
  */
 package io.micronaut.oraclecloud.oke.workload.identity;
 
-import io.micronaut.core.annotation.NonNull;
-import io.micronaut.http.client.HttpVersionSelection;
-import io.micronaut.http.client.netty.ssl.ClientSslBuilder;
-import io.micronaut.http.netty.NettyTlsUtils;
-import io.micronaut.http.ssl.ClientAuthentication;
+import io.micronaut.core.io.ResourceResolver;
+import io.micronaut.http.client.netty.ssl.NettyClientSslBuilder;
 import io.micronaut.http.ssl.SslBuilder;
 import io.micronaut.http.ssl.SslConfiguration;
-import io.micronaut.http.ssl.SslConfigurationException;
-import io.netty.handler.codec.http2.Http2SecurityUtil;
-import io.netty.handler.ssl.ApplicationProtocolConfig;
-import io.netty.handler.ssl.ClientAuth;
 import io.netty.handler.ssl.SslContext;
-import io.netty.handler.ssl.SslContextBuilder;
-import io.netty.handler.ssl.SslProvider;
-import io.netty.handler.ssl.SupportedCipherSuiteFilter;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -47,71 +31,28 @@ import java.util.Optional;
  * This class is not final, so you can extend and replace it to implement alternate mechanisms for loading the
  * key and trust stores.
  */
-final class OkeNettyClientSslBuilder implements ClientSslBuilder {
+final class OkeNettyClientSslBuilder extends NettyClientSslBuilder {
+
+    private final TrustManagerFactory trustManagerFactory;
+    private final KeyStore keyStore;
+
     /**
      * @param resourceResolver The resource resolver
      */
-    private final TrustManagerFactory trustManagerFactory;
-
-    private final KeyStore keyStore;
-
-    public OkeNettyClientSslBuilder(TrustManagerFactory trustManagerFactory, KeyStore keyStore) {
+    public OkeNettyClientSslBuilder(ResourceResolver resourceResolver, TrustManagerFactory trustManagerFactory, KeyStore keyStore) {
+        super(resourceResolver);
         this.trustManagerFactory = trustManagerFactory;
         this.keyStore = keyStore;
     }
 
-    @NonNull
     @Override
-    public SslContext build(SslConfiguration ssl, HttpVersionSelection versionSelection) {
-        try {
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory
-                .getInstance(KeyManagerFactory.getDefaultAlgorithm());
-
-            keyManagerFactory.init(keyStore, null);
-
-            SslContextBuilder sslBuilder = SslContextBuilder
-                .forClient()
-                .keyManager(keyManagerFactory)
-                .trustManager(trustManagerFactory)
-                .sslProvider(NettyTlsUtils.sslProvider());
-            Optional<String[]> protocols = ssl.getProtocols();
-            if (protocols.isPresent()) {
-                sslBuilder.protocols(protocols.get());
-            }
-            Optional<String[]> ciphers = ssl.getCiphers();
-            if (ciphers.isPresent()) {
-                sslBuilder = sslBuilder.ciphers(Arrays.asList(ciphers.get()));
-            } else if (versionSelection.isHttp2CipherSuites()) {
-                sslBuilder.ciphers(Http2SecurityUtil.CIPHERS, SupportedCipherSuiteFilter.INSTANCE);
-            }
-            Optional<ClientAuthentication> clientAuthentication = ssl.getClientAuthentication();
-            if (clientAuthentication.isPresent()) {
-                ClientAuthentication clientAuth = clientAuthentication.get();
-                if (clientAuth == ClientAuthentication.NEED) {
-                    sslBuilder = sslBuilder.clientAuth(ClientAuth.REQUIRE);
-                } else if (clientAuth == ClientAuthentication.WANT) {
-                    sslBuilder = sslBuilder.clientAuth(ClientAuth.OPTIONAL);
-                }
-            }
-            if (versionSelection.isAlpn()) {
-                SslProvider provider = SslProvider.isAlpnSupported(SslProvider.OPENSSL) ? SslProvider.OPENSSL : SslProvider.JDK;
-                sslBuilder.sslProvider(provider);
-                sslBuilder.applicationProtocolConfig(new ApplicationProtocolConfig(
-                    ApplicationProtocolConfig.Protocol.ALPN,
-                    ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
-                    ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
-                    versionSelection.getAlpnSupportedProtocols()
-                ));
-            }
-
-            try {
-                return sslBuilder.build();
-            } catch (SSLException ex) {
-                throw new SslConfigurationException("An error occurred while setting up SSL", ex);
-            }
-
-        } catch (NoSuchAlgorithmException | KeyStoreException | UnrecoverableKeyException e) {
-            throw new RuntimeException(e);
-        }
+    protected Optional<KeyStore> getKeyStore(SslConfiguration ssl) {
+        return Optional.of(keyStore);
     }
+
+    @Override
+    protected TrustManagerFactory getTrustManagerFactory(SslConfiguration ssl) {
+        return trustManagerFactory;
+    }
+
 }
