@@ -568,6 +568,93 @@ oci.user-id=&lt;value&gt;</code></pre>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="oke-workload-identity">OkeWorkloadIdentityAuthenticationDetailsProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If your application is running in Oracle Cloud OKE (Container Engine for Kubernetes), you can authorize <code>/com/oracle/bmc/auth/okeworkloadidentity/OkeWorkloadIdentityAuthenticationDetailsProvider</code> to make SDK calls and utilize OKE Workload Identity authentication. See the <a href="https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm">documentation</a> to enable this via dynamic groups and policies, and then enable it for the K8s environment via the <code>application-k8s</code> configuration file with:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">oci.config.oke-workload-identity.enabled=true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  config:
+    oke-workload-identity:
+        enabled: true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[oci]
+  [oci.config]
+    [oci.config.oke-workload-identity]
+      enabled=true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">oci {
+  config {
+    okeWorkloadIdentity {
+      enabled = true
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  oci {
+    config {
+      oke-workload-identity {
+        enabled = true
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "oci": {
+    "config": {
+      "oke-workload-identity": {
+        "enabled": true
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Required dependency:
+        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-oke-workload-identity")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-oke-workload-identity&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+</div>
+</div>
 
 <h1 id="modules"><a class="anchor" href="#modules"></a>6 Available Modules</h1>
 
