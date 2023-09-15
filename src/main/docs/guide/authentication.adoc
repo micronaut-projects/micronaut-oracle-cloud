@@ -66,7 +66,7 @@ oci:
 
 [#oke-workload-identity]
 == OkeWorkloadIdentityAuthenticationDetailsProvider
-If your application is running in Oracle Cloud OKE (Container Engine for Kubernetes), you can authorize {ocidocs}/com/oracle/bmc/auth/okeworkloadidentity/OkeWorkloadIdentityAuthenticationDetailsProvider.html[OkeWorkloadIdentityAuthenticationDetailsProvider] to make SDK calls and utilize OKE Workload Idenitity authentication. See the https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm[documentation] to enable this via dynamic groups and policies, and then enable it for the K8s environment via the `application-k8s` configuration file with:
+If your application is running in Oracle Cloud OKE (Container Engine for Kubernetes), you can authorize `/com/oracle/bmc/auth/okeworkloadidentity/OkeWorkloadIdentityAuthenticationDetailsProvider` to make SDK calls and utilize OKE Workload Identity authentication. See the https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm[documentation] to enable this via dynamic groups and policies, and then enable it for the K8s environment via the `application-k8s` configuration file with:
 [configuration]
 ----
 oci:
