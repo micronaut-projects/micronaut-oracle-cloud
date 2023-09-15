@@ -1,3 +1,7 @@
+import org.gradle.api.attributes.java.TargetJvmEnvironment
+
+def proto = Attribute.of("protobuf-compatble", Boolean)
+
 // What we are going to publish is not the usual jar
 // But a jar which is stripped down to only contain
 // metadata. As a consequence, we use a custom publication
@@ -16,10 +20,15 @@ plugins.withId('maven-publish') {
         canBeConsumed = true
         canBeResolved = false
         attributes {
+            // Not sure why this attribute is missing, even when using afterEvaluate...
+            attribute(TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE, objects.named(TargetJvmEnvironment, TargetJvmEnvironment.STANDARD_JVM))
             def runtimeElements = configurations.findByName('runtimeElements')
             runtimeElements.attributes.keySet().each { attr ->
-                attribute(attr, runtimeElements.attributes.getAttribute(attr))
+                if (attr != proto) {
+                    attributeProvider(attr, providers.provider { runtimeElements.attributes.getAttribute(attr) })
+                }
             }
+
         }
     }
     javaComponent.addVariantsFromConfiguration(metadata) {
@@ -27,8 +36,18 @@ plugins.withId('maven-publish') {
     }
 }
 
+// Since Gradle 8.3, the metadataElements configuration is preferred over
+// the apiElements configuration when building the project. As a workaround, we
+// introduce an extra attribute.
+
+def internalCompile = Attribute.of("internal.compile", Boolean)
+['apiElements', 'compileClasspath'].each {
+    configurations.getByName(it).attributes {
+        attribute(internalCompile, true)
+    }
+}
+
 // Workaround for variant selection problem
-def proto = Attribute.of("protobuf-compatble", Boolean)
 
 configurations.all {
     if (canBeConsumed) {
