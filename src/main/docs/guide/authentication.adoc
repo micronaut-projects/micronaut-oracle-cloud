@@ -63,3 +63,17 @@ oci:
 == ResourcePrincipalAuthenticationDetailsProvider
 
 {ocidocs}/com/oracle/bmc/auth/ResourcePrincipalAuthenticationDetailsProvider.html[ResourcePrincipalAuthenticationDetailsProvider] is similar to <<instance-principals, instance principals>>, but used for Oracle Functions (serverless). See the https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm[documentation] for instructions on how to configure the necessary dynamic group rules and policies to use Resource Principal auth with your serverless functions. Once the proper configuration is complete, your Micronaut driven serverless functions will be able to use the OCI SDKs.
+
+[#oke-workload-identity]
+== OkeWorkloadIdentityAuthenticationDetailsProvider
+If your application is running in Oracle Cloud OKE (Container Engine for Kubernetes), you can authorize `/com/oracle/bmc/auth/okeworkloadidentity/OkeWorkloadIdentityAuthenticationDetailsProvider` to make SDK calls and utilize OKE Workload Identity authentication. See the https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm[documentation] to enable this via dynamic groups and policies, and then enable it for the K8s environment via the `application-k8s` configuration file with:
+[configuration]
+----
+oci:
+  config:
+    oke-workload-identity:
+        enabled: true
+----
+
+Required dependency:
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-oke-workload-identity[]

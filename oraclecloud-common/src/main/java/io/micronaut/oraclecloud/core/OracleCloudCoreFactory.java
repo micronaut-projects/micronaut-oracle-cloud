@@ -64,6 +64,9 @@ public class OracleCloudCoreFactory {
     // CHECKSTYLE:OFF
     public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
     // CHECKSTYLE:ON
+
+    public static final String OKE_WORKLOAD_IDENTITY_PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
+
     private final String profile;
     private final String configPath;
 
@@ -89,6 +92,7 @@ public class OracleCloudCoreFactory {
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
+    @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Primary
     @BootstrapContextCompatible
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
@@ -108,6 +112,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
+    @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Primary
     @BootstrapContextCompatible
@@ -125,6 +130,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
+    @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
     @Primary
     @BootstrapContextCompatible

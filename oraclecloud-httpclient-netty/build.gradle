@@ -13,6 +13,7 @@ dependencies {
     implementation mn.reactor
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson // Includes ObjectMapper implementation
+    compileOnly libs.oci.oke.workload.identity
 
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
