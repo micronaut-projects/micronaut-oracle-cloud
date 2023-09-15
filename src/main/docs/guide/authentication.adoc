@@ -74,3 +74,6 @@ oci:
     oke-workload-identity:
         enabled: true
 ----
+
+Required dependency:
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-oke-workload-identity[]
