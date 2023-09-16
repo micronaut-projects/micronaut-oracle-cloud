@@ -1092,6 +1092,31 @@ The module generates the OracleWallet on startup.
 <p>If you plan to use the modules in a Micronaut application, add one of the <code>micronaut-oraclecloud-sdk</code>, <code>micronaut-oraclecloud-sdk-rxjava2</code> or <code>micronaut-oraclecloud-sdk-reactor</code> modules.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The jersey HTTP client can be configured through a <code>ClientConfigurator</code> and <code>StandardClientProperties</code>. Only some of these properties are supported for the netty client. Which properties are supported also depends on whether the netty client is used in a managed context, i.e. whether the SDK client is injected from an application context. The following properties are supported:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>StandardClientProperties.BUFFER_REQUEST</code> always supported</p>
+</li>
+<li>
+<p><code>StandardClientProperties.READ_TIMEOUT</code> supported only when the client is <em>not</em> managed</p>
+</li>
+<li>
+<p><code>StandardClientProperties.CONNECT_TIMEOUT</code> supported only when the client is <em>not</em> managed</p>
+</li>
+<li>
+<p><code>StandardClientProperties.ASYNC_POOL_SIZE</code> supported only when the client is <em>not</em> managed</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All other properties, in particular those related to proxies or TLS configuration, are not supported. Instead, you can configure these settings through the normal Micronaut HTTP client configuration properties, with the special service name <code>oci</code>, for example the <code>micronaut.http.services.oci.read-timeout</code> property. For the managed netty client, this allows you to configure TLS, proxy settings, various timeouts and the pool size.</p>
+</div>
+</div>
 
 <h1 id="reactive"><a class="anchor" href="#reactive"></a>8 Reactive Support</h1>
 
