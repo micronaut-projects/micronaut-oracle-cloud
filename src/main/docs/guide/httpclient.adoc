@@ -37,3 +37,14 @@ io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-$1
 ----
 
 If you plan to use the modules in a Micronaut application, add one of the `micronaut-oraclecloud-sdk`, `micronaut-oraclecloud-sdk-rxjava2` or `micronaut-oraclecloud-sdk-reactor` modules.
+
+### Configuration
+
+The jersey HTTP client can be configured through a `ClientConfigurator` and `StandardClientProperties`. Only some of these properties are supported for the netty client. Which properties are supported also depends on whether the netty client is used in a managed context, i.e. whether the SDK client is injected from an application context. The following properties are supported:
+
+- `StandardClientProperties.BUFFER_REQUEST` always supported
+- `StandardClientProperties.READ_TIMEOUT` supported only when the client is _not_ managed
+- `StandardClientProperties.CONNECT_TIMEOUT` supported only when the client is _not_ managed
+- `StandardClientProperties.ASYNC_POOL_SIZE` supported only when the client is _not_ managed
+
+All other properties, in particular those related to proxies or TLS configuration, are not supported. Instead, you can configure these settings through the normal Micronaut HTTP client configuration properties, with the special service name `oci`, for example the `micronaut.http.services.oci.read-timeout` property. For the managed netty client, this allows you to configure TLS, proxy settings, various timeouts and the pool size.
