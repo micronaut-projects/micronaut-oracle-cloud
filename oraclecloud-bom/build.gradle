@@ -21,5 +21,6 @@ micronautBom {
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-fleetsoftwareupdate")
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-osmanagementhub")
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-ocicontrolcenter")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-computecloudatcustomer")
     }
 }
