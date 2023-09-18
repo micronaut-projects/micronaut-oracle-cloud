@@ -1,5 +1,6 @@
 import io.micronaut.internal.settings.importProjectsAsGradle
 import me.champeau.gradle.igp.gitRepositories
+import org.tomlj.Toml
 
 pluginManagement {
     repositories {
@@ -79,11 +80,14 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-discovery-client")
 }
 
+val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.versions.toml").toPath())!!
+
 gitRepositories {
     include("oci-java-sdk") {
         uri.set("https://github.com/oracle/oci-java-sdk.git")
         autoInclude.set(false)
         branch.set("master")
+        tag.set("v" + libs.getString("versions.oci"))
         codeReady {
             importProjectsAsGradle(checkoutDirectory)
         }
