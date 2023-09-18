@@ -14,3 +14,12 @@ dependencies {
         }
     }
 }
+
+micronautBom {
+    suppressions {
+        // 3.0.3 and 3.0.4 versions of oci http netty client were built with some different version instead of 3.15.0
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-fleetsoftwareupdate")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-osmanagementhub")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-ocicontrolcenter")
+    }
+}
