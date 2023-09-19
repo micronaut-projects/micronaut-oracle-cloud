@@ -2,7 +2,7 @@ name: Oracle Cloud CI
 on:
   push:
     branches:
-      - graalvm-github-workflow
+      - master
       - '[1-9]+.[0-9]+.x'
   pull_request:
     branches:
