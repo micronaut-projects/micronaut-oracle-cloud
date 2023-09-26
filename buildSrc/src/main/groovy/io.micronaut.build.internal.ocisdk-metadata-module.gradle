@@ -15,10 +15,6 @@ repositories {
 
 def metadataJar = tasks.register("metadataJar", Jar) {
     archiveClassifier = "metadata"
-    def suffixes = [
-            '$Introspection.class',
-            '$IntrospectionRef.class',
-    ]
     from(sourceSets.main.output) {
         include("META-INF/micronaut/**")
         include { e ->
@@ -26,9 +22,7 @@ def metadataJar = tasks.register("metadataJar", Jar) {
                 return true
             }
             def fn = e.file.name
-            return suffixes.any {
-                fn.endsWith(it)
-            }
+            return fn.contains('$Introspection')
         }
     }
 }
