@@ -15,6 +15,7 @@ import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
 import com.oracle.bmc.streaming.model.PutMessagesResultEntry;
 import io.micronaut.serde.annotation.SerdeImport;
+import io.micronaut.serde.annotation.Serdeable;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
@@ -413,12 +414,58 @@ public class NettyTest {
         }
     }
 
+    @Test
+    public void inclusionTest() throws Exception {
+
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/", request.uri());
+            // empty string should be included in json
+            Assertions.assertEquals("{\"s\":\"\"}", ((FullHttpRequest) request).content().toString(StandardCharsets.UTF_8));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                Unpooled.copiedBuffer("foo", StandardCharsets.UTF_8)
+            );
+            response.headers().add("Content-Type", "application/json");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+        MyBean bean = new MyBean();
+        // empty string should be included in json
+        bean.s = "";
+
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .build()) {
+            try (HttpResponse response = client.createRequest(Method.POST)
+                .body(bean)
+                .execute().toCompletableFuture()
+                .get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("foo", s);
+            }
+        }
+    }
+
     // TODO: remove imports
     @SerdeImport(PutMessagesDetails.class)
     @SerdeImport(PutMessagesDetailsEntry.class)
     @SerdeImport(PutMessagesResult.class)
     @SerdeImport(PutMessagesResultEntry.class)
+    public static class Imports {
+    }
+
+    @Serdeable
     public static class MyBean {
-        public String s;
+        private String s;
+
+        public String getS() {
+            return s;
+        }
+
+        public void setS(String s) {
+            this.s = s;
+        }
     }
 }

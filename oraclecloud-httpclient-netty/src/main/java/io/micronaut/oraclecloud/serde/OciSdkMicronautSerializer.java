@@ -26,6 +26,7 @@ import com.oracle.bmc.model.RegionSchema;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.SerdeImport;
+import io.micronaut.serde.config.annotation.SerdeConfig;
 
 import java.io.IOException;
 import java.util.Map;
@@ -49,7 +50,8 @@ public final class OciSdkMicronautSerializer implements Serializer {
 
     private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(
         "micronaut.serde.writeDatesAsTimestamps", false,
-        "micronaut.serde.write-binary-as-array", false
+        "micronaut.serde.write-binary-as-array", false,
+        "micronaut.serde.serialization.inclusion", SerdeConfig.SerInclude.NON_NULL
     );
 
     private static final ObjectMapper DEFAULT_MAPPER = ObjectMapper.create(
