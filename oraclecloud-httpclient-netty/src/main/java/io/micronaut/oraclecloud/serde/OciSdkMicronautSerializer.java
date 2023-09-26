@@ -48,7 +48,8 @@ import java.util.Map;
 public final class OciSdkMicronautSerializer implements Serializer {
 
     private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(
-        "micronaut.serde.writeDatesAsTimestamps", false
+        "micronaut.serde.writeDatesAsTimestamps", false,
+        "micronaut.serde.write-binary-as-array", false
     );
 
     private static final ObjectMapper DEFAULT_MAPPER = ObjectMapper.create(
