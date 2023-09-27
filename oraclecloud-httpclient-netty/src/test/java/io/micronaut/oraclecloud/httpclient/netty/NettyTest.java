@@ -13,8 +13,6 @@ import com.oracle.bmc.monitoring.requests.DeleteAlarmRequest;
 import com.oracle.bmc.streaming.model.PutMessagesDetails;
 import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
-import com.oracle.bmc.streaming.model.PutMessagesResultEntry;
-import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.serde.annotation.Serdeable;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -381,7 +379,6 @@ public class NettyTest {
 
     @Test
     public void streamModelTest() throws Exception {
-
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(HttpMethod.POST, request.method());
             Assertions.assertEquals("/", request.uri());
@@ -446,14 +443,6 @@ public class NettyTest {
                 Assertions.assertEquals("foo", s);
             }
         }
-    }
-
-    // TODO: remove imports
-    @SerdeImport(PutMessagesDetails.class)
-    @SerdeImport(PutMessagesDetailsEntry.class)
-    @SerdeImport(PutMessagesResult.class)
-    @SerdeImport(PutMessagesResultEntry.class)
-    public static class Imports {
     }
 
     @Serdeable
