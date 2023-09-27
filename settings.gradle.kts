@@ -66,6 +66,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     useStandardizedProjectNames.set(true)
+    addSnapshotRepository()
     importMicronautCatalog()
     importMicronautCatalog("micronaut-groovy")
     importMicronautCatalog("micronaut-kotlin")

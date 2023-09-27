@@ -11,6 +11,9 @@ dependencies {
 
 repositories {
     mavenCentral()
+    maven {
+        url("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
 }
 
 def metadataJar = tasks.register("metadataJar", Jar) {
