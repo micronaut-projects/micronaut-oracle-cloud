@@ -24,4 +24,5 @@ io.micronaut.oraclecloud.httpclient.netty.visitor
 io.micronaut.oraclecloud.logging
 io.micronaut.oraclecloud.monitoring
 io.micronaut.oraclecloud.monitoring.micrometer
+io.micronaut.oraclecloud.oke.workload.identity
 io.micronaut.oraclecloud.serde
