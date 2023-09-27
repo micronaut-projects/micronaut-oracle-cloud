@@ -35,29 +35,16 @@ public class Test extends ExplicitlySetBmcModel {
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;import io.micronaut.core.annotation.Introspected;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class Test extends ExplicitlySetBmcModel {
 
-    @JsonDeserialize(builder = TestA.Builder.class)
+    @JsonDeserialize
     public static class TestA extends ExplicitlySetBmcModel {
         String a;
 
         TestA(String a) {
             this.a = a;
-        }
-
-        public static class Builder {
-            String a;
-
-            Builder a(String a) {
-                this.a = a;
-                return this;
-            }
-
-            TestA build() {
-                return new TestA(a);
-            }
         }
     }
 }
