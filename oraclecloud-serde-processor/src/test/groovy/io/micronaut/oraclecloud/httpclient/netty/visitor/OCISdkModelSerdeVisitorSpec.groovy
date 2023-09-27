@@ -35,7 +35,7 @@ public class Test extends ExplicitlySetBmcModel {
 package test;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;import io.micronaut.core.annotation.Introspected;
 
 public class Test extends ExplicitlySetBmcModel {
 
@@ -48,6 +48,16 @@ public class Test extends ExplicitlySetBmcModel {
         }
 
         public static class Builder {
+            String a;
+
+            Builder a(String a) {
+                this.a = a;
+                return this;
+            }
+
+            TestA build() {
+                return new TestA(a);
+            }
         }
     }
 }
