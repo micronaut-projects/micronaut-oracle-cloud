@@ -39,15 +39,12 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class Test extends ExplicitlySetBmcModel {
 
-    @JsonDeserialize(builder = TestA.Builder.class)
+    @JsonDeserialize
     public static class TestA extends ExplicitlySetBmcModel {
         String a;
 
         TestA(String a) {
             this.a = a;
-        }
-
-        public static class Builder {
         }
     }
 }

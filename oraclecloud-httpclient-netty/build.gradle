@@ -41,7 +41,8 @@ dependencies {
      projects.micronautOraclecloudBmcVault,
      projects.micronautOraclecloudBmcLogging,
      projects.micronautOraclecloudBmcLoggingingestion,
-     projects.micronautOraclecloudBmcLoggingsearch
+     projects.micronautOraclecloudBmcLoggingsearch,
+     projects.micronautOraclecloudBmcStreaming
     ].forEach(module -> testImplementation(module))
 }
 tasks.withType(Test).configureEach {
