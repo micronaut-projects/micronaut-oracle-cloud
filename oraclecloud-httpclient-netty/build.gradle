@@ -9,9 +9,7 @@ dependencies {
     implementation(libs.oci.common) {
         exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
     }
-    api(libs.oci.common.httpclient) {
-        exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
-    }
+    api(libs.oci.common.httpclient)
     api mnSerde.micronaut.serde.api
     implementation mn.micronaut.http.client
     implementation mn.reactor
