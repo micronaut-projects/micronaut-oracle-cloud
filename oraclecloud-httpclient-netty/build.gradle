@@ -6,8 +6,10 @@ dependencies {
     annotationProcessor mnSerde.micronaut.serde.processor
     implementation mn.netty.codec.http
 
-    implementation libs.oci.common
-    api libs.oci.common.httpclient
+    implementation(libs.oci.common) {
+        exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
+    }
+    api(libs.oci.common.httpclient)
     api mnSerde.micronaut.serde.api
     implementation mn.micronaut.http.client
     implementation mn.reactor
@@ -24,7 +26,7 @@ dependencies {
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
-    testRuntimeOnly mn.micronaut.jackson.databind
+    testCompileOnly mn.micronaut.jackson.databind
     testRuntimeOnly mn.micronaut.runtime
 
     testImplementation mn.micronaut.inject.java.test
