@@ -8,3 +8,9 @@ plugins {
 dependencies {
     kapt "io.micronaut:micronaut-graal:${libs.versions.micronaut.asProvider().get()}"
 }
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
