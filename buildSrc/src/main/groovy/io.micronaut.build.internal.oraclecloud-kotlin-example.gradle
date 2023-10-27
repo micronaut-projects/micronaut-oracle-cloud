@@ -9,8 +9,17 @@ dependencies {
     kapt "io.micronaut:micronaut-graal:${libs.versions.micronaut.asProvider().get()}"
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+afterEvaluate {
+
+    kotlin {
+        jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
+    
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
+        kotlinOptions.jvmTarget = "17"
+    }
+
 }
+
