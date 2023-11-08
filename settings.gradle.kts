@@ -69,7 +69,6 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog()
     importMicronautCatalog("micronaut-groovy")
     importMicronautCatalog("micronaut-kotlin")
-    importMicronautCatalog("micronaut-logging")
     importMicronautCatalog("micronaut-micrometer")
     importMicronautCatalog("micronaut-reactor")
     importMicronautCatalog("micronaut-rxjava2")
