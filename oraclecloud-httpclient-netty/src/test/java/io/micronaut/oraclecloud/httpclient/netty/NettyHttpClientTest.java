@@ -1,13 +1,16 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpClient;
+import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
+import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.runtime.server.EmbeddedServer;
+import io.netty.handler.timeout.ReadTimeoutException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
@@ -17,7 +20,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
 class NettyHttpClientTest {
     @Test
@@ -93,6 +98,31 @@ class NettyHttpClientTest {
         }
     }
 
+    @Test
+    public void readTimeoutText() throws Exception {
+        Map<String, Object> properties = new java.util.HashMap<>();
+        properties.put("micronaut.server.port", "-1");
+        ApplicationContext ctx = ApplicationContext.run(properties);
+        EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class);
+        embeddedServer.start();
+
+        // With read timeout 1 millis, call endpoint working 2 or more millis
+        // should fail
+        try (HttpClient client = new NettyHttpClientBuilder(null)
+            .property(StandardClientProperties.READ_TIMEOUT, Duration.ofMillis(1))
+            .baseUri(embeddedServer.getURI())
+            .build()) {
+            CompletionStage<HttpResponse> result = client.createRequest(Method.GET)
+                .appendPathPart("/slow")
+                .execute()
+                .exceptionally(e -> {
+                    Assertions.assertInstanceOf(ReadTimeoutException.class, e);
+                    return null;
+                });
+            Assertions.assertNull(result.toCompletableFuture().get());
+        }
+    }
+
     @Controller
     public static class Ctrl {
         @Get("/foo")
@@ -108,6 +138,13 @@ class NettyHttpClientTest {
         @Post("/echoChunked")
         public Publisher<byte[]> echoChunked(@Body Publisher<byte[]> body) {
             return body;
+        }
+
+        @Get("/slow")
+        public String getSlow() throws Exception {
+            // For test with read timeout of 1ms
+            Thread.sleep(2);
+            return "slow_response";
         }
     }
 }
