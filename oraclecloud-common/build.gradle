@@ -14,6 +14,12 @@ dependencies {
     compileOnly mn.micronaut.context
     compileOnly mn.micronaut.discovery.core
     compileOnly mn.micronaut.jackson.databind
+
+    compileOnly mn.reactor
+    compileOnly mnReactor.micronaut.reactor
+    compileOnly mnRxjava2.rxjava2
+    compileOnly("com.oracle.oci.sdk:oci-java-sdk-common:$gradle.ociVersion")
+
     runtimeOnly libs.slf4j.jcl
     testImplementation libs.mockito
     testImplementation mn.micronaut.context

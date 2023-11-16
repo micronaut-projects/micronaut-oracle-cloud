@@ -59,4 +59,5 @@ configurations.all {
 
 dependencies {
     metadataElements projects.micronautOraclecloudHttpclientNetty
+    metadataElements projects.micronautOraclecloudCommon
 }

@@ -1,3 +1,5 @@
+import io.micronaut.oraclecloud.gradle.GenerateClientFactories
+
 plugins {
     id "io.micronaut.build.internal.module"
     id 'io.micronaut.build.internal.ocisdk-metadata-published'
@@ -13,6 +15,32 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    generated {
+        java {}
+    }
+}
+
+if (!project.name.contains("circuitbreaker")) {
+    var generateClientFactories = tasks.register("generateClientFactories", GenerateClientFactories) {
+        sources = sourceSets.main.java
+        packageName.convention("io.micronaut.oraclecloud.clients")
+        baseOutputDirectory.convention(layout.buildDirectory.dir("generatedClientFactories"))
+    }
+
+    sourceSets.generated.java.srcDir(generateClientFactories)
+
+    dependencies {
+        generatedAnnotationProcessor(projects.micronautOraclecloudSdkProcessor)
+        generatedCompileOnly(sourceSets.main.output)
+        generatedCompileOnly(projects.micronautOraclecloudCommon)
+        generatedCompileOnly(projects.micronautOraclecloudSdkBase)
+        generatedCompileOnly(mnRxjava2.rxjava2)
+        generatedCompileOnly(mn.reactor)
+        generatedCompileOnly(mnReactor.micronaut.reactor)
+    }
+}
+
 def metadataJar = tasks.register("metadataJar", Jar) {
     archiveClassifier = "metadata"
     from(sourceSets.main.output) {
@@ -24,6 +52,9 @@ def metadataJar = tasks.register("metadataJar", Jar) {
             def fn = e.file.name
             return fn.contains('$Introspection')
         }
+    }
+    from(sourceSets.generated.output) {
+        exclude("**/SdkProcessorDummy**")
     }
 }
 

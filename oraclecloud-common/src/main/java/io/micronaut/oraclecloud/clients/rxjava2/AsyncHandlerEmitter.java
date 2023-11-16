@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2021 original authors
+ * Copyright 2017-2020 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.clients.reactor;
+package io.micronaut.oraclecloud.clients.rxjava2;
 
 import com.oracle.bmc.responses.AsyncHandler;
-import io.micronaut.oraclecloud.clients.SdkClients;
-import reactor.core.publisher.MonoSink;
+import io.reactivex.SingleEmitter;
 
 /**
- * Bridges the {@link com.oracle.bmc.responses.AsyncHandler} interface to an RxJava {@link reactor.core.publisher.MonoSink}.
+ * Bridges the {@link AsyncHandler} interface to an RxJava {@link SingleEmitter}.
  *
  * @param <Req> The request type
  * @param <Res> The response type
  * @author graemerocher
- * @since 2.0.0
+ * @since 1.0.0
  */
-@SdkClients(SdkClients.Kind.REACTOR)
-public class AsyncHandlerSink<Req, Res> implements AsyncHandler<Req, Res> {
-    private final MonoSink<Res> emitter;
+public class AsyncHandlerEmitter<Req, Res> implements AsyncHandler<Req, Res> {
+    private final SingleEmitter<Res> emitter;
 
-    public AsyncHandlerSink(MonoSink<Res> emitter) {
+    public AsyncHandlerEmitter(SingleEmitter<Res> emitter) {
         this.emitter = emitter;
     }
 
     @Override
     public void onSuccess(Req req, Res res) {
-        emitter.success(res);
+        emitter.onSuccess(res);
     }
 
     @Override
     public void onError(Req req, Throwable error) {
-        emitter.error(error);
+        emitter.onError(error);
     }
 }

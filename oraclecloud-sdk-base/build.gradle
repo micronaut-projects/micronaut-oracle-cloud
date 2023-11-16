@@ -1,0 +1,8 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+    id("io.micronaut.build.internal.oraclecloud-bom")
+}
+
+spotlessJavaMiscCheck.enabled = false
+compileJava.options.fork = true
+
