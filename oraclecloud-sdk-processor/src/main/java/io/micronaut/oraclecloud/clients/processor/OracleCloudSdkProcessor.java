@@ -122,14 +122,10 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
                     if (isRxJava2) {
                         writeRxJava2Clients(e, packageName, simpleName);
-                    } else {
-                        if (isReactor) {
-                            writeReactorClients(e, packageName, simpleName);
-                        } else {
-                            if (isAsync) {
-                                factoryClassNames.add(writeClientFactory(e, packageName, simpleName));
-                            }
-                        }
+                    } else if (isReactor) {
+                        writeReactorClients(e, packageName, simpleName);
+                    } else if (isAsync) {
+                        factoryClassNames.add(writeClientFactory(e, packageName, simpleName));
                     }
                 }
 
@@ -414,12 +410,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final MethodSpec.Builder buildMethod = MethodSpec.methodBuilder("build");
 
         buildMethod.returns(ClassName.get(packageName, simpleName))
+                .addParameter(builderType, "clientBuilder")
                 .addParameter(authProviderType, "authenticationDetailsProvider")
                 .addAnnotation(Singleton.class)
                 .addAnnotation(requiresSpec.build())
                 .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
-                .addCode("return builder.build(authenticationDetailsProvider);");
+                .addCode("return clientBuilder.build(authenticationDetailsProvider);");
         if (isBootstrapCompatible) {
             buildMethod.addAnnotation(BootstrapContextCompatible.class);
         }

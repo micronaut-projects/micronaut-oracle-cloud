@@ -11,6 +11,7 @@ static Collection<String> parseOciBomArtifacts(String version) {
 if (!extraPropertiesExtension.has('ociArtifacts')) {
     String ociVersion = libs.oci.bom.get().version
     def ociArtifacts = parseOciBomArtifacts(ociVersion)
+            .stream().filter(artifact -> artifact != "oci-java-sdk-shaded-full").toList()
 
     String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
     def ociProjectArtifacts = parseOciBomArtifacts(ociProjectVersion)

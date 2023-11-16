@@ -66,11 +66,17 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
     }
 
     /**
-     * Builds the client.
+     * Builds the client based on its builder to make sure user can configure
+     * required parameters in the builder.
+     *
+     * @param clientBuilder The builder for client
      * @param authenticationDetailsProvider The authentication details provider
      * @return The client to build
      */
-    protected abstract @NonNull T build(@NonNull AbstractAuthenticationDetailsProvider authenticationDetailsProvider);
+    protected abstract @NonNull T build(
+        @NonNull B clientBuilder,
+        @NonNull AbstractAuthenticationDetailsProvider authenticationDetailsProvider
+    );
 
     /**
      * Set the HTTP provider for this client. This is injected by the application context, in order
