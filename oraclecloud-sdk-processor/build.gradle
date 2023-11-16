@@ -6,9 +6,6 @@ plugins {
 dependencies {
     implementation libs.javapoet
     implementation mn.micronaut.inject.java
-    implementation(libs.oci.graalvm) {
-        transitive = false
-    }
     implementation(libs.oci.common) {
         transitive = false
     }

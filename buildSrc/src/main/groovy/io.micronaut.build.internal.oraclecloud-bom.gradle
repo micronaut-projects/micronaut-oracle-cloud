@@ -8,9 +8,34 @@ static Collection<String> parseOciBomArtifacts(String version) {
     return ociBom.dependencyManagement.dependencies.dependency.artifactId*.text()
 }
 
+static Collection<File> parseOciSdkModules() {
+    var modules = new File("checkouts/oci-java-sdk").listFiles().findAll {it.name.startsWith("bmc-")}
+    var secondLevelModules = modules.collectMany {
+        it.listFiles().findAll{ it.name.startsWith("bmc-") }
+    }
+    return (modules + secondLevelModules)
+            .findAll {new File(it.path + "/src/main/java").exists() }
+}
+
+static Collection<String> parseOciSdkClientClassNames() {
+    return parseOciSdkModules()
+        .collect{ new File(it.path + "/src/main/java/com/oracle/bmc") }
+        .findAll{ it.exists() }
+        // Get all the packages com/oracle/bmc/*
+        .collectMany{List.of(it.listFiles()) }
+        // Get all the files com/oracle/bmc/package/*Client.java
+        .collectMany {
+            var packageName = "com.oracle.bmc.$it.name."
+            it.list()
+                .findAll(name -> name.endsWith("Client.java"))
+                .collect(name -> packageName + (name - ".java"))
+        }
+}
+
 if (!extraPropertiesExtension.has('ociArtifacts')) {
     String ociVersion = libs.oci.bom.get().version
     def ociArtifacts = parseOciBomArtifacts(ociVersion)
+            .stream().filter(artifact -> artifact != "oci-java-sdk-shaded-full").toList()
 
     String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
     def ociProjectArtifacts = parseOciBomArtifacts(ociProjectVersion)
@@ -26,3 +51,9 @@ if (!extraPropertiesExtension.has('ociArtifacts')) {
     extraPropertiesExtension.set('ociArtifacts', commonOciArtifacts)
     extraPropertiesExtension.set('ociVersion', ociVersion)
 }
+
+if (!extraPropertiesExtension.has('ociSdkClientClasses')) {
+    extraPropertiesExtension.set('ociSdkClientClasses', parseOciSdkClientClassNames().join(","))
+}
+
+

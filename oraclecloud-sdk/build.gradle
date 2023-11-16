@@ -25,6 +25,7 @@ dependencies {
 
 spotlessJavaMiscCheck.enabled = false
 compileJava.options.fork = true
+compileJava.options.compilerArgs.add("-AociSdkClientClasses=$gradle.ociSdkClientClasses")
 
 tasks.withType(me.champeau.gradle.japicmp.JapicmpTask) {
     // Ignore changes in the generated factories for the new OCI Java SDK

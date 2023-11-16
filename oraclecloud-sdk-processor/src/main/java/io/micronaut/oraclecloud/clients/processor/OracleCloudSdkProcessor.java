@@ -15,8 +15,6 @@
  */
 package io.micronaut.oraclecloud.clients.processor;
 
-import com.oracle.bmc.SdkClients;
-import com.oracle.bmc.graalvm.SdkClientPackages;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -39,7 +37,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
-import io.micronaut.core.reflect.ClassUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import jakarta.inject.Singleton;
 
@@ -69,10 +66,8 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -90,7 +85,15 @@ import java.util.stream.Stream;
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class OracleCloudSdkProcessor extends AbstractProcessor {
 
+    /**
+     * The package to which client factories will be written.
+     */
     public static final String CLIENT_PACKAGE = "io.micronaut.oraclecloud.clients";
+
+    /**
+     * Processing environment option used to specify the client classes to process.
+     */
+    public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -154,6 +157,14 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             }
         }
         return false;
+    }
+
+    private List<String> resolveClientNames(Element e) {
+        String ociClientClasses = processingEnv.getOptions().get(OCI_SDK_CLIENT_CLASSES_OPTION);
+        if (ociClientClasses == null) {
+            return List.of();
+        }
+        return List.of(ociClientClasses.split(","));
     }
 
     private void writeRxJava2Clients(Element e, String packageName, String simpleName) {
@@ -375,13 +386,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final String factoryPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE);
         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
         final MethodSpec.Builder constructor = buildConstructor(simpleName, builder);
-        ClassName builderType = ClassName.get(packageName, simpleName + ".Builder");
-        if (Stream.of(
-                "KmsCrypto",
-                "KmsManagement"
-        ).anyMatch(simpleName::startsWith)) {
-            builderType = ClassName.get(packageName, simpleName + "Builder");
-        }
+        ClassName builderType = getBuilderClassNameForClient(packageName, simpleName);
         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
         builder.addAnnotation(Factory.class);
         final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
@@ -441,13 +446,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
     private TypeSpec.Builder defineSuperclass(String packageName, String simpleName, String factoryName) {
         final TypeSpec.Builder builder = TypeSpec.classBuilder(factoryName);
-        ClassName builderClassName = ClassName.get(packageName, simpleName + ".Builder");
-        if (Stream.of(
-                "KmsCrypto",
-                "KmsManagement"
-        ).anyMatch(simpleName::startsWith)) {
-            builderClassName = ClassName.get(packageName, simpleName + "Builder");
-        }
+        ClassName builderClassName = getBuilderClassNameForClient(packageName, simpleName);
         builder.superclass(ParameterizedTypeName.get(
                 ClassName.get("io.micronaut.oraclecloud.core.sdk", "AbstractSdkClientFactory"),
                 builderClassName,
@@ -471,37 +470,16 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         return constructor;
     }
 
-    private List<String> resolveClientNames(Element e) {
-        return resolveOraceCloudClientNamesFromGraalVmAddons();
-    }
-
-    private List<String> resolveOraceCloudClientNamesFromGraalVmAddons() {
-        List<String> results = new ArrayList<>();
-        Class<?> metadataClass = ClassUtils.forName("com.oracle.bmc.graalvm.SdkAutomaticFeatureMetadata", getClass().getClassLoader()).orElse(null);
-        if (metadataClass != null) {
-            SdkClientPackages allSdkClientPackages =
-                    metadataClass.getAnnotation(SdkClientPackages.class);
-            // oci sdk bug: this contains duplicate entries
-            List<String> allSdkClientPackagesStrings = new ArrayList<>(new LinkedHashSet<>(Arrays.asList(allSdkClientPackages.value())));
-            if (!allSdkClientPackagesStrings.contains("com.oracle.bmc.identity.SdkClientsMetadata")) {
-                allSdkClientPackagesStrings.add("com.oracle.bmc.identity.SdkClientsMetadata");
-            }
-            for (String sdkClientsMetadataPath : allSdkClientPackagesStrings) {
-                Class<?> sdkClientsMetadataClass = ClassUtils.forName(sdkClientsMetadataPath, getClass().getClassLoader()).orElse(null);
-                if (sdkClientsMetadataClass != null) {
-                    SdkClients declaredAnnotation = sdkClientsMetadataClass.getDeclaredAnnotation(SdkClients.class);
-                    if (declaredAnnotation != null) {
-                        Class<?>[] allSdkClients = declaredAnnotation.value();
-                        for (Class<?> sdkClient : allSdkClients) {
-                            if (!isSdkInternal(sdkClient.getCanonicalName())) {
-                                results.add(sdkClient.getName());
-                            }
-                        }
-                    }
-                }
-            }
+    private ClassName getBuilderClassNameForClient(String packageName, String clientSimpleName) {
+        if (Stream.of(
+            "KmsCrypto",
+            "KmsManagement",
+            "StreamClient",
+            "StreamAsyncClient"
+        ).anyMatch(clientSimpleName::startsWith)) {
+            return ClassName.get(packageName, clientSimpleName + "Builder");
         }
-        return results;
+        return ClassName.get(packageName, clientSimpleName + ".Builder");
     }
 
     private static boolean isSdkInternal(String key) {
