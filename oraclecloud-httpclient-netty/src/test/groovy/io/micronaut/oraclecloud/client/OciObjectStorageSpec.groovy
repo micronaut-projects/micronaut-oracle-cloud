@@ -1,13 +1,14 @@
 package io.micronaut.oraclecloud.client
 
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.objectstorage.ObjectStorageClient
+import com.oracle.bmc.objectstorage.model.Bucket.AutoTiering
 import com.oracle.bmc.objectstorage.model.CommitMultipartUploadDetails
 import com.oracle.bmc.objectstorage.model.CommitMultipartUploadPartDetails
 import com.oracle.bmc.objectstorage.model.CreateBucketDetails
 import com.oracle.bmc.objectstorage.model.CreateMultipartUploadDetails
 import com.oracle.bmc.objectstorage.requests.*
+import com.oracle.bmc.objectstorage.requests.GetBucketRequest.Fields
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.annotation.NonNull
@@ -83,7 +84,10 @@ class OciObjectStorageSpec extends Specification {
 
     void "test get bucket"() {
         when:
-        var request = GetBucketRequest.builder().namespaceName(namespace).bucketName(bucketName).build()
+        var request = GetBucketRequest.builder()
+                .namespaceName(namespace)
+                .fields([Fields.ApproximateSize, Fields.AutoTiering])
+                .bucketName(bucketName).build()
         var response = client.getBucket(request)
 
         then:
@@ -91,6 +95,9 @@ class OciObjectStorageSpec extends Specification {
         response.bucket.name == bucketName
         response.bucket.isReadOnly == false
         response.bucket.id != null
+        response.bucket.approximateSize != null
+        response.bucket.autoTiering != AutoTiering.UnknownEnumValue
+        response.bucket.approximateCount == null
     }
 
     void "test create object"() {
