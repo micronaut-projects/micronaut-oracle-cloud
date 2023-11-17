@@ -66,7 +66,6 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +73,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -118,7 +116,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             for (Element e : element) {
                 final String t = resolveClientType(e);
                 List<String> clientNames = resolveClientClassNames(e);
-                System.out.println("Clients resolved 2: " + clientNames);
                 final boolean isRxJava2 = t.equals("RXJAVA2");
                 final boolean isReactor = t.equals("REACTOR");
                 final boolean isAsync = t.equals("ASYNC");
@@ -526,7 +523,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final List<? extends AnnotationMirror> annotationMirrors = e.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             TypeElement te = (TypeElement) annotationMirror.getAnnotationType().asElement();
-            System.out.println("Name: " + te.getSimpleName().toString());
             if (te.getSimpleName().toString().equals("SdkClients")) {
                 return Optional.of(annotationMirror);
             }
