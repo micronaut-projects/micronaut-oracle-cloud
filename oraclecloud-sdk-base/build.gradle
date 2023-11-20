@@ -6,3 +6,9 @@ plugins {
 spotlessJavaMiscCheck.enabled = false
 compileJava.options.fork = true
 
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}
+
