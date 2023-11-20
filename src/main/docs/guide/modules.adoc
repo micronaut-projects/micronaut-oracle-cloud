@@ -16,15 +16,29 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[]
 
 Provides an implementation of the OCI SDK client based on Netty and Micronaut Serialization.
 
+NOTE: `micronaut-oraclecloud-bmc-[OCI SDK Client]` modules must be used instead of the OCI Java SDK modules, as they are compatible with this client.
+
+=== micronaut-oraclecloud-bmc-[OCI SDK Client]
+
+OCI SDK client dependencies compatible with the `micronaut-oraclecloud-httpclient-netty`.
+The modules also support injection of the OCI SDK client interfaces.
+Injection of Reactor or RxJava 2 clients is supported with the addition of one of the following dependencies:
+
+dependency:io.micronaut.reactor:micronaut-reactor[]
+dependency:io.micronaut.rxjava2:micronaut-rxjava2[]
+
 === micronaut-oraclecloud-sdk
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk[]
 
 Provides support for injecting any of the available SDK client interfaces.
 
-NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
+NOTE: The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the
+Netty client implementations support Micronaut injection by default. For example to use Object Vault with
+OCI Jersey client you would define a dependency on this module as well as:
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
+dependency:com.oracle.oci.sdk:oci-java-sdk-vault[]
+dependency:com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey[]
 
 
 === micronaut-oraclecloud-sdk-rxjava2
@@ -33,9 +47,12 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-rxjava2[]
 
 Provides support for injecting inject RxJava 2 client implementations.
 
-NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
+NOTE: The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the
+Netty client implementations support Micronaut injection by default. For example to use Object Vault with
+OCI Jersey client you would define a dependency on this module as well as:
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
+dependency:com.oracle.oci.sdk:oci-java-sdk-vault[]
+dependency:com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey[]
 
 === micronaut-oraclecloud-sdk-reactor
 
@@ -43,9 +60,12 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-sdk-reactor[]
 
 Provides support for injecting inject Reactor client implementations.
 
-NOTE: This module does not have a dependency on any one module. You should add these to your project as needed. For example to use Object Vault you would define a dependency on this module as well as:
+NOTE: The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the
+Netty client implementations support Micronaut injection by default. For example to use Object Vault with
+OCI Jersey client you would define a dependency on this module as well as:
 
-dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
+dependency:com.oracle.oci.sdk:oci-java-sdk-vault[]
+dependency:com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey[]
 
 
 === micronaut-oraclecloud-function
