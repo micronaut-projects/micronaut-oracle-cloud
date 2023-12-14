@@ -113,3 +113,5 @@ If you publish a new image using `./gradlew dockerPush` or `./gradlew dockerPush
 ----
 $ fn update function myapp myfunction [REGION].ocir.io/[TENANCY]/[REPOSITORY/[FUNCTION_NAME]:[FUNCTION_VERSION]
 ----
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-oracle-function.html[Deploy a Micronaut Function (Serverless) Application to Oracle Cloud] to learn more.

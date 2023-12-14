@@ -40,3 +40,5 @@ micronaut:
         namespace: test
         resourceGroup: foo
 ----
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-metrics-oci.html[Collect Metrics with the Micronaut Framework and Monitor them on Oracle Cloud] to learn more.
