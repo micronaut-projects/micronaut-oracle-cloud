@@ -6,6 +6,7 @@ plugins {
 dependencies {
     annotationProcessor projects.micronautOraclecloudSdkProcessor
     api projects.micronautOraclecloudSdk
+    compileOnly projects.micronautOraclecloudSdkBase
     implementation mnRxjava2.rxjava2
 
     // optional modules

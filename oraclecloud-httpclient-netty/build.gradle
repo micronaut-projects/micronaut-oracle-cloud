@@ -20,9 +20,6 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
-    testImplementation(projects.micronautOraclecloudSdk) {
-        exclude group: 'com.oracle.oci.sdk'
-    }
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
@@ -34,6 +31,7 @@ dependencies {
     testImplementation projects.micronautOraclecloudSerdeProcessor
     testImplementation mn.micronaut.management
     testImplementation mn.micronaut.context
+    testImplementation projects.micronautOraclecloudCommon
 
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,

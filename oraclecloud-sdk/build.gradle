@@ -9,6 +9,7 @@ dependencies {
         exclude group:'commons-logging', module:'commons-logging'
     }
     api projects.micronautOraclecloudHttpclientNetty
+    compileOnly projects.micronautOraclecloudSdkBase
     compileOnly libs.graal.svm
     compileOnly mnRxjava2.rxjava2
     testImplementation libs.graal.svm

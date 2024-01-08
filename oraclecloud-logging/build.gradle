@@ -6,7 +6,6 @@ dependencies {
     api projects.micronautOraclecloudBmcLoggingingestion
     api mn.micronaut.inject
     api mnSerde.micronaut.serde.jackson
-    implementation projects.micronautOraclecloudSdk
     implementation mnLogging.logback.classic
     implementation libs.logback.json.classic, {
         exclude group:'ch.qos.logback', module:'logback-classic'

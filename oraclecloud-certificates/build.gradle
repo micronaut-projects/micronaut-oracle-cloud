@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     api projects.micronautOraclecloudBmcCertificates
-    implementation projects.micronautOraclecloudSdk
     implementation mn.micronaut.http.server.netty
     implementation mn.micronaut.inject.java
     implementation mn.micronaut.retry

@@ -6,8 +6,9 @@ plugins {
 
 dependencies {
     implementation(projects.micronautOraclecloudBmcDatabase)
+    implementation(projects.micronautOraclecloudBmcObjectstorage)
     implementation mn.micronaut.http.server.netty
-    implementation projects.micronautOraclecloudSdkReactor
+    implementation mnReactor.micronaut.reactor
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson
     runtimeOnly mnLogging.logback.classic
