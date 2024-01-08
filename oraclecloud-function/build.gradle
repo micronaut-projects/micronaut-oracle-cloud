@@ -9,8 +9,7 @@ dependencies {
     api projects.micronautOraclecloudCommon
     compileOnly mn.micronaut.jackson.databind
     compileOnly libs.graal.svm
-    testImplementation libs.oci.objectstorage
+    testImplementation projects.micronautOraclecloudBmcObjectstorage
     testImplementation libs.fn.testing.junit4
     testImplementation mnTest.micronaut.test.spock
-    testImplementation projects.micronautOraclecloudSdk
 }

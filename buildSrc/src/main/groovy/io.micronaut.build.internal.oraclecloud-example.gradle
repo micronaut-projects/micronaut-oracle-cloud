@@ -13,7 +13,6 @@ dependencies {
     }
     annotationProcessor mnValidation.micronaut.validation.processor
     implementation mnValidation.micronaut.validation
-    implementation projects.micronautOraclecloudSdk
     testImplementation mn.micronaut.http.client
     testRuntimeOnly mnSerde.micronaut.serde.jackson
 }

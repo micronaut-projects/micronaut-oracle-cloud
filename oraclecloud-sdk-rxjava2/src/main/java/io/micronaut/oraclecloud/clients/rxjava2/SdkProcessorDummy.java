@@ -13,27 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.clients;
+package io.micronaut.oraclecloud.clients.rxjava2;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+import io.micronaut.core.annotation.Internal;
+import io.micronaut.oraclecloud.clients.SdkClients;
 
-/**
- * Internal Annotation to trigger the creation of SDK clients.
- */
-@Retention(value = RetentionPolicy.SOURCE)
-public @interface SdkClients {
-    /**
-     * @return The type of client to generate.
-     */
-    Kind value() default Kind.ASYNC;
+@Internal
+@SdkClients(SdkClients.Kind.RXJAVA2)
+final class SdkProcessorDummy {
 
-    /**
-     * the type of client to generate.
-     */
-    enum Kind {
-        ASYNC,
-        REACTOR,
-        RXJAVA2
-    }
 }

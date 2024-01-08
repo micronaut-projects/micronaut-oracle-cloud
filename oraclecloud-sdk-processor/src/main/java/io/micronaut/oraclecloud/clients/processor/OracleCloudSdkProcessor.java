@@ -66,10 +66,11 @@ import javax.tools.StandardLocation;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -113,8 +114,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         for (TypeElement annotation : annotations) {
             final Set<? extends Element> element = roundEnv.getElementsAnnotatedWith(annotation);
             for (Element e : element) {
-                List<String> clientNames = resolveClientNames(e);
                 final String t = resolveClientType(e);
+                List<String> clientNames = resolveClientClassNames(e);
                 final boolean isRxJava2 = t.equals("RXJAVA2");
                 final boolean isReactor = t.equals("REACTOR");
                 final boolean isAsync = t.equals("ASYNC");
@@ -153,14 +154,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             }
         }
         return false;
-    }
-
-    private List<String> resolveClientNames(Element e) {
-        String ociClientClasses = processingEnv.getOptions().get(OCI_SDK_CLIENT_CLASSES_OPTION);
-        if (ociClientClasses == null) {
-            return List.of();
-        }
-        return List.of(ociClientClasses.split(","));
     }
 
     private void writeRxJava2Clients(Element e, String packageName, String simpleName) {
@@ -488,22 +481,52 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private String resolveClientType(Element e) {
+        return resolveSdkClientsAnnotation(e)
+            .flatMap(ann -> {
+                final Map<? extends ExecutableElement, ? extends AnnotationValue> values = ann.getElementValues();
+                for (Entry<? extends ExecutableElement, ? extends AnnotationValue> value: values.entrySet()) {
+                    if (value.getKey().getSimpleName().toString().equals("value")) {
+                        return Optional.ofNullable(value.getValue().getValue().toString());
+                    }
+                }
+                return Optional.empty();
+            })
+            .orElse("ASYNC");
+    }
+
+    private List<String> resolveClientClassNames(Element e) {
+        return resolveSdkClientsAnnotation(e)
+            .flatMap(ann -> {
+                final Map<? extends ExecutableElement, ? extends AnnotationValue> values = ann.getElementValues();
+                for (Entry<? extends ExecutableElement, ? extends AnnotationValue> value: values.entrySet()) {
+                    if (value.getKey().getSimpleName().toString().equals("clientClasses")) {
+                        return Optional.of(
+                            ((List<Object>) value.getValue().getValue())
+                                .stream()
+                                .map(v -> v.toString().replace("\"", ""))
+                                .toList()
+                        );
+                    }
+                }
+                return Optional.empty();
+            })
+            .orElseGet(() -> {
+                String ociClientClasses = processingEnv.getOptions().get(OCI_SDK_CLIENT_CLASSES_OPTION);
+                if (ociClientClasses == null) {
+                    return List.of();
+                }
+                return List.of(ociClientClasses.split(","));
+            });
+    }
+
+    private Optional<AnnotationMirror> resolveSdkClientsAnnotation(Element e) {
         final List<? extends AnnotationMirror> annotationMirrors = e.getAnnotationMirrors();
         for (AnnotationMirror annotationMirror : annotationMirrors) {
             TypeElement te = (TypeElement) annotationMirror.getAnnotationType().asElement();
-            String ann = te.getSimpleName().toString();
-            if (ann.equals("SdkClients")) {
-                final Map<? extends ExecutableElement, ? extends AnnotationValue> values = annotationMirror.getElementValues();
-                final Iterator<? extends AnnotationValue> i = values.values().iterator();
-                if (i.hasNext()) {
-                    final AnnotationValue av = i.next();
-                    final Object v = av.getValue();
-                    if (v != null) {
-                        return v.toString();
-                    }
-                }
+            if (te.getSimpleName().toString().equals("SdkClients")) {
+                return Optional.of(annotationMirror);
             }
         }
-        return "ASYNC";
+        return Optional.empty();
     }
 }
