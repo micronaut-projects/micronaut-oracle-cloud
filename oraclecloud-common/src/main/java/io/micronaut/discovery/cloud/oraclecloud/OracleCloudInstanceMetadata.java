@@ -31,6 +31,16 @@ public class OracleCloudInstanceMetadata extends AbstractComputeInstanceMetadata
 
     private final ComputePlatform computePlatform = ComputePlatform.ORACLE_CLOUD;
 
+    public String getFaultDomain() {
+        return faultDomain;
+    }
+
+    public void setFaultDomain(String faultDomain) {
+        this.faultDomain = faultDomain;
+    }
+
+    private String faultDomain;
+
     @Override
     @JsonIgnore
     public ComputePlatform getComputePlatform() {
