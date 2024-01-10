@@ -20,7 +20,6 @@ import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import io.micronaut.http.client.netty.ConnectionManager;
-import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -127,7 +126,7 @@ final class NettyHttpRequest implements HttpRequest {
             //  anything but String
             String json;
             try {
-                json = OciSdkMicronautSerializer.getDefaultObjectMapper().writeValueAsString(body);
+                json = client.jsonMapper.writeValueAsString(body);
             } catch (IOException e) {
                 throw new IllegalArgumentException("Unable to process JSON body", e);
             }
@@ -382,7 +381,7 @@ final class NettyHttpRequest implements HttpRequest {
                                     skipLast = true;
                                 }
                             } else {
-                                future.complete(new NettyHttpResponse(response, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
+                                future.complete(new NettyHttpResponse(client.jsonMapper, response, limitedBufferingBodyHandler, undecidedBodyHandler, offloadExecutor));
                                 ctx.pipeline().remove(this);
                             }
 
