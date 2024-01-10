@@ -316,6 +316,8 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/function/http/HttpFunction.html#getHttpHandler()" class="member-name-link">getHttpHandler()</a> - Method in class io.micronaut.oraclecloud.function.http.<a href="io/micronaut/oraclecloud/function/http/HttpFunction.html" title="class in io.micronaut.oraclecloud.function.http">HttpFunction</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html#getInclusion()" class="member-name-link">getInclusion()</a> - Method in interface io.micronaut.oraclecloud.serde.<a href="io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html" title="interface in io.micronaut.oraclecloud.serde">OciSerializationConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html#getInstanceDocumentUrl()" class="member-name-link">getInstanceDocumentUrl()</a> - Method in class io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#getLogId()" class="member-name-link">getLogId()</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
@@ -563,6 +565,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in class io.micronaut.oraclecloud.oke.workload.identity.<a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html" title="class in io.micronaut.oraclecloud.oke.workload.identity">OkeWorkloadIdentityConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html#isWriteBinaryAsArray()" class="member-name-link">isWriteBinaryAsArray()</a> - Method in interface io.micronaut.oraclecloud.serde.<a href="io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html" title="interface in io.micronaut.oraclecloud.serde">OciSerdeConfiguration</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#iteratorForAppenders()" class="member-name-link">iteratorForAppenders()</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -584,7 +588,9 @@ loadScripts(document, 'script');</script>
 <div class="block"><code>HttpProvider</code> implementation similar to <a href="io/micronaut/oraclecloud/httpclient/netty/NettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty"><code>NettyHttpProvider</code></a>, but managed by an
  <code>ApplicationContext</code>.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClient,java.util.concurrent.ExecutorService,io.micronaut.json.JsonMapper)" class="member-name-link">ManagedNettyHttpProvider(HttpClient, ExecutorService, JsonMapper)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClient,java.util.concurrent.ExecutorService)" class="member-name-link">ManagedNettyHttpProvider(HttpClient, ExecutorService)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClient,java.util.concurrent.ExecutorService,io.micronaut.serde.ObjectMapper,io.micronaut.oraclecloud.serde.OciSerdeConfiguration,io.micronaut.oraclecloud.serde.OciSerializationConfiguration)" class="member-name-link">ManagedNettyHttpProvider(HttpClient, ExecutorService, ObjectMapper, OciSerdeConfiguration, OciSerializationConfiguration)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html#METADATA_SERVICE_URL" class="member-name-link">METADATA_SERVICE_URL</a> - Static variable in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oraclecloud.core">OracleCloudCoreFactory</a></dt>
 <dd>&nbsp;</dd>
@@ -661,7 +667,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Implementation of <code>Serializer</code> based on micronaut serde using <code>ObjectMapper</code>.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/serde/OciSdkMicronautSerializer.html#%3Cinit%3E(io.micronaut.serde.ObjectMapper)" class="member-name-link">OciSdkMicronautSerializer(ObjectMapper)</a> - Constructor for class io.micronaut.oraclecloud.serde.<a href="io/micronaut/oraclecloud/serde/OciSdkMicronautSerializer.html" title="class in io.micronaut.oraclecloud.serde">OciSdkMicronautSerializer</a></dt>
+<dt><a href="io/micronaut/oraclecloud/serde/OciSdkMicronautSerializer.html#%3Cinit%3E(io.micronaut.json.JsonMapper)" class="member-name-link">OciSdkMicronautSerializer(JsonMapper)</a> - Constructor for class io.micronaut.oraclecloud.serde.<a href="io/micronaut/oraclecloud/serde/OciSdkMicronautSerializer.html" title="class in io.micronaut.oraclecloud.serde">OciSdkMicronautSerializer</a></dt>
 <dd>
 <div class="block">Create Serializer from micronaut serde <code>ObjectMapper</code>.</div>
 </dd>
@@ -670,6 +676,10 @@ loadScripts(document, 'script');</script>
 <div class="block">Type element visitor vising oci sdk models and enums.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/httpclient/netty/visitor/OciSdkModelSerdeVisitor.html#%3Cinit%3E()" class="member-name-link">OciSdkModelSerdeVisitor()</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.visitor.<a href="io/micronaut/oraclecloud/httpclient/netty/visitor/OciSdkModelSerdeVisitor.html" title="class in io.micronaut.oraclecloud.httpclient.netty.visitor">OciSdkModelSerdeVisitor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.serde">OciSerdeConfiguration</a> - Interface in <a href="io/micronaut/oraclecloud/serde/package-summary.html">io.micronaut.oraclecloud.serde</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.serde">OciSerializationConfiguration</a> - Interface in <a href="io/micronaut/oraclecloud/serde/package-summary.html">io.micronaut.oraclecloud.serde</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html#OKE_WORKLOAD_IDENTITY_PREFIX" class="member-name-link">OKE_WORKLOAD_IDENTITY_PREFIX</a> - Static variable in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oraclecloud.core">OracleCloudCoreFactory</a></dt>
 <dd>&nbsp;</dd>
