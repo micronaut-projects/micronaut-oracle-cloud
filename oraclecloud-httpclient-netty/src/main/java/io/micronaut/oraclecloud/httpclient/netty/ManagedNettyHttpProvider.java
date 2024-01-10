@@ -23,7 +23,10 @@ import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
+import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
+import io.micronaut.oraclecloud.serde.OciSerializationConfiguration;
 import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -47,10 +50,26 @@ public class ManagedNettyHttpProvider implements HttpProvider {
     final JsonMapper jsonMapper;
 
     @Inject
-    public ManagedNettyHttpProvider(@Client(id = SERVICE_ID) HttpClient mnHttpClient, @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor, JsonMapper jsonMapper) {
+    public ManagedNettyHttpProvider(
+        @Client(id = SERVICE_ID) HttpClient mnHttpClient,
+        @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor,
+        ObjectMapper jsonMapper,
+        OciSerdeConfiguration ociSerdeConfiguration,
+        OciSerializationConfiguration ociSerializationConfiguration
+    ) {
         this.mnHttpClient = mnHttpClient;
         this.ioExecutor = ioExecutor;
-        this.jsonMapper = jsonMapper;
+        this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
+    }
+
+    // for OKE
+    public ManagedNettyHttpProvider(
+        HttpClient mnHttpClient,
+        ExecutorService ioExecutor
+    ) {
+        this.mnHttpClient = mnHttpClient;
+        this.ioExecutor = ioExecutor;
+        this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
     }
 
     @Override
@@ -60,7 +79,6 @@ public class ManagedNettyHttpProvider implements HttpProvider {
 
     @Override
     public Serializer getSerializer() {
-        // todo: use serializer from context
-        return OciSdkMicronautSerializer.getDefaultSerializer();
+        return new OciSdkMicronautSerializer(jsonMapper);
     }
 }

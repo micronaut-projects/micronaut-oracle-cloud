@@ -171,7 +171,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
             return null;
         }
 
-        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), Executors.newCachedThreadPool(),  JsonMapper.createDefault())
+        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), Executors.newCachedThreadPool())
                 .newBuilder()
                 .baseUri(URI.create(endpoint))
                 .registerRequestInterceptor(

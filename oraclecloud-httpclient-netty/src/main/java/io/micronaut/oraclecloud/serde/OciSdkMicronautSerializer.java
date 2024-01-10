@@ -24,6 +24,7 @@ import com.oracle.bmc.http.client.Serializer;
 import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.bmc.model.RegionSchema;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.json.JsonMapper;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.serde.config.annotation.SerdeConfig;
@@ -62,13 +63,13 @@ public final class OciSdkMicronautSerializer implements Serializer {
 
     private static final Serializer DEFAULT_SERIALIZER = new OciSdkMicronautSerializer(DEFAULT_MAPPER);
 
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
 
     /**
      * Create Serializer from micronaut serde {@link ObjectMapper}.
      * @param objectMapper the object mapper
      */
-    public OciSdkMicronautSerializer(ObjectMapper objectMapper) {
+    public OciSdkMicronautSerializer(JsonMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
