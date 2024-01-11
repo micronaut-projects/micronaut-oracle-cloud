@@ -24,6 +24,7 @@ import com.oracle.bmc.http.client.Serializer;
 import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.bmc.model.RegionSchema;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.json.JsonMapper;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.serde.config.annotation.SerdeConfig;
@@ -48,27 +49,13 @@ import java.util.Map;
 @SerdeImport(OkeResourcePrincipalSessionToken.class)
 public final class OciSdkMicronautSerializer implements Serializer {
 
-    private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(
-        "micronaut.serde.writeDatesAsTimestamps", false,
-        "micronaut.serde.write-binary-as-array", false,
-        "micronaut.serde.serialization.inclusion", SerdeConfig.SerInclude.NON_NULL
-    );
-
-    private static final ObjectMapper DEFAULT_MAPPER = ObjectMapper.create(
-        DEFAULT_MAPPER_CONFIG,
-        "io.micronaut.oraclecloud.serde.filter",
-        "io.micronaut.oraclecloud.serde.serializers"
-    );
-
-    private static final Serializer DEFAULT_SERIALIZER = new OciSdkMicronautSerializer(DEFAULT_MAPPER);
-
-    private final ObjectMapper objectMapper;
+    private final JsonMapper objectMapper;
 
     /**
      * Create Serializer from micronaut serde {@link ObjectMapper}.
      * @param objectMapper the object mapper
      */
-    public OciSdkMicronautSerializer(ObjectMapper objectMapper) {
+    public OciSdkMicronautSerializer(JsonMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
@@ -91,13 +78,31 @@ public final class OciSdkMicronautSerializer implements Serializer {
      * @return The implementation of object mapper configured for oci java sdk
      */
     public static ObjectMapper getDefaultObjectMapper() {
-        return DEFAULT_MAPPER;
+        return UnmanagedSerializerHolder.DEFAULT_MAPPER;
     }
 
     /**
      * @return The implementation of serializer configured for oci java sdk
      */
     public static Serializer getDefaultSerializer() {
-        return DEFAULT_SERIALIZER;
+        return UnmanagedSerializerHolder.DEFAULT_SERIALIZER;
+    }
+
+    private static class UnmanagedSerializerHolder {
+        // only initialize if necessary
+
+        private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(
+            "micronaut.serde.writeDatesAsTimestamps", false,
+            "micronaut.serde.write-binary-as-array", false,
+            "micronaut.serde.serialization.inclusion", SerdeConfig.SerInclude.NON_NULL
+        );
+
+        private static final ObjectMapper DEFAULT_MAPPER = ObjectMapper.create(
+            DEFAULT_MAPPER_CONFIG,
+            "io.micronaut.oraclecloud.serde.filter",
+            "io.micronaut.oraclecloud.serde.serializers"
+        );
+
+        private static final Serializer DEFAULT_SERIALIZER = new OciSdkMicronautSerializer(DEFAULT_MAPPER);
     }
 }

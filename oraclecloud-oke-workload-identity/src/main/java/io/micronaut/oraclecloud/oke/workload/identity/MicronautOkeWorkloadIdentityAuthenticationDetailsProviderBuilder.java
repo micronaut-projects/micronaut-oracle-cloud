@@ -27,7 +27,6 @@ import com.oracle.bmc.http.client.StandardClientProperties;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
 class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {

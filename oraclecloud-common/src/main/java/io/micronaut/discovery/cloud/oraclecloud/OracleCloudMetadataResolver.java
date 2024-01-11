@@ -44,6 +44,7 @@ import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.A
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.AVAILABILITY_DOMAIN;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.CANONICAL_REGION_NAME;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.DISPLAY_NAME;
+import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.FAULT_DOMAIN;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.ID;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.IMAGE;
 import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.MAC;
@@ -120,6 +121,7 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
                 instanceMetadata.setAvailabilityZone(textValue(metadataJson, AVAILABILITY_DOMAIN));
                 instanceMetadata.setImageId(textValue(metadataJson, IMAGE));
                 instanceMetadata.setMachineType(textValue(metadataJson, SHAPE));
+                instanceMetadata.setFaultDomain(textValue(metadataJson, FAULT_DOMAIN));
 
                 Map<String, String> metadata = jsonMapper.readValueFromTree(metadataJson, Map.class);
 

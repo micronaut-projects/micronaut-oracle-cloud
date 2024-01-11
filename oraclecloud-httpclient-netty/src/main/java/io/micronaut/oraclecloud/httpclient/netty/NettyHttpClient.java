@@ -26,6 +26,8 @@ import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.http.client.netty.DefaultHttpClient;
+import io.micronaut.json.JsonMapper;
+import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
 
 import java.io.Closeable;
@@ -58,6 +60,7 @@ final class NettyHttpClient implements HttpClient {
     final Closeable upstreamHttpClient;
     final ConnectionManager connectionManager;
     final DefaultHttpClient.RequestKey requestKey;
+    final JsonMapper jsonMapper;
 
     static {
         ClientConfiguration cfg = ClientConfiguration.builder().build();
@@ -81,6 +84,7 @@ final class NettyHttpClient implements HttpClient {
             }
             mnClient = new DefaultHttpClient((URI) null, cfg);
             blockingIoExecutor = Executors.newCachedThreadPool();
+            jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         } else {
             hasContext = true;
             for (Map.Entry<ClientProperty<?>, Object> entry : builder.properties.entrySet()) {
@@ -90,6 +94,7 @@ final class NettyHttpClient implements HttpClient {
             }
             mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
             blockingIoExecutor = builder.managedProvider.ioExecutor;
+            jsonMapper = builder.managedProvider.jsonMapper;
         }
         upstreamHttpClient = mnClient;
         connectionManager = mnClient.connectionManager();

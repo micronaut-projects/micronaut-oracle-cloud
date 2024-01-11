@@ -40,6 +40,7 @@ class OracleCloudMetadataResolverSpec extends Specification {
         computeInstanceMetadata.get().instanceId == "ocid1.instance.oc1.phx.abyhqljrg2v5zuydab6r5nbsywedkjvtwd57opwmuhfc5hg5jrxgs3jmg3ga"
         computeInstanceMetadata.get().name == "micronaut-env"
         computeInstanceMetadata.get().region == "us-phoenix-1"
+        computeInstanceMetadata.get().faultDomain == "FAULT-DOMAIN-2"
     }
 
     private OracleCloudMetadataResolver buildResolver() {

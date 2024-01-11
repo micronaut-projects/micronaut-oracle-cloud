@@ -17,7 +17,7 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpResponse;
 import io.micronaut.core.type.Argument;
-import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
+import io.micronaut.json.JsonMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 
@@ -33,12 +33,14 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 final class NettyHttpResponse implements HttpResponse {
+    private final JsonMapper jsonMapper;
     private final io.netty.handler.codec.http.HttpResponse nettyResponse;
     private final LimitedBufferingBodyHandler limitedBufferingBodyHandler;
     private final UndecidedBodyHandler undecidedBodyHandler;
     private final Executor offloadExecutor;
 
-    NettyHttpResponse(io.netty.handler.codec.http.HttpResponse nettyResponse, LimitedBufferingBodyHandler limitedBufferingBodyHandler, UndecidedBodyHandler undecidedBodyHandler, Executor offloadExecutor) {
+    NettyHttpResponse(JsonMapper jsonMapper, io.netty.handler.codec.http.HttpResponse nettyResponse, LimitedBufferingBodyHandler limitedBufferingBodyHandler, UndecidedBodyHandler undecidedBodyHandler, Executor offloadExecutor) {
+        this.jsonMapper = jsonMapper;
         this.nettyResponse = nettyResponse;
         this.limitedBufferingBodyHandler = limitedBufferingBodyHandler;
         this.undecidedBodyHandler = undecidedBodyHandler;
@@ -98,7 +100,7 @@ final class NettyHttpResponse implements HttpResponse {
                     return null;
                 }
 
-                return OciSdkMicronautSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), type);
+                return jsonMapper.readValue(new ByteBufInputStream(buf), type);
             } catch (IOException e) {
                 throw new CompletionException(e);
             } finally {
@@ -112,7 +114,7 @@ final class NettyHttpResponse implements HttpResponse {
         Argument<List<T>> listArgument = Argument.listOf(type);
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                return OciSdkMicronautSerializer.getDefaultObjectMapper().readValue(new ByteBufInputStream(buf), listArgument);
+                return jsonMapper.readValue(new ByteBufInputStream(buf), listArgument);
             } catch (IOException e) {
                 throw new CompletionException(e);
             } finally {
