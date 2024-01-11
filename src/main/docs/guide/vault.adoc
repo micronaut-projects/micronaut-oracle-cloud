@@ -88,3 +88,5 @@ datasources:
     default:
         password: ${DB_PASSWORD}
 ----
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-cloud-secrets-oracle.html[Securely Store Micronaut Application Secrets in Oracle Cloud Vault] to learn more.

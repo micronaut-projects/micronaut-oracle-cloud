@@ -64,3 +64,5 @@ NOTE: The `username` and `password` are not automatically generated and must be 
 Module uses `<db_name>_high` as a default service alias. This can be overriden with the `serviceAlias` property.
 
 The wallet is of type `SINGLE`. Use the `walletType` property to configure different types. See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-oracle-autonomous-db.html[Access an Oracle Autonomous Database] to learn more.

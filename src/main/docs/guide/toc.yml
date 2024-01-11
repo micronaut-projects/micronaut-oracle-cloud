@@ -15,4 +15,5 @@ logging: OCI Logging service
 vault: Secure Distributed Configuration with Oracle Cloud Vault
 cloudStorage: Oracle Cloud Storage Support
 certificates: OCI Certificate SSL Support
+oracleCloudGuides: Guides
 repository: Repository

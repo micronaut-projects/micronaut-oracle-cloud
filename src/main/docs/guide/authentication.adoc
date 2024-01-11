@@ -77,3 +77,5 @@ oci:
 
 Required dependency:
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-oke-workload-identity[]
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-cloud-oidc-oracle.html[Authenticate Micronaut Application Users with OpenID Connect and Oracle IDCS] to learn more.

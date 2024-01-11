@@ -107,3 +107,5 @@ image::oci_console_span_details.png[APM Trace Explorer Span Details]
 For more info, please see https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices[Adding Tracing to Your Distributed Cloud Native Microservices].
 
 Read more about the Trace Explorer in the https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html[documentation].
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-cloud-trace-oci.html[OpenTelemetry Tracing with Oracle Cloud and the Micronaut Framework] to learn more.

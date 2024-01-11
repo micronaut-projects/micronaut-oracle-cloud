@@ -88,3 +88,5 @@ image::deployment-details.png[Create Gateway Button]
 Test your functions by appending the proper controller path and one of your controller endpoints.
 
 image::deployment-invocation.png[Create Gateway Button]
+
+TIP: See the guide for https://guides.micronaut.io/latest/micronaut-oracle-function-http.html[Deploy a Micronaut HTTP API Gateway Function (Serverless) Application to Oracle Cloud] to learn more.
