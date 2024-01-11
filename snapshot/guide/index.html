@@ -78,7 +78,9 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>18</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#oracleCloudGuides"><strong>18</strong><span>Guides</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>19</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -143,7 +145,9 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-certificates"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>18</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-oracleCloudGuides"><a href="#oracleCloudGuides"><strong>18</strong><span>Guides</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>19</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -642,6 +646,18 @@ oci.user-id=&lt;value&gt;</code></pre>
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-oidc-oracle.html">Authenticate Micronaut Application Users with OpenID Connect and Oracle IDCS</a> to learn more.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -1753,6 +1769,18 @@ For Java functions that do not use Native Image you will need to pass <code>--me
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ fn update function myapp myfunction [REGION].ocir.io/[TENANCY]/[REPOSITORY/[FUNCTION_NAME]:[FUNCTION_VERSION]</code></pre>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-function.html">Deploy a Micronaut Function (Serverless) Application to Oracle Cloud</a> to learn more.
+</td>
+</tr>
+</table>
+</div>
 </div>
 
 <h1 id="httpFunctions"><a class="anchor" href="#httpFunctions"></a>10 Oracle Functions HTTP (Serverless)</h1>
@@ -2095,6 +2123,18 @@ The path prefix must match the path you used in your controller (e.g. <code>@Con
 <img src="../img/deployment-invocation.png" alt="Create Gateway Button">
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-function-http.html">Deploy a Micronaut HTTP API Gateway Function (Serverless) Application to Oracle Cloud</a> to learn more.
+</td>
+</tr>
+</table>
+</div>
 </div>
 
 <h1 id="autonomousDatabase"><a class="anchor" href="#autonomousDatabase"></a>11 Oracle Autonomous Database</h1>
@@ -2331,6 +2371,18 @@ The <code>username</code> and <code>password</code> are not automatically genera
 <div class="paragraph">
 <p>The wallet is of type <code>SINGLE</code>. Use the <code>walletType</code> property to configure different types. See other valid options at <a href="https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails" class="bare">https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails</a>.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-autonomous-db.html">Access an Oracle Autonomous Database</a> to learn more.
+</td>
+</tr>
+</table>
+</div>
 
 <h1 id="micrometer"><a class="anchor" href="#micrometer"></a>12 Micrometer Support For Oracle Monitoring</h1>
 
@@ -2527,6 +2579,18 @@ micronaut.metrics.export.oraclecloud.resourceGroup=foo</code></pre>
 </div>
 </div>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-metrics-oci.html">Collect Metrics with the Micronaut Framework and Monitor them on Oracle Cloud</a> to learn more.
+</td>
+</tr>
+</table>
 </div>
 
 <h1 id="tracing"><a class="anchor" href="#tracing"></a>13 OCI Application Performance Monitoring as a Tracing Endpoint</h1>
@@ -2872,6 +2936,18 @@ tracing {
 </div>
 <div class="paragraph">
 <p>Read more about the Trace Explorer in the <a href="https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html">documentation</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-trace-oci.html">OpenTelemetry Tracing with Oracle Cloud and the Micronaut Framework</a> to learn more.
+</td>
+</tr>
+</table>
 </div>
 </div>
 
@@ -3475,6 +3551,18 @@ public class Config {
 </div>
 </div>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-secrets-oracle.html">Securely Store Micronaut Application Secrets in Oracle Cloud Vault</a> to learn more.
+</td>
+</tr>
+</table>
+</div>
 
 <h1 id="cloudStorage"><a class="anchor" href="#cloudStorage"></a>16 Oracle Cloud Storage Support</h1>
 
@@ -3509,6 +3597,18 @@ public class Config {
 </div>
 <div class="paragraph">
 <p>For more information, check the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+See the guide for <a href="https://guides.micronaut.io/latest/micronaut-object-storage-oracle-cloud.html">Use the Micronaut Object Storage API to Store Files in Oracle Cloud Infrastructure (OCI) Object Storage</a> to learn more.
+</td>
+</tr>
+</table>
 </div>
 
 <h1 id="certificates"><a class="anchor" href="#certificates"></a>17 OCI Certificate SSL Support</h1>
@@ -3745,7 +3845,23 @@ If you only want this configuration to be active in the Oracle Cloud environment
 </tbody>
 </table>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>18 Repository</h1>
+<h1 id="oracleCloudGuides"><a class="anchor" href="#oracleCloudGuides"></a>18 Guides</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/oracleCloudGuides.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>See the following list of guides to learn more about working with Oracle Cloud in the Micronaut Framework:</p>
+</div>
+<div class="paragraph">
+<p><a href="https://guides.micronaut.io/latest/tag-oracle_cloud.html" class="bare">https://guides.micronaut.io/latest/tag-oracle_cloud.html</a></p>
+</div>
+
+<h1 id="repository"><a class="anchor" href="#repository"></a>19 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/master/src/main/docs/guide/repository.adoc"'>
