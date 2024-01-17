@@ -31,6 +31,7 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpHeaders;
 import io.netty.handler.codec.http.DefaultHttpRequest;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
+import io.netty.handler.codec.http.EmptyHttpHeaders;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
@@ -96,6 +97,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.uri = new StringBuilder(from.uri);
         this.query = new StringBuilder(from.query);
         this.offloadExecutor = from.offloadExecutor;
+        this.expectContinue = from.expectContinue;
 
         this.returningBody = from.returningBody;
         this.immediateBody = from.immediateBody == null ? null : from.immediateBody.retainedDuplicate();
@@ -172,7 +174,7 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest query(String name, String value) {
-        if (query.length() > 0) {
+        if (!query.isEmpty()) {
             query.append('&');
         }
         query.append(name).append('=').append(value);
@@ -181,7 +183,7 @@ final class NettyHttpRequest implements HttpRequest {
 
     private String buildUri() {
         int length = uri.length();
-        if (query.length() != 0) {
+        if (!query.isEmpty()) {
             uri.append('?').append(query);
         }
         String built = uri.toString();
@@ -245,7 +247,9 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
-        if (client.buffered && blockingBody != null) {
+        // jersey client buffers even when BUFFER_REQUEST is off, if the content length is not explicitly set.
+        if (blockingBody != null && (client.buffered || blockingContentLength == UNKNOWN_CONTENT_LENGTH) && !expectContinue) {
+
             // asynchronously buffer the body, then run execute() again
             return CompletableFuture.runAsync(this::bufferBody, client.blockingIoExecutor)
                     .thenCompose(v -> execute());
@@ -352,7 +356,7 @@ final class NettyHttpRequest implements HttpRequest {
                     HttpVersion.HTTP_1_1, method, pathAndQuery,
                     body,
                     headers,
-                    new DefaultHttpHeaders(true) // trailing header
+                    EmptyHttpHeaders.INSTANCE // trailing header
                 );
             }
         }

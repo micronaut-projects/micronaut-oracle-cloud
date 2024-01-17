@@ -107,12 +107,12 @@ public class NettyTest {
     }
 
     @Test
-    public void streamingRequestChunked() throws Exception {
+    public void streamingRequest() throws Exception {
         netty.aggregate = false;
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(HttpMethod.POST, request.method());
             Assertions.assertEquals("/foo", request.uri());
-            Assertions.assertEquals("chunked", request.headers().get("transfer-encoding"));
+            Assertions.assertEquals("3", request.headers().get("content-length"));
 
             DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
             computeContentLength(response);
@@ -125,7 +125,7 @@ public class NettyTest {
             .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
                 .appendPathPart("foo")
-                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)), 3)
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
@@ -227,6 +227,33 @@ public class NettyTest {
             .build()) {
             try (HttpResponse response = client.createRequest(Method.PUT)
                 .header("expect", "100-continue")
+                .appendPathPart("foo")
+                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .execute().toCompletableFuture()
+                .get()) {
+                Assertions.assertEquals(200, response.status());
+            }
+        }
+    }
+
+    @Test
+    public void bufferByDefault() throws Exception {
+        netty.aggregate = false;
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(request.method(), HttpMethod.PUT);
+            Assertions.assertEquals(3, request.headers().getInt("content-length"));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .property(StandardClientProperties.BUFFER_REQUEST, false)
+            .build()) {
+            try (HttpResponse response = client.createRequest(Method.PUT)
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
                 .execute().toCompletableFuture()
