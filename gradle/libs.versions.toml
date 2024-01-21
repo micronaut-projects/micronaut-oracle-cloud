@@ -19,7 +19,7 @@ ojdbc = "21.10.0.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.22.Final"
 
-micronaut-gradle-plugin = "4.2.0"
+micronaut-gradle-plugin = "4.2.1"
 micronaut-groovy = "4.1.0"
 micronaut-kotlin = "4.1.0"
 micronaut-micrometer = "5.2.0"
