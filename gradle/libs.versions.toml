@@ -17,7 +17,7 @@ spock = "2.3-groovy-4.0"
 oci = "3.31.1"
 ojdbc = "21.10.0.0"
 protobuf = '0.9.4'
-netty-http3 = "0.0.22.Final"
+netty-http3 = "0.0.24.Final"
 
 micronaut-gradle-plugin = "4.2.1"
 micronaut-groovy = "4.1.0"
