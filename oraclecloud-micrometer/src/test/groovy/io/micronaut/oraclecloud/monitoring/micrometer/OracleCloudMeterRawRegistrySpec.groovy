@@ -85,7 +85,7 @@ class OracleCloudMeterRawRegistrySpec extends Specification {
         Meter.Id id = new Meter.Id("name", Tags.empty(), null, "description in metadata", Meter.Type.COUNTER)
 
         when:
-        def details =  cloudMeterRegistry.metricDataDetails(id, List.of(Datapoint.builder().value(1d).timestamp(new Date()).build()))
+        def details =  cloudMeterRegistry.metricDataDetails(id, null, List.of(Datapoint.builder().value(1d).timestamp(new Date()).build()))
 
         then:
         details.metadata
@@ -202,6 +202,21 @@ class OracleCloudMeterRawRegistrySpec extends Specification {
         data.size() == 1
         data[0].name == "functionTimer"
         data[0].datapoints.first().value == 1
-        data[0].datapoints.first().count == 1
+    }
+
+    def "test it can track long last timer"() {
+        given:
+        def longTaskTimer = LongTaskTimer.builder("LongTaskTimer").register(cloudMeterRegistry);
+
+        mockClock.add(oracleCloudConfig.step());
+
+        when:
+        def data = cloudMeterRegistry.trackLongTaskTimer(longTaskTimer).collect(Collectors.toList())
+
+        then:
+        data
+        data.size() == 2
+        data[0].name == "LongTaskTimer"
+        data[1].name == "LongTaskTimer_activeTasks"
     }
 }

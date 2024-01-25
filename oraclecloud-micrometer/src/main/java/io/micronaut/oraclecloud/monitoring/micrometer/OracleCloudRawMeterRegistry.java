@@ -33,6 +33,7 @@ import io.micrometer.core.instrument.distribution.HistogramGauges;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
+import io.micrometer.core.lang.Nullable;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDatapointProducer;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudCounter;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDistributionSummary;
@@ -135,7 +136,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * @return {@link MetricDataDetails} stream with meter values
      */
     Stream<MetricDataDetails> trackMeter(Meter meter) {
-        return StreamSupport.stream(meter.measure().spliterator(), false).map((ms) -> this.metricDataDetails(meter.getId().withTag(ms.getStatistic()), List.of(Datapoint.builder().timestamp(new Date()).value(ms.getValue()).build()))).filter(Objects::nonNull);
+        return StreamSupport.stream(meter.measure().spliterator(), false).map((ms) -> this.metricDataDetails(meter.getId().withTag(ms.getStatistic()), null, List.of(Datapoint.builder().timestamp(new Date()).value(ms.getValue()).build()))).filter(Objects::nonNull);
     }
 
     /**
@@ -147,7 +148,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         if (Double.isNaN(value)) {
             return Stream.empty();
         }
-        return Stream.of(metricDataDetails(gauge.getId(), List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
+        return Stream.of(metricDataDetails(gauge.getId(), null, List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
     }
 
     /**
@@ -159,7 +160,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         if (Double.isNaN(value)) {
             return Stream.empty();
         }
-        return Stream.of(metricDataDetails(timeGauge.getId(), List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
+        return Stream.of(metricDataDetails(timeGauge.getId(), null, List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
     }
 
     /**
@@ -171,7 +172,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         if (Double.isNaN(value)) {
             return Stream.empty();
         }
-        return Stream.of(metricDataDetails(functionCounter.getId(), List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
+        return Stream.of(metricDataDetails(functionCounter.getId(), null, List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
     }
 
     /**
@@ -180,7 +181,11 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * not a finite floating-point
      */
     Stream<MetricDataDetails> trackFunctionTimer(FunctionTimer functionTimer) {
-        return Stream.of(metricDataDetails(functionTimer.getId(), List.of(Datapoint.builder().value(functionTimer.totalTime(getBaseTimeUnit())).count((int) functionTimer.count()).timestamp(new Date()).build())));
+        double sum = functionTimer.totalTime(getBaseTimeUnit());
+        if (!Double.isFinite(sum)) {
+            return Stream.empty();
+        }
+        return Stream.of(metricDataDetails(functionTimer.getId(), null, List.of(Datapoint.builder().value(sum).timestamp(new Date()).build())));
     }
 
     /**
@@ -188,7 +193,18 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * @return {@link MetricDataDetails} stream with long task timer values
      */
     Stream<MetricDataDetails> trackLongTaskTimer(LongTaskTimer longTaskTimer) {
-        return Stream.of(metricDataDetails(longTaskTimer.getId(), List.of(Datapoint.builder().value(longTaskTimer.duration(getBaseTimeUnit())).count(longTaskTimer.activeTasks()).timestamp(new Date()).build())));
+        return Stream.of(
+            metricDataDetails(
+                longTaskTimer.getId(),
+                null,
+                List.of(Datapoint.builder().value(longTaskTimer.duration(getBaseTimeUnit()))
+                    .timestamp(new Date()).build())),
+            metricDataDetails(
+                longTaskTimer.getId(),
+                "activeTasks",
+                List.of(Datapoint.builder().value((double) longTaskTimer.activeTasks())
+                    .timestamp(new Date()).build()))
+        );
     }
 
     /**
@@ -197,7 +213,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      */
     Stream<MetricDataDetails> trackRawData(Meter meter) {
         if (meter instanceof OracleCloudDatapointProducer oracleCloudDatapointProducer) {
-            return Stream.of(metricDataDetails(meter.getId(), oracleCloudDatapointProducer.getDatapoints()));
+            return Stream.of(metricDataDetails(meter.getId(), null, oracleCloudDatapointProducer.getDatapoints()));
         }
         logger.error("Metrics name: %s. Haven't publish metrics for class: %s".formatted(meter.getId().toString(), meter.getClass()));
         return Stream.empty();
@@ -210,13 +226,13 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * @param datapoints list of {@link Datapoint}
      * @return {@link MetricDataDetails} ready to send to oracle cloud monitoring ingestion endpoint
      */
-    MetricDataDetails metricDataDetails(Meter.Id id, List<Datapoint> datapoints) {
+    MetricDataDetails metricDataDetails(Meter.Id id, @Nullable String suffix, List<Datapoint> datapoints) {
         if (datapoints.isEmpty()) {
             return null;
         }
         return MetricDataDetails.builder()
             .compartmentId(oracleCloudConfig.compartmentId())
-            .name(getMetricName(id, null))
+            .name(getMetricName(id, suffix))
             .namespace(oracleCloudConfig.namespace())
             .resourceGroup(oracleCloudConfig.resourceGroup())
             .metadata(oracleCloudConfig.description() && id.getDescription() != null
