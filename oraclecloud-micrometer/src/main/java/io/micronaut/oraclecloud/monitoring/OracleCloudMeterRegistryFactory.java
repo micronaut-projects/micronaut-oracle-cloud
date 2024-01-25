@@ -25,6 +25,7 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
+import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistry;
 import io.micronaut.runtime.ApplicationConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public class OracleCloudMeterRegistryFactory {
     public static final Logger LOG = LoggerFactory.getLogger(OracleCloudMeterRegistryFactory.class);
     public static final String ORACLECLOUD_METRICS_CONFIG = MICRONAUT_METRICS_EXPORT + "." + OracleCloudConfig.PREFIX;
     public static final String ORACLECLOUD_METRICS_ENABLED = ORACLECLOUD_METRICS_CONFIG + ".enabled";
+    public static final String ORACLECLOUD_RAW_METRICS_ENABLED = ORACLECLOUD_METRICS_CONFIG + ".raw.enabled";
 
     private final TenancyIdProvider tenancyIdProvider;
     private final ApplicationConfiguration applicationConfiguration;
@@ -63,23 +65,15 @@ public class OracleCloudMeterRegistryFactory {
     }
 
     /**
-     * Create a OracleCloudMeterRegistry bean if global metrics are enabled
-     * and the oraclecloudmonitoring is enabled. Will be true by default when this
-     * configuration is included in project.
-     *
-     * @param exportConfigurationProperties the export configuration
-     * @param monitoringIngestionClient     the monitoring ingestion client
-     * @return A OracleCloudMeterRegistry
+     * Create a OracleCloudConfig bean if global metrics are enabled.
+     * @param exportConfigurationProperties the exportConfigurationProperties configuration
+     * @return A OracleCloudConfig
      */
     @Singleton
-    @Bean(preDestroy = "close")
     @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
-    @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
-    OracleCloudMeterRegistry oracleCloudMeterRegistry(ExportConfigurationProperties exportConfigurationProperties,
-                                                      MonitoringIngestionClient monitoringIngestionClient) {
-
+    OracleCloudConfig oracleCloudConfig(ExportConfigurationProperties exportConfigurationProperties) {
         exportConfigurationProperties.getExport().computeIfAbsent(OracleCloudConfig.PREFIX + ".applicationName",
-                x -> applicationConfiguration.getName().orElse(null));
+            x -> applicationConfiguration.getName().orElse(null));
 
         exportConfigurationProperties.getExport().computeIfAbsent(OracleCloudConfig.PREFIX + ".compartmentId", x -> {
             LOG.info("Default compartmentId set to {}", tenancyIdProvider.getTenancyId());
@@ -87,6 +81,42 @@ public class OracleCloudMeterRegistryFactory {
         });
 
         Properties exportConfig = exportConfigurationProperties.getExport();
-        return new OracleCloudMeterRegistry(exportConfig::getProperty, Clock.SYSTEM, monitoringIngestionClient.getDelegate());
+        return exportConfig::getProperty;
+    }
+
+    /**
+     * Create a OracleCloudMeterRegistry bean if global metrics are enabled,
+     * the oraclecloudmonitoring is enabled and raw metrics disabled.
+     * Will be true by default when this configuration is included in project.
+     *
+     * @param oracleCloudConfig the OracleCloudConfig configuration
+     * @param monitoringIngestionClient     the monitoring ingestion client
+     * @return A OracleCloudMeterRegistry
+     */
+    @Singleton
+    @Bean(preDestroy = "close")
+    @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+    @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+    @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.TRUE, defaultValue = StringUtils.FALSE)
+    OracleCloudMeterRegistry oracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
+                                                      MonitoringIngestionClient monitoringIngestionClient) {
+        return new OracleCloudMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClient.getDelegate());
+    }
+
+    /**
+     * Create a OracleCloudRawMeterRegistry bean if global metrics are enabled,
+     * the oraclecloudmonitoring is enabled and raw metrics enabled.
+     * Will be false by default when this configuration is included in project.
+     *
+     * @param oracleCloudConfig the OracleCloudConfig configuration
+     * @param monitoringIngestionClient     the monitoring ingestion client
+     * @return A oracleCloudRawMeterRegistry
+     */
+    @Singleton
+    @Bean(preDestroy = "close")
+    @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+    @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
+    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig, MonitoringIngestionClient monitoringIngestionClient) {
+        return new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClient.getDelegate());
     }
 }

@@ -18,8 +18,6 @@ package io.micronaut.oraclecloud.monitoring.micrometer;
 import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.Datapoint;
 import com.oracle.bmc.monitoring.model.MetricDataDetails;
-import com.oracle.bmc.monitoring.model.PostMetricDataDetails;
-import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
@@ -28,41 +26,29 @@ import io.micrometer.core.instrument.FunctionTimer;
 import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
-import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
-import io.micrometer.core.util.internal.logging.WarnThenDebugLogger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.StreamSupport.stream;
 
 /**
- * {@link StepMeterRegistry} for Oracle Cloud Monitoring.
+ * {@link StepMeterRegistry} for Oracle Cloud Monitoring that produces aggregated data.
  *
  * @author Pavol Gressa
  * @since 1.2
  */
-public class OracleCloudMeterRegistry extends StepMeterRegistry {
-
-    private final WarnThenDebugLogger warnThenDebugLogger = new WarnThenDebugLogger(OracleCloudMetricsNamingConvention.class);
-    private final Logger logger = LoggerFactory.getLogger(OracleCloudMeterRegistry.class);
-
-    private final MonitoringClient monitoringClient;
-    private final OracleCloudConfig oracleCloudConfig;
+public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
 
     public OracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
@@ -74,43 +60,14 @@ public class OracleCloudMeterRegistry extends StepMeterRegistry {
                                     Clock clock,
                                     MonitoringClient monitoringClient,
                                     ThreadFactory threadFactory) {
-        super(oracleCloudConfig, clock);
-        this.monitoringClient = monitoringClient;
-        this.oracleCloudConfig = oracleCloudConfig;
-
-        config().namingConvention(new OracleCloudMetricsNamingConvention());
-        config().commonTags("application", oracleCloudConfig.applicationName());
-        start(threadFactory);
-    }
-
-    @Override
-    protected void publish() {
-        for (List<MetricDataDetails> batch : MetricDataDetailsPartition.partition(getMetricData(), oracleCloudConfig.batchSize())) {
-            final PostMetricDataDetails.Builder builder = PostMetricDataDetails.builder()
-                    .metricData(batch);
-            if (oracleCloudConfig.batchAtomicity() != null) {
-                builder.batchAtomicity(oracleCloudConfig.batchAtomicity());
-            }
-
-            try {
-                monitoringClient.postMetricData(PostMetricDataRequest.builder()
-                        .postMetricDataDetails(builder.build())
-                        .build());
-            } catch (Throwable e) {
-                logger.error("failed to post metrics to oracle cloud infrastructure monitoring: " + e.getMessage(), e);
-            }
-        }
-    }
-
-    @Override
-    protected TimeUnit getBaseTimeUnit() {
-        return TimeUnit.MILLISECONDS;
+        super(oracleCloudConfig, clock, monitoringClient, threadFactory);
     }
 
     /**
      * @return list of all {@link Meter} data transformed into {@link MetricDataDetails}
      */
-    List<MetricDataDetails> getMetricData() {
+    @Override
+    protected List<MetricDataDetails> getMetricData() {
         return getMeters().stream().flatMap(meter -> meter.match(
                 this::trackGauge,
                 this::trackCounter,
@@ -267,39 +224,5 @@ public class OracleCloudMeterRegistry extends StepMeterRegistry {
                                 .build()))
                 .dimensions(toDimensions(id.getConventionTags(config().namingConvention())))
                 .build();
-    }
-
-    /**
-     * Generates metric name.
-     *
-     * @param id meter id
-     * @param suffix suffix
-     * @return metric name
-     */
-    String getMetricName(Meter.Id id, @Nullable String suffix) {
-        String name = suffix != null ? id.getName() + "_" + suffix : id.getName();
-        return config().namingConvention().name(name, id.getType(), id.getBaseUnit());
-    }
-
-    /**
-     * Transforms {@link Tag}s to dimensions. Tags that have empty key or value are ignored as
-     * they are not consider valid dimensions.
-     *
-     * @param tags tags
-     * @return map of tags
-     */
-    Map<String, String> toDimensions(List<Tag> tags) {
-        Map<String, String> m = tags.stream().
-                filter(this::isValidTag).
-                collect(Collectors.toMap(Tag::getKey, Tag::getValue));
-        return m;
-    }
-
-    private boolean isValidTag(Tag tag) {
-        if (tag.getKey() == null || tag.getKey().length() == 0 || tag.getValue() == null || tag.getValue().length() == 0) {
-            warnThenDebugLogger.log("Tag " + tag.getKey() + " not published because tag key or value are empty.");
-            return false;
-        }
-        return true;
     }
 }
