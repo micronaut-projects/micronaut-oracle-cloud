@@ -180,7 +180,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * not a finite floating-point
      */
     Stream<MetricDataDetails> trackFunctionTimer(FunctionTimer functionTimer) {
-        return Stream.of(metricDataDetails(functionTimer.getId(), List.of(Datapoint.builder().value(functionTimer.totalTime(getBaseTimeUnit())).count(Double.valueOf(functionTimer.count()).intValue()).timestamp(new Date()).build())));
+        return Stream.of(metricDataDetails(functionTimer.getId(), List.of(Datapoint.builder().value(functionTimer.totalTime(getBaseTimeUnit())).count((int) functionTimer.count()).timestamp(new Date()).build())));
     }
 
     /**
@@ -188,7 +188,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * @return {@link MetricDataDetails} stream with long task timer values
      */
     Stream<MetricDataDetails> trackLongTaskTimer(LongTaskTimer longTaskTimer) {
-        return Stream.of(metricDataDetails(longTaskTimer.getId(), List.of(Datapoint.builder().value(longTaskTimer.duration(getBaseTimeUnit())).count(Double.valueOf(longTaskTimer.activeTasks()).intValue()).timestamp(new Date()).build())));
+        return Stream.of(metricDataDetails(longTaskTimer.getId(), List.of(Datapoint.builder().value(longTaskTimer.duration(getBaseTimeUnit())).count(longTaskTimer.activeTasks()).timestamp(new Date()).build())));
     }
 
     /**
