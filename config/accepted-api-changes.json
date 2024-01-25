@@ -1,0 +1,62 @@
+[
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Field $ANNOTATION_METADATA",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Constructor io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference()",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationSource",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.inject.BeanContextConditional",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationMetadataProvider",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.core.beans.BeanInfo",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationMetadataDelegate",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.core.annotation.AnnotationMetadata",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.inject.QualifiedBeanType",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.core.type.ArgumentCoercible",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.inject.BeanType",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  },
+  {
+    "type": "io.micronaut.oraclecloud.monitoring.$OracleCloudMeterRegistryFactory$OracleCloudMeterRegistry0$Definition$Reference",
+    "member": "Implemented interface io.micronaut.inject.BeanDefinitionReference",
+    "reason": "Introduction of the OracleCloudRawMeterRegistry. The default is still OracleCloudMeterRegistry. Refactor of the OracleCloudMeterRegistryFactory"
+  }
+]

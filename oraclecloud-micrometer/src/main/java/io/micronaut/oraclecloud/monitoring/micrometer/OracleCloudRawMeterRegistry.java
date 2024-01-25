@@ -130,10 +130,18 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         ).collect(Collectors.toList());
     }
 
+    /**
+     * @param meter meter
+     * @return {@link MetricDataDetails} stream with meter values
+     */
     Stream<MetricDataDetails> trackMeter(Meter meter) {
         return StreamSupport.stream(meter.measure().spliterator(), false).map((ms) -> this.metricDataDetails(meter.getId().withTag(ms.getStatistic()), List.of(Datapoint.builder().timestamp(new Date()).value(ms.getValue()).build()))).filter(Objects::nonNull);
     }
 
+    /**
+     * @param gauge gauge meter
+     * @return {@link MetricDataDetails} stream with gauge values or null if gauge value is NaN
+     */
     Stream<MetricDataDetails> trackGauge(Gauge gauge) {
         Double value = gauge.value();
         if (Double.isNaN(value)) {
@@ -142,6 +150,10 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         return Stream.of(metricDataDetails(gauge.getId(), List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
     }
 
+    /**
+     * @param timeGauge timer gauge meter
+     * @return {@link MetricDataDetails} stream with timer gauge meter values or null if gauge value is NaN
+     */
     Stream<MetricDataDetails> trackTimeGauge(TimeGauge timeGauge) {
         Double value = timeGauge.value(getBaseTimeUnit());
         if (Double.isNaN(value)) {
@@ -150,6 +162,10 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         return Stream.of(metricDataDetails(timeGauge.getId(), List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
     }
 
+    /**
+     * @param functionCounter function counter meter
+     * @return {@link MetricDataDetails} stream with function counter gauge meter values or null if counter value is NaN
+     */
     Stream<MetricDataDetails> trackFunctionCounter(FunctionCounter functionCounter) {
         Double value = functionCounter.count();
         if (Double.isNaN(value)) {
@@ -158,14 +174,27 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
         return Stream.of(metricDataDetails(functionCounter.getId(), List.of(Datapoint.builder().value(value).timestamp(new Date()).build())));
     }
 
+    /**
+     * @param functionTimer function timer meter
+     * @return {@link MetricDataDetails} stream with function timer meter values or null if timer total time value is
+     * not a finite floating-point
+     */
     Stream<MetricDataDetails> trackFunctionTimer(FunctionTimer functionTimer) {
         return Stream.of(metricDataDetails(functionTimer.getId(), List.of(Datapoint.builder().value(functionTimer.totalTime(getBaseTimeUnit())).count(Double.valueOf(functionTimer.count()).intValue()).timestamp(new Date()).build())));
     }
 
+    /**
+     * @param longTaskTimer long task timer meter
+     * @return {@link MetricDataDetails} stream with long task timer values
+     */
     Stream<MetricDataDetails> trackLongTaskTimer(LongTaskTimer longTaskTimer) {
         return Stream.of(metricDataDetails(longTaskTimer.getId(), List.of(Datapoint.builder().value(longTaskTimer.duration(getBaseTimeUnit())).count(Double.valueOf(longTaskTimer.activeTasks()).intValue()).timestamp(new Date()).build())));
     }
 
+    /**
+     * @param meter OracleCloudDatapointProducer meter
+     * @return {@link MetricDataDetails} stream with multiple entries of {@link Datapoint}
+     */
     Stream<MetricDataDetails> trackRawData(Meter meter) {
         if (meter instanceof OracleCloudDatapointProducer datapointEntryProducer) {
             return Stream.of(metricDataDetails(meter.getId(), datapointEntryProducer.produceDatapoints()));
