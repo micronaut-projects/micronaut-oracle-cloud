@@ -16,18 +16,18 @@
 package io.micronaut.oraclecloud.monitoring.primitives;
 
 import com.oracle.bmc.monitoring.model.Datapoint;
-import io.micrometer.core.instrument.step.StepCounter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * DataPointProvider stores the {@link Datapoint}.
  */
 final class DataPointProvider {
-
-    private List<Datapoint> datapoints = new ArrayList<>();
+    private BlockingQueue<Datapoint> datapoints = new LinkedBlockingQueue<>();
 
     /**
      * Produces the list of datapoints that will be sent. It will also preform cleanup
@@ -35,9 +35,9 @@ final class DataPointProvider {
      *
      * @return list of {@link Datapoint}
      */
-    public synchronized List<Datapoint> produceDatapoints() {
-        ArrayList<Datapoint> datapointsToReturn = new ArrayList<>(datapoints);
-        datapoints = new ArrayList<>();
+    List<Datapoint> produceDatapoints() {
+        ArrayList<Datapoint> datapointsToReturn = new ArrayList<>();
+        datapoints.drainTo(datapointsToReturn);
         return datapointsToReturn;
     }
 
@@ -46,12 +46,7 @@ final class DataPointProvider {
      * @param value of the datapoint
      */
     void createDataPoint(Double value) {
-        if (Double.isNaN(value)) {
-            return;
-        }
-        synchronized (this) {
-            datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).build());
-        }
+        datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).build());
     }
 
     /**
@@ -59,7 +54,7 @@ final class DataPointProvider {
      * @param value of the datapoint
      * @param count of the datapoint
      */
-    synchronized void createDataPoint(Double value, Integer count) {
+    void createDataPoint(Double value, Integer count) {
         datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
     }
 }
