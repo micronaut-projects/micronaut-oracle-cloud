@@ -197,7 +197,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      */
     Stream<MetricDataDetails> trackRawData(Meter meter) {
         if (meter instanceof OracleCloudDatapointProducer datapointEntryProducer) {
-            return Stream.of(metricDataDetails(meter.getId(), datapointEntryProducer.produceDatapoints()));
+            return Stream.of(metricDataDetails(meter.getId(), datapointEntryProducer.getDatapoints()));
         }
         logger.error("Metrics name: %s. Haven't publish metrics for class: %s".formatted(meter.getId().toString(), meter.getClass()));
         return Stream.empty();

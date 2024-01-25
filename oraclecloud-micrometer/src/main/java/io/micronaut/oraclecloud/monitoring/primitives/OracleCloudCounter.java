@@ -20,7 +20,6 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.step.StepCounter;
 import io.micronaut.core.annotation.Internal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,8 +27,7 @@ import java.util.List;
  */
 @Internal
 public final class OracleCloudCounter extends StepCounter implements OracleCloudDatapointProducer {
-
-    private List<Datapoint> dataPointEntries = new ArrayList<>();
+    private final DataPointProvider dataPointProvider = new DataPointProvider();
 
     public OracleCloudCounter(Id id, Clock clock, long stepMillis) {
         super(id, clock, stepMillis);
@@ -38,16 +36,11 @@ public final class OracleCloudCounter extends StepCounter implements OracleCloud
     @Override
     public void increment(double amount) {
         super.increment(amount);
-        createDataPoint(amount);
-    }
-
-    @Override
-    public void cleanDatapoints() {
-        dataPointEntries = new ArrayList<>();
+        dataPointProvider.createDataPoint(amount);
     }
 
     @Override
     public List<Datapoint> getDatapoints() {
-        return dataPointEntries;
+        return dataPointProvider.produceDatapoints();
     }
 }

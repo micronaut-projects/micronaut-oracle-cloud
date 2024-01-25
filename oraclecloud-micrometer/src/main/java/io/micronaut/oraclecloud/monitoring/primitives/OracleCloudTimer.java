@@ -22,7 +22,6 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepTimer;
 import io.micrometer.core.instrument.util.TimeUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,8 +30,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class OracleCloudTimer extends StepTimer implements OracleCloudDatapointProducer {
     private final TimeUnit timeUnit;
-
-    private List<Datapoint> dataPointEntries = new ArrayList<>();
+    private final DataPointProvider dataPointProvider = new DataPointProvider();
 
     public OracleCloudTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepDurationMillis, boolean supportsAggregablePercentiles) {
         super(id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepDurationMillis, supportsAggregablePercentiles);
@@ -43,16 +41,11 @@ public class OracleCloudTimer extends StepTimer implements OracleCloudDatapointP
     protected void recordNonNegative(final long amount, final TimeUnit unit) {
         super.recordNonNegative(amount, unit);
         final long nanoAmount = (long) TimeUtils.convert(amount, unit, TimeUnit.NANOSECONDS);
-        createDataPoint(TimeUtils.nanosToUnit(nanoAmount, timeUnit));
-    }
-
-    @Override
-    public void cleanDatapoints() {
-        dataPointEntries = new ArrayList<>();
+        dataPointProvider.createDataPoint(TimeUtils.nanosToUnit(nanoAmount, timeUnit));
     }
 
     @Override
     public List<Datapoint> getDatapoints() {
-        return dataPointEntries;
+        return dataPointProvider.produceDatapoints();
     }
 }

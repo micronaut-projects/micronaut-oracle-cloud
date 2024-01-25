@@ -20,7 +20,6 @@ import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.step.StepDistributionSummary;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ import java.util.List;
  */
 public class OracleCloudDistributionSummary extends StepDistributionSummary implements OracleCloudDatapointProducer {
 
-    private List<Datapoint> dataPointEntries = new ArrayList<>();
+    private final DataPointProvider dataPointProvider = new DataPointProvider();
 
     public OracleCloudDistributionSummary(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, double scale, long stepMillis, boolean supportsAggregablePercentiles) {
         super(id, clock, distributionStatisticConfig, scale, stepMillis, supportsAggregablePercentiles);
@@ -37,16 +36,11 @@ public class OracleCloudDistributionSummary extends StepDistributionSummary impl
     @Override
     protected void recordNonNegative(double amount) {
         super.recordNonNegative(amount);
-        createDataPoint(amount, 1);
-    }
-
-    @Override
-    public void cleanDatapoints() {
-        dataPointEntries = new ArrayList<>();
+        dataPointProvider.createDataPoint(amount, 1);
     }
 
     @Override
     public List<Datapoint> getDatapoints() {
-        return dataPointEntries;
+        return dataPointProvider.produceDatapoints();
     }
 }

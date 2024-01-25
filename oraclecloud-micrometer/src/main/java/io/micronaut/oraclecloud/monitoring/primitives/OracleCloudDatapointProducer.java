@@ -18,65 +18,18 @@ package io.micronaut.oraclecloud.monitoring.primitives;
 import com.oracle.bmc.monitoring.model.Datapoint;
 import io.micrometer.core.instrument.Meter;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
- * A Meter that collects and produces raw {@link Datapoint}.
+ * A Meter that collects raw {@link Datapoint}.
  */
 public interface OracleCloudDatapointProducer extends Meter {
 
     /**
-     * Cleans the datapoints list.
-     */
-    void cleanDatapoints();
-
-    /**
-     * Only for internal usages. Returns the current datapoint list.
+     * Returns list of datapoints that will be sent.
      *
      * @return list of {@link Datapoint}
      */
     List<Datapoint> getDatapoints();
-
-    /**
-     * Produces the list of datapoints that will be sent. It will also preform cleanup
-     * of the internal array
-     *
-     * @return list of {@link Datapoint}
-     */
-    default List<Datapoint> produceDatapoints() {
-        synchronized (this) {
-            ArrayList<Datapoint> datapointsToReturn = new ArrayList<>(getDatapoints());
-            cleanDatapoints();
-            return datapointsToReturn;
-        }
-    }
-
-    /**
-     * Creates {@link Datapoint} based on value.
-     * @param value of the datapoint
-     */
-    default void createDataPoint(Double value) {
-        if (Double.isNaN(value)) {
-            return;
-        }
-        synchronized (this) {
-            getDatapoints().add(
-                Datapoint.builder().timestamp(new Date()).value(value).build()
-            );
-        }
-    }
-
-    /**
-     * Creates {@link Datapoint} based on value.
-     * @param value of the datapoint
-     * @param count of the datapoint
-     */
-    default void createDataPoint(Double value, Integer count) {
-        synchronized (this) {
-            getDatapoints().add(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
-        }
-    }
 
 }
