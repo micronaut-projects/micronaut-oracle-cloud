@@ -23,7 +23,7 @@ import io.micrometer.core.instrument.step.StepDistributionSummary;
 import java.util.List;
 
 /**
- * OracleCloudDistributionSummary is {@link StepDistributionSummary} that tracks list of raw {@link Datapoint}.
+ * A {@link StepDistributionSummary} that tracks list of raw {@link Datapoint}.
  */
 public class OracleCloudDistributionSummary extends StepDistributionSummary implements OracleCloudDatapointProducer {
 

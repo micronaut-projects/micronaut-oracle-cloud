@@ -23,7 +23,7 @@ import io.micronaut.core.annotation.Internal;
 import java.util.List;
 
 /**
- * OracleCloudCounter is {@link StepCounter} that tracks list of raw {@link Datapoint}.
+ * A {@link StepCounter} that tracks list of raw {@link Datapoint}.
  */
 @Internal
 public final class OracleCloudCounter extends StepCounter implements OracleCloudDatapointProducer {

@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * OracleCloudTimer is {@link StepTimer} that tracks list of raw {@link Datapoint}.
+ * A {@link StepTimer} that tracks list of raw {@link Datapoint}.
  */
 public class OracleCloudTimer extends StepTimer implements OracleCloudDatapointProducer {
     private final TimeUnit timeUnit;

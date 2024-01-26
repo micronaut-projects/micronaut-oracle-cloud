@@ -65,7 +65,7 @@ public class OracleCloudMeterRegistryFactory {
     }
 
     /**
-     * Create a OracleCloudConfig bean if global metrics are enabled.
+     * Create an OracleCloudConfig bean if global metrics are enabled.
      * @param exportConfigurationProperties the exportConfigurationProperties configuration
      * @return A OracleCloudConfig
      */
@@ -85,7 +85,7 @@ public class OracleCloudMeterRegistryFactory {
     }
 
     /**
-     * Create a OracleCloudMeterRegistry bean if global metrics are enabled,
+     * Create an OracleCloudMeterRegistry bean if global metrics are enabled,
      * the oraclecloudmonitoring is enabled and raw metrics disabled.
      * Will be true by default when this configuration is included in project.
      *
@@ -110,7 +110,7 @@ public class OracleCloudMeterRegistryFactory {
      *
      * @param oracleCloudConfig the OracleCloudConfig configuration
      * @param monitoringIngestionClient     the monitoring ingestion client
-     * @return A oracleCloudRawMeterRegistry
+     * @return the registry
      */
     @Singleton
     @Bean(preDestroy = "close")

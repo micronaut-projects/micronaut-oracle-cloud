@@ -81,7 +81,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     }
 
     private boolean isValidTag(Tag tag) {
-        if (tag.getKey() == null || tag.getKey().length() == 0 || tag.getValue() == null || tag.getValue().length() == 0) {
+        if (StringUtils.isEmpty(tag.getKey()) || StringUtils.isEmpty(tag.getValue())) {
             warnThenDebugLogger.log("Tag " + tag.getKey() + " not published because tag key or value are empty.");
             return false;
         }

@@ -27,16 +27,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  * DataPointProvider stores the {@link Datapoint}.
  */
 final class DataPointProvider {
-    private BlockingQueue<Datapoint> datapoints = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Datapoint> datapoints = new LinkedBlockingQueue<>();
 
     /**
-     * Produces the list of datapoints that will be sent. It will also preform cleanup
+     * Produces the list of datapoints that will be sent. It will also perform cleanup
      * of the internal array
      *
      * @return list of {@link Datapoint}
      */
     List<Datapoint> produceDatapoints() {
-        ArrayList<Datapoint> datapointsToReturn = new ArrayList<>();
+        List<Datapoint> datapointsToReturn = new ArrayList<>();
         datapoints.drainTo(datapointsToReturn);
         return datapointsToReturn;
     }
