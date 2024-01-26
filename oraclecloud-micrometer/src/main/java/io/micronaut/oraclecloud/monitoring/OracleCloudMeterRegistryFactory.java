@@ -91,7 +91,7 @@ public class OracleCloudMeterRegistryFactory {
      *
      * @param oracleCloudConfig the OracleCloudConfig configuration
      * @param monitoringIngestionClient     the monitoring ingestion client
-     * @return A OracleCloudMeterRegistry
+     * @return the registry
      */
     @Singleton
     @Bean(preDestroy = "close")
