@@ -6,6 +6,7 @@ import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.context.env.Environment
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry
+import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistry
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 
@@ -43,5 +44,17 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
 
         expect:
         context.containsBean(OracleCloudMeterRegistry)
+    }
+
+    def "test raw metrics meter registry"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.raw.enabled"    : "true",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        context.containsBean(OracleCloudRawMeterRegistry)
     }
 }
