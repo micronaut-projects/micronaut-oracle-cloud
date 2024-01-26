@@ -103,7 +103,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
                     .postMetricDataDetails(builder.build())
                     .build());
             } catch (Throwable e) {
-                logger.error("failed to post metrics to oracle cloud infrastructure monitoring: " + e.getMessage(), e);
+                logger.error("failed to post metrics to oracle cloud infrastructure monitoring: {}", e.getMessage(), e);
             }
         }
     }
