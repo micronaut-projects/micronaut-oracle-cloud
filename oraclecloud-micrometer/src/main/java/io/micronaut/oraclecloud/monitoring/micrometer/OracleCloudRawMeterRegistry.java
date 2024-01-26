@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2024 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,9 @@ import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudTimer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
@@ -136,7 +136,11 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      * @return {@link MetricDataDetails} stream with meter values
      */
     Stream<MetricDataDetails> trackMeter(Meter meter) {
-        return StreamSupport.stream(meter.measure().spliterator(), false).map((ms) -> this.metricDataDetails(meter.getId().withTag(ms.getStatistic()), null, List.of(Datapoint.builder().timestamp(new Date()).value(ms.getValue()).build()))).filter(Objects::nonNull);
+        return StreamSupport.stream(
+            meter.measure().spliterator(), false).map(
+                (ms) -> this.metricDataDetails(meter.getId().withTag(ms.getStatistic()), null,
+                    List.of(Datapoint.builder().timestamp(new Date()).value(ms.getValue()).build())
+                )).filter(Objects::nonNull);
     }
 
     /**

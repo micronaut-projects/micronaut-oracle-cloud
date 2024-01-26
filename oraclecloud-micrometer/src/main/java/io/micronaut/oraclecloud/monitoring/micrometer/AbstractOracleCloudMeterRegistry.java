@@ -19,6 +19,7 @@ import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import com.oracle.bmc.monitoring.model.PostMetricDataDetails;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
+import com.oracle.bmc.util.internal.StringUtils;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
@@ -34,6 +35,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+/**
+ * Common data and functions used both by {@link OracleCloudMeterRegistry} and {@link OracleCloudRawMeterRegistry}
+ */
 abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     protected final OracleCloudConfig oracleCloudConfig;
     private final Logger logger = LoggerFactory.getLogger(AbstractOracleCloudMeterRegistry.class);
@@ -102,7 +106,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
                 monitoringClient.postMetricData(PostMetricDataRequest.builder()
                     .postMetricDataDetails(builder.build())
                     .build());
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 logger.error("failed to post metrics to oracle cloud infrastructure monitoring: {}", e.getMessage(), e);
             }
         }
