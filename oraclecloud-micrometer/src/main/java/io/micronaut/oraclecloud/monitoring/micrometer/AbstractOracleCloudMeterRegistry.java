@@ -44,7 +44,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     private final WarnThenDebugLogger warnThenDebugLogger = new WarnThenDebugLogger(OracleCloudMetricsNamingConvention.class);
     private final MonitoringClient monitoringClient;
 
-    public AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, MonitoringClient monitoringClient, ThreadFactory threadFactory) {
+    protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, MonitoringClient monitoringClient, ThreadFactory threadFactory) {
         super(oracleCloudConfig, clock);
         this.monitoringClient = monitoringClient;
         this.oracleCloudConfig = oracleCloudConfig;
