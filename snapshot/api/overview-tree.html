@@ -76,6 +76,7 @@ loadScripts(document, 'script');</script>
 <li><a href="io/micronaut/oraclecloud/logging/package-tree.html">io.micronaut.oraclecloud.logging</a>, </li>
 <li><a href="io/micronaut/oraclecloud/monitoring/package-tree.html">io.micronaut.oraclecloud.monitoring</a>, </li>
 <li><a href="io/micronaut/oraclecloud/monitoring/micrometer/package-tree.html">io.micronaut.oraclecloud.monitoring.micrometer</a>, </li>
+<li><a href="io/micronaut/oraclecloud/monitoring/primitives/package-tree.html">io.micronaut.oraclecloud.monitoring.primitives</a>, </li>
 <li><a href="io/micronaut/oraclecloud/oke/workload/identity/package-tree.html">io.micronaut.oraclecloud.oke.workload.identity</a>, </li>
 <li><a href="io/micronaut/oraclecloud/serde/package-tree.html">io.micronaut.oraclecloud.serde</a></li>
 </ul>
@@ -88,6 +89,33 @@ loadScripts(document, 'script');</script>
 <li class="circle">io.micronaut.discovery.cloud.AbstractComputeInstanceMetadata (implements io.micronaut.discovery.cloud.ComputeInstanceMetadata)
 <ul>
 <li class="circle">io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudInstanceMetadata.html" class="type-name-link" title="class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudInstanceMetadata</a></li>
+</ul>
+</li>
+<li class="circle">io.micrometer.core.instrument.AbstractMeter (implements io.micrometer.core.instrument.Meter)
+<ul>
+<li class="circle">io.micrometer.core.instrument.AbstractDistributionSummary (implements io.micrometer.core.instrument.DistributionSummary)
+<ul>
+<li class="circle">io.micrometer.core.instrument.step.StepDistributionSummary
+<ul>
+<li class="circle">io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudDistributionSummary.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudDistributionSummary</a> (implements io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudDatapointProducer.html" title="interface in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudDatapointProducer</a>)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">io.micrometer.core.instrument.AbstractTimer (implements io.micrometer.core.instrument.Timer)
+<ul>
+<li class="circle">io.micrometer.core.instrument.step.StepTimer
+<ul>
+<li class="circle">io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudTimer.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudTimer</a> (implements io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudDatapointProducer.html" title="interface in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudDatapointProducer</a>)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="circle">io.micrometer.core.instrument.step.StepCounter (implements io.micrometer.core.instrument.Counter)
+<ul>
+<li class="circle">io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudCounter.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudCounter</a> (implements io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudDatapointProducer.html" title="interface in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudDatapointProducer</a>)</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="circle">javax.annotation.processing.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.compiler/javax/annotation/processing/AbstractProcessor.html" class="type-name-link external-link" title="class or interface in javax.annotation.processing">AbstractProcessor</a> (implements javax.annotation.processing.<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.compiler/javax/annotation/processing/Processor.html" title="class or interface in javax.annotation.processing" class="external-link">Processor</a>)
@@ -134,6 +162,7 @@ loadScripts(document, 'script');</script>
 <li class="circle">io.micrometer.core.instrument.step.StepMeterRegistry
 <ul>
 <li class="circle">io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></li>
+<li class="circle">io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></li>
 </ul>
 </li>
 </ul>
@@ -203,6 +232,11 @@ loadScripts(document, 'script');</script>
 <h2 title="Interface Hierarchy">Interface Hierarchy</h2>
 <ul>
 <li class="circle">io.micronaut.oraclecloud.atp.wallet.datasource.<a href="io/micronaut/oraclecloud/atp/wallet/datasource/CanConfigureOracleDataSource.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.atp.wallet.datasource">CanConfigureOracleDataSource</a></li>
+<li class="circle">io.micrometer.core.instrument.Meter
+<ul>
+<li class="circle">io.micronaut.oraclecloud.monitoring.primitives.<a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudDatapointProducer.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudDatapointProducer</a></li>
+</ul>
+</li>
 <li class="circle">io.micrometer.core.instrument.config.MeterRegistryConfig
 <ul>
 <li class="circle">io.micrometer.core.instrument.push.PushRegistryConfig
