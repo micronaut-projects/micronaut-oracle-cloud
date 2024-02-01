@@ -80,6 +80,10 @@ public class OracleCloudMeterRegistryFactory {
             return tenancyIdProvider.getTenancyId();
         });
 
+        if ("true".equals(exportConfigurationProperties.getExport().getProperty(OracleCloudConfig.PREFIX + ".raw.enabled"))) {
+            exportConfigurationProperties.getExport().put(OracleCloudConfig.PREFIX + ".enabled", "true");
+        }
+
         Properties exportConfig = exportConfigurationProperties.getExport();
         return exportConfig::getProperty;
     }

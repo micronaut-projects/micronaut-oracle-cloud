@@ -5,6 +5,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.context.env.Environment
+import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistry
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
@@ -23,6 +24,7 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
 
         expect:
         !context.containsBean(OracleCloudMeterRegistry)
+        !context.containsBean(OracleCloudRawMeterRegistry)
     }
 
     def "test it not loads when disabled"() {
@@ -33,6 +35,7 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
 
         expect:
         !context.containsBean(OracleCloudMeterRegistry)
+        !context.containsBean(OracleCloudRawMeterRegistry)
     }
 
     def "test it loads by default"() {
@@ -56,5 +59,37 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
 
         expect:
         context.containsBean(OracleCloudRawMeterRegistry)
+        !context.containsBean(OracleCloudMeterRegistry)
+    }
+
+    def "test raw metrics meter registry loads when both are true"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.enabled"        : "true",
+                "micronaut.metrics.export.oraclecloud.raw.enabled"    : "true",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        context.containsBean(OracleCloudRawMeterRegistry)
+        !context.containsBean(OracleCloudMeterRegistry)
+    }
+
+    def "test raw metrics meter registry loads when raw is true and aggregated is false"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.enabled"        : "false",
+                "micronaut.metrics.export.oraclecloud.raw.enabled"    : "true",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        context.containsBean(OracleCloudRawMeterRegistry)
+        !context.containsBean(OracleCloudMeterRegistry)
+        context.containsBean(OracleCloudConfig)
+        OracleCloudConfig oracleCloudConfig = context.getBean(OracleCloudConfig)
+        oracleCloudConfig.enabled()
     }
 }
