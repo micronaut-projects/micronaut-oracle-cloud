@@ -1,6 +1,6 @@
 [versions]
-micronaut = "4.2.3"
-micronaut-platform = "4.1.6"
+micronaut = "4.3.4"
+micronaut-platform = "4.3.0"
 micronaut-docs = "2.0.0"
 fn = '1.0.183'
 graal-svm = "23.1.2"
@@ -12,19 +12,19 @@ mockito = '5.10.0'
 slf4j-jcl = '2.0.12'
 commons-lang3 = '3.14.0'
 shadow = '8.0.0'
-groovy = "4.0.10"
+groovy = "4.0.18"
 spock = "2.3-groovy-4.0"
-oci = "3.31.1"
+oci = "3.34.0"
 ojdbc = "21.11.0.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.24.Final"
 
 micronaut-gradle-plugin = "4.3.2"
-micronaut-groovy = "4.1.0"
+micronaut-groovy = "4.2.0"
 micronaut-kotlin = "4.1.0"
 micronaut-micrometer = "5.2.0"
-micronaut-reactor = "3.1.0"
-micronaut-rxjava2 = "2.1.0"
+micronaut-reactor = "3.2.1"
+micronaut-rxjava2 = "2.2.1"
 micronaut-serde = "2.7.1"
 micronaut-servlet = "4.4.0"
 micronaut-sql = "5.4.1"
@@ -49,6 +49,8 @@ micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "
 micronaut-docs = { module = "io.micronaut.docs:micronaut-docs-asciidoc-config-props", version.ref = "micronaut-docs" }
 micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-bom", version.ref = "micronaut-validation" }
 micronaut-discovery-client = { module = "io.micronaut.discovery:micronaut-discovery-client-bom", version.ref = "micronaut-discovery-client" }
+micronaut-test = { module = "io.micronaut.test:micronaut-test-bom", version.ref = "micronaut-test" }
+micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
 
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
@@ -85,3 +87,7 @@ kotlin-gradle-allopen = { module = 'org.jetbrains.kotlin:kotlin-allopen', versio
 shadow-plugin = { module = "gradle.plugin.com.github.johnrengelman:shadow", version.ref = "shadow" }
 micronaut-gradle-plugin = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref="micronaut-gradle-plugin" }
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobuf" }
+
+#dummy dependencies for renovate
+groovy = { module = "org.apache.groovy:groovy-bom", version.ref = "groovy" }
+spock = { module = "org.spockframework:spock-bom", version.ref = "spock" }
