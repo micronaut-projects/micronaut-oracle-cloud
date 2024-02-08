@@ -535,103 +535,9 @@
 </div>
 <div class="sect2">
 <h3 id="_micronaut_oraclecloud_oke_workload_identity_config_properties">Micronaut Oraclecloud Oke Workload Identity Config Properties</h3>
-<a id="io.micronaut.oraclecloud.oke.workload.identity.OkeWorkloadIdentityConfiguration" href="#io.micronaut.oraclecloud.oke.workload.identity.OkeWorkloadIdentityConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html">OkeWorkloadIdentityConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Sets whether to enable instance principal authentication</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.session-key-supplier</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.auth.SessionKeySupplier</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.intermediate-certificate-suppliers</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.federation-client-configurator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.http.ClientConfigurator</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.additional-federation-client-configurator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.http.ClientConfigurator</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.metadata-base-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.federation-endpoint</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.detect-endpoint-retries</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.timeout-for-each-retry</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.leaf-certificate-supplier</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.auth.X509CertificateSupplier</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.circuit-breaker-configurator</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.tenancy-id</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.circuit-breaker-config</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.token</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.token-path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.oke.workload.identity.OkeHttpClientConfiguration" href="#io.micronaut.oraclecloud.oke.workload.identity.OkeHttpClientConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/oke/workload/identity/OkeHttpClientConfiguration.html">OkeHttpClientConfiguration</a></caption>
+<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/oke/workload/identity/OkeHttpClientConfiguration.html">OkeHttpClientConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -778,6 +684,100 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.http.client.micronaut.http.oci-oke.client.allow-block-event-loop</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.oke.workload.identity.OkeWorkloadIdentityConfiguration" href="#io.micronaut.oraclecloud.oke.workload.identity.OkeWorkloadIdentityConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 10. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html">OkeWorkloadIdentityConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets whether to enable instance principal authentication</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.session-key-supplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.auth.SessionKeySupplier</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.intermediate-certificate-suppliers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.federation-client-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.http.ClientConfigurator</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.additional-federation-client-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.http.ClientConfigurator</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.metadata-base-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.federation-endpoint</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.detect-endpoint-retries</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.timeout-for-each-retry</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.leaf-certificate-supplier</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.auth.X509CertificateSupplier</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.circuit-breaker-configurator</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.tenancy-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.circuit-breaker-config</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.oke-workload-identity.token-path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
