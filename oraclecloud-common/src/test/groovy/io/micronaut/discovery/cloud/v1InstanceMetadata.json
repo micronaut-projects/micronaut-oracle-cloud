@@ -1,0 +1,54 @@
+{
+  "agentConfig": {
+    "allPluginsDisabled": false,
+    "managementDisabled": false,
+    "monitoringDisabled": false
+  },
+  "availabilityDomain": "GTEq:PHX-AD-3",
+  "canonicalRegionName": "us-phoenix-1",
+  "compartmentId": "ocid1.compartment.oc1..redacted",
+  "definedTags": {
+    "Oracle-Tags": {
+      "CreatedBy": "ocid1.flock.oc1..redacted",
+      "CreatedOn": "2023-10-05T17:57:37.163Z"
+    }
+  },
+  "displayName": "micronaut-env",
+  "faultDomain": "FAULT-DOMAIN-2",
+  "freeformTags": {
+    "oci:compute:instanceconfiguration": "ocid1.instanceconfiguration.oc1.phx.redacted",
+    "oci:compute:instancepool": "ocid1.instancepool.oc1.phx.redacted",
+    "oci:compute:instancepool:opcretrytoken": "redacted"
+  },
+  "hostname": "hostname",
+  "id": "ocid1.instance.oc1.phx.redacted",
+  "image": "ocid1.image.oc1.phx.redacted",
+  "instancePoolId": "ocid1.instancepool.oc1.phx.redacted",
+  "metadata": {
+    "compute_management": {
+      "instance_configuration": {
+        "state": "SUCCEEDED"
+      }
+    },
+    "hostclass": "hostclass",
+    "ssh_authorized_keys": "ssh-rsa redacted"
+  },
+  "ociAdName": "phx-ad-1",
+  "region": "phx",
+  "regionInfo": {
+    "realmDomainComponent": "oraclecloud.com",
+    "realmKey": "realmKey",
+    "regionIdentifier": "us-phoenix-1",
+    "regionKey": "PHX"
+  },
+  "shape": "VM.Standard.A1.Flex",
+  "shapeConfig": {
+    "maxVnicAttachments": 2,
+    "memoryInGBs": 16.0,
+    "networkingBandwidthInGbps": 2.0,
+    "ocpus": 2.0
+  },
+  "state": "Running",
+  "tenantId": "ocid1.tenancy.oc1..redacted",
+  "timeCreated": 1696536074936
+}

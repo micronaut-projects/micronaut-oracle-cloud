@@ -18,6 +18,7 @@ package io.micronaut.discovery.cloud.oraclecloud;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
+import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.discovery.cloud.ComputeInstanceMetadata;
 import io.micronaut.discovery.cloud.ComputeInstanceMetadataResolver;
@@ -134,12 +135,21 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
                 if (userMeta != null) {
                     userMeta.entries().forEach(userNode -> {
                         String fieldName = userNode.getKey();
-                        metadata.put(fieldName, userNode.getValue().coerceStringValue());
+                        JsonNode fieldValue = userNode.getValue();
+                        if (fieldValue.isObject()) {
+                            flatten(fieldValue, fieldName + ".", metadata);
+                        } else {
+                            metadata.put(fieldName, fieldValue.coerceStringValue());
+                        }
                     });
                 }
                 // override the 'region' in metadata in favor of canonicalRegionName
                 metadata.put(REGION.getName(), textValue(metadataJson, CANONICAL_REGION_NAME));
                 metadata.put("zone", textValue(metadataJson, AVAILABILITY_DOMAIN));
+
+                instanceMetadata.setTags(new HashMap<>());
+                parseTags("definedTags", metadataJson, instanceMetadata);
+                parseTags("freeformTags", metadataJson, instanceMetadata);
 
                 populateMetadata(instanceMetadata, metadata);
             }
@@ -174,6 +184,29 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
         }
 
         return Optional.empty();
+    }
+
+    private void parseTags(String nodeName, JsonNode json, OracleCloudInstanceMetadata instanceMetadata) {
+        JsonNode node = json.get(nodeName);
+        if (node != null) {
+            if (node.isObject()) {
+                node.entries().forEach(entry -> parseTags(entry.getKey(), node, instanceMetadata));
+            } else {
+                instanceMetadata.getTags().put(nodeName, node.coerceStringValue());
+            }
+        }
+    }
+
+    private void flatten(JsonNode node, String prefix, Map<String, String> metadata) {
+        node.entries().forEach(entry -> {
+            String key = entry.getKey();
+            JsonNode value = entry.getValue();
+            if (value.isObject()) {
+                flatten(value, prefix + key + ".", metadata);
+            } else {
+                metadata.put(prefix + key, value.coerceStringValue());
+            }
+        });
     }
 
     private String textValue(JsonNode node, OracleCloudMetadataKeys key) {
