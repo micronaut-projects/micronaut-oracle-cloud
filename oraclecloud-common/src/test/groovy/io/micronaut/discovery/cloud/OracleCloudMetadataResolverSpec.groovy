@@ -36,37 +36,40 @@ class OracleCloudMetadataResolverSpec extends Specification {
 
         expect:
         computeInstanceMetadata.isPresent()
-        def m = computeInstanceMetadata.get()
+        def metadata = computeInstanceMetadata.get()
+        assertThatMetadataIsCorrect(metadata)
+    }
 
-        m.computePlatform == ComputePlatform.ORACLE_CLOUD
-        m.faultDomain == "FAULT-DOMAIN-2"
-        m.region == "us-phoenix-1"
-        m.availabilityZone == "GTEq:PHX-AD-3"
-        m.name == "micronaut-env"
-        m.machineType == "VM.Standard.A1.Flex"
-        m.instanceId == "ocid1.instance.oc1.phx.redacted"
-        m.imageId == "ocid1.image.oc1.phx.redacted"
+    static void assertThatMetadataIsCorrect(OracleCloudInstanceMetadata m) {
+        assert m.computePlatform == ComputePlatform.ORACLE_CLOUD
+        assert m.faultDomain == "FAULT-DOMAIN-2"
+        assert m.region == "us-phoenix-1"
+        assert m.availabilityZone == "GTEq:PHX-AD-3"
+        assert m.name == "micronaut-env"
+        assert m.machineType == "VM.Standard.A1.Flex"
+        assert m.instanceId == "ocid1.instance.oc1.phx.redacted"
+        assert m.imageId == "ocid1.image.oc1.phx.redacted"
 
-        m.interfaces.size() == 1
+        assert m.interfaces.size() == 1
         NetworkInterface i = m.interfaces.first()
-        i.id == "ocid1.vnic.oc1.phx.abyhqljrdpeodblmzaipwmdgusajz7a5rlbd7xp6k7s4nq74h3ozrg3svvhq"
-        i.ipv4 == "10.0.0.19"
-        i.mac == "02:00:17:03:1C:BA"
+        assert i.id == "ocid1.vnic.oc1.phx.abyhqljrdpeodblmzaipwmdgusajz7a5rlbd7xp6k7s4nq74h3ozrg3svvhq"
+        assert i.ipv4 == "10.0.0.19"
+        assert i.mac == "02:00:17:03:1C:BA"
 
-        m.metadata['timeCreated'] == "1696536074936"
-        m.metadata['monitoringDisabled'] == "false"
-        m.metadata['region'] == "us-phoenix-1"
-        m.metadata['zone'] == "GTEq:PHX-AD-3"
-        m.metadata['compute_management.instance_configuration.state'] == "SUCCEEDED"
-        m.metadata['hostclass'] == "hostclass"
-        m.metadata['ssh_authorized_keys'] == "ssh-rsa redacted"
+        assert m.metadata['timeCreated'] == "1696536074936"
+        assert m.metadata['monitoringDisabled'] == "false"
+        assert m.metadata['region'] == "us-phoenix-1"
+        assert m.metadata['zone'] == "GTEq:PHX-AD-3"
+        assert m.metadata['compute_management.instance_configuration.state'] == "SUCCEEDED"
+        assert m.metadata['hostclass'] == "hostclass"
+        assert m.metadata['ssh_authorized_keys'] == "ssh-rsa redacted"
 
-        m.tags.size() == 5
-        m.tags['CreatedBy'] == "ocid1.flock.oc1..redacted"
-        m.tags['CreatedOn'] == "2023-10-05T17:57:37.163Z"
-        m.tags['oci:compute:instanceconfiguration'] == "ocid1.instanceconfiguration.oc1.phx.redacted"
-        m.tags['oci:compute:instancepool'] == "ocid1.instancepool.oc1.phx.redacted"
-        m.tags['oci:compute:instancepool:opcretrytoken'] == "redacted"
+        assert m.tags.size() == 5
+        assert m.tags['CreatedBy'] == "ocid1.flock.oc1..redacted"
+        assert m.tags['CreatedOn'] == "2023-10-05T17:57:37.163Z"
+        assert m.tags['oci:compute:instanceconfiguration'] == "ocid1.instanceconfiguration.oc1.phx.redacted"
+        assert m.tags['oci:compute:instancepool'] == "ocid1.instancepool.oc1.phx.redacted"
+        assert m.tags['oci:compute:instancepool:opcretrytoken'] == "redacted"
     }
 
     private OracleCloudMetadataResolver buildResolver() {
