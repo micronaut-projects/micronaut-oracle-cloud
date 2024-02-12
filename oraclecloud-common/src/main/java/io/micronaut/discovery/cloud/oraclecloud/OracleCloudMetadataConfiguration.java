@@ -63,7 +63,7 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
     public static final int DEFAULT_VERSION = 1;
 
     private String url;
-    private String vnicUrl = DEFAULT_VNIC_URL;
+    private String vnicUrl;
     private boolean enabled = DEFAULT_ENABLED;
 
     private boolean v1Enabled = DEFAULT_VERSION == 1;
@@ -174,6 +174,7 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
      */
     public void setV1Enabled(boolean v1Enabled) {
         this.v1Enabled = v1Enabled;
+        this.v2Enabled = !v1Enabled;
     }
 
     /**
@@ -189,5 +190,6 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
      */
     public void setV2Enabled(boolean v2Enabled) {
         this.v2Enabled = v2Enabled;
+        this.v1Enabled = !v2Enabled;
     }
 }
