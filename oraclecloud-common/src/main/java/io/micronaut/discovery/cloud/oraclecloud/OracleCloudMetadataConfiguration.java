@@ -57,12 +57,17 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
     public static final String DEFAULT_V2_VNIC_URL = "http://169.254.169.254/opc/v2/vnics/";
     // CHECKSTYLE:ON
 
+    /**
+     * The default IMDS version to use.
+     */
+    public static final int DEFAULT_VERSION = 1;
+
     private String url;
     private String vnicUrl = DEFAULT_VNIC_URL;
     private boolean enabled = DEFAULT_ENABLED;
 
-    private boolean v1Enabled;
-    private boolean v2Enabled = true;
+    private boolean v1Enabled = DEFAULT_VERSION == 1;
+    private boolean v2Enabled = DEFAULT_VERSION == 2;
 
     /**
      * @return Whether the Oracle Cloud configuration is enabled

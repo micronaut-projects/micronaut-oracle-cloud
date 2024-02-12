@@ -73,8 +73,8 @@ import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.V
 public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudMetadataResolver.class);
-    private static final int READ_TIMEOUT_IN_MILLS = 50_000;
-    private static final int CONNECTION_TIMEOUT_IN_MILLS = 50_000;
+    private static final int READ_TIMEOUT_IN_MILLS = 5_000;
+    private static final int CONNECTION_TIMEOUT_IN_MILLS = 5_000;
 
     private final JsonMapper jsonMapper;
     private final OracleCloudMetadataConfiguration configuration;
@@ -115,7 +115,10 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
             String metadataUrl = configuration.getUrl();
             HashMap<String, String> requestProperties = new HashMap<>();
             if (configuration.isV2Enabled()) {
+                LOG.debug("Using Oracle Cloud IMDS v2");
                 requestProperties.put("Authorization", "Bearer Oracle");
+            } else {
+                LOG.debug("Using Oracle Cloud IMDS v1");
             }
             JsonNode metadataJson = readMetadataUrl(new URL(metadataUrl), CONNECTION_TIMEOUT_IN_MILLS, READ_TIMEOUT_IN_MILLS, jsonMapper, requestProperties);
             if (metadataJson != null) {

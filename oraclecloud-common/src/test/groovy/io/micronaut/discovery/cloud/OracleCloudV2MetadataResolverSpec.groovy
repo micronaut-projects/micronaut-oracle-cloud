@@ -1,7 +1,6 @@
 package io.micronaut.discovery.cloud
 
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.context.env.Environment
 import io.micronaut.discovery.cloud.oraclecloud.OracleCloudInstanceMetadata
@@ -24,7 +23,6 @@ import java.nio.file.Paths
 
 import static io.micronaut.discovery.cloud.OracleCloudMetadataResolverSpec.assertThatMetadataIsCorrect
 
-@Property(name = "spec.name", value = "OracleCloudV2MetadataResolverSpec")
 class OracleCloudV2MetadataResolverSpec extends Specification {
 
     void "it can resolve metadata from a v2 endpoint"() {
