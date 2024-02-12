@@ -2,6 +2,7 @@
 micronaut = "4.3.4"
 micronaut-platform = "4.3.0"
 micronaut-docs = "2.0.0"
+managed-ojdbc = "21.11.0.0"
 fn = '1.0.183'
 graal-svm = "23.1.2"
 javapoet = '1.13.0'
@@ -15,7 +16,6 @@ shadow = '8.0.0'
 groovy = "4.0.18"
 spock = "2.3-groovy-4.0"
 oci = "3.34.0"
-ojdbc = "21.11.0.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.24.Final"
 
@@ -73,8 +73,8 @@ oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', 
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
 
-oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "ojdbc" }
-oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'ojdbc' }
+oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "managed-ojdbc" }
+oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'managed-ojdbc' }
 oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
 oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
 oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
