@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Common data and functions used both by {@link OracleCloudMeterRegistry} and {@link OracleCloudRawMeterRegistry}
+ * Common data and functions used both by {@link OracleCloudMeterRegistry} and {@link OracleCloudRawMeterRegistry}.
  */
 abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     protected final OracleCloudConfig oracleCloudConfig;
