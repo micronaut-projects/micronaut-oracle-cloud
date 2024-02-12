@@ -9,7 +9,7 @@ dependencies {
     api mn.micronaut.inject
 
     testImplementation projects.micronautOraclecloudAtp
-    testImplementation platform(libs.oracle.jdbc.bom)
+    testImplementation platform(libs.managed.oracle.jdbc.bom)
     testImplementation mnSql.micronaut.jdbc.ucp
     testImplementation mnTest.micronaut.test.spock
 
