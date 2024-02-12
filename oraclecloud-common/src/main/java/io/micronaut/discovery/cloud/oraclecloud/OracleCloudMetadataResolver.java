@@ -18,7 +18,6 @@ package io.micronaut.discovery.cloud.oraclecloud;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
-import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.discovery.cloud.ComputeInstanceMetadata;
 import io.micronaut.discovery.cloud.ComputeInstanceMetadataResolver;
@@ -74,8 +73,8 @@ import static io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataKeys.V
 public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResolver {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudMetadataResolver.class);
-    private static final int READ_TIMEOUT_IN_MILLS = 5000;
-    private static final int CONNECTION_TIMEOUT_IN_MILLS = 5000;
+    private static final int READ_TIMEOUT_IN_MILLS = 5_000;
+    private static final int CONNECTION_TIMEOUT_IN_MILLS = 5_000;
 
     private final JsonMapper jsonMapper;
     private final OracleCloudMetadataConfiguration configuration;
@@ -114,7 +113,14 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
 
         try {
             String metadataUrl = configuration.getUrl();
-            JsonNode metadataJson = readMetadataUrl(new URL(metadataUrl), CONNECTION_TIMEOUT_IN_MILLS, READ_TIMEOUT_IN_MILLS, jsonMapper, new HashMap<>());
+            HashMap<String, String> requestProperties = new HashMap<>();
+            if (configuration.isV2Enabled()) {
+                LOG.debug("Using Oracle Cloud IMDS v2");
+                requestProperties.put("Authorization", "Bearer Oracle");
+            } else {
+                LOG.debug("Using Oracle Cloud IMDS v1");
+            }
+            JsonNode metadataJson = readMetadataUrl(new URL(metadataUrl), CONNECTION_TIMEOUT_IN_MILLS, READ_TIMEOUT_IN_MILLS, jsonMapper, requestProperties);
             if (metadataJson != null) {
                 instanceMetadata.setInstanceId(textValue(metadataJson, ID));
                 instanceMetadata.setName(textValue(metadataJson, DISPLAY_NAME));
@@ -160,7 +166,7 @@ public class OracleCloudMetadataResolver implements ComputeInstanceMetadataResol
                     CONNECTION_TIMEOUT_IN_MILLS,
                     READ_TIMEOUT_IN_MILLS,
                     jsonMapper,
-                    new HashMap<>());
+                    requestProperties);
 
             if (vnicJson != null) {
                 List<NetworkInterface> networkInterfaces = new ArrayList<>();
