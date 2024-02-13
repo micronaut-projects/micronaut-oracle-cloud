@@ -51,14 +51,23 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
     @SuppressWarnings("WeakerAccess")
     // CHECKSTYLE:OFF
     public static final String DEFAULT_URL = "http://169.254.169.254/opc/v1/instance/";
+    public static final String DEFAULT_V2_URL = "http://169.254.169.254/opc/v2/instance/";
+
     public static final String DEFAULT_VNIC_URL = "http://169.254.169.254/opc/v1/vnics/";
+    public static final String DEFAULT_V2_VNIC_URL = "http://169.254.169.254/opc/v2/vnics/";
     // CHECKSTYLE:ON
 
-    private String url = DEFAULT_URL;
-    private String metadataUrl;
-    private String instanceDocumentUrl;
-    private String vnicUrl = DEFAULT_VNIC_URL;
+    /**
+     * The default IMDS version to use.
+     */
+    public static final int DEFAULT_VERSION = 1;
+
+    private String url;
+    private String vnicUrl;
     private boolean enabled = DEFAULT_ENABLED;
+
+    private boolean v1Enabled = DEFAULT_VERSION == 1;
+    private boolean v2Enabled = DEFAULT_VERSION == 2;
 
     /**
      * @return Whether the Oracle Cloud configuration is enabled
@@ -80,11 +89,14 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
      * @return The Url
      */
     public String getUrl() {
+        if (url == null) {
+            return v2Enabled ? DEFAULT_V2_URL : DEFAULT_URL;
+        }
         return url;
     }
 
     /**
-     * Default value ({@value #DEFAULT_URL}).
+     * Default value: {@value #DEFAULT_URL} or {@value #DEFAULT_V2_URL}, depending on the value of {@link #v2Enabled}.
      * @param url The url
      */
     public void setUrl(String url) {
@@ -93,39 +105,51 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
 
     /**
      * @return The metadata Url
+     * @deprecated Use {@link #getUrl()} instead.
      */
+    @Deprecated(since = "3.6.0", forRemoval = true)
     public String getMetadataUrl() {
-        return metadataUrl;
+        return getUrl();
     }
 
     /**
+     * Deprecated. Use <code>url</code> instead.
+     *
      * @param metadataUrl The metadata Url
+     * @deprecated Use {@link #setUrl(String)} instead.
      */
+    @Deprecated(since = "3.6.0", forRemoval = true)
     public void setMetadataUrl(String metadataUrl) {
-        this.metadataUrl = metadataUrl;
+        setUrl(metadataUrl);
     }
 
     /**
      * @return The instance document Url
+     * @deprecated Use {@link #getUrl()} instead.
      */
+    @Deprecated(since = "3.6.0", forRemoval = true)
     public String getInstanceDocumentUrl() {
-        return instanceDocumentUrl;
+        return getUrl();
     }
 
     /**
+     * Deprecated. Use <code>url</code> instead.
+     *
      * @param instanceDocumentUrl The instance document Url
+     * @deprecated Use {@link #setUrl(String)} instead.
      */
+    @Deprecated(since = "3.6.0", forRemoval = true)
     public void setInstanceDocumentUrl(String instanceDocumentUrl) {
-        this.instanceDocumentUrl = instanceDocumentUrl;
+        setUrl(instanceDocumentUrl);
     }
 
     /**
-     * * Default value ({@value #DEFAULT_VNIC_URL}).
+     * Default value: {@value #DEFAULT_VNIC_URL} or {@value #DEFAULT_V2_VNIC_URL}, depending on the value of {@link #v2Enabled}.
      * @return The VNIC Url
      */
     public String getVnicUrl() {
         if (vnicUrl == null) {
-            return DEFAULT_VNIC_URL;
+            return v2Enabled ? DEFAULT_V2_VNIC_URL : DEFAULT_VNIC_URL;
         }
         return vnicUrl;
     }
@@ -135,5 +159,37 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
      */
     public void setVnicUrl(String vnicUrl) {
         this.vnicUrl = vnicUrl;
+    }
+
+    /**
+     * @return Whether the V1 metadata is enabled
+     */
+    public boolean isV1Enabled() {
+        return v1Enabled;
+    }
+
+    /**
+     * Default value: <code>false</code>.
+     * @param v1Enabled Enable or disable the V1 metadata
+     */
+    public void setV1Enabled(boolean v1Enabled) {
+        this.v1Enabled = v1Enabled;
+        this.v2Enabled = !v1Enabled;
+    }
+
+    /**
+     * @return Whether the V2 metadata is enabled
+     */
+    public boolean isV2Enabled() {
+        return v2Enabled;
+    }
+
+    /**
+     * Default value: <code>true</code>.
+     * @param v2Enabled Enable or disable the V2 metadata
+     */
+    public void setV2Enabled(boolean v2Enabled) {
+        this.v2Enabled = v2Enabled;
+        this.v1Enabled = !v2Enabled;
     }
 }
