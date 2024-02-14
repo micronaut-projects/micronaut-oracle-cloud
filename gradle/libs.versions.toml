@@ -15,7 +15,7 @@ shadow = '8.0.0'
 groovy = "4.0.18"
 spock = "2.3-groovy-4.0"
 oci = "3.34.1"
-ojdbc = "21.11.0.0"
+ojdbc = "23.3.0.23.09"
 protobuf = '0.9.4'
 netty-http3 = "0.0.25.Final"
 
