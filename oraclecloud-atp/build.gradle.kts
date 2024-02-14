@@ -14,7 +14,7 @@ dependencies {
     compileOnly(mnSql.micronaut.jdbc.ucp)
     compileOnly(mnSql.micronaut.jdbc)
 
-    implementation(platform(libs.managed.oracle.jdbc.bom))
+    implementation(platform(libs.boms.oracle.jdbc))
     implementation(libs.oracle.security.oraclepki)
     implementation(libs.oracle.security.cert)
     implementation(libs.oracle.security.core)

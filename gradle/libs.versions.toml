@@ -79,7 +79,7 @@ oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
 
 # BOMs
-managed-oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "managed-ojdbc" }
+boms-oracle-jdbc = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "managed-ojdbc" }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
