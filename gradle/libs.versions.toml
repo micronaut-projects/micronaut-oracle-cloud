@@ -1,4 +1,5 @@
 [versions]
+managed-ojdbc = "21.11.0.0"
 micronaut = "4.3.5"
 micronaut-platform = "4.3.0"
 micronaut-docs = "2.0.0"
@@ -15,7 +16,6 @@ shadow = '8.0.0'
 groovy = "4.0.18"
 spock = "2.3-groovy-4.0"
 oci = "3.34.1"
-ojdbc = "21.11.0.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.25.Final"
 
@@ -51,6 +51,7 @@ micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-
 micronaut-discovery-client = { module = "io.micronaut.discovery:micronaut-discovery-client-bom", version.ref = "micronaut-discovery-client" }
 micronaut-test = { module = "io.micronaut.test:micronaut-test-bom", version.ref = "micronaut-test" }
 micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
+managed-oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'managed-ojdbc'  }
 
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
@@ -65,21 +66,20 @@ logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic',
 mockito = { module = 'org.mockito:mockito-core', version.ref = 'mockito' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
-
 oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
 oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version.ref = "oci" }
 oci-common-httpclient = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient', version.ref = "oci" }
 oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version.ref = "oci" }
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
-
-oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "ojdbc" }
-oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'ojdbc' }
 oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
 oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
 oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
+
+# BOMs
+boms-oracle-jdbc = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "managed-ojdbc" }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
