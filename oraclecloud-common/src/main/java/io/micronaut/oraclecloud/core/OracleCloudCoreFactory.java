@@ -34,6 +34,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.context.exceptions.DisabledBeanException;
 
+import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -67,17 +68,13 @@ public class OracleCloudCoreFactory {
 
     public static final String OKE_WORKLOAD_IDENTITY_PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
 
-    private final String profile;
-    private final String configPath;
+    private final OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
 
     /**
-     * @param profile The configured profile
-     * @param configPath The configuration file path
+     * @param ociConfigFileConfiguration The OCI config file configuration properties
      */
-    protected OracleCloudCoreFactory(@Nullable @Property(name = ORACLE_CLOUD + ".config.profile") String profile,
-                                     @Nullable @Property(name = ORACLE_CLOUD_CONFIG_PATH) String configPath) {
-        this.profile = profile;
-        this.configPath = configPath;
+    protected OracleCloudCoreFactory(OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration) {
+        this.ociConfigFileConfiguration = ociConfigFileConfiguration;
     }
 
     /**
@@ -93,11 +90,13 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
+    @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled", notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
     protected ConfigFileAuthenticationDetailsProvider configFileAuthenticationDetailsProvider() throws IOException {
+        String profile = getProfile().orElse(null);
         if (getConfigPath().isPresent()) {
-            return new ConfigFileAuthenticationDetailsProvider(configPath, profile);
+            return new ConfigFileAuthenticationDetailsProvider(getConfigPath().get(), profile);
         } else {
             return new ConfigFileAuthenticationDetailsProvider(profile);
         }
@@ -226,13 +225,13 @@ public class OracleCloudCoreFactory {
      * @return The configured profile.
      */
     public Optional<String> getProfile() {
-        return Optional.ofNullable(profile);
+        return Optional.ofNullable(ociConfigFileConfiguration.profile());
     }
 
     /**
      * @return The configured config path.
      */
     public Optional<String> getConfigPath() {
-        return Optional.ofNullable(configPath);
+        return Optional.ofNullable(ociConfigFileConfiguration.configPath());
     }
 }

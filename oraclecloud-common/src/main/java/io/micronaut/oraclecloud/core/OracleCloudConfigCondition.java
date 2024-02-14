@@ -32,7 +32,7 @@ import static io.micronaut.oraclecloud.core.OracleCloudCoreFactory.ORACLE_CLOUD_
  * @since 1.0.0
  */
 @BootstrapContextCompatible
-class OracleCloudConfigCondition implements Condition {
+public class OracleCloudConfigCondition implements Condition {
     @Override
     public boolean matches(ConditionContext context) {
         String configPath = context.getProperty(ORACLE_CLOUD_CONFIG_PATH, Argument.STRING)

@@ -10,13 +10,8 @@ The following authentication providers are supported in this module:
 
 {ocidocs}/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html[ConfigFileAuthenticationDetailsProvider] uses a config file located at `$USER_HOME/.oci/config`. Specify a profile or config file path within the config file via your `application` configuration file:
 
-[configuration]
-----
-oci:
-  config:
-    profile: DEFAULT
-    path: /custom/path/to/config/file
-----
+include::{includedir}configurationProperties/io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties.adoc[]
+
 
 NOTE: In the Oracle Java SDK the environment variable `OCI_CONFIG_FILE` doesn't take precedence over the `~/.oci/config` if the file exists. Assign the `OCI_CONFIG_FILE` to `oci.config.path`. To change the order: `oci.config.path: ${OCI_CONFIG_FILE}`
 
