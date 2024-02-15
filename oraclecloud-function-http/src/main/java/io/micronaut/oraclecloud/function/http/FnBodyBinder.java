@@ -69,6 +69,7 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         this.mediaTypeCodeRegistry = mediaTypeCodecRegistry;
         this.conversionService = conversionService;
     }
+
     @Override
     public BindingResult<T> bind(ArgumentConversionContext<T> context, HttpRequest<?> source) {
         final Argument<T> argument = context.getArgument();

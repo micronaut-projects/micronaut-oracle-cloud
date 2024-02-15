@@ -225,6 +225,8 @@ public class OracleCloudCoreFactory {
     /**
      * Configures a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.
      *
+     * @return The {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.
+     *
      * @throws IOException If an exception occurs reading configuration.
      */
     @Singleton
