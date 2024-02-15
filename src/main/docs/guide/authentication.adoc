@@ -83,8 +83,7 @@ You can enable a {ocidocs}/com/oracle/bmc/auth/SessionTokenAuthenticationDetails
 ----
 oci:
   config:
-    session-token:
-        enabled: true
+    session-token: true
 ----
 
 With the rest of the `oci.config` configuration properties, you can use a non-default configuration file or use a different profile.
