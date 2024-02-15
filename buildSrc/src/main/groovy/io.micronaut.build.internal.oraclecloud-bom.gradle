@@ -9,7 +9,7 @@ static Collection<String> parseOciBomArtifacts(String version) {
 }
 
 static Collection<File> parseOciSdkModules() {
-    var modules = new File("checkouts/oci-java-sdk").listFiles().findAll {it.name.startsWith("bmc-")}
+    var modules = new File("target/checkouts/oci-java-sdk").listFiles().findAll {it.name.startsWith("bmc-")}
     var secondLevelModules = modules.collectMany {
         it.listFiles().findAll{ it.name.startsWith("bmc-") }
     }
@@ -37,7 +37,7 @@ if (!extraPropertiesExtension.has('ociArtifacts')) {
     def ociArtifacts = parseOciBomArtifacts(ociVersion)
             .stream().filter(artifact -> artifact != "oci-java-sdk-shaded-full").toList()
 
-    String ociProjectVersion = new XmlSlurper().parse("checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
+    String ociProjectVersion = new XmlSlurper().parse("target/checkouts/oci-java-sdk/bmc-bom/pom.xml").version.text()
     def ociProjectArtifacts = parseOciBomArtifacts(ociProjectVersion)
 
     if (ociVersion != ociProjectVersion) {
