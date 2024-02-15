@@ -110,7 +110,11 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color"><code><a href="#METADATA_SERVICE_URL" class="member-name-link">METADATA_SERVICE_URL</a></code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="../../discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud"><code>OracleCloudMetadataConfiguration</code></a> instead.</div>
+</div>
+</div>
 <div class="col-first odd-row-color"><code>static final <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color"><code><a href="#OKE_WORKLOAD_IDENTITY_PREFIX" class="member-name-link">OKE_WORKLOAD_IDENTITY_PREFIX</a></code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
@@ -133,8 +137,16 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(<a href="OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a>&nbsp;ociConfigFileConfiguration)</code></div>
-<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</code></div>
+<div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)"><code>OracleCloudCoreFactory(OracleCloudConfigFileConfigurationProperties)</code></a> instead.</div>
+</div>
+</div>
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(<a href="OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a>&nbsp;ociConfigFileConfiguration)</code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -194,7 +206,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)" class="member-name-link">tenantIdProvider</a><wbr>(@Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider,io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration)" class="member-name-link">tenantIdProvider</a><wbr>(@Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider,
+ <a href="../../discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataConfiguration</a>&nbsp;metadataConfiguration)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Provides a <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core"><code>TenancyIdProvider</code></a> bean.</div>
 </div>
@@ -246,7 +259,12 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="METADATA_SERVICE_URL">
 <h3>METADATA_SERVICE_URL</h3>
-<div class="member-signature"><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">METADATA_SERVICE_URL</span></div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true,
+            <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="3.6.0")
+</span><span class="modifiers">public static final</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">METADATA_SERVICE_URL</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="../../discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud"><code>OracleCloudMetadataConfiguration</code></a> instead.</div>
+</div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
@@ -280,9 +298,29 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String)">
+<h3>OracleCloudCoreFactory</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true,
+            <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="3.6.0")
+</span><span class="modifiers">protected</span>&nbsp;<span class="element-name">OracleCloudCoreFactory</span><wbr><span class="parameters">(@Nullable @Property(name="oci.config.profile")
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
+ @Nullable @Property(name="oci.config.path")
+ @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Use <a href="#%3Cinit%3E(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)"><code>OracleCloudCoreFactory(OracleCloudConfigFileConfigurationProperties)</code></a> instead.</div>
+</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>profile</code> - The configured profile</dd>
+<dd><code>configPath</code> - The configuration file path</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)">
 <h3>OracleCloudCoreFactory</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">OracleCloudCoreFactory</span><wbr><span class="parameters">(<a href="OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a>&nbsp;ociConfigFileConfiguration)</span></div>
+<div class="member-signature"><span class="annotations">@Inject
+</span><span class="modifiers">protected</span>&nbsp;<span class="element-name">OracleCloudCoreFactory</span><wbr><span class="parameters">(<a href="OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a>&nbsp;ociConfigFileConfiguration)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>ociConfigFileConfiguration</code> - The OCI config file configuration properties</dd>
@@ -403,17 +441,19 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)">
+<section class="detail" id="tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider,io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration)">
 <h3>tenantIdProvider</h3>
 <div class="member-signature"><span class="annotations">@Singleton
 @Primary
 @Context
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type"><a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></span>&nbsp;<span class="element-name">tenantIdProvider</span><wbr><span class="parameters">(@Nullable
- @Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</span></div>
+ @Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider,
+ <a href="../../discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataConfiguration</a>&nbsp;metadataConfiguration)</span></div>
 <div class="block">Provides a <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core"><code>TenancyIdProvider</code></a> bean.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>authenticationDetailsProvider</code> - The authentication provider.</dd>
+<dd><code>metadataConfiguration</code> - The metadata configuration;</dd>
 <dt>Returns:</dt>
 <dd>The tenancy id provider</dd>
 </dl>
