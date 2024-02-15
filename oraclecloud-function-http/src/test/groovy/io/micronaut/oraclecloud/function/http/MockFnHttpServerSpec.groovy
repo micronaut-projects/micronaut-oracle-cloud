@@ -1,5 +1,6 @@
 package io.micronaut.oraclecloud.function.http
 
+import io.micronaut.context.env.Environment
 import io.micronaut.core.type.Argument
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -15,7 +16,7 @@ import jakarta.inject.Inject
  * @author Pavol Gressa
  * @since 2.3*
  */
-@MicronautTest(environments = ["custom-env"])
+@MicronautTest(environments = ["custom-env", Environment.ORACLE_CLOUD])
 class MockFnHttpServerSpec extends Specification {
 
     @Inject

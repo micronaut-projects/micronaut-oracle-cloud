@@ -1,5 +1,6 @@
 package example;
 
+import io.micronaut.context.env.Environment;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
@@ -11,7 +12,7 @@ import java.util.concurrent.Callable;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@MicronautTest
+@MicronautTest(environments = Environment.ORACLE_CLOUD)
 public class LoggingTest {
 
     public static final Logger log = LoggerFactory.getLogger("LoggingTest");

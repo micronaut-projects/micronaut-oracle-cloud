@@ -14,7 +14,7 @@ import reactor.core.publisher.Flux;
 import java.util.ArrayList;
 import java.util.Map;
 
-@MicronautTest(startApplication = false)
+@MicronautTest(startApplication = false, environments = Environment.ORACLE_CLOUD)
 @Requires(property = "vault.ocid")
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(property = "vault.secret.name")
