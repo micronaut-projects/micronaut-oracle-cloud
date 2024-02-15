@@ -95,6 +95,10 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
         return url;
     }
 
+    public String getBaseUrl() {
+        return getUrl().replaceAll("instance\\/?", "");
+    }
+
     /**
      * Default value: {@value #DEFAULT_URL} or {@value #DEFAULT_V2_URL}, depending on the value of {@link #v2Enabled}.
      * @param url The url

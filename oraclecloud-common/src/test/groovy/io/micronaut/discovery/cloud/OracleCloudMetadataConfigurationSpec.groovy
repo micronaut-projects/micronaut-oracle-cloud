@@ -29,4 +29,23 @@ class OracleCloudMetadataConfigurationSpec extends Specification {
         cfg.vnicUrl == OracleCloudMetadataConfiguration.DEFAULT_V2_VNIC_URL
     }
 
+    void 'it can determine the base url'(String url, String expectedBaseUrl) {
+        given:
+        def cfg = new OracleCloudMetadataConfiguration()
+        cfg.url = url
+
+        when:
+        def baseUrl = cfg.baseUrl
+
+        then:
+        baseUrl == expectedBaseUrl
+
+        where:
+        url                                         || expectedBaseUrl
+        "http://169.254.169.254/opc/v1/instance/"   || "http://169.254.169.254/opc/v1/"
+        "http://169.254.169.254/opc/v1/instance"    || "http://169.254.169.254/opc/v1/"
+        "http://169.254.169.254/opc/v2/instance/"   || "http://169.254.169.254/opc/v2/"
+        "http://169.254.169.254/opc/v2/instance"    || "http://169.254.169.254/opc/v2/"
+    }
+
 }
