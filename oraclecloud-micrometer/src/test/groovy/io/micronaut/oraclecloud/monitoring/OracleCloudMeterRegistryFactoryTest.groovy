@@ -11,7 +11,7 @@ import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistr
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 
-@MicronautTest(startApplication = false)
+@MicronautTest(startApplication = false, environments = Environment.ORACLE_CLOUD)
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 @Requires(beans = AuthenticationDetailsProvider)
 class OracleCloudMeterRegistryFactoryTest extends Specification {

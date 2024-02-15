@@ -1,5 +1,6 @@
 package io.micronaut.oraclecloud.function.http
 
+import io.micronaut.context.env.Environment
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
@@ -13,7 +14,7 @@ import spock.lang.Specification
 
 import jakarta.inject.Inject
 
-@MicronautTest
+@MicronautTest(environments = Environment.ORACLE_CLOUD)
 class ParameterBindingSpec extends Specification {
 
     @Inject

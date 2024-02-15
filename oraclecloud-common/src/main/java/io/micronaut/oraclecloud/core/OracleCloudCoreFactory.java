@@ -25,6 +25,7 @@ import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
@@ -35,6 +36,8 @@ import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.context.exceptions.DisabledBeanException;
 
 import io.micronaut.core.util.StringUtils;
+import io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -63,6 +66,10 @@ public class OracleCloudCoreFactory {
     public static final String ORACLE_CLOUD_CONFIG_PATH = ORACLE_CLOUD + ".config.path";
 
     // CHECKSTYLE:OFF
+    /**
+     * @deprecated Use {@link OracleCloudMetadataConfiguration} instead.
+     */
+    @Deprecated(forRemoval = true, since = "3.6.0")
     public static final String METADATA_SERVICE_URL = "http://169.254.169.254/opc/v1/";
     // CHECKSTYLE:ON
 
@@ -71,8 +78,21 @@ public class OracleCloudCoreFactory {
     private final OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
 
     /**
+     * @param profile The configured profile
+     * @param configPath The configuration file path
+     *
+     * @deprecated Use {@link #OracleCloudCoreFactory(OracleCloudConfigFileConfigurationProperties)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "3.6.0")
+    protected OracleCloudCoreFactory(@Nullable @Property(name = ORACLE_CLOUD + ".config.profile") String profile,
+                                     @Nullable @Property(name = ORACLE_CLOUD_CONFIG_PATH) String configPath) {
+        this(new OracleCloudConfigFileConfigurationProperties(profile, configPath, true, false));
+    }
+
+    /**
      * @param ociConfigFileConfiguration The OCI config file configuration properties
      */
+    @Inject
     protected OracleCloudCoreFactory(OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration) {
         this.ociConfigFileConfiguration = ociConfigFileConfiguration;
     }
@@ -172,13 +192,14 @@ public class OracleCloudCoreFactory {
      * Provides a {@link TenancyIdProvider} bean.
      *
      * @param authenticationDetailsProvider The authentication provider.
+     * @param metadataConfiguration The metadata configuration;
      * @return The tenancy id provider
      */
     @Singleton
     @Primary
     @Context
     @BootstrapContextCompatible
-    protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider) {
+    protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider, OracleCloudMetadataConfiguration metadataConfiguration) {
         if (authenticationDetailsProvider == null) {
             throw new DisabledBeanException("Invalid Oracle Cloud Configuration. If you are running locally ensure the CLI is configured by running: oci setup config");
         }
@@ -191,9 +212,10 @@ public class OracleCloudCoreFactory {
                 URLBasedX509CertificateSupplier urlBasedX509CertificateSupplier;
                 String tenantId;
                 try {
+                    String baseMetadataUrl = metadataConfiguration.getBaseUrl();
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
-                            new URL(METADATA_SERVICE_URL + "identity/cert.pem"),
-                            new URL(METADATA_SERVICE_URL + "identity/key.pem"),
+                            new URL(baseMetadataUrl + "identity/cert.pem"),
+                            new URL(baseMetadataUrl + "identity/key.pem"),
                             (char[]) null
                     );
                     tenantId = AuthUtils.getTenantIdFromCertificate(

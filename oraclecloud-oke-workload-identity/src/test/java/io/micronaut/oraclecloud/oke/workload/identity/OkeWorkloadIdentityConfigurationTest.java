@@ -4,6 +4,7 @@ import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.annotation.Property;
+import io.micronaut.context.env.Environment;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
 import io.micronaut.test.annotation.MockBean;
@@ -15,9 +16,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-@MicronautTest
+@MicronautTest(environments = Environment.ORACLE_CLOUD)
 @Property(name = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX + ".enabled", value = StringUtils.TRUE)
-public class OkeWorkloadIdentityConfigurationTest {
+class OkeWorkloadIdentityConfigurationTest {
 
     @Inject
     OkeWorkloadIdentityConfiguration configuration;

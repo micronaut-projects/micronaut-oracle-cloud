@@ -13,6 +13,7 @@ import com.oracle.bmc.loggingingestion.responses.PutLogsResponse
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
+import io.micronaut.context.env.Environment
 import io.micronaut.context.event.ApplicationEventPublisher
 import io.micronaut.runtime.ApplicationConfiguration
 import io.micronaut.runtime.server.EmbeddedServer
@@ -24,7 +25,7 @@ import org.slf4j.LoggerFactory
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
-@MicronautTest
+@MicronautTest(environments = Environment.ORACLE_CLOUD)
 @Property(name = "spec.name", value = "OracleCloudLoggingSpec")
 @Property(name = "oci.logging.logId", value = "test-logId-from-application-config")
 class OracleCloudLoggingSpec extends Specification {

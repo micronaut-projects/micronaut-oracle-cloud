@@ -7,6 +7,7 @@ import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse
 import io.micronaut.context.annotation.Context
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Property
+import io.micronaut.context.env.Environment
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
@@ -21,7 +22,7 @@ import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 import spock.lang.Specification
 
-@MicronautTest
+@MicronautTest(environments = Environment.ORACLE_CLOUD)
 @Property(name="oci.certificates.enabled", value = "true")
 @Property(name="micronaut.server.dual-protocol", value = "true")
 @Property(name="micronaut.server.ssl.enabled", value = "true")
