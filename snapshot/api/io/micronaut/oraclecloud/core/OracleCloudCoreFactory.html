@@ -133,8 +133,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(java.lang.String,java.lang.String)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(@Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
- @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</code></div>
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)" class="member-name-link">OracleCloudCoreFactory</a><wbr>(<a href="OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a>&nbsp;ociConfigFileConfiguration)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
@@ -276,16 +275,12 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String)">
+<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties)">
 <h3>OracleCloudCoreFactory</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">OracleCloudCoreFactory</span><wbr><span class="parameters">(@Nullable @Property(name="oci.config.profile")
- @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;profile,
- @Nullable @Property(name="oci.config.path")
- @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;configPath)</span></div>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">OracleCloudCoreFactory</span><wbr><span class="parameters">(<a href="OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a>&nbsp;ociConfigFileConfiguration)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>profile</code> - The configured profile</dd>
-<dd><code>configPath</code> - The configuration file path</dd>
+<dd><code>ociConfigFileConfiguration</code> - The OCI config file configuration properties</dd>
 </dl>
 </section>
 </li>
@@ -301,7 +296,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="configFileAuthenticationDetailsProvider()">
 <h3>configFileAuthenticationDetailsProvider</h3>
 <div class="member-signature"><span class="annotations">@Singleton
-@Requires(condition=io.micronaut.oraclecloud.core.OracleCloudConfigCondition.class) @Requires(missingProperty="oci.tenant-id") @Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity")
+@Requires(condition=<a href="OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition.class</a>) @Requires(missingProperty="oci.tenant-id") @Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(property="oci.config.enabled",notEquals="false",defaultValue="true")
 @Primary
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type">com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider</span>&nbsp;<span class="element-name">configFileAuthenticationDetailsProvider</span>()
                                                                                                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
