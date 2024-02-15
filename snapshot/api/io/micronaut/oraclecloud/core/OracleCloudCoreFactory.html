@@ -183,14 +183,19 @@ loadScripts(document, 'script');</script>
 <div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
  the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#simpleAuthenticationDetailsProvider(io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties)" class="member-name-link">simpleAuthenticationDetailsProvider</a><wbr>(<a href="OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#sessionTokenAuthenticationDetailsProvider()" class="member-name-link">sessionTokenAuthenticationDetailsProvider</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Configures a <code>SessionTokenAuthenticationDetailsProvider</code>.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#simpleAuthenticationDetailsProvider(io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties)" class="member-name-link">simpleAuthenticationDetailsProvider</a><wbr>(<a href="OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)" class="member-name-link">tenantIdProvider</a><wbr>(@Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>protected <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core">TenancyIdProvider</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#tenantIdProvider(com.oracle.bmc.auth.BasicAuthenticationDetailsProvider)" class="member-name-link">tenantIdProvider</a><wbr>(@Nullable com.oracle.bmc.auth.BasicAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Provides a <a href="TenancyIdProvider.html" title="interface in io.micronaut.oraclecloud.core"><code>TenancyIdProvider</code></a> bean.</div>
 </div>
 </div>
@@ -296,7 +301,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="configFileAuthenticationDetailsProvider()">
 <h3>configFileAuthenticationDetailsProvider</h3>
 <div class="member-signature"><span class="annotations">@Singleton
-@Requires(condition=<a href="OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition.class</a>) @Requires(missingProperty="oci.tenant-id") @Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(property="oci.config.enabled",notEquals="false",defaultValue="true")
+@Requires(condition=<a href="OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition.class</a>) @Requires(missingProperty="oci.tenant-id") @Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(missingBeans=com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.class) @Requires(property="oci.config.enabled",notEquals="false",defaultValue="true")
 @Primary
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type">com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider</span>&nbsp;<span class="element-name">configFileAuthenticationDetailsProvider</span>()
                                                                                                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
@@ -427,6 +432,23 @@ loadScripts(document, 'script');</script>
 <dd><code>builder</code> - The builder</dd>
 <dt>Returns:</dt>
 <dd>The default client configuration.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="sessionTokenAuthenticationDetailsProvider()">
+<h3>sessionTokenAuthenticationDetailsProvider</h3>
+<div class="member-signature"><span class="annotations">@Singleton
+@Requires(condition=<a href="OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition.class</a>) @Requires(property="oci.config.session-token",notEquals="false",defaultValue="false") @Requires(property="oci.config.enabled",notEquals="false",defaultValue="true")
+@Primary
+</span><span class="modifiers">protected</span>&nbsp;<span class="return-type">com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider</span>&nbsp;<span class="element-name">sessionTokenAuthenticationDetailsProvider</span>()
+                                                                                                           throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
+<div class="block">Configures a <code>SessionTokenAuthenticationDetailsProvider</code>.</div>
+<dl class="notes">
+<dt>Returns:</dt>
+<dd>The <code>SessionTokenAuthenticationDetailsProvider</code>.</dd>
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></code> - If an exception occurs reading configuration.</dd>
 </dl>
 </section>
 </li>

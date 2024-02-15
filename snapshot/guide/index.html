@@ -326,6 +326,11 @@ Vault vault</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable or disable using the OCI configuration file.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.session-token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the configuration of a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.</p></td>
+</tr>
 </tbody>
 </table>
 <div class="admonitionblock note">
@@ -631,6 +636,71 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-oi
 </td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="session-token">SessionTokenAuthenticationDetailsProvider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can enable a <a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/SessionTokenAuthenticationDetailsProvider.html">SessionTokenAuthenticationDetailsProvider</a> by setting:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">oci.config.session-token=true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  config:
+    session-token: true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[oci]
+  [oci.config]
+    session-token=true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">oci {
+  config {
+    sessionToken = true
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  oci {
+    config {
+      session-token = true
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "oci": {
+    "config": {
+      "session-token": true
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>With the rest of the <code>oci.config</code> configuration properties, you can use a non-default configuration file or use a different profile.</p>
 </div>
 </div>
 </div>
