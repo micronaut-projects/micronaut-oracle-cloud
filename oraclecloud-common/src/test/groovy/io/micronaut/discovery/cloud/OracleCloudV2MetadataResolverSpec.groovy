@@ -45,6 +45,9 @@ class OracleCloudV2MetadataResolverSpec extends Specification {
         then:
         assertThatMetadataIsCorrect(metadata)
 
+        cleanup:
+        ctx.close()
+        server.stop()
     }
 
     @Controller("/opc/v2")

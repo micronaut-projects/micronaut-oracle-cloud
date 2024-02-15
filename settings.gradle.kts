@@ -83,6 +83,8 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
 val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.versions.toml").toPath())!!
 
 gitRepositories {
+    // Checkout in a directory that is ignored by the sync'ed .gitignore
+    checkoutsDirectory.set(file("target/checkouts"))
     include("oci-java-sdk") {
         uri.set("https://github.com/oracle/oci-java-sdk.git")
         autoInclude.set(false)
