@@ -21,6 +21,7 @@ import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
@@ -89,6 +90,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = OracleCloudAuthConfigurationProperties.TENANT_ID)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
+    @Requires(missingBeans = SessionTokenAuthenticationDetailsProvider.class)
     @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled", notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
@@ -218,6 +220,20 @@ public class OracleCloudCoreFactory {
     @BootstrapContextCompatible
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
+    }
+
+    @Singleton
+    @Requires(condition = OracleCloudConfigCondition.class)
+    @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token", notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
+    @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled", notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+    @Primary
+    protected SessionTokenAuthenticationDetailsProvider sessionTokenAuthenticationDetailsProvider() throws IOException {
+        String profile = getProfile().orElse(null);
+        if (getConfigPath().isPresent()) {
+            return new SessionTokenAuthenticationDetailsProvider(getConfigPath().get(), profile);
+        } else {
+            return new SessionTokenAuthenticationDetailsProvider(profile);
+        }
     }
 
     /**

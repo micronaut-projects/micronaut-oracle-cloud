@@ -12,7 +12,6 @@ The following authentication providers are supported in this module:
 
 include::{includedir}configurationProperties/io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties.adoc[]
 
-
 NOTE: In the Oracle Java SDK the environment variable `OCI_CONFIG_FILE` doesn't take precedence over the `~/.oci/config` if the file exists. Assign the `OCI_CONFIG_FILE` to `oci.config.path`. To change the order: `oci.config.path: ${OCI_CONFIG_FILE}`
 
 [#simple-auth]
@@ -74,3 +73,18 @@ Required dependency:
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-oke-workload-identity[]
 
 TIP: See the guide for https://guides.micronaut.io/latest/micronaut-cloud-oidc-oracle.html[Authenticate Micronaut Application Users with OpenID Connect and Oracle IDCS] to learn more.
+
+[#session-token]
+== SessionTokenAuthenticationDetailsProvider
+
+You can enable a {ocidocs}/com/oracle/bmc/auth/SessionTokenAuthenticationDetailsProvider.html[SessionTokenAuthenticationDetailsProvider] by setting:
+
+[configuration]
+----
+oci:
+  config:
+    session-token:
+        enabled: true
+----
+
+With the rest of the `oci.config` configuration properties, you can use a non-default configuration file or use a different profile.

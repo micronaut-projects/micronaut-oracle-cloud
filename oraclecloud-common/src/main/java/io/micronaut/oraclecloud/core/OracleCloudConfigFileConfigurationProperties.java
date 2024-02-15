@@ -27,12 +27,13 @@ import static io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationPr
  * @param profile The profile to use.
  * @param configPath A custom path for the OCI configuration file.
  * @param enabled Whether to enable or disable using the OCI configuration file.
+ * @param sessionToken Whether to enable the configuration of a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.
  *
  * @author Álvaro Sánchez-Mariscal
  * @since 3.6.0
  */
 @ConfigurationProperties(PREFIX)
-public record OracleCloudConfigFileConfigurationProperties(@Nullable String profile, @Nullable String configPath, @Nullable Boolean enabled) implements Toggleable {
+public record OracleCloudConfigFileConfigurationProperties(@Nullable String profile, @Nullable String configPath, @Nullable Boolean enabled, @Nullable Boolean sessionToken) implements Toggleable {
 
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config";
 
