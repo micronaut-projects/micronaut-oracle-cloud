@@ -222,6 +222,11 @@ public class OracleCloudCoreFactory {
         return builder.build();
     }
 
+    /**
+     * Configures a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.
+     *
+     * @throws IOException If an exception occurs reading configuration.
+     */
     @Singleton
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token", notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
