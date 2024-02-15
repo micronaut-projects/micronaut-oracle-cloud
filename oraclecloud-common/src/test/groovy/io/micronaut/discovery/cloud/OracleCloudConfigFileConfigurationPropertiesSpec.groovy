@@ -1,6 +1,7 @@
 package io.micronaut.discovery.cloud
 
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
+import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties
@@ -22,14 +23,17 @@ class OracleCloudConfigFileConfigurationPropertiesSpec extends Specification {
 
     void setupSpec() {
         ociConfig = testPath.resolve("config").toFile()
-        ociConfig.text = '''
+        ociConfig.text = """
 [DEFAULT]
 user=ocid1.user.oc1..aaaaaaaaxxxx
 fingerprint=xx:xx:xx:xx:xx:xx:xx
 key_file=${testPath}/oci_api_key.pem
 tenancy=ocid1.tenancy.oc1..aaaaaaaaxxxx
 region=us-ashburn-1
-pass_phrase=xxxxx'''
+pass_phrase=xxxxx
+security_token_file=${testPath}/oci_api_key.pem
+"""
+        testPath.resolve("oci_api_key.pem").toFile().text = new File("src/test/resources/oci_api_key.pem").text
 
     }
 
@@ -41,6 +45,7 @@ pass_phrase=xxxxx'''
 
         expect:
         ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
+        !ctx.containsBean(SessionTokenAuthenticationDetailsProvider)
 
         cleanup:
         ctx.close()
@@ -55,9 +60,24 @@ pass_phrase=xxxxx'''
 
         expect:
         !ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
+        !ctx.containsBean(SessionTokenAuthenticationDetailsProvider)
 
         cleanup:
         ctx.close()
+    }
 
+    void 'it can enable session token authentication'() {
+        given:
+        def ctx = ApplicationContext.run([
+                (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath,
+                (OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token"): true
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        !ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
+        ctx.containsBean(SessionTokenAuthenticationDetailsProvider)
+
+        cleanup:
+        ctx.close()
     }
 }
