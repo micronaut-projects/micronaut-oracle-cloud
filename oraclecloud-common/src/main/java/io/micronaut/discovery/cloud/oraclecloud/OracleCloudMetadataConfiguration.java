@@ -95,6 +95,9 @@ public class OracleCloudMetadataConfiguration implements Toggleable {
         return url;
     }
 
+    /**
+     * @return The base URL of the metadata service.
+     */
     public String getBaseUrl() {
         return getUrl().replaceAll("instance\\/?", "");
     }
