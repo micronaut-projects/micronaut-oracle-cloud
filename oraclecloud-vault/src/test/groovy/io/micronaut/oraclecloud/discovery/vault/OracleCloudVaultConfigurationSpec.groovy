@@ -21,7 +21,7 @@ class OracleCloudVaultConfigurationSpec extends Specification {
                 'oci.vault.vaults'               : [
                         ['ocid'            : 'ocid1.vault.oc1.phx....',
                          'compartment-ocid': 'ocid1.compartment.oc1....']
-                ]], Environment.ORACLE_CLOUD)
+                ]])
         OracleCloudVaultConfiguration config = ctx.getBean(OracleCloudVaultConfiguration)
 
         expect:
@@ -42,7 +42,7 @@ class OracleCloudVaultConfigurationSpec extends Specification {
                 'oci.vault.vaults'               : [
                         ['ocid'            : 'ocid1.vault.oc1.phx....',
                          'compartment-ocid': 'ocid1.compartment.oc1....']
-                ]], Environment.ORACLE_CLOUD)
+                ]])
 
         when:
         ctx.getBean(OracleCloudVaultConfigurationClient)

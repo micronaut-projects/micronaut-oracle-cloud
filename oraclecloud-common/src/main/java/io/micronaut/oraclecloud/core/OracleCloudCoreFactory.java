@@ -199,20 +199,21 @@ public class OracleCloudCoreFactory {
     @Primary
     @Context
     @BootstrapContextCompatible
-    protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider, OracleCloudMetadataConfiguration metadataConfiguration) {
+    protected TenancyIdProvider tenantIdProvider(@Nullable BasicAuthenticationDetailsProvider authenticationDetailsProvider, @Nullable OracleCloudMetadataConfiguration metadataConfiguration) {
         if (authenticationDetailsProvider == null) {
             throw new DisabledBeanException("Invalid Oracle Cloud Configuration. If you are running locally ensure the CLI is configured by running: oci setup config");
         }
+        final OracleCloudMetadataConfiguration cfg = Optional.ofNullable(metadataConfiguration).orElse(new OracleCloudMetadataConfiguration());
         return () -> {
-            if (authenticationDetailsProvider instanceof AuthenticationDetailsProvider) {
-                return ((AuthenticationDetailsProvider) authenticationDetailsProvider).getTenantId();
-            } else if (authenticationDetailsProvider instanceof ResourcePrincipalAuthenticationDetailsProvider) {
-                return ((ResourcePrincipalAuthenticationDetailsProvider) authenticationDetailsProvider).getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
+            if (authenticationDetailsProvider instanceof AuthenticationDetailsProvider a) {
+                return a.getTenantId();
+            } else if (authenticationDetailsProvider instanceof ResourcePrincipalAuthenticationDetailsProvider r) {
+                return r.getStringClaim(ResourcePrincipalAuthenticationDetailsProvider.ClaimKeys.TENANT_ID_CLAIM_KEY);
             } else if (authenticationDetailsProvider instanceof InstancePrincipalsAuthenticationDetailsProvider) {
                 URLBasedX509CertificateSupplier urlBasedX509CertificateSupplier;
                 String tenantId;
                 try {
-                    String baseMetadataUrl = metadataConfiguration.getBaseUrl();
+                    String baseMetadataUrl = cfg.getBaseUrl();
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
                             new URL(baseMetadataUrl + "identity/cert.pem"),
                             new URL(baseMetadataUrl + "identity/key.pem"),
@@ -256,6 +257,7 @@ public class OracleCloudCoreFactory {
     @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token", notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
     @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled", notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
+    @BootstrapContextCompatible
     protected SessionTokenAuthenticationDetailsProvider sessionTokenAuthenticationDetailsProvider() throws IOException {
         String profile = getProfile().orElse(null);
         if (getConfigPath().isPresent()) {

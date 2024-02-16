@@ -41,7 +41,7 @@ security_token_file=${testPath}/oci_api_key.pem
         given:
         def ctx = ApplicationContext.run([
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         expect:
         ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
@@ -56,7 +56,7 @@ security_token_file=${testPath}/oci_api_key.pem
         def ctx = ApplicationContext.run([
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath,
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled"): false
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         expect:
         !ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
@@ -71,7 +71,7 @@ security_token_file=${testPath}/oci_api_key.pem
         def ctx = ApplicationContext.run([
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath,
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token"): true
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         expect:
         !ctx.containsBean(ConfigFileAuthenticationDetailsProvider)

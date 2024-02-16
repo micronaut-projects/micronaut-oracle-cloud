@@ -6,7 +6,6 @@ import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.context.env.Environment;
 import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
@@ -18,8 +17,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest(environments = Environment.ORACLE_CLOUD)
-class ObjectStorageRxClientTest {
+@MicronautTest
+public class ObjectStorageRxClientTest {
 
     @Test
     void testObjectStorageClientRx(ObjectStorageRxClient objectStorageRxClient) {

@@ -4,7 +4,6 @@ import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
 import io.micronaut.aop.InterceptedProxy;
 import io.micronaut.context.annotation.Property;
-import io.micronaut.context.env.Environment;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -16,9 +15,9 @@ import jakarta.inject.Provider;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
-@MicronautTest(environments = Environment.ORACLE_CLOUD)
+@MicronautTest
 @Property(name = InstancePrincipalConfiguration.PREFIX + ".enabled", value = StringUtils.TRUE)
-class InstancePrincipalConfigurationTest {
+public class InstancePrincipalConfigurationTest {
 
     @Inject
     InstancePrincipalConfiguration configuration;
