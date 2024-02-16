@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-@MicronautTest(startApplication = false, environments = Environment.ORACLE_CLOUD)
+@MicronautTest(startApplication = false)
 @Requires(beans = AuthenticationDetailsProvider.class)
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 @Requires(property = "monitoring.compartment.ocid")

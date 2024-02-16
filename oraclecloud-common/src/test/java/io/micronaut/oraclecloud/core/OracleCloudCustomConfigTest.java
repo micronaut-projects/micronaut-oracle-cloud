@@ -2,15 +2,14 @@ package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.ClientConfiguration;
 import io.micronaut.context.annotation.Property;
-import io.micronaut.context.env.Environment;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@MicronautTest(environments = Environment.ORACLE_CLOUD)
+@MicronautTest
 @Property(name = "oci.client.readTimeoutMillis", value = "25000")
-class OracleCloudCustomConfigTest {
+public class OracleCloudCustomConfigTest {
 
     @Test
     void testCustomConfig(

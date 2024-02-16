@@ -16,14 +16,13 @@ import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
 import com.oracle.bmc.responses.AsyncHandler;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.context.env.Environment;
 import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest(environments = Environment.ORACLE_CLOUD)
+@MicronautTest
 public class ObjectStorageReactorClientTest {
 
     @Test

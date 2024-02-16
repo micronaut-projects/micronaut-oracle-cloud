@@ -212,7 +212,7 @@ public class OracleCloudCoreFactory {
                 URLBasedX509CertificateSupplier urlBasedX509CertificateSupplier;
                 String tenantId;
                 try {
-                    String baseMetadataUrl = metadataConfiguration.getBaseUrl();
+                    String baseMetadataUrl = metadataConfiguration.getBaseUrl()
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
                             new URL(baseMetadataUrl + "identity/cert.pem"),
                             new URL(baseMetadataUrl + "identity/key.pem"),
