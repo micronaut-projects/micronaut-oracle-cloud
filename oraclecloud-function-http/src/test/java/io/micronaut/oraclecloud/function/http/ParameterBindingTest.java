@@ -1,7 +1,6 @@
 package io.micronaut.oraclecloud.function.http;
 
 import io.micronaut.context.annotation.Property;
-import io.micronaut.context.env.Environment;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.HttpClient;
@@ -14,9 +13,9 @@ import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@MicronautTest(environments = Environment.ORACLE_CLOUD)
+@MicronautTest
 @Property(name = "fn.test.config.foo.bar", value = "good")
-class ParameterBindingTest {
+public class ParameterBindingTest {
 
     @Client("/")
     @Inject
