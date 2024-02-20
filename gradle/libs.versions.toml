@@ -51,7 +51,11 @@ micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-
 micronaut-discovery-client = { module = "io.micronaut.discovery:micronaut-discovery-client-bom", version.ref = "micronaut-discovery-client" }
 micronaut-test = { module = "io.micronaut.test:micronaut-test-bom", version.ref = "micronaut-test" }
 micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
+
 managed-oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'managed-ojdbc'  }
+managed-oracle-jdbc-ucp = { module = 'com.oracle.database.jdbc:ucp', version.ref = 'managed-ojdbc'  }
+managed-oracle-observability-dms = { module = 'com.oracle.database.observability:dms', version.ref = 'managed-ojdbc'  }
+managed-oracle-observability-ojdbc11dms = { module = 'com.oracle.database.observability:ojdbc11dms', version.ref = 'managed-ojdbc'  }
 
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
