@@ -75,7 +75,7 @@ public class OracleCloudCoreFactory {
 
     public static final String OKE_WORKLOAD_IDENTITY_PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
 
-    private final OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
+    private OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
 
     /**
      * @param profile The configured profile
@@ -93,7 +93,7 @@ public class OracleCloudCoreFactory {
      * @param ociConfigFileConfiguration The OCI config file configuration properties
      */
     @Inject
-    protected OracleCloudCoreFactory(OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration) {
+    protected OracleCloudCoreFactory(@Nullable OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration) {
         this.ociConfigFileConfiguration = ociConfigFileConfiguration;
     }
 
@@ -271,13 +271,15 @@ public class OracleCloudCoreFactory {
      * @return The configured profile.
      */
     public Optional<String> getProfile() {
-        return Optional.ofNullable(ociConfigFileConfiguration.profile());
+        return Optional.ofNullable(ociConfigFileConfiguration)
+            .map(OracleCloudConfigFileConfigurationProperties::profile);
     }
 
     /**
      * @return The configured config path.
      */
     public Optional<String> getConfigPath() {
-        return Optional.ofNullable(ociConfigFileConfiguration.configPath());
+        return Optional.ofNullable(ociConfigFileConfiguration)
+            .map(OracleCloudConfigFileConfigurationProperties::path);
     }
 }
