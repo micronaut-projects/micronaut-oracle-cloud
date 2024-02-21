@@ -3,13 +3,14 @@ package io.micronaut.discovery.cloud
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.env.Environment
 import io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.TempDir
 
 import java.nio.file.Path
+
+import static io.micronaut.oraclecloud.core.OracleCloudCoreFactory.ORACLE_CLOUD_CONFIG_PATH
 
 
 class OracleCloudConfigFileConfigurationPropertiesSpec extends Specification {
@@ -40,7 +41,7 @@ security_token_file=${testPath}/oci_api_key.pem
     void 'it is enabled by default'() {
         given:
         def ctx = ApplicationContext.run([
-                (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath
+                (ORACLE_CLOUD_CONFIG_PATH): ociConfig.absolutePath
         ])
 
         expect:
@@ -54,7 +55,7 @@ security_token_file=${testPath}/oci_api_key.pem
     void 'it can be disabled even if config file exists'() {
         given:
         def ctx = ApplicationContext.run([
-                (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath,
+                (ORACLE_CLOUD_CONFIG_PATH): ociConfig.absolutePath,
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled"): false
         ])
 
@@ -69,7 +70,7 @@ security_token_file=${testPath}/oci_api_key.pem
     void 'it can enable session token authentication'() {
         given:
         def ctx = ApplicationContext.run([
-                (OracleCloudConfigFileConfigurationProperties.PREFIX + ".config-path"): ociConfig.absolutePath,
+                (ORACLE_CLOUD_CONFIG_PATH): ociConfig.absolutePath,
                 (OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token"): true
         ])
 
