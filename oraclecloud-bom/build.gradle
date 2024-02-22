@@ -3,27 +3,6 @@ plugins {
     id("io.micronaut.build.internal.oraclecloud-bom")
 }
 
-micronautBom {
-    suppressions {
-        dependencies.addAll([
-                "com.oracle.database.security:oraclepki:21.11.0.0",
-                "com.oracle.database.security:osdt_core:21.11.0.0",
-                        "com.oracle.database.security:osdt_cert:21.11.0.0",
-                        "com.oracle.database.ha:simplefan:21.11.0.0",
-                        "com.oracle.database.ha:ons:21.11.0.0",
-                        "com.oracle.database.nls:orai18n:21.11.0.0",
-                        "com.oracle.database.xml:xdb:21.11.0.0",
-                        "com.oracle.database.xml:xmlparserv2:21.11.0.0",
-                        "com.oracle.database.observability:dms:21.11.0.0",
-                        "com.oracle.database.observability:ojdbc11dms:21.11.0.0",
-                        "com.oracle.database.observability:ojdbc8dms:21.11.0.0",
-                        "com.oracle.database.observability:ojdbc8-observability:21.11.0.0",
-                        "com.oracle.database.observability:ojdbc11-observability:21.11.0.0",
-
-        ])
-        bomAuthorizedGroupIds.put("io.micronaut.oraclecloud:micronaut-oraclecloud-bom", ["com.oracle.database.security", "com.oracle.database.ha", "com.oracle.database.nls", "com.oracle.database.xml", "com.oracle.database.observability"] as Set)
-    }
-}
 
 dependencies {
     constraints {
@@ -34,9 +13,5 @@ dependencies {
         for (module in ['api', 'runtime', 'testing-junit4']) {
             api "com.fnproject.fn:$module:${libs.fn.api.get().version}"
         }
-
-
-
-
     }
 }
