@@ -1,5 +1,4 @@
 [versions]
-managed-ojdbc = "21.11.0.0"
 micronaut = "4.3.7"
 micronaut-platform = "4.3.0"
 micronaut-docs = "2.0.0"
@@ -51,7 +50,6 @@ micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-
 micronaut-discovery-client = { module = "io.micronaut.discovery:micronaut-discovery-client-bom", version.ref = "micronaut-discovery-client" }
 micronaut-test = { module = "io.micronaut.test:micronaut-test-bom", version.ref = "micronaut-test" }
 micronaut-logging = { module = "io.micronaut.logging:micronaut-logging-bom", version.ref = "micronaut-logging" }
-managed-oracle-jdbc = { module = 'com.oracle.database.jdbc:ojdbc11', version.ref = 'managed-ojdbc'  }
 
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
@@ -73,13 +71,11 @@ oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', 
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
 oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
+oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom" }
 oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
 oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
-
-# BOMs
-boms-oracle-jdbc = { module = "com.oracle.database.jdbc:ojdbc-bom", version.ref = "managed-ojdbc" }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }

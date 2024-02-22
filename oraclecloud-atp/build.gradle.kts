@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api(projects.micronautOraclecloudBmcDatabase)
     annotationProcessor(mnValidation.micronaut.validation.processor)
-    api(libs.managed.oracle.jdbc)
+    api(mnSql.ojdbc11)
     api(mn.micronaut.inject)
     api(mnValidation.micronaut.validation)
     runtimeOnly(libs.slf4j.jcl)
@@ -14,7 +14,8 @@ dependencies {
     compileOnly(mnSql.micronaut.jdbc.ucp)
     compileOnly(mnSql.micronaut.jdbc)
 
-    implementation(platform(libs.boms.oracle.jdbc))
+    implementation(platform("${libs.oracle.jdbc.bom.get()}:${mnSql.versions.ojdbc.get()}"))
+
     implementation(libs.oracle.security.oraclepki)
     implementation(libs.oracle.security.cert)
     implementation(libs.oracle.security.core)
