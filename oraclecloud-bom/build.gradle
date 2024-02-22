@@ -15,3 +15,10 @@ dependencies {
         }
     }
 }
+micronautBom {
+    suppressions {
+        acceptedVersionRegressions.add("ojdbc")
+        acceptedLibraryRegressions.add("boms-oracle-jdbc")
+        acceptedLibraryRegressions.add("oracle-jdbc")
+    }
+}
