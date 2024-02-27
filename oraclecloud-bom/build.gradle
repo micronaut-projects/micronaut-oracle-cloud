@@ -14,7 +14,7 @@ micronautBom {
                         "com.oracle.database.nls:orai18n:21.11.0.0",
                         "com.oracle.database.xml:xdb:21.11.0.0",
                         "com.oracle.database.xml:xmlparserv2:21.11.0.0",
-                        "com.oracle.database.observability:dms:21.11.0.0",
+                        "com.oracle.database.observability:dms:21.13.0.0",
                         "com.oracle.database.observability:ojdbc11dms:21.11.0.0",
                         "com.oracle.database.observability:ojdbc8dms:21.11.0.0",
                         "com.oracle.database.observability:ojdbc8-observability:21.11.0.0",
