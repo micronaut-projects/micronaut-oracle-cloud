@@ -157,7 +157,7 @@
         <h1>Micronaut Oracle Cloud</h1>
         <p></p>
         <p>Provides integration between Micronaut and Oracle Cloud</p>
-        <p><strong>Version:</strong> <select style='max-width: 200px' onChange='window.document.location.href=this.options[this.selectedIndex].value;'><option selected='selected' value='https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/index.html'>SNAPSHOT</option><option value='https://micronaut-projects.github.io/micronaut-oracle-cloud/latest/guide/index.html'>LATEST</option></select> </p>
+        <p><strong>Version:</strong> 3.7.0-SNAPSHOT </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
@@ -2831,12 +2831,12 @@ tracing:
 [tracing]
   [tracing.zipkin]
     enabled=true
+    supportsJoin=false
     [tracing.zipkin.sampler]
       probability=1
     [tracing.zipkin.http]
       url="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com"
-      path="/20200101/observations/public-span?dataFormat=zipkin&amp;dataFormatVersion=2&amp;dataKey=[public key]"
-    supportsJoin=false</code></pre>
+      path="/20200101/observations/public-span?dataFormat=zipkin&amp;dataFormatVersion=2&amp;dataKey=[public key]"</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
