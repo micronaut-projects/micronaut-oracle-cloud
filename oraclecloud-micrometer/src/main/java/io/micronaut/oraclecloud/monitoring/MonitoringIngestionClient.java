@@ -25,7 +25,6 @@ import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
 import com.oracle.bmc.monitoring.responses.PostMetricDataResponse;
 import io.micronaut.core.annotation.Nullable;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.Objects;
@@ -48,9 +47,8 @@ public class MonitoringIngestionClient {
     private final RequestSignerFactory requestSignerFactory;
     private final RegionProvider regionProvider;
     private final AbstractAuthenticationDetailsProvider authenticationDetailsProvider;
-
     @Nullable
-    private HttpProvider httpProvider;
+    private final HttpProvider httpProvider;
 
     private MonitoringClient delegate;
 
@@ -62,22 +60,40 @@ public class MonitoringIngestionClient {
      * @param requestSignerFactory          request signer factory
      * @param regionProvider                region provider
      * @param authenticationDetailsProvider authentication details provider
+     * @param httpProvider                  HTTP provider
      */
     public MonitoringIngestionClient(ClientConfiguration clientConfiguration,
                                      @Nullable ClientConfigurator clientConfigurator,
                                      @Nullable RequestSignerFactory requestSignerFactory,
                                      RegionProvider regionProvider,
-                                     AbstractAuthenticationDetailsProvider authenticationDetailsProvider) {
+                                     AbstractAuthenticationDetailsProvider authenticationDetailsProvider,
+                                     @Nullable HttpProvider httpProvider) {
         this.clientConfiguration = clientConfiguration;
         this.clientConfigurator = clientConfigurator;
         this.requestSignerFactory = requestSignerFactory;
         this.regionProvider = regionProvider;
         this.authenticationDetailsProvider = authenticationDetailsProvider;
+        this.httpProvider = httpProvider;
     }
 
-    @Inject
-    void setHttpProvider(@Nullable HttpProvider httpProvider) {
-        this.httpProvider = httpProvider;
+    /**
+     * Creates {@link MonitoringIngestionClient}.
+     *
+     * @param clientConfiguration           client configuration
+     * @param clientConfigurator            client configurator
+     * @param requestSignerFactory          request signer factory
+     * @param regionProvider                region provider
+     * @param authenticationDetailsProvider authentication details provider
+     *
+     * @deprecated Use constructor with {@link HttpProvider} instead
+     */
+    @Deprecated
+    public MonitoringIngestionClient(ClientConfiguration clientConfiguration,
+                                     @Nullable ClientConfigurator clientConfigurator,
+                                     @Nullable RequestSignerFactory requestSignerFactory,
+                                     RegionProvider regionProvider,
+                                     AbstractAuthenticationDetailsProvider authenticationDetailsProvider) {
+        this(clientConfiguration, clientConfigurator, requestSignerFactory, regionProvider, authenticationDetailsProvider, null);
     }
 
     /**
