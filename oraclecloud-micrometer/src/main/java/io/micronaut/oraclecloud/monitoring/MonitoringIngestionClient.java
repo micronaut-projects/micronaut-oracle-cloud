@@ -19,13 +19,15 @@ import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.http.ClientConfigurator;
+import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
 import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
 import com.oracle.bmc.monitoring.responses.PostMetricDataResponse;
 import io.micronaut.core.annotation.Nullable;
-
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.util.Objects;
 
 /**
@@ -46,6 +48,9 @@ public class MonitoringIngestionClient {
     private final RequestSignerFactory requestSignerFactory;
     private final RegionProvider regionProvider;
     private final AbstractAuthenticationDetailsProvider authenticationDetailsProvider;
+
+    @Nullable
+    private HttpProvider httpProvider;
 
     private MonitoringClient delegate;
 
@@ -70,6 +75,11 @@ public class MonitoringIngestionClient {
         this.authenticationDetailsProvider = authenticationDetailsProvider;
     }
 
+    @Inject
+    void setHttpProvider(@Nullable HttpProvider httpProvider) {
+        this.httpProvider = httpProvider;
+    }
+
     /**
      * Gets the {@link MonitoringClient} delegate.
      *
@@ -90,6 +100,9 @@ public class MonitoringIngestionClient {
                     }
                     if (requestSignerFactory != null) {
                         builder.requestSignerFactory(requestSignerFactory);
+                    }
+                    if (httpProvider != null) {
+                        builder.httpProvider(httpProvider);
                     }
 
                     delegate = builder.build(authenticationDetailsProvider);
