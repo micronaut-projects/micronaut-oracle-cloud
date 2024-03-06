@@ -107,6 +107,17 @@ loadScripts(document, 'script');</script>
  com.oracle.bmc.auth.RegionProvider&nbsp;regionProvider,
  com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</code></div>
 <div class="col-last even-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use constructor with <code>HttpProvider</code> instead</div>
+</div>
+</div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider,com.oracle.bmc.http.client.HttpProvider)" class="member-name-link">MonitoringIngestionClient</a><wbr>(com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
+ @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory,
+ com.oracle.bmc.auth.RegionProvider&nbsp;regionProvider,
+ com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider,
+ @Nullable com.oracle.bmc.http.client.HttpProvider&nbsp;httpProvider)</code></div>
+<div class="col-last odd-row-color">
 <div class="block">Creates <a href="MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring"><code>MonitoringIngestionClient</code></a>.</div>
 </div>
 </div>
@@ -151,7 +162,7 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider)">
+<section class="detail" id="&lt;init&gt;(com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider,com.oracle.bmc.http.client.HttpProvider)">
 <h3>MonitoringIngestionClient</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">MonitoringIngestionClient</span><wbr><span class="parameters">(com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
  @Nullable
@@ -159,7 +170,35 @@ loadScripts(document, 'script');</script>
  @Nullable
  @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory,
  com.oracle.bmc.auth.RegionProvider&nbsp;regionProvider,
+ com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider,
+ @Nullable
+ @Nullable com.oracle.bmc.http.client.HttpProvider&nbsp;httpProvider)</span></div>
+<div class="block">Creates <a href="MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring"><code>MonitoringIngestionClient</code></a>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>clientConfiguration</code> - client configuration</dd>
+<dd><code>clientConfigurator</code> - client configurator</dd>
+<dd><code>requestSignerFactory</code> - request signer factory</dd>
+<dd><code>regionProvider</code> - region provider</dd>
+<dd><code>authenticationDetailsProvider</code> - authentication details provider</dd>
+<dd><code>httpProvider</code> - HTTP provider</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider)">
+<h3>MonitoringIngestionClient</h3>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">MonitoringIngestionClient</span><wbr><span class="parameters">(com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
+ @Nullable
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
+ @Nullable
+ @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory,
+ com.oracle.bmc.auth.RegionProvider&nbsp;regionProvider,
  com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider&nbsp;authenticationDetailsProvider)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">Use constructor with <code>HttpProvider</code> instead</div>
+</div>
 <div class="block">Creates <a href="MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring"><code>MonitoringIngestionClient</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
