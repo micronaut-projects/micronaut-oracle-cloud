@@ -27,6 +27,7 @@ import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistry;
 import io.micronaut.runtime.ApplicationConfiguration;
+import jakarta.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,8 +104,8 @@ public class OracleCloudMeterRegistryFactory {
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.TRUE, defaultValue = StringUtils.FALSE)
     OracleCloudMeterRegistry oracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
-                                                      MonitoringIngestionClient monitoringIngestionClient) {
-        return new OracleCloudMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClient.getDelegate());
+                                                      Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        return new OracleCloudMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
     }
 
     /**
@@ -120,7 +121,7 @@ public class OracleCloudMeterRegistryFactory {
     @Bean(preDestroy = "close")
     @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
-    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig, MonitoringIngestionClient monitoringIngestionClient) {
-        return new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClient.getDelegate());
+    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        return new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
     }
 }
