@@ -15,7 +15,6 @@
  */
 package io.micronaut.oraclecloud.monitoring.micrometer;
 
-import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import com.oracle.bmc.monitoring.model.PostMetricDataDetails;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
@@ -26,6 +25,8 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.lang.Nullable;
 import io.micrometer.common.util.internal.logging.WarnThenDebugLogger;
+import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
+import jakarta.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +43,12 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     protected final OracleCloudConfig oracleCloudConfig;
     private final Logger logger = LoggerFactory.getLogger(AbstractOracleCloudMeterRegistry.class);
     private final WarnThenDebugLogger warnThenDebugLogger = new WarnThenDebugLogger(OracleCloudMetricsNamingConvention.class);
-    private final MonitoringClient monitoringClient;
+    private final Provider<MonitoringIngestionClient> monitoringIngestionClientProvider;
+    private MonitoringIngestionClient monitoringIngestionClient;
 
-    protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, MonitoringClient monitoringClient, ThreadFactory threadFactory) {
+    protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
         super(oracleCloudConfig, clock);
-        this.monitoringClient = monitoringClient;
+        this.monitoringIngestionClientProvider = monitoringIngestionClientProvider;
         this.oracleCloudConfig = oracleCloudConfig;
         config().namingConvention(new OracleCloudMetricsNamingConvention());
         config().commonTags("application", this.oracleCloudConfig.applicationName());
@@ -103,7 +105,11 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
                 builder.batchAtomicity(oracleCloudConfig.batchAtomicity());
             }
             try {
-                monitoringClient.postMetricData(PostMetricDataRequest.builder()
+                if (monitoringIngestionClient == null) {
+                    monitoringIngestionClient = monitoringIngestionClientProvider.get();
+                }
+
+                monitoringIngestionClient.postMetricData(PostMetricDataRequest.builder()
                     .postMetricDataDetails(builder.build())
                     .build());
             } catch (Exception e) {
