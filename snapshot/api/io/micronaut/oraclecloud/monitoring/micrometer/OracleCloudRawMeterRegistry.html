@@ -129,13 +129,13 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,com.oracle.bmc.monitoring.MonitoringClient)" class="member-name-link">OracleCloudRawMeterRegistry</a><wbr>(<a href="OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a>&nbsp;oracleCloudConfig,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider)" class="member-name-link">OracleCloudRawMeterRegistry</a><wbr>(<a href="OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a>&nbsp;oracleCloudConfig,
  io.micrometer.core.instrument.Clock&nbsp;clock,
- com.oracle.bmc.monitoring.MonitoringClient&nbsp;monitoringClient)</code></div>
+ jakarta.inject.Provider&lt;<a href="../MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring">MonitoringIngestionClient</a>&gt;&nbsp;monitoringIngestionClientProvider)</code></div>
 <div class="col-last even-row-color">&nbsp;</div>
-<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,com.oracle.bmc.monitoring.MonitoringClient,java.util.concurrent.ThreadFactory)" class="member-name-link">OracleCloudRawMeterRegistry</a><wbr>(<a href="OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a>&nbsp;oracleCloudConfig,
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider,java.util.concurrent.ThreadFactory)" class="member-name-link">OracleCloudRawMeterRegistry</a><wbr>(<a href="OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a>&nbsp;oracleCloudConfig,
  io.micrometer.core.instrument.Clock&nbsp;clock,
- com.oracle.bmc.monitoring.MonitoringClient&nbsp;monitoringClient,
+ jakarta.inject.Provider&lt;<a href="../MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring">MonitoringIngestionClient</a>&gt;&nbsp;monitoringIngestionClientProvider,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadFactory.html" title="class or interface in java.util.concurrent" class="external-link">ThreadFactory</a>&nbsp;threadFactory)</code></div>
 <div class="col-last odd-row-color">&nbsp;</div>
 </div>
@@ -215,19 +215,19 @@ loadScripts(document, 'script');</script>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,com.oracle.bmc.monitoring.MonitoringClient)">
+<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider)">
 <h3>OracleCloudRawMeterRegistry</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">OracleCloudRawMeterRegistry</span><wbr><span class="parameters">(<a href="OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a>&nbsp;oracleCloudConfig,
  io.micrometer.core.instrument.Clock&nbsp;clock,
- com.oracle.bmc.monitoring.MonitoringClient&nbsp;monitoringClient)</span></div>
+ jakarta.inject.Provider&lt;<a href="../MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring">MonitoringIngestionClient</a>&gt;&nbsp;monitoringIngestionClientProvider)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,com.oracle.bmc.monitoring.MonitoringClient,java.util.concurrent.ThreadFactory)">
+<section class="detail" id="&lt;init&gt;(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider,java.util.concurrent.ThreadFactory)">
 <h3>OracleCloudRawMeterRegistry</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">OracleCloudRawMeterRegistry</span><wbr><span class="parameters">(<a href="OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a>&nbsp;oracleCloudConfig,
  io.micrometer.core.instrument.Clock&nbsp;clock,
- com.oracle.bmc.monitoring.MonitoringClient&nbsp;monitoringClient,
+ jakarta.inject.Provider&lt;<a href="../MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring">MonitoringIngestionClient</a>&gt;&nbsp;monitoringIngestionClientProvider,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ThreadFactory.html" title="class or interface in java.util.concurrent" class="external-link">ThreadFactory</a>&nbsp;threadFactory)</span></div>
 </section>
 </li>
