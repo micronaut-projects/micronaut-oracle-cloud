@@ -24,12 +24,13 @@ import com.oracle.bmc.http.client.ClientProperty;
  * @author Jonas Konrad
  */
 public final class NettyClientProperties {
-    private NettyClientProperties() {}
-
     /**
      * The Micronaut HTTP client service ID to use for this client. The client is configured using
      * the {@code micronaut.http.services.<service-id>.*} configuration properties. The default
      * service ID is {@value ManagedNettyHttpProvider#SERVICE_ID}.
      */
     public static final ClientProperty<String> SERVICE_ID = ClientProperty.create("serviceId");
+
+    private NettyClientProperties() {
+    }
 }
