@@ -26,7 +26,7 @@ jobs:
           oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
           oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
       - name: Start runner
-        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@master
+        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@update-oci-start-runners
         id: start-runner
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -43,7 +43,6 @@ jobs:
       matrix:
         java: [ '17' ]
     steps:
-      - uses: AutoModality/action-clean@v1.1.1
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
