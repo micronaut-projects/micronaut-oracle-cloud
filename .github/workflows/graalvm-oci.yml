@@ -26,7 +26,7 @@ jobs:
           oci-private-key-passphrase: ${{ secrets.OCI_PASSPHRASE }}
           oci-private-key-fingerprint: ${{ secrets.OCI_FINGERPRINT }}
       - name: Start runner
-        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@master
+        uses: micronaut-projects/github-actions/start-oracle-cloud-runners@update-oci-start-runners
         id: start-runner
         with:
           github-token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
@@ -34,7 +34,6 @@ jobs:
           oci-subnet-ocid: ${{ secrets.OCI_SUBNET }}
           oci-av-domain: ${{ secrets.OCI_AV_DOMAIN }}
           oci-image-ocid: ${{ secrets.OCI_RUNNER_IMAGE }}
-          oci-image-shape: "VM.Standard.E4.4"
           runners-count: '1'
   build:
     if: github.repository != 'micronaut-projects/micronaut-project-template'
