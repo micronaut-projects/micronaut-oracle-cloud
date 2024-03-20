@@ -8,8 +8,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
 import io.micronaut.oraclecloud.serde.OciSerializationConfiguration;
 import io.micronaut.scheduling.TaskExecutors;
@@ -45,8 +44,8 @@ public class ManagedTest {
     public static class MockProvider extends ManagedNettyHttpProvider {
         int buildersCreated = 0;
 
-        public MockProvider(@Client(id = SERVICE_ID) HttpClient mnHttpClient, @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor, ObjectMapper jsonMapper, OciSerdeConfiguration ociSerdeConfiguration, OciSerializationConfiguration ociSerializationConfiguration) {
-            super(mnHttpClient, ioExecutor, jsonMapper, ociSerdeConfiguration, ociSerializationConfiguration);
+        public MockProvider(HttpClientRegistry<?> mnHttpClientRegistry, @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor, ObjectMapper jsonMapper, OciSerdeConfiguration ociSerdeConfiguration, OciSerializationConfiguration ociSerializationConfiguration) {
+            super(mnHttpClientRegistry, ioExecutor, jsonMapper, ociSerdeConfiguration, ociSerializationConfiguration);
         }
 
         @Override
