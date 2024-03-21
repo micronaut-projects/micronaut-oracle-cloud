@@ -18,7 +18,9 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.json.JsonMapper;
@@ -42,18 +44,23 @@ import java.util.concurrent.ExecutorService;
  */
 @Singleton
 @Internal
+@BootstrapContextCompatible
 public class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
     final HttpClientRegistry<?> mnHttpClientRegistry;
     final HttpClient mnHttpClient;
+    /**
+     * {@code null} in bootstrap context.
+     */
+    @Nullable
     final ExecutorService ioExecutor;
     final JsonMapper jsonMapper;
 
     @Inject
     public ManagedNettyHttpProvider(
         HttpClientRegistry<?> mnHttpClientRegistry,
-        @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor,
+        @Named(TaskExecutors.BLOCKING) @Nullable ExecutorService ioExecutor,
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration
