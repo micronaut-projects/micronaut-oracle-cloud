@@ -111,6 +111,10 @@ public interface OracleCloudConfig extends StepRegistryConfig {
                                 "must match pattern '" + NAMESPACE_REGEX + "'",
                                 InvalidReason.MALFORMED);
                     }
+                    if (namespace().startsWith("oci_")) {
+                        return Validated.invalid(prefix() + ".namespace", namespace(),
+                                "cannot start with 'oci_'", InvalidReason.MALFORMED);
+                    }
                     return Validated.valid(prefix() + ".namespace", namespace());
                 });
     }

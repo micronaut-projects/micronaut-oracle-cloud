@@ -20,16 +20,24 @@ class OracleCloudMeterRegistryFactorySpec extends Specification {
     @Shared
     String compartmentOcid = System.getenv("MONITORING_COMPARTMENT_OCID")
 
+    @Shared
+    String configProfile = System.getenv("MONITORING_CONFIG_PROFILE")
+
     def "test it publish metrics to ingestion telemetry endpoint"() {
         given:
 
         def confVariables = [
+                "micronaut.metrics.export.oraclecloud.enabled"        : true,
+                "micronaut.metrics.export.oraclecloud.step"           : "1s",
                 "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
-                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test"
         ]
 
         if (compartmentOcid != null && !compartmentOcid.isEmpty()) {
             confVariables["micronaut.metrics.export.oraclecloud.compartmentId"] = compartmentOcid
+        }
+        if (configProfile != null && !configProfile.isEmpty()) {
+            confVariables["oci.config.profile"] = configProfile
         }
 
         ApplicationContext context = ApplicationContext.run(confVariables, Environment.ORACLE_CLOUD)
@@ -41,7 +49,7 @@ class OracleCloudMeterRegistryFactorySpec extends Specification {
                 description("Testing of micronaut-oraclecloud-monitoring module").
                 register(cloudMeterRegistry)
         counter.increment(5.0)
-        sleep(2000)
+        sleep(6000)
 
         then:
         noExceptionThrown()
