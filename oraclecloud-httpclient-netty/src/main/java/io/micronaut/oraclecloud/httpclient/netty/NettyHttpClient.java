@@ -24,6 +24,7 @@ import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
+import io.micronaut.http.client.HttpVersionSelection;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.json.JsonMapper;
@@ -95,7 +96,15 @@ final class NettyHttpClient implements HttpClient {
                     throw new IllegalArgumentException("Cannot change property " + entry.getKey() + " in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is '" + ManagedNettyHttpProvider.SERVICE_ID + "'.");
                 }
             }
-            mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
+            if (builder.managedProvider.mnHttpClient != null) {
+                mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
+            } else {
+                mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClientRegistry.getClient(
+                    HttpVersionSelection.forClientConfiguration(new DefaultHttpClientConfiguration()),
+                    builder.serviceId,
+                    null
+                );
+            }
             if (builder.managedProvider.ioExecutor == null) {
                 ownsThreadPool = true;
                 blockingIoExecutor = Executors.newCachedThreadPool();

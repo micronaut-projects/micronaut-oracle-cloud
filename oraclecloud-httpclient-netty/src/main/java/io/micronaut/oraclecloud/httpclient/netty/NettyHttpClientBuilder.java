@@ -36,6 +36,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     final Map<ClientProperty<?>, Object> properties = new HashMap<>();
     URI baseUri;
     boolean buffered = true;
+    String serviceId = ManagedNettyHttpProvider.SERVICE_ID;
 
     NettyHttpClientBuilder(@Nullable ManagedNettyHttpProvider managedProvider) {
         this.managedProvider = managedProvider;
@@ -61,6 +62,13 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
             properties.put(key, value);
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;
+        } else if (key == NettyClientProperties.SERVICE_ID) {
+            if (managedProvider == null) {
+                throw new IllegalArgumentException("Can only configure the service ID for the managed netty http client");
+            } else if (managedProvider.mnHttpClientRegistry == null) {
+                throw new IllegalArgumentException("Cannot configure the service ID when the client is passed explicitly");
+            }
+            serviceId = (String) value;
         } else if (key == StandardClientProperties.KEY_STORE ||
             key == StandardClientProperties.TRUST_STORE ||
             key == StandardClientProperties.HOSTNAME_VERIFIER ||
