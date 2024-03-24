@@ -1248,7 +1248,7 @@ The module generates the OracleWallet on startup.
 </ul>
 </div>
 <div class="paragraph">
-<p>All other properties, in particular those related to proxies or TLS configuration, are not supported. Instead, you can configure these settings through the normal Micronaut HTTP client configuration properties, with the special service name <code>oci</code>, for example the <code>micronaut.http.services.oci.read-timeout</code> property. For the managed netty client, this allows you to configure TLS, proxy settings, various timeouts and the pool size.</p>
+<p>All other properties, in particular those related to proxies or TLS configuration, are not supported. Instead, you can configure these settings through the normal Micronaut HTTP client configuration properties, with the special service name <code>oci</code>, for example the <code>micronaut.http.services.oci.read-timeout</code> property. For the managed netty client, this allows you to configure TLS, proxy settings, various timeouts and the pool size. The service name can be customized using the <code>NettyClientProperties.SERVICE_ID</code> property.</p>
 </div>
 </div>
 
