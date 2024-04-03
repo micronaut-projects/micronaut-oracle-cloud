@@ -15,7 +15,6 @@
  */
 package io.micronaut.oraclecloud.monitoring.micrometer;
 
-import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.Datapoint;
 import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import io.micrometer.core.instrument.Clock;
@@ -34,10 +33,12 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
+import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDatapointProducer;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudCounter;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDistributionSummary;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudTimer;
+import jakarta.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,16 +62,16 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
     private final Logger logger = LoggerFactory.getLogger(OracleCloudRawMeterRegistry.class);
 
     public OracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig,
-                                    Clock clock,
-                                    MonitoringClient monitoringClient) {
-        this(oracleCloudConfig, clock, monitoringClient, new NamedThreadFactory("oraclecloud-metrics-publisher"));
+                                       Clock clock,
+                                       Provider<MonitoringIngestionClient> monitoringIngestionClientProvider
+                                       ) {
+        this(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
     }
 
     public OracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig,
-                                    Clock clock,
-                                    MonitoringClient monitoringClient,
-                                    ThreadFactory threadFactory) {
-        super(oracleCloudConfig, clock, monitoringClient, threadFactory);
+                                       Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
+                                       ThreadFactory threadFactory) {
+        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
 
     }
 
@@ -128,7 +129,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
             this::trackFunctionCounter,
             this::trackFunctionTimer,
             this::trackMeter)
-        ).collect(Collectors.toList());
+        ).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**

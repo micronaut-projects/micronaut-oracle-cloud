@@ -3,7 +3,6 @@ plugins {
     id("io.micronaut.build.internal.oraclecloud-bom")
 }
 
-
 dependencies {
     constraints {
         for (name in gradle.ociArtifacts) {

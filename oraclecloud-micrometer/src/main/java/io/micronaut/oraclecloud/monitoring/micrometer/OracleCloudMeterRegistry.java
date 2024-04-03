@@ -15,7 +15,6 @@
  */
 package io.micronaut.oraclecloud.monitoring.micrometer;
 
-import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.Datapoint;
 import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import io.micrometer.core.instrument.Clock;
@@ -31,6 +30,8 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
+import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
+import jakarta.inject.Provider;
 
 import java.util.Collections;
 import java.util.Date;
@@ -52,15 +53,15 @@ public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
 
     public OracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
-                                    MonitoringClient monitoringClient) {
-        this(oracleCloudConfig, clock, monitoringClient, new NamedThreadFactory("oraclecloud-metrics-publisher"));
+                                    Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        this(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
     }
 
     public OracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
-                                    MonitoringClient monitoringClient,
+                                    Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
                                     ThreadFactory threadFactory) {
-        super(oracleCloudConfig, clock, monitoringClient, threadFactory);
+        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
     }
 
     /**
@@ -78,7 +79,7 @@ public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
                 this::trackFunctionCounter,
                 this::trackFunctionTimer,
                 this::trackMeter)
-        ).collect(Collectors.toList());
+        ).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**

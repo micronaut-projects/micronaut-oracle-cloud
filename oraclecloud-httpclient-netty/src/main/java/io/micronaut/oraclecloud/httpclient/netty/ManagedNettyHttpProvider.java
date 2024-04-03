@@ -18,9 +18,11 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.annotation.Client;
+import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
@@ -42,22 +44,29 @@ import java.util.concurrent.ExecutorService;
  */
 @Singleton
 @Internal
+@BootstrapContextCompatible
 public class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
+    final HttpClientRegistry<?> mnHttpClientRegistry;
     final HttpClient mnHttpClient;
+    /**
+     * {@code null} in bootstrap context.
+     */
+    @Nullable
     final ExecutorService ioExecutor;
     final JsonMapper jsonMapper;
 
     @Inject
     public ManagedNettyHttpProvider(
-        @Client(id = SERVICE_ID) HttpClient mnHttpClient,
-        @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor,
+        HttpClientRegistry<?> mnHttpClientRegistry,
+        @Named(TaskExecutors.BLOCKING) @Nullable ExecutorService ioExecutor,
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration
     ) {
-        this.mnHttpClient = mnHttpClient;
+        this.mnHttpClientRegistry = mnHttpClientRegistry;
+        this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
     }
@@ -67,6 +76,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         HttpClient mnHttpClient,
         ExecutorService ioExecutor
     ) {
+        this.mnHttpClientRegistry = null;
         this.mnHttpClient = mnHttpClient;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();

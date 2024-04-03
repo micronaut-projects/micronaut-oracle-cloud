@@ -24,11 +24,13 @@ import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
+import io.micronaut.http.client.HttpVersionSelection;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.handler.codec.PrematureChannelClosureException;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -51,6 +53,7 @@ final class NettyHttpClient implements HttpClient {
     private static final Map<ClientProperty<?>, Object> EXPECTED_PROPERTIES;
 
     final boolean hasContext;
+    final boolean ownsThreadPool;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
     final ExecutorService blockingIoExecutor;
@@ -75,6 +78,7 @@ final class NettyHttpClient implements HttpClient {
         DefaultHttpClient mnClient;
         if (builder.managedProvider == null) {
             hasContext = false;
+            ownsThreadPool = true;
             DefaultHttpClientConfiguration cfg = new DefaultHttpClientConfiguration();
             if (builder.properties.containsKey(StandardClientProperties.CONNECT_TIMEOUT)) {
                 cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.CONNECT_TIMEOUT));
@@ -92,8 +96,22 @@ final class NettyHttpClient implements HttpClient {
                     throw new IllegalArgumentException("Cannot change property " + entry.getKey() + " in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is '" + ManagedNettyHttpProvider.SERVICE_ID + "'.");
                 }
             }
-            mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
-            blockingIoExecutor = builder.managedProvider.ioExecutor;
+            if (builder.managedProvider.mnHttpClient != null) {
+                mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
+            } else {
+                mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClientRegistry.getClient(
+                    HttpVersionSelection.forClientConfiguration(new DefaultHttpClientConfiguration()),
+                    builder.serviceId,
+                    null
+                );
+            }
+            if (builder.managedProvider.ioExecutor == null) {
+                ownsThreadPool = true;
+                blockingIoExecutor = Executors.newCachedThreadPool();
+            } else {
+                ownsThreadPool = false;
+                blockingIoExecutor = builder.managedProvider.ioExecutor;
+            }
             jsonMapper = builder.managedProvider.jsonMapper;
         }
         upstreamHttpClient = mnClient;
@@ -120,7 +138,8 @@ final class NettyHttpClient implements HttpClient {
 
     @Override
     public boolean isProcessingException(Exception e) {
-        return e instanceof JacksonException;
+        // these exceptions will allow the client to retry the request
+        return e instanceof JacksonException || e instanceof PrematureChannelClosureException;
     }
 
     @Override
@@ -131,6 +150,8 @@ final class NettyHttpClient implements HttpClient {
             } catch (IOException e) {
                 throw new UncheckedIOException(e);
             }
+        }
+        if (ownsThreadPool) {
             blockingIoExecutor.shutdown();
         }
     }

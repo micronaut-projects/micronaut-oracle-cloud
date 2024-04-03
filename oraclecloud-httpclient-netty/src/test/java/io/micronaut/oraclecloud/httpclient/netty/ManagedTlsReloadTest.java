@@ -114,6 +114,76 @@ public class ManagedTlsReloadTest {
         }
     }
 
+    @Test
+    public void customServiceId() throws IOException, GeneralSecurityException, ExecutionException, InterruptedException {
+        Path trustStoreServer = Files.createTempFile("micronaut-test-trust-store-server", null);
+        Path keyStoreServer = Files.createTempFile("micronaut-test-key-store-server", null);
+        Path keyStoreClientCustom = Files.createTempFile("micronaut-test-key-store-client-custom", null);
+        Path keyStoreClientDefault = Files.createTempFile("micronaut-test-key-store-client-default", null);
+
+        SelfSignedCertificate clientCustom = new SelfSignedCertificate("clientCustom");
+        storeKey(keyStoreClientCustom, clientCustom);
+        SelfSignedCertificate clientDefault = new SelfSignedCertificate("clientDefault");
+        storeKey(keyStoreClientDefault, clientDefault);
+        storeTrust(trustStoreServer, clientCustom, clientDefault);
+        SelfSignedCertificate serverCert = new SelfSignedCertificate("localhost");
+        storeKey(keyStoreServer, serverCert);
+
+        try (ApplicationContext ctx = ApplicationContext.run(Map.ofEntries(
+            Map.entry("spec.name", "ManagedTlsReloadTest"),
+            Map.entry("micronaut.ssl.enabled", "true"),
+            Map.entry("micronaut.server.ssl.port", "-1"),
+            Map.entry("micronaut.server.ssl.client-authentication", "NEED"),
+
+            Map.entry("micronaut.server.ssl.trust-store.path", "file://" + trustStoreServer),
+            Map.entry("micronaut.server.ssl.trust-store.type", "JKS"),
+            Map.entry("micronaut.server.ssl.trust-store.password", ""),
+
+            Map.entry("micronaut.server.ssl.key-store.path", "file://" + keyStoreServer),
+            Map.entry("micronaut.server.ssl.key-store.type", "PKCS12"),
+            Map.entry("micronaut.server.ssl.key-store.password", ""),
+
+            Map.entry("micronaut.http.services.custom.ssl.enabled", "true"),
+            Map.entry("micronaut.http.services.custom.ssl.client-authentication", "NEED"),
+            Map.entry("micronaut.http.services.custom.ssl.insecure-trust-all-certificates", true),
+            Map.entry("micronaut.http.services.custom.ssl.key-store.path", "file://" + keyStoreClientCustom),
+            Map.entry("micronaut.http.services.custom.ssl.key-store.type", "PKCS12"),
+            Map.entry("micronaut.http.services.custom.ssl.key-store.password", ""),
+
+            Map.entry("micronaut.http.services.oci.ssl.enabled", "true"),
+            Map.entry("micronaut.http.services.oci.ssl.client-authentication", "NEED"),
+            Map.entry("micronaut.http.services.oci.ssl.insecure-trust-all-certificates", true),
+            Map.entry("micronaut.http.services.oci.ssl.key-store.path", "file://" + keyStoreClientDefault),
+            Map.entry("micronaut.http.services.oci.ssl.key-store.type", "PKCS12"),
+            Map.entry("micronaut.http.services.oci.ssl.key-store.password", "")
+        ));
+             EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class)) {
+            embeddedServer.start();
+
+            try (HttpClient client = ctx.getBean(HttpProvider.class).newBuilder()
+                .baseUri(embeddedServer.getURI())
+                .build()) {
+                try (HttpResponse response = client.createRequest(Method.GET).appendPathPart("/cert").execute().toCompletableFuture().get()) {
+                    Assertions.assertEquals("CN=clientDefault", response.textBody().toCompletableFuture().get());
+                }
+            }
+
+            try (HttpClient client = ctx.getBean(HttpProvider.class).newBuilder()
+                .property(NettyClientProperties.SERVICE_ID, "custom")
+                .baseUri(embeddedServer.getURI())
+                .build()) {
+                try (HttpResponse response = client.createRequest(Method.GET).appendPathPart("/cert").execute().toCompletableFuture().get()) {
+                    Assertions.assertEquals("CN=clientCustom", response.textBody().toCompletableFuture().get());
+                }
+            }
+        } finally {
+            Files.deleteIfExists(trustStoreServer);
+            Files.deleteIfExists(keyStoreServer);
+            Files.deleteIfExists(keyStoreClientCustom);
+            Files.deleteIfExists(keyStoreClientDefault);
+        }
+    }
+
     @Controller
     @Requires(property = "spec.name", value = "ManagedTlsReloadTest")
     public static class MyController {
