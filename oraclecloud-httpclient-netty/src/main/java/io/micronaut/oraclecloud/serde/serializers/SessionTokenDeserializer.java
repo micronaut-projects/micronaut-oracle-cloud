@@ -27,7 +27,7 @@ import jakarta.inject.Singleton;
 import java.io.IOException;
 
 /**
- * Deserializer for {@link SessionToken} class. The deerializer is required now because of the
+ * Deserializer for {@link SessionToken} class. The deserializer is required now because of the
  * strange JsonValue and JsonBuilder annotation combination in the class that serde does not
  * seem to support correctly. This might change in the future.
  */
