@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.serde;
 
+import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.internal.GetResourcePrincipalSessionTokenRequest;
 import com.oracle.bmc.auth.internal.JWK;
 import com.oracle.bmc.auth.internal.X509FederationClient;
