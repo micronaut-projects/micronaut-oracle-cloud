@@ -22,6 +22,9 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.type.Argument;
 import io.micronaut.serde.Decoder;
 import io.micronaut.serde.Deserializer;
+import io.micronaut.serde.annotation.Serdeable;
+import io.micronaut.serde.exceptions.SerdeException;
+import io.micronaut.serde.util.CustomizableDeserializer;
 import jakarta.inject.Singleton;
 
 import java.io.IOException;
@@ -33,24 +36,20 @@ import java.io.IOException;
  */
 @Internal
 @Singleton
-final class SessionTokenDeserializer implements Deserializer<SessionToken> {
+final class SessionTokenDeserializer implements CustomizableDeserializer<SessionToken> {
 
     @Override
-    public @Nullable SessionToken deserialize(@NonNull Decoder decoder, DecoderContext context, @NonNull Argument<? super SessionToken> type) throws IOException {
-        String token = null;
-
-        Decoder objectDecoder = decoder.decodeObject(type);
-        String prop = objectDecoder.decodeKey();
-        while (prop != null) {
-            if ("token".equals(prop)) {
-                token = decoder.decodeStringNullable();
-            } else {
-                decoder.skipValue();
+    public @NonNull Deserializer<SessionToken> createSpecific(DecoderContext context, @NonNull Argument<? super SessionToken> type) throws SerdeException {
+        Argument<SessionTokenDto> dtoArg = Argument.of(SessionTokenDto.class);
+        Deserializer<? extends SessionTokenDto> dtoDeserializer = context.findDeserializer(SessionTokenDto.class).createSpecific(context, dtoArg);
+        return new Deserializer<>() {
+            @Override
+            public @Nullable SessionToken deserialize(@NonNull Decoder decoder, DecoderContext context, @NonNull Argument<? super SessionToken> type) throws IOException {
+                return new SessionToken(dtoDeserializer.deserialize(decoder, context, dtoArg).token());
             }
-            prop = objectDecoder.decodeKey();
-
-        }
-        return new SessionToken(token);
+        };
     }
 
+    @Serdeable.Deserializable
+    record SessionTokenDto(@Nullable String token) {}
 }
