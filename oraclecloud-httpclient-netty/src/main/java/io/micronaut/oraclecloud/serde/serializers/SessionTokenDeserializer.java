@@ -51,5 +51,6 @@ final class SessionTokenDeserializer implements CustomizableDeserializer<Session
     }
 
     @Serdeable.Deserializable
-    record SessionTokenDto(@Nullable String token) {}
+    record SessionTokenDto(@Nullable String token) {
+    }
 }
