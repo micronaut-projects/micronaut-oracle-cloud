@@ -364,7 +364,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="simpleAuthenticationDetailsProvider(io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties)">
 <h3>simpleAuthenticationDetailsProvider</h3>
 <div class="member-signature"><span class="annotations">@Singleton
-@Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(property="oci.tenant-id")
+@Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(missingBeans=com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.class) @Requires(property="oci.tenant-id")
 @Primary
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type">com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</span>&nbsp;<span class="element-name">simpleAuthenticationDetailsProvider</span><wbr><span class="parameters">(<a href="OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</span></div>
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
