@@ -43,7 +43,7 @@ class SerdeSpecBase extends Specification {
     }
 
     // Class that has access to ExplicitlySetBmcModel protected methods
-    private static abstract class ModelUtils extends ExplicitlySetBmcModel {
+    static abstract class ModelUtils extends ExplicitlySetBmcModel {
         static ExplicitlySetBmcModel copyExplicitlySet(ExplicitlySetBmcModel from, ExplicitlySetBmcModel to) {
             BeanIntrospection.getIntrospection(((Object) from).getClass()).beanProperties.forEach(p -> {
                 if (from.wasPropertyExplicitlySet(p.getName())) {
