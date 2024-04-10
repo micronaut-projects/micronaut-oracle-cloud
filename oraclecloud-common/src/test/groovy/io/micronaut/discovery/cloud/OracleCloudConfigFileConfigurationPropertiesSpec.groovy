@@ -40,6 +40,7 @@ security_token_file=${testPath}/oci_api_key.pem
 
     }
 
+    @IgnoreIf(value = { env["CI"] as boolean == true }, reason = "Fails 36% on CI https://ge.micronaut.io/scans/tests?search.timeZoneId=Europe%2FMadrid&tests.container=io.micronaut.discovery.cloud.OracleCloudConfigFileConfigurationPropertiesSpec&tests.test=it%20is%20enabled%20by%20default")
     void 'it is enabled by default'() {
         given:
         def ctx = ApplicationContext.run([
@@ -54,7 +55,6 @@ security_token_file=${testPath}/oci_api_key.pem
         ctx.close()
     }
 
-    @IgnoreIf(value = { env["CI"] as boolean == true }, reason = "Fails 36% on CI https://ge.micronaut.io/scans/tests?search.timeZoneId=Europe%2FMadrid&tests.container=io.micronaut.discovery.cloud.OracleCloudConfigFileConfigurationPropertiesSpec&tests.test=it%20is%20enabled%20by%20default")
     void 'it can be disabled even if config file exists'() {
         given:
         def ctx = ApplicationContext.run([
