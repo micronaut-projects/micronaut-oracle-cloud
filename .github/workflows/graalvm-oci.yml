@@ -56,7 +56,7 @@ jobs:
           distribution: 'oracle'
           java-version: '17'
       - name: "Set up GRAALVM_HOME for Native Build Tools"
-        uses: graalvm/setup-graalvm@v1.1.5.1
+        uses: graalvm/setup-graalvm@v1.1.8.2
         with:
           distribution: 'graalvm-community'
           java-version: ${{ matrix.java }}
