@@ -472,6 +472,35 @@ public class NettyTest {
         }
     }
 
+    @Test
+    public void timeoutRetryTest() throws Exception {
+        netty.timeout = false; // no server-side timeout
+        netty.handleOneRequest((ctx, request) -> {
+            // no response sent
+        });
+
+        try (HttpClient client = provider().newBuilder()
+            .baseUri(netty.getEndpoint())
+            .build()) {
+            try (HttpResponse response = client.createRequest(Method.GET)
+                .execute().toCompletableFuture()
+                .get()) {
+                Assertions.fail();
+            } catch (Exception expected) {
+                Throwable t = expected;
+                while (t != null) {
+                    if (t instanceof Exception e && client.isProcessingException(e)) {
+                        // condition met
+                        return;
+                    }
+                    t = t.getCause();
+                }
+                expected.printStackTrace();
+                Assertions.fail("Exception is not a processing exception");
+            }
+        }
+    }
+
     @Serdeable
     public static class MyBean {
         private String s;

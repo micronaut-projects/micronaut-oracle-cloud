@@ -38,6 +38,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
 
     boolean handleContinue;
     boolean aggregate;
+    boolean timeout;
     Consumer<Channel> channelCustomizer;
     private List<Throwable> errors;
     private Channel serverChannel;
@@ -60,6 +61,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
         channelCustomizer = c -> {};
         handleContinue = false;
         aggregate = true;
+        timeout = true;
         handlers = new ArrayDeque<>();
 
         errors = new CopyOnWriteArrayList<>();
@@ -73,8 +75,10 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
+                        if (timeout) {
+                            ch.pipeline().addLast(new ReadTimeoutHandler(5, TimeUnit.SECONDS));
+                        }
                         ch.pipeline()
-                                .addLast(new ReadTimeoutHandler(5, TimeUnit.SECONDS))
                                 .addLast(new LoggingHandler(LogLevel.INFO))
                                 .addLast(new HttpServerCodec());
                         if (aggregate) {
