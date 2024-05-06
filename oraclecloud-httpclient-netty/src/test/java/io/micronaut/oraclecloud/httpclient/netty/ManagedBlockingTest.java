@@ -31,7 +31,8 @@ public class ManagedBlockingTest {
     public void testManagedBlocking() throws IOException {
         try (ApplicationContext ctx = ApplicationContext.run(Map.of(
             "spec.name", "ManagedBlockingTest",
-            "micronaut.netty.event-loops.default.num-threads", 1
+            "micronaut.netty.event-loops.default.num-threads", 1,
+            "micronaut.server.port", 0
         )); EmbeddedServer server = ctx.getBean(EmbeddedServer.class)) {
             server.start();
             try (BlockingHttpClient cl = ctx.createBean(HttpClient.class, server.getURI()).toBlocking()) {
