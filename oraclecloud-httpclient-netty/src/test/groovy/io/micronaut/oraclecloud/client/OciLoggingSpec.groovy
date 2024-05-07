@@ -226,4 +226,34 @@ class OciLoggingSpec extends Specification {
         return LogSearchClient.builder().build(authenticationDetailsProvider)
     }
 
+    def cleanupSpec() {
+        if (loggingClient == null) {
+            return
+        }
+
+        Date date = new Date()
+        Date yesterdayDate = new Date(date.getTime() - 24 * 60 * 60 * 1000)
+
+        var request = ListLogGroupsRequest.builder()
+                .compartmentId(compartmentId)
+                .build()
+        var response = loggingClient.listLogGroups(request)
+
+        then:
+        response.items.every {
+            if (it.displayName.startsWith("micronaut_test_") && it.timeCreated < yesterdayDate) {
+                var groupIdToDelete = it.id
+                var deleteLogGroupRequest = DeleteLogGroupRequest.builder().logGroupId(it.id).build()
+                var listLogsRequest = ListLogsRequest.builder()
+                        .logGroupId(groupIdToDelete).build()
+                var listLogsResponse = loggingClient.listLogs(listLogsRequest)
+                listLogsResponse.items.every {
+                    var deleteLogRequest = DeleteLogRequest.builder().logGroupId(groupIdToDelete).logId(it.id).build()
+                    loggingClient.deleteLog(deleteLogRequest)
+                }
+                loggingClient.deleteLogGroup(deleteLogGroupRequest)
+            }
+        }
+    }
+
 }
