@@ -227,6 +227,10 @@ class OciLoggingSpec extends Specification {
     }
 
     def cleanupSpec() {
+        if (loggingClient == null) {
+            return
+        }
+
         Date date = new Date()
         Date yesterdayDate = new Date(date.getTime() - 24 * 60 * 60 * 1000)
 
