@@ -15,7 +15,7 @@ commons-lang3 = '3.14.0'
 shadow = '8.0.0'
 groovy = "4.0.21"
 spock = "2.3-groovy-4.0"
-oci = "3.39.1"
+oci = "3.42.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
