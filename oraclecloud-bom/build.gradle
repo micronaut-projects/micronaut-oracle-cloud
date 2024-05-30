@@ -24,6 +24,8 @@ micronautBom {
 
         ])
         bomAuthorizedGroupIds.put("io.micronaut.oraclecloud:micronaut-oraclecloud-bom", ["com.oracle.database.security", "com.oracle.database.ha", "com.oracle.database.nls", "com.oracle.database.xml", "com.oracle.database.observability"] as Set)
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-applicationmigration")
+        acceptedVersionRegressions.add("micronaut-oraclecloud-bmc-applicationmigration")
     }
 }
 
