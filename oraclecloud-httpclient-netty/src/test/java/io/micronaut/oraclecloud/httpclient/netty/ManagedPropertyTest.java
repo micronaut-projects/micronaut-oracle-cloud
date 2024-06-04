@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import com.oracle.bmc.Region;
 import com.oracle.bmc.Service;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
@@ -85,11 +84,6 @@ public class ManagedPropertyTest {
 
         protected UnmanagedClient(ClientBuilderBase<?, ?> builder, AbstractAuthenticationDetailsProvider authenticationDetailsProvider, CircuitBreakerConfiguration defaultCircuitBreaker) {
             super(builder, authenticationDetailsProvider, defaultCircuitBreaker);
-        }
-
-        @Override
-        public void setRegion(Region region) {
-            super.setRegion(region);
         }
     }
 
