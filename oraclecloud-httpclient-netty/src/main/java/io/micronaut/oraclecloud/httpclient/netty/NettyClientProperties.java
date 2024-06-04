@@ -31,6 +31,11 @@ public final class NettyClientProperties {
      */
     public static final ClientProperty<String> SERVICE_ID = ClientProperty.create("serviceId");
 
+    /**
+     * The {@link ManagedNettyHttpProvider} to use for this client.
+     */
+    public static final ClientProperty<ManagedNettyHttpProvider> MANAGED_PROVIDER = ClientProperty.create("managedProvider");
+
     private NettyClientProperties() {
     }
 }
