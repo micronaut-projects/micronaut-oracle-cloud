@@ -493,38 +493,9 @@
 </div>
 <div class="sect2">
 <h3 id="_micronaut_oraclecloud_httpclient_netty_config_properties">Micronaut Oraclecloud Httpclient Netty Config Properties</h3>
-<a id="io.micronaut.oraclecloud.serde.OciSerializationConfiguration" href="#io.micronaut.oraclecloud.serde.OciSerializationConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html">OciSerializationConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.serde.serialization.always-serialize-errors-as-list</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.serde.serialization.inclusion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/serde/config/annotation/SerdeConfig.SerInclude.html">SerdeConfig$SerInclude</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.serde.OciSerdeConfiguration" href="#io.micronaut.oraclecloud.serde.OciSerdeConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html">OciSerdeConfiguration</a></caption>
+<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html">OciSerdeConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -576,6 +547,35 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.serde.write-binary-as-array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.serde.OciSerializationConfiguration" href="#io.micronaut.oraclecloud.serde.OciSerializationConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html">OciSerializationConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.serde.serialization.always-serialize-errors-as-list</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.serde.serialization.inclusion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/serde/config/annotation/SerdeConfig.SerInclude.html">SerdeConfig$SerInclude</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -864,33 +864,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.html">OracleCloudVaultConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A list of {@link OracleCloudVault} objects that contain secrets that will be retrieved, decoded and set into your application as config variables.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVaultClientDiscoveryConfiguration.html">OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration</a></caption>
+<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVaultClientDiscoveryConfiguration.html">OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -918,6 +894,30 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.config.format</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/discovery/config/ConfigDiscoveryConfiguration.Format.html">ConfigDiscoveryConfiguration$Format</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.html">OracleCloudVaultConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of {@link OracleCloudVault} objects that contain secrets that will be retrieved, decoded and set into your application as config variables.</p></td>
 </tr>
 </tbody>
 </table>
