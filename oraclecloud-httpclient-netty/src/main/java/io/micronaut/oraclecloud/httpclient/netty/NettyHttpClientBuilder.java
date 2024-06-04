@@ -32,7 +32,7 @@ import java.util.Objects;
 final class NettyHttpClientBuilder implements HttpClientBuilder {
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();
     @Nullable
-    final ManagedNettyHttpProvider managedProvider;
+    ManagedNettyHttpProvider managedProvider;
     final Map<ClientProperty<?>, Object> properties = new HashMap<>();
     URI baseUri;
     boolean buffered = true;
@@ -74,6 +74,8 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
             key == StandardClientProperties.HOSTNAME_VERIFIER ||
             key == StandardClientProperties.SSL_CONTEXT) {
             throw new IllegalArgumentException("The OCI SDK netty client does not support changing the this setting (" + key + ") directly. Please go through the Micronaut HTTP client configuration.");
+        } else if (key == NettyClientProperties.MANAGED_PROVIDER && managedProvider == null) {
+            managedProvider = (ManagedNettyHttpProvider) value;
         } else {
             // todo: support all standard client properties
             throw new IllegalArgumentException("Unknown or unsupported HTTP client property " + key);
