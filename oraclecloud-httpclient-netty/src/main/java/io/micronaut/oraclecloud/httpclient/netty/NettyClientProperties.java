@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.ClientProperty;
+import io.micronaut.core.annotation.Internal;
 
 /**
  * {@link com.oracle.bmc.http.client.HttpClientBuilder#property(ClientProperty, Object) Client properties}
@@ -34,6 +35,7 @@ public final class NettyClientProperties {
     /**
      * The {@link ManagedNettyHttpProvider} to use for this client.
      */
+    @Internal
     public static final ClientProperty<ManagedNettyHttpProvider> MANAGED_PROVIDER = ClientProperty.create("managedProvider");
 
     private NettyClientProperties() {
