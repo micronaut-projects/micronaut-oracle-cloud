@@ -1,6 +1,8 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
+import com.oracle.bmc.Region;
 import com.oracle.bmc.Service;
+import com.oracle.bmc.Services;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.common.ClientBuilderBase;
@@ -26,11 +28,16 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 @MicronautTest
 @Property(name = "spec.name", value = "ManagedPropertyTest")
 public class ManagedPropertyTest {
+
+    public static final Service SERVICE = Services.serviceBuilder()
+        .serviceName("unmanaged")
+        .serviceEndpointPrefix("")
+        .serviceEndpointTemplate("https://unmanaged.{region}.{secondLevelDomain}")
+        .build();
 
     @Inject
     ApplicationContext ctx;
@@ -45,10 +52,10 @@ public class ManagedPropertyTest {
     public void unmanagedClientUsesManagedProviderProperty() {
         MockHttpClientRegistry registry = ctx.getBean(MockHttpClientRegistry.class);
         Assertions.assertFalse(registry.clientRegistered);
-        UnmanagedClientBuilder unmanagedClientBuilder = new UnmanagedClientBuilder(Mockito.mock(Service.class));
+        UnmanagedClientBuilder unmanagedClientBuilder = new UnmanagedClientBuilder(SERVICE);
         unmanagedClientBuilder.clientConfigurator(builder -> builder.property(NettyClientProperties.MANAGED_PROVIDER, managedNettyHttpProvider));
         UnmanagedClient unmanagedClient = unmanagedClientBuilder.build(authenticationDetailsProvider);
-        unmanagedClient.setEndpoint("http://test");
+        unmanagedClient.setRegion(Region.EU_MADRID_1);
         Assertions.assertTrue(registry.clientRegistered);
     }
 
@@ -84,6 +91,11 @@ public class ManagedPropertyTest {
 
         protected UnmanagedClient(ClientBuilderBase<?, ?> builder, AbstractAuthenticationDetailsProvider authenticationDetailsProvider, CircuitBreakerConfiguration defaultCircuitBreaker) {
             super(builder, authenticationDetailsProvider, defaultCircuitBreaker);
+        }
+
+        @Override
+        public void setRegion(Region region) {
+            super.setRegion(region);
         }
     }
 
