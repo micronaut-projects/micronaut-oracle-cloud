@@ -32,7 +32,6 @@ dependencies {
     testImplementation mn.micronaut.management
     testImplementation mn.micronaut.context
     testImplementation projects.micronautOraclecloudCommon
-    testImplementation libs.mockito
 
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,
