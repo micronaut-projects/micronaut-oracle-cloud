@@ -20,7 +20,8 @@ graalvmNative {
     binaries.configureEach {
         buildArgs.addAll(
                 "-H:+StaticExecutableWithDynamicLibC",
-                "-Dfn.handler=example.Function::handleRequest"
+                "-Dfn.handler=example.Function::handleRequest",
+                "-H:Class=com.fnproject.fn.runtime.EntryPoint"
         )
     }
 }
