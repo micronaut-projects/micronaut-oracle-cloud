@@ -19,6 +19,7 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
+import io.micronaut.http.client.netty.BlockHint;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -73,6 +74,7 @@ final class NettyHttpRequest implements HttpRequest {
     private final StringBuilder query;
 
     private Executor offloadExecutor;
+    private BlockHint blockHint;
 
     private boolean expectContinue;
     private Object returningBody;
@@ -97,6 +99,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.uri = new StringBuilder(from.uri);
         this.query = new StringBuilder(from.query);
         this.offloadExecutor = from.offloadExecutor;
+        this.blockHint = from.blockHint;
         this.expectContinue = from.expectContinue;
 
         this.returningBody = from.returningBody;
@@ -230,6 +233,9 @@ final class NettyHttpRequest implements HttpRequest {
     @Override
     public HttpRequest offloadExecutor(Executor offloadExecutor) {
         this.offloadExecutor = offloadExecutor;
+        // this is technically not what this setter is for, but offloadExecutor() is only called in
+        // callSync and always at top level, i.e. in the thread that will actually block.
+        this.blockHint = BlockHint.willBlockThisThread();
         return this;
     }
 
@@ -261,7 +267,7 @@ final class NettyHttpRequest implements HttpRequest {
 
         CompletableFuture<HttpResponse> future = new CompletableFuture<>();
 
-        Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, null);
+        Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
         connect.subscribe(ph -> {
             try {
                 io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);

@@ -42,15 +42,22 @@ public class TlsTest {
                 "https://dh-small-subgroup.badssl.com/",
                 "https://dh-composite.badssl.com/"
         )) {
-            try (HttpClient client = new NettyHttpProvider().newBuilder()
+            ExecutionException e = null;
+            for (int i = 0; i < 5; i++) {
+                try (HttpClient client = new NettyHttpProvider().newBuilder()
                     .baseUri(URI.create(uri))
                     .build()) {
-                ExecutionException e = Assertions.assertThrows(
+                    e = Assertions.assertThrows(
                         ExecutionException.class,
                         () -> client.createRequest(Method.GET).execute().toCompletableFuture().get(),
                         uri);
-                Assertions.assertTrue(e.getCause().getCause() instanceof SSLHandshakeException);
+                    if (!e.toString().contains("timed out")) {
+                        break;
+                    }
+                    e.printStackTrace();
+                }
             }
+            Assertions.assertTrue(e.getCause().getCause() instanceof SSLHandshakeException);
         }
     }
 

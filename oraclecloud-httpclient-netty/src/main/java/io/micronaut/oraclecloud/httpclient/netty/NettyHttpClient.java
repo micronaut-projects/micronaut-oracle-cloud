@@ -31,6 +31,7 @@ import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.PrematureChannelClosureException;
+import io.netty.handler.timeout.ReadTimeoutException;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -139,7 +140,7 @@ final class NettyHttpClient implements HttpClient {
     @Override
     public boolean isProcessingException(Exception e) {
         // these exceptions will allow the client to retry the request
-        return e instanceof JacksonException || e instanceof PrematureChannelClosureException;
+        return e instanceof JacksonException || e instanceof PrematureChannelClosureException || e instanceof ReadTimeoutException;
     }
 
     @Override
