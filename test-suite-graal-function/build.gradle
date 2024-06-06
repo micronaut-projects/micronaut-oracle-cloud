@@ -1,0 +1,15 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-native-tests'
+}
+
+dependencies {
+    annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
+    implementation libs.fn.api
+    runtimeOnly libs.fn.runtime
+    implementation(projects.micronautOraclecloudFunction)
+    implementation(projects.micronautOraclecloudHttpclientNetty)
+}
+
+application {
+    mainClass = "com.fnproject.fn.runtime.EntryPoint"
+}
