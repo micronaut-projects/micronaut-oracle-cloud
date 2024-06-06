@@ -1,5 +1,6 @@
 package example;
 
+import com.fnproject.fn.testing.FnTestingRule;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -13,12 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @MicronautTest
 public class FunctionTest {
 
-    @Inject
-    ApplicationContext applicationContext;
+    FnTestingRule fn = FnTestingRule.createDefault();
 
     @Test
-    void test() {
-        assertTrue(applicationContext.isRunning());
+    void testFunction() {
+
+        fn.givenEvent().enqueue()
+            .thenRun(Function.class, "handleRequest");
+
+        String body = fn.getOnlyResult().getBodyAsString();
+        assertEquals("Your tenancy is: test-tenancyId", body);
     }
 
 }
