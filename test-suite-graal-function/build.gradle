@@ -13,3 +13,14 @@ dependencies {
 application {
     mainClass = "com.fnproject.fn.runtime.EntryPoint"
 }
+
+graalvmNative.toolchainDetection = false
+graalvmNative {
+    binaries.configureEach {
+        buildArgs.addAll(
+                "-H:+StaticExecutableWithDynamicLibC",
+                "-Dfn.handler=example.Function::handleRequest",
+                "--initialize-at-build-time=example",
+        )
+    }
+}
