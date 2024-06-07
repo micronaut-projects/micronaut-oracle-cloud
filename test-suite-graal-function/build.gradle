@@ -8,7 +8,6 @@ dependencies {
     implementation libs.fn.runtime
     implementation(projects.micronautOraclecloudFunction)
     implementation(projects.micronautOraclecloudHttpclientNetty)
-    implementation libs.fn.testing.junit4
 }
 
 application {
