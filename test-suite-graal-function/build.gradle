@@ -8,7 +8,7 @@ dependencies {
     implementation libs.fn.runtime
     implementation(projects.micronautOraclecloudFunction)
     implementation(projects.micronautOraclecloudHttpclientNetty)
-    testImplementation libs.fn.testing.junit4
+    implementation libs.fn.testing.junit4
 }
 
 application {
@@ -20,8 +20,7 @@ graalvmNative {
     binaries.configureEach {
         buildArgs.addAll(
                 "-H:+StaticExecutableWithDynamicLibC",
-                "-Dfn.handler=example.Function::handleRequest",
-                "-H:Class=com.fnproject.fn.runtime.EntryPoint"
+                "-Dfn.handler=example.Function::handleRequest"
         )
     }
 }
