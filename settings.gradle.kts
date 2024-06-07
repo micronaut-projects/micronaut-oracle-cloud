@@ -62,6 +62,7 @@ include("docs-examples:example-http-function-java")
 include("docs-examples:example-http-function-groovy")
 include("docs-examples:example-http-function-kotlin")
 include("test-suite-java")
+include("test-suite-graal-function")
 include("test-suite-graal-logging")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
