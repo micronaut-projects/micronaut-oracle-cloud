@@ -101,8 +101,18 @@ public class FnOutputEventAdapter<T> implements HttpResponse<T> {
         Map<String, List<String>> first,
         Map<String, List<String>> other
     ) {
-        Map<String, List<String>> result = new HashMap<>(first);
+        Map<String, List<String>> result = new HashMap<>();
+        first.forEach((key, value) -> {
+            // TODO understand why the headers start this way
+            if (key.startsWith("Fn-Http-H-")) {
+                key = key.substring("Fn-Http-H-".length());
+            }
+            result.put(key, value);
+        });
         other.forEach((key, value) -> {
+            if (key.startsWith("Fn-Http-H-")) {
+                key = key.substring("Fn-Http-H-".length());
+            }
             if (result.containsKey(key)) {
                 result.get(key).addAll(value);
             } else {
