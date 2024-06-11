@@ -20,6 +20,7 @@ import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
@@ -57,8 +58,9 @@ public class HttpFunction extends OciFunction {
      * Constructor for using a shared application context.
      * @param applicationContext The application context
      */
+    @Internal
     @Inject
-    protected HttpFunction(ApplicationContext applicationContext) {
+    public HttpFunction(ApplicationContext applicationContext) {
         super(applicationContext);
         this.conversionService = applicationContext.getConversionService();
     }
