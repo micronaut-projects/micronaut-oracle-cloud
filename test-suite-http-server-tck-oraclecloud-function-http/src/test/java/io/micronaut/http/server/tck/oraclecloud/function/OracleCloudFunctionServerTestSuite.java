@@ -26,10 +26,9 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 })
 @SuiteDisplayName("HTTP Server TCK for Oracle Cloud Function")
 @ExcludeClassNamePatterns({
-    // 59 (31%) tests of 188 fail currently
+    // 27 (14%) tests of 188 fail currently
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorTest",
     "io.micronaut.http.server.tck.tests.VersionTest",
-    "io.micronaut.http.server.tck.tests.filter.ResponseFilterTest",
     "io.micronaut.http.server.tck.tests.LocalErrorReadingBodyTest",
     "io.micronaut.http.server.tck.tests.OctetTest",
     "io.micronaut.http.server.tck.tests.forms.FormsInputNumberOptionalTest",
@@ -41,7 +40,6 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "io.micronaut.http.server.tck.tests.CookiesTest",
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorSerdeTest",
     "io.micronaut.http.server.tck.tests.binding.LocalDateTimeTest",
-    "io.micronaut.http.server.tck.tests.filter.RequestFilterExceptionHandlerTest",
     "io.micronaut.http.server.tck.tests.MissingBodyAnnotationTest",
     "io.micronaut.http.server.tck.tests.FilterProxyTest",
     "io.micronaut.http.server.tck.tests.HeadersTest",

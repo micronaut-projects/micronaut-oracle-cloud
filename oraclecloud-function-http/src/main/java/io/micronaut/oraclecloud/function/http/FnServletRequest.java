@@ -27,12 +27,14 @@ import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.core.type.Argument;
-import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpMethod;
-import io.micronaut.http.HttpParameters;
 import io.micronaut.http.MediaType;
+import io.micronaut.http.MutableHttpHeaders;
+import io.micronaut.http.MutableHttpParameters;
+import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
+import io.micronaut.http.cookie.Cookie;
 import io.micronaut.http.cookie.Cookies;
 import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
@@ -59,7 +61,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @param <B> The body type
  */
 @Internal
-final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent> {
+final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B> {
     @SuppressWarnings("rawtypes")
     private static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
     private final InputEvent inputEvent;
@@ -161,7 +163,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @NonNull
     @Override
-    public HttpParameters getParameters() {
+    public MutableHttpParameters getParameters() {
         return new FnHttpParameters();
     }
 
@@ -183,9 +185,27 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return URI.create(gatewayContext.getRequestURL());
     }
 
+    @Override
+    public MutableHttpRequest<B> cookie(Cookie cookie) {
+        // no-op, as cookies are not supported
+        return this;
+    }
+
+    @Override
+    public MutableHttpRequest<B> uri(URI uri) {
+        // no-op, as URI cannot be changed
+        return this;
+    }
+
+    @Override
+    public <T> MutableHttpRequest<T> body(T body) {
+        // no-op, as body cannot be changed
+        return (FnServletRequest<T>) body;
+    }
+
     @NonNull
     @Override
-    public HttpHeaders getHeaders() {
+    public MutableHttpHeaders getHeaders() {
         return new FnHttpHeaders();
     }
 
@@ -222,10 +242,15 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return response;
     }
 
+    @Override
+    public void setConversionService(@NonNull ConversionService conversionService) {
+
+    }
+
     /**
      * The fn parameters.
      */
-    private final class FnHttpParameters implements HttpParameters {
+    private final class FnHttpParameters implements MutableHttpParameters {
 
         @Override
         public List<String> getAll(CharSequence name) {
@@ -266,12 +291,23 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             }
             return Optional.empty();
         }
+
+        @Override
+        public MutableHttpParameters add(CharSequence name, List<CharSequence> values) {
+            gatewayContext.getQueryParameters().getAll().put(name.toString(), values.stream().map(Object::toString).toList());
+            return this;
+        }
+
+        @Override
+        public void setConversionService(@NonNull ConversionService conversionService) {
+            // no-op
+        }
     }
 
     /**
      * The fn headers.
      */
-    private final class FnHttpHeaders implements HttpHeaders {
+    private final class FnHttpHeaders implements MutableHttpHeaders {
 
         @Override
         public List<String> getAll(CharSequence name) {
@@ -309,6 +345,23 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
                 ));
             }
             return Optional.empty();
+        }
+
+        @Override
+        public MutableHttpHeaders add(CharSequence header, CharSequence value) {
+            gatewayContext.getHeaders().addHeader(header.toString(), value.toString());
+            return this;
+        }
+
+        @Override
+        public MutableHttpHeaders remove(CharSequence header) {
+            gatewayContext.getHeaders().removeHeader(header.toString());
+            return this;
+        }
+
+        @Override
+        public void setConversionService(@NonNull ConversionService conversionService) {
+            // no-op
         }
     }
 }
