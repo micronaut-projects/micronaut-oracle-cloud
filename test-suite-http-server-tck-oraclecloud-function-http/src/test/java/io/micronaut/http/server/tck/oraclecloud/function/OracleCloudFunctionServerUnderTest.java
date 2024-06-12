@@ -68,7 +68,11 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
         InputEvent inputEvent = FnInputEventFactory.create(request);
         FnHttpGatewayContextAdapter context = new FnHttpGatewayContextAdapter(request, inputEvent);
         OutputEvent outputEvent = function.handleRequest(context, inputEvent);
-        HttpResponse<O> response = new FnOutputEventAdapter<>(outputEvent, context, function.getApplicationContext().getBean(ConversionService.class));
+        HttpResponse<O> response = new FnOutputEventAdapter<>(
+            outputEvent,
+            context,
+            function.getApplicationContext().getBean(ConversionService.class)
+        );
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("Response status: {}", response.getStatus());

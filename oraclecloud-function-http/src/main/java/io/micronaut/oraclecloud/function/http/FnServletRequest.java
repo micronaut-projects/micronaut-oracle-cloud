@@ -23,6 +23,8 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.value.ConvertibleMultiValues;
+import io.micronaut.core.convert.value.ConvertibleMultiValuesMap;
 import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
@@ -40,8 +42,12 @@ import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
 import io.micronaut.servlet.http.ServletHttpResponse;
+import io.netty.handler.codec.http.QueryStringDecoder;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Collection;
@@ -63,7 +69,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Internal
 final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B> {
     @SuppressWarnings("rawtypes")
-    private static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
+    static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
     private final FnServletResponse<Object> response;
@@ -115,6 +121,15 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
                 final Class<T> type = arg.getType();
                 final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
 
+                if (isFormSubmission()) {
+                    ConvertibleMultiValues<?> form = parseFormData(inputStream);
+                    if (ConvertibleValues.class == type || Object.class == type) {
+                        return Optional.of(form);
+                    } else {
+                        return conversionService.convert(form.asMap(), arg);
+                    }
+                }
+
                 final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
                 if (codec != null) {
                     if (ConvertibleValues.class == type || Object.class == type) {
@@ -133,6 +148,9 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             Object body = consumedBodies.getOrDefault(CONVERTIBLE_VALUES_ARGUMENT, Optional.empty())
                         .orElse(null);
             if (body != null) {
+                if (ConvertibleValues.class == arg.getType() || Object.class == arg.getType()) {
+                    return Optional.of((T) body);
+                }
                 return consumedBodies.computeIfAbsent(arg, argument -> conversionService.convert(body, argument));
             } else {
                 return Optional.empty();
@@ -244,7 +262,32 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public void setConversionService(@NonNull ConversionService conversionService) {
+        // No-op
+    }
 
+    public boolean isFormSubmission() {
+        MediaType contentType = getContentType().orElse(null);
+        return MediaType.APPLICATION_FORM_URLENCODED_TYPE.equals(contentType)
+            || MediaType.MULTIPART_FORM_DATA_TYPE.equals(contentType);
+    }
+
+    private ConvertibleMultiValues<CharSequence> parseFormData(InputStream inputStream) {
+        BufferedInputStream bis = new BufferedInputStream(inputStream);
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        try {
+            int result = bis.read();
+            while (result != -1) {
+                byte b = (byte) result;
+                buf.write(b);
+                result = bis.read();
+            }
+        } catch (IOException e) {
+            return new ConvertibleMultiValuesMap<>();
+        }
+
+        String body = buf.toString();
+        Map parameterValues = new QueryStringDecoder(body, false).parameters();
+        return new ConvertibleMultiValuesMap<CharSequence>(parameterValues, conversionService);
     }
 
     /**
@@ -364,4 +407,5 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             // no-op
         }
     }
+
 }

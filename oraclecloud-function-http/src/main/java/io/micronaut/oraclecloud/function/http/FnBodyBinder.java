@@ -20,6 +20,7 @@ import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionError;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
@@ -103,6 +104,18 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
 
             } else {
                 final MediaType mediaType = source.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
+
+                if (servletHttpRequest.isFormSubmission()) {
+                    Optional<ConvertibleValues> form = servletHttpRequest.getBody(FnServletRequest.CONVERTIBLE_VALUES_ARGUMENT);
+                    if (form.isEmpty()) {
+                        return BindingResult.empty();
+                    }
+                    if (name != null) {
+                        return () -> form.get().get(name, context);
+                    }
+                    return () -> conversionService.convert(form.get().asMap(), context);
+                }
+
                 final MediaTypeCodec codec = mediaTypeCodeRegistry
                         .findCodec(mediaType, type)
                         .orElse(null);
@@ -170,4 +183,5 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
     public Class<Body> getAnnotationType() {
         return Body.class;
     }
+
 }

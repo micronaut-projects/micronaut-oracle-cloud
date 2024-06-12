@@ -35,10 +35,10 @@ import java.util.Optional;
 /**
  * Adapts the v2 {@link OutputEvent} to a {@link HttpResponse}.
  *
- * @param <T> The body type
+ * @param <B> The body type
  */
 @Internal
-public class FnOutputEventAdapter<T> implements HttpResponse<T> {
+public class FnOutputEventAdapter<B> implements HttpResponse<B> {
 
     private final OutputEvent event;
     private final ConversionService conversionService;
@@ -51,10 +51,13 @@ public class FnOutputEventAdapter<T> implements HttpResponse<T> {
      * @param event The event
      * @param conversionService The conversion service
      */
-    public FnOutputEventAdapter(OutputEvent event, FnHttpGatewayContextAdapter gatewayContext, ConversionService conversionService) {
+    public FnOutputEventAdapter(
+            OutputEvent event, FnHttpGatewayContextAdapter gatewayContext,
+            ConversionService conversionService
+    ) {
         this.event = event;
-        this.conversionService = conversionService;
         this.gatewayContext = gatewayContext;
+        this.conversionService = conversionService;
     }
 
     @Override
@@ -71,14 +74,15 @@ public class FnOutputEventAdapter<T> implements HttpResponse<T> {
     }
 
     @Override
-    public Optional<T> getBody() {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    public Optional<B> getBody() {
         try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
             event.writeToOutput(bos);
+            byte[] bytes = bos.toByteArray();
+            return (Optional<B>) Optional.of(bytes);
         } catch (IOException e) {
-            bos = null;
+            return Optional.empty();
         }
-        return (Optional<T>) Optional.ofNullable(bos);
     }
 
     @Override
