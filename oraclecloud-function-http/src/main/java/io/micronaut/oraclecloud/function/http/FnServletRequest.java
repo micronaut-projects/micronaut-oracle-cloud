@@ -29,6 +29,7 @@ import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.core.type.Argument;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpHeaders;
@@ -53,8 +54,10 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -285,8 +288,19 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             return new ConvertibleMultiValuesMap<>();
         }
 
+        // Decode query values
         String body = buf.toString();
         Map parameterValues = new QueryStringDecoder(body, false).parameters();
+
+        // Remove empty values
+        Iterator<Entry<String, List<CharSequence>>> iterator = parameterValues.entrySet().iterator();
+        while (iterator.hasNext()) {
+            List<CharSequence> value = iterator.next().getValue();
+            if (value.isEmpty() || StringUtils.isEmpty(value.get(0))) {
+                iterator.remove();
+            }
+        }
+
         return new ConvertibleMultiValuesMap<CharSequence>(parameterValues, conversionService);
     }
 

@@ -26,12 +26,11 @@ import org.junit.platform.suite.api.SuiteDisplayName;
 })
 @SuiteDisplayName("HTTP Server TCK for Oracle Cloud Function")
 @ExcludeClassNamePatterns({
-    // 19 (10%) tests of 188 fail currently
+    // 18 (10%) tests of 188 fail currently
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorTest", // Client cannot parse the JsonError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.hateoas.VndErrorTest", // Client cannot parse the VndError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorSerdeTest", // Client cannot parse the JsonError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.LocalErrorReadingBodyTest", // https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/921
-    "io.micronaut.http.server.tck.tests.forms.FormsInputNumberOptionalTest", // Required Body [book] not specified exception
     "io.micronaut.http.server.tck.tests.VersionTest",
     "io.micronaut.http.server.tck.tests.filter.RequestFilterTest",
     "io.micronaut.http.server.tck.tests.BodyTest",
