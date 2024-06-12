@@ -31,13 +31,17 @@ import io.micronaut.http.bind.binders.DefaultBodyAnnotationBinder;
 import io.micronaut.http.codec.CodecException;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
+import io.micronaut.json.codec.MapperMediaTypeCodec;
+import io.micronaut.json.tree.JsonNode;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.util.Collections;
@@ -125,33 +129,17 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                     return servletHttpRequest.getNativeRequest().consumeBody(inputStream -> {
                         try {
                             if (Publishers.isConvertibleToPublisher(type)) {
-                                final Argument<?> typeArg = argument.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
-                                if (Publishers.isSingle(type)) {
-                                    T content = (T) codec.decode(typeArg, inputStream);
-                                    final Publisher<T> publisher = Publishers.just(content);
-                                    LOG.trace("Decoded object from function body: {}", content);
-                                    final T converted = conversionService.convertRequired(publisher, type);
-                                    return () -> Optional.of(converted);
-                                } else {
-                                    final Argument<? extends List<?>> containerType = Argument.listOf(typeArg.getType());
-                                    T content = (T) codec.decode(containerType, inputStream);
-                                    LOG.trace("Decoded object from function body: {}", content);
-                                    final Flux flowable = Flux.fromIterable((Iterable) content);
-                                    final T converted = conversionService.convertRequired(flowable, type);
-                                    return () -> Optional.of(converted);
-                                }
+                                return bindPublisher(argument, type, codec, inputStream);
+                            } else if (type.isArray()) {
+                                Class<?> componentType = type.getComponentType();
+                                List<T> content = (List<T>) codec.decode(Argument.listOf(componentType), inputStream);
+                                LOG.trace("Decoded object from function body: {}", content);
+                                Object[] array = content.toArray((Object[]) Array.newInstance(componentType, 0));
+                                return () -> Optional.of((T) array);
                             } else {
-                                if (type.isArray()) {
-                                    Class<?> componentType = type.getComponentType();
-                                    List<T> content = (List<T>) codec.decode(Argument.listOf(componentType), inputStream);
-                                    LOG.trace("Decoded object from function body: {}", content);
-                                    Object[] array = content.toArray((Object[]) Array.newInstance(componentType, 0));
-                                    return () -> Optional.of((T) array);
-                                } else {
-                                    T content = codec.decode(argument, inputStream);
-                                    LOG.trace("Decoded object from function body: {}", content);
-                                    return () -> Optional.of(content);
-                                }
+                                T content = codec.decode(argument, inputStream);
+                                LOG.trace("Decoded object from function body: {}", content);
+                                return () -> Optional.of(content);
                             }
                         } catch (CodecException e) {
                             LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
@@ -177,6 +165,51 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         }
         LOG.trace("Not a function request, falling back to default body decoding");
         return defaultBodyBinder.bind(context, source);
+    }
+
+    private BindingResult<T> bindPublisher(
+        Argument<T> argument, Class<T> type, MediaTypeCodec codec, InputStream inputStream
+    ) {
+        final Argument<?> typeArg = argument.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
+        if (Publishers.isSingle(type)) {
+            T content = (T) codec.decode(typeArg, inputStream);
+            final Publisher<T> publisher = Publishers.just(content);
+            LOG.trace("Decoded object from function body: {}", content);
+            final T converted = conversionService.convertRequired(publisher, type);
+            return () -> Optional.of(converted);
+        } else {
+            final Argument<? extends List<?>> containerType = Argument.listOf(typeArg.getType());
+            if (codec instanceof MapperMediaTypeCodec jsonCodec) {
+                // Special JSON case: we can accept both array and a single value
+                try {
+                    JsonNode node = jsonCodec.getJsonMapper()
+                        .readValue(inputStream, JsonNode.class);
+                    T converted;
+                    if (node.isArray()) {
+                        converted = Publishers.convertPublisher(
+                            conversionService,
+                            Flux.fromIterable(node.values())
+                                .map(itemNode -> jsonCodec.decode(typeArg, itemNode)),
+                            type
+                        );
+                    } else {
+                        converted = Publishers.convertPublisher(
+                            conversionService,
+                            Mono.just(jsonCodec.decode(typeArg, node)),
+                            type
+                        );
+                    }
+                    return () -> Optional.of(converted);
+                } catch (IOException e) {
+                    throw new CodecException("Error decoding JSON stream for type [JsonNode]: " + e.getMessage(), e);
+                }
+            }
+            T content = (T) codec.decode(containerType, inputStream);
+            LOG.trace("Decoded object from function body: {}", content);
+            final Flux flowable = Flux.fromIterable((Iterable) content);
+            final T converted = conversionService.convertRequired(flowable, type);
+            return () -> Optional.of(converted);
+        }
     }
 
     @Override
