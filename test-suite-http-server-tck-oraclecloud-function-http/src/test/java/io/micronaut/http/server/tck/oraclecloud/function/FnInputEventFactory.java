@@ -27,7 +27,11 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * A utility factory for creating {@link InputEvent}s.
@@ -49,10 +53,20 @@ public final class FnInputEventFactory {
 
         return new ReadOnceInputEvent(
             body,
-            Headers.fromMultiHeaderMap(request.getHeaders().asMap()),
+            createHeaders(request),
             callId,
             Instant.now().plus(Duration.of(1, ChronoUnit.MINUTES))
         );
+    }
+
+    private static Headers createHeaders(@NonNull HttpRequest<?> request) {
+        Map<String, List<String>> headers = request.getHeaders().asMap()
+            .entrySet().stream()
+            .collect(Collectors.toMap(
+                    e -> Headers.canonicalKey(e.getKey()),
+                    Entry::getValue
+            ));
+        return Headers.fromMultiHeaderMap(headers);
     }
 
 }
