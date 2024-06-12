@@ -108,16 +108,8 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
 
             } else {
                 final MediaType mediaType = source.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
-
                 if (servletHttpRequest.isFormSubmission()) {
-                    Optional<ConvertibleValues> form = servletHttpRequest.getBody(FnServletRequest.CONVERTIBLE_VALUES_ARGUMENT);
-                    if (form.isEmpty()) {
-                        return BindingResult.empty();
-                    }
-                    if (name != null) {
-                        return () -> form.get().get(name, context);
-                    }
-                    return () -> conversionService.convert(form.get().asMap(), context);
+                    return bindFormData(servletHttpRequest, name, context);
                 }
 
                 final MediaTypeCodec codec = mediaTypeCodeRegistry
@@ -130,16 +122,8 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                         try {
                             if (Publishers.isConvertibleToPublisher(type)) {
                                 return bindPublisher(argument, type, codec, inputStream);
-                            } else if (type.isArray()) {
-                                Class<?> componentType = type.getComponentType();
-                                List<T> content = (List<T>) codec.decode(Argument.listOf(componentType), inputStream);
-                                LOG.trace("Decoded object from function body: {}", content);
-                                Object[] array = content.toArray((Object[]) Array.newInstance(componentType, 0));
-                                return () -> Optional.of((T) array);
                             } else {
-                                T content = codec.decode(argument, inputStream);
-                                LOG.trace("Decoded object from function body: {}", content);
-                                return () -> Optional.of(content);
+                                return bindPojo(argument, type, codec, inputStream, name);
                             }
                         } catch (CodecException e) {
                             LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
@@ -165,6 +149,50 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         }
         LOG.trace("Not a function request, falling back to default body decoding");
         return defaultBodyBinder.bind(context, source);
+    }
+
+    private BindingResult<T> bindFormData(
+        FnServletRequest<?> servletHttpRequest, String name, ArgumentConversionContext<T> context
+    ) {
+        Optional<ConvertibleValues> form = servletHttpRequest.getBody(FnServletRequest.CONVERTIBLE_VALUES_ARGUMENT);
+        if (form.isEmpty()) {
+            return BindingResult.empty();
+        }
+        if (name != null) {
+            return () -> form.get().get(name, context);
+        }
+        return () -> conversionService.convert(form.get().asMap(), context);
+    }
+
+    private BindingResult<T> bindPojo(
+        Argument<T> argument, Class<?> type, MediaTypeCodec codec, InputStream inputStream, String name
+    ) {
+        Argument<?> requiredArg = type.isArray() ? Argument.listOf(type.getComponentType()) : argument;
+        Object converted;
+
+        if (name != null && codec instanceof MapperMediaTypeCodec jsonCodec) {
+            // Special case where a particular part of body is required
+            try {
+                JsonNode node = jsonCodec.getJsonMapper()
+                    .readValue(inputStream, JsonNode.class);
+                JsonNode field = node.get(name);
+                if (field == null) {
+                    return Optional::empty;
+                }
+                converted = jsonCodec.decode(requiredArg, field);
+            } catch (IOException e) {
+                throw new CodecException("Error decoding JSON stream for type [JsonNode]: " + e.getMessage(), e);
+            }
+        } else {
+            converted = codec.decode(argument, inputStream);
+        }
+
+        if (type.isArray()) {
+            converted = ((List<?>) converted).toArray((Object[]) Array.newInstance(type.getComponentType(), 0));
+        }
+        T content = (T) converted;
+        LOG.trace("Decoded object from function body: {}", converted);
+        return () -> Optional.of(content);
     }
 
     private BindingResult<T> bindPublisher(
