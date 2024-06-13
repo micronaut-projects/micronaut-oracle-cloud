@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.http.server.tck.oraclecloud.function;
+package io.micronaut.http.server.tck.oraclecloud.function.adapter;
 
 import com.fnproject.fn.api.OutputEvent;
 import io.micronaut.core.annotation.Internal;

@@ -26,7 +26,11 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
+import io.micronaut.http.body.MessageBodyHandlerRegistry;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
+import io.micronaut.http.server.tck.oraclecloud.function.adapter.FnHttpGatewayContextAdapter;
+import io.micronaut.http.server.tck.oraclecloud.function.adapter.FnInputEventFactory;
+import io.micronaut.http.server.tck.oraclecloud.function.adapter.FnOutputEventAdapter;
 import io.micronaut.http.tck.ServerUnderTest;
 import io.micronaut.oraclecloud.function.http.HttpFunction;
 import org.slf4j.Logger;
@@ -65,7 +69,10 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
 
     @Override
     public <I, O> HttpResponse<O> exchange(HttpRequest<I> request, Argument<O> bodyType) {
-        InputEvent inputEvent = FnInputEventFactory.create(request);
+        InputEvent inputEvent = FnInputEventFactory.create(
+            request,
+            function.getApplicationContext().getBean(MessageBodyHandlerRegistry.class)
+        );
         FnHttpGatewayContextAdapter context = new FnHttpGatewayContextAdapter(request, inputEvent);
         OutputEvent outputEvent = function.handleRequest(context, inputEvent);
         HttpResponse<O> response = new FnOutputEventAdapter<>(
