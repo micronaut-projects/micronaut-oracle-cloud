@@ -58,9 +58,8 @@ public class HttpFunction extends OciFunction {
      * Constructor for using a shared application context.
      * @param applicationContext The application context
      */
-    @Internal
     @Inject
-    public HttpFunction(ApplicationContext applicationContext) {
+    HttpFunction(ApplicationContext applicationContext) {
         super(applicationContext);
         this.conversionService = applicationContext.getConversionService();
     }
@@ -102,9 +101,12 @@ public class HttpFunction extends OciFunction {
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
         FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
-        FnServletRequest<Object> servletRequest = new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry());
+        FnServletRequest<Object> servletRequest = new FnServletRequest<>(
+                inputEvent, response, gatewayContext, conversionService,
+                httpHandler.getMediaTypeCodecRegistry()
+        );
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-            servletRequest,
+                servletRequest,
                 response
         );
         try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {

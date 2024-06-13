@@ -20,6 +20,7 @@ import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.runtime.FunctionRuntimeContext;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.ApplicationContextLifeCycle;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
@@ -33,13 +34,16 @@ import io.micronaut.http.server.tck.oraclecloud.function.adapter.FnInputEventFac
 import io.micronaut.http.server.tck.oraclecloud.function.adapter.FnOutputEventAdapter;
 import io.micronaut.http.tck.ServerUnderTest;
 import io.micronaut.oraclecloud.function.http.HttpFunction;
+import io.micronaut.runtime.server.EmbeddedServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
 
@@ -55,6 +59,10 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
         properties.put("micronaut.server.context-path", "/");
         properties.put("endpoints.health.service-ready-indicator-enabled", StringUtils.FALSE);
         properties.put("endpoints.refresh.enabled", StringUtils.FALSE);
+        properties.putAll(properties.entrySet().stream().collect(Collectors.toMap(
+                // Set the configured properties for the fn fork
+                e -> "fn.test.config." + e.getKey(), Entry::getValue
+        )));
         this.applicationContext = ApplicationContext
             .builder(Environment.FUNCTION, ORACLE_CLOUD_ENVIRONMENT, Environment.TEST)
             .eagerInitConfiguration(true)
@@ -62,7 +70,9 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
             .properties(properties)
             .deduceEnvironment(false)
             .start();
-        this.function = new HttpFunction(applicationContext);
+        this.applicationContext.findBean(EmbeddedServer.class)
+            .ifPresent(ApplicationContextLifeCycle::start);
+        this.function = this.applicationContext.getBean(HttpFunction.class);
         this.functionContext = new FunctionRuntimeContext(null, new HashMap<>());
         this.function.setupContext(this.functionContext);
     }
@@ -105,7 +115,8 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
 
     @Override
     public Optional<Integer> getPort() {
-        return Optional.of(1234);
+        return applicationContext.findBean(EmbeddedServer.class)
+            .map(EmbeddedServer::getPort);
     }
 
     @Override
