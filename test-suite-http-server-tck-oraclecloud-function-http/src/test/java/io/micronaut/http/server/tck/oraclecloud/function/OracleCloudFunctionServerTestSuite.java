@@ -30,8 +30,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorTest", // Client cannot parse the JsonError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.hateoas.VndErrorTest", // Client cannot parse the VndError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorSerdeTest", // Client cannot parse the JsonError type - getBody(VndError.class) returns empty optional
-    "io.micronaut.http.server.tck.tests.LocalErrorReadingBodyTest", // https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/921
-    "io.micronaut.http.server.tck.tests.FilterProxyTest", // There is no embedded server. Also see https://github.com/micronaut-projects/micronaut-core/issues/9725
+    "io.micronaut.http.server.tck.tests.FilterProxyTest", // See https://github.com/micronaut-projects/micronaut-core/issues/9725
     "io.micronaut.http.server.tck.tests.filter.RequestFilterTest", // Cannot filter by body, as body can be consumed only once. See servlet fix: https://github.com/micronaut-projects/micronaut-servlet/pull/718
     "io.micronaut.http.server.tck.tests.constraintshandler.ControllerConstraintHandlerTest" // Body has already been consumed error
 })
