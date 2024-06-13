@@ -28,6 +28,7 @@ import io.micronaut.core.convert.value.ConvertibleMultiValuesMap;
 import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
+import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.SupplierUtil;
@@ -36,6 +37,8 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpHeaders;
 import io.micronaut.http.MutableHttpParameters;
 import io.micronaut.http.MutableHttpRequest;
+import io.micronaut.http.body.ByteBody;
+import io.micronaut.http.body.ByteBody.SplitBackpressureMode;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.micronaut.http.cookie.Cookie;
@@ -45,17 +48,17 @@ import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
 import io.micronaut.servlet.http.ServletHttpResponse;
+import io.micronaut.servlet.http.body.InputStreamByteBody;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -64,7 +67,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -91,7 +96,8 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private MutableConvertibleValues<Object> attributes;
     private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
-    private Supplier<byte[]> byteBody;
+    private final ReentrantReadWriteLock byteBodyLock = new ReentrantReadWriteLock();
+    private ByteBody byteBody;
     private URI uri;
 
     public FnServletRequest(
@@ -106,7 +112,6 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         this.gatewayContext = gatewayContext;
         this.conversionService = conversionService;
         this.codecRegistry = codecRegistry;
-        this.byteBody = createByteBodySupplier(inputEvent);
     }
 
     private static Supplier<byte[]> createByteBodySupplier(InputEvent inputEvent) {
@@ -130,7 +135,34 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public InputStream getInputStream() {
-        return new ByteArrayInputStream(byteBody.get());
+        throw new UnsupportedOperationException("Calling getInputStream() is not supported. If you need an InputSteam define a parameter of type InputEvent and use the consumeBody method");
+    }
+
+    /**
+     * A method that allows consuming body of the {@link InputEvent}.
+     *
+     * @return The result
+     * @param <T> The function return value
+     */
+    public <T> T consumeBody(Function<InputStream, T> consumer) {
+        byteBodyLock.readLock().lock();
+        if (byteBody != null) {
+            byteBodyLock.readLock().unlock();
+            return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
+        }
+        byteBodyLock.readLock().unlock();
+        byteBodyLock.writeLock().lock();
+        if (byteBody != null) {
+            byteBodyLock.writeLock().unlock();
+            return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
+        }
+        return inputEvent.consumeBody(inputStream -> {
+            // Store the stream in byte body, so that it is cached and can be reused
+            byteBody = InputStreamByteBody.create(inputStream, OptionalLong.empty(), null);
+            byteBodyLock.writeLock().unlock();
+            // The input event will close the stream, so we must consume it now
+            return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
+        });
     }
 
     @Override
@@ -147,15 +179,21 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         final Class<T> type = arg.getType();
         final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
 
-
         if (isFormSubmission()) {
-            ConvertibleMultiValues<?> form;
-            form = parseFormData(new String(byteBody.get(), StandardCharsets.UTF_8));
-            if (ConvertibleValues.class == type || Object.class == type) {
-                return Optional.of((T) form);
-            } else {
-                return conversionService.convert(form.asMap(), arg);
-            }
+            return consumeBody(inputStream -> {
+                try {
+                    String content = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream, getCharacterEncoding())));
+                    ConvertibleMultiValues<?> form = parseFormData(content);
+                    if (ConvertibleValues.class == type || Object.class == type) {
+                        return Optional.of((T) form);
+                    } else {
+                        return conversionService.convert(form.asMap(), arg);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException("Unable to parse body", e);
+                }
+            });
+
         }
 
         final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
@@ -163,11 +201,11 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             return Optional.empty();
         }
         if (ConvertibleValues.class == type || Object.class == type) {
-            final Map map = codec.decode(Map.class, byteBody.get());
+            final Map map = consumeBody(inputStream -> codec.decode(Map.class, inputStream));
             ConvertibleValues result = ConvertibleValues.of(map);
             return Optional.of((T) result);
         } else {
-            final T value = codec.decode(arg, byteBody.get());
+            final T value = consumeBody(inputStream -> codec.decode(arg, inputStream));
             return Optional.of(value);
         }
     }
