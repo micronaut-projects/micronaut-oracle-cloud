@@ -90,22 +90,9 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                         return () -> (Optional<T>) Optional.of(content);
                     } catch (IOException e) {
                         LOG.debug("Error occurred reading function body: {}", e.getMessage(), e);
-                        return new BindingResult<T>() {
-                            @Override
-                            public Optional<T> getValue() {
-                                return Optional.empty();
-                            }
-
-                            @Override
-                            public List<ConversionError> getConversionErrors() {
-                                return Collections.singletonList(
-                                        () -> e
-                                );
-                            }
-                        };
+                        return new ConversionFailedBindingResult<>(e);
                     }
                 });
-
             } else {
                 final MediaType mediaType = source.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
                 if (servletHttpRequest.isFormSubmission()) {
@@ -127,22 +114,9 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                             }
                         } catch (CodecException e) {
                             LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
-                            return new BindingResult<T>() {
-                                @Override
-                                public Optional<T> getValue() {
-                                    return Optional.empty();
-                                }
-
-                                @Override
-                                public List<ConversionError> getConversionErrors() {
-                                    return Collections.singletonList(
-                                            () -> e
-                                    );
-                                }
-                            };
+                            return new ConversionFailedBindingResult<>(e);
                         }
                     });
-
                 }
 
             }
@@ -243,6 +217,28 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
     @Override
     public Class<Body> getAnnotationType() {
         return Body.class;
+    }
+
+    /**
+     * A binding result implementation for the case when conversion error was thrown.
+     *
+     * @param <T> The type to be bound
+     * @param e The conversion error
+     */
+    private record ConversionFailedBindingResult<T>(
+        Exception e
+    ) implements BindingResult<T> {
+
+        @Override
+        public Optional<T> getValue() {
+            return Optional.empty();
+        }
+
+        @Override
+        public List<ConversionError> getConversionErrors() {
+            return Collections.singletonList(() -> e);
+        }
+
     }
 
 }
