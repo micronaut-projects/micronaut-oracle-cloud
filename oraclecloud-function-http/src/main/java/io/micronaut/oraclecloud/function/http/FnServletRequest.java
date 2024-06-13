@@ -39,11 +39,13 @@ import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.http.cookie.Cookies;
+import io.micronaut.http.netty.cookies.NettyCookie;
 import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
 import io.micronaut.servlet.http.ServletHttpResponse;
 import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -61,6 +63,8 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link ServletHttpRequest} for Project.fn.
@@ -71,6 +75,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Internal
 final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B> {
+
+    private static final String COOKIE_HEADER = "Cookie";
+
     @SuppressWarnings("rawtypes")
     static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
     private final InputEvent inputEvent;
@@ -174,12 +181,24 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             synchronized (this) { // double check
                 cookies = this.cookies;
                 if (cookies == null) {
-                    cookies = new SimpleCookies(conversionService);
-                    this.cookies = cookies;
+                    SimpleCookies simpleCookies = new SimpleCookies(conversionService);
+                    simpleCookies.putAll(parseCookies());
+                    this.cookies = simpleCookies;
+                    cookies = simpleCookies;
                 }
             }
         }
         return cookies;
+    }
+
+    private Map<CharSequence, Cookie> parseCookies() {
+        Set<Cookie> result = new HashSet<>();
+        for (String header: gatewayContext.getHeaders().getAllValues(COOKIE_HEADER)) {
+            for (io.netty.handler.codec.http.cookie.Cookie cookie : ServerCookieDecoder.LAX.decode(header)) {
+                result.add(new NettyCookie(cookie));
+            }
+        }
+        return result.stream().collect(Collectors.toMap(Cookie::getName, Function.identity()));
     }
 
     @NonNull
