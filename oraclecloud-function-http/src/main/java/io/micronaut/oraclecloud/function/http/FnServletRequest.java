@@ -28,6 +28,7 @@ import io.micronaut.core.convert.value.ConvertibleMultiValuesMap;
 import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
+import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpMethod;
@@ -47,11 +48,10 @@ import io.micronaut.servlet.http.ServletHttpResponse;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -182,7 +182,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
                 cookies = this.cookies;
                 if (cookies == null) {
                     SimpleCookies simpleCookies = new SimpleCookies(conversionService);
-                    simpleCookies.putAll(parseCookies());
+                    simpleCookies.putAll(parseCookiesFromHeader());
                     this.cookies = simpleCookies;
                     cookies = simpleCookies;
                 }
@@ -191,7 +191,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return cookies;
     }
 
-    private Map<CharSequence, Cookie> parseCookies() {
+    private Map<CharSequence, Cookie> parseCookiesFromHeader() {
         Set<Cookie> result = new HashSet<>();
         for (String header: gatewayContext.getHeaders().getAllValues(COOKIE_HEADER)) {
             for (io.netty.handler.codec.http.cookie.Cookie cookie : ServerCookieDecoder.LAX.decode(header)) {
@@ -294,21 +294,12 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     }
 
     private ConvertibleMultiValues<CharSequence> parseFormData(InputStream inputStream) {
-        BufferedInputStream bis = new BufferedInputStream(inputStream);
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        String body;
         try {
-            int result = bis.read();
-            while (result != -1) {
-                byte b = (byte) result;
-                buf.write(b);
-                result = bis.read();
-            }
+            body = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream)));
         } catch (IOException e) {
-            return new ConvertibleMultiValuesMap<>();
+            throw new RuntimeException("Unable to parse body", e);
         }
-
-        // Decode query values
-        String body = buf.toString();
         Map parameterValues = new QueryStringDecoder(body, false).parameters();
 
         // Remove empty values
