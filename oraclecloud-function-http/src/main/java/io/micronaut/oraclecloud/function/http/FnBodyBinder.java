@@ -83,16 +83,16 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         if (source instanceof FnServletRequest) {
             FnServletRequest<?> servletHttpRequest = (FnServletRequest<?>) source;
             if (CharSequence.class.isAssignableFrom(type) && name == null) {
-                return servletHttpRequest.getNativeRequest().consumeBody(inputStream -> {
-                    try {
-                        final String content = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream, source.getCharacterEncoding())));
-                        LOG.trace("Read content of length {} from function body", content.length());
-                        return () -> (Optional<T>) Optional.of(content);
-                    } catch (IOException e) {
-                        LOG.debug("Error occurred reading function body: {}", e.getMessage(), e);
-                        return new ConversionFailedBindingResult<>(e);
-                    }
-                });
+                try {
+                    String content = IOUtils.readText(new BufferedReader(new InputStreamReader(
+                        servletHttpRequest.getInputStream(), source.getCharacterEncoding()
+                    )));
+                    LOG.trace("Read content of length {} from function body", content.length());
+                    return () -> (Optional<T>) Optional.of(content);
+                } catch (IOException e) {
+                    LOG.debug("Error occurred reading function body: {}", e.getMessage(), e);
+                    return new ConversionFailedBindingResult<>(e);
+                }
             } else {
                 final MediaType mediaType = source.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
                 if (servletHttpRequest.isFormSubmission()) {
@@ -105,18 +105,17 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
 
                 if (codec != null) {
                     LOG.trace("Decoding function body with codec: {}", codec.getClass().getSimpleName());
-                    return servletHttpRequest.getNativeRequest().consumeBody(inputStream -> {
-                        try {
-                            if (Publishers.isConvertibleToPublisher(type)) {
-                                return bindPublisher(argument, type, codec, inputStream);
-                            } else {
-                                return bindPojo(argument, type, codec, inputStream, name);
-                            }
-                        } catch (CodecException e) {
-                            LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
-                            return new ConversionFailedBindingResult<>(e);
+                    InputStream inputStream = servletHttpRequest.getInputStream();
+                    try {
+                        if (Publishers.isConvertibleToPublisher(type)) {
+                            return bindPublisher(argument, type, codec, inputStream);
+                        } else {
+                            return bindPojo(argument, type, codec, inputStream, name);
                         }
-                    });
+                    } catch (CodecException e) {
+                        LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
+                        return new ConversionFailedBindingResult<>(e);
+                    }
                 }
 
             }
