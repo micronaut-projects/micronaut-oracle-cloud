@@ -23,33 +23,48 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionService;
+import io.micronaut.core.convert.value.ConvertibleMultiValues;
+import io.micronaut.core.convert.value.ConvertibleMultiValuesMap;
 import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
+import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.type.Argument;
-import io.micronaut.http.HttpHeaders;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpMethod;
-import io.micronaut.http.HttpParameters;
 import io.micronaut.http.MediaType;
+import io.micronaut.http.MutableHttpHeaders;
+import io.micronaut.http.MutableHttpParameters;
+import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
+import io.micronaut.http.cookie.Cookie;
 import io.micronaut.http.cookie.Cookies;
+import io.micronaut.http.netty.cookies.NettyCookie;
 import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
 import io.micronaut.servlet.http.ServletHttpResponse;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link ServletHttpRequest} for Project.fn.
@@ -59,9 +74,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @param <B> The body type
  */
 @Internal
-final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent> {
+final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B> {
+
+    private static final String COOKIE_HEADER = "Cookie";
+
     @SuppressWarnings("rawtypes")
-    private static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
+    static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
     private final FnServletResponse<Object> response;
@@ -113,6 +131,15 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
                 final Class<T> type = arg.getType();
                 final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
 
+                if (isFormSubmission()) {
+                    ConvertibleMultiValues<?> form = parseFormData(inputStream);
+                    if (ConvertibleValues.class == type || Object.class == type) {
+                        return Optional.of(form);
+                    } else {
+                        return conversionService.convert(form.asMap(), arg);
+                    }
+                }
+
                 final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
                 if (codec != null) {
                     if (ConvertibleValues.class == type || Object.class == type) {
@@ -131,6 +158,9 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             Object body = consumedBodies.getOrDefault(CONVERTIBLE_VALUES_ARGUMENT, Optional.empty())
                         .orElse(null);
             if (body != null) {
+                if (ConvertibleValues.class == arg.getType() || Object.class == arg.getType()) {
+                    return Optional.of((T) body);
+                }
                 return consumedBodies.computeIfAbsent(arg, argument -> conversionService.convert(body, argument));
             } else {
                 return Optional.empty();
@@ -151,17 +181,29 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             synchronized (this) { // double check
                 cookies = this.cookies;
                 if (cookies == null) {
-                    cookies = new SimpleCookies(conversionService);
-                    this.cookies = cookies;
+                    SimpleCookies simpleCookies = new SimpleCookies(conversionService);
+                    simpleCookies.putAll(parseCookiesFromHeader());
+                    this.cookies = simpleCookies;
+                    cookies = simpleCookies;
                 }
             }
         }
         return cookies;
     }
 
+    private Map<CharSequence, Cookie> parseCookiesFromHeader() {
+        Set<Cookie> result = new HashSet<>();
+        for (String header: gatewayContext.getHeaders().getAllValues(COOKIE_HEADER)) {
+            for (io.netty.handler.codec.http.cookie.Cookie cookie : ServerCookieDecoder.LAX.decode(header)) {
+                result.add(new NettyCookie(cookie));
+            }
+        }
+        return result.stream().collect(Collectors.toMap(Cookie::getName, Function.identity()));
+    }
+
     @NonNull
     @Override
-    public HttpParameters getParameters() {
+    public MutableHttpParameters getParameters() {
         return new FnHttpParameters();
     }
 
@@ -183,9 +225,27 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return URI.create(gatewayContext.getRequestURL());
     }
 
+    @Override
+    public MutableHttpRequest<B> cookie(Cookie cookie) {
+        // no-op, as cookies are not supported
+        return this;
+    }
+
+    @Override
+    public MutableHttpRequest<B> uri(URI uri) {
+        // no-op, as URI cannot be changed
+        return this;
+    }
+
+    @Override
+    public <T> MutableHttpRequest<T> body(T body) {
+        // no-op, as body cannot be changed
+        return (FnServletRequest<T>) body;
+    }
+
     @NonNull
     @Override
-    public HttpHeaders getHeaders() {
+    public MutableHttpHeaders getHeaders() {
         return new FnHttpHeaders();
     }
 
@@ -222,10 +282,42 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return response;
     }
 
+    @Override
+    public void setConversionService(@NonNull ConversionService conversionService) {
+        // No-op
+    }
+
+    public boolean isFormSubmission() {
+        MediaType contentType = getContentType().orElse(null);
+        return MediaType.APPLICATION_FORM_URLENCODED_TYPE.equals(contentType)
+            || MediaType.MULTIPART_FORM_DATA_TYPE.equals(contentType);
+    }
+
+    private ConvertibleMultiValues<CharSequence> parseFormData(InputStream inputStream) {
+        String body;
+        try {
+            body = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream)));
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to parse body", e);
+        }
+        Map parameterValues = new QueryStringDecoder(body, false).parameters();
+
+        // Remove empty values
+        Iterator<Entry<String, List<CharSequence>>> iterator = parameterValues.entrySet().iterator();
+        while (iterator.hasNext()) {
+            List<CharSequence> value = iterator.next().getValue();
+            if (value.isEmpty() || StringUtils.isEmpty(value.get(0))) {
+                iterator.remove();
+            }
+        }
+
+        return new ConvertibleMultiValuesMap<CharSequence>(parameterValues, conversionService);
+    }
+
     /**
      * The fn parameters.
      */
-    private final class FnHttpParameters implements HttpParameters {
+    private final class FnHttpParameters implements MutableHttpParameters {
 
         @Override
         public List<String> getAll(CharSequence name) {
@@ -266,12 +358,23 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             }
             return Optional.empty();
         }
+
+        @Override
+        public MutableHttpParameters add(CharSequence name, List<CharSequence> values) {
+            gatewayContext.getQueryParameters().getAll().put(name.toString(), values.stream().map(Object::toString).toList());
+            return this;
+        }
+
+        @Override
+        public void setConversionService(@NonNull ConversionService conversionService) {
+            // no-op
+        }
     }
 
     /**
      * The fn headers.
      */
-    private final class FnHttpHeaders implements HttpHeaders {
+    private final class FnHttpHeaders implements MutableHttpHeaders {
 
         @Override
         public List<String> getAll(CharSequence name) {
@@ -310,5 +413,23 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             }
             return Optional.empty();
         }
+
+        @Override
+        public MutableHttpHeaders add(CharSequence header, CharSequence value) {
+            gatewayContext.getHeaders().addHeader(header.toString(), value.toString());
+            return this;
+        }
+
+        @Override
+        public MutableHttpHeaders remove(CharSequence header) {
+            gatewayContext.getHeaders().removeHeader(header.toString());
+            return this;
+        }
+
+        @Override
+        public void setConversionService(@NonNull ConversionService conversionService) {
+            // no-op
+        }
     }
+
 }

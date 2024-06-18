@@ -20,6 +20,7 @@ import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
@@ -58,7 +59,7 @@ public class HttpFunction extends OciFunction {
      * @param applicationContext The application context
      */
     @Inject
-    protected HttpFunction(ApplicationContext applicationContext) {
+    HttpFunction(ApplicationContext applicationContext) {
         super(applicationContext);
         this.conversionService = applicationContext.getConversionService();
     }
@@ -100,9 +101,12 @@ public class HttpFunction extends OciFunction {
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
         FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
-        FnServletRequest<Object> servletRequest = new FnServletRequest<>(inputEvent, response, gatewayContext, conversionService, httpHandler.getMediaTypeCodecRegistry());
+        FnServletRequest<Object> servletRequest = new FnServletRequest<>(
+                inputEvent, response, gatewayContext, conversionService,
+                httpHandler.getMediaTypeCodecRegistry()
+        );
         DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-            servletRequest,
+                servletRequest,
                 response
         );
         try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {

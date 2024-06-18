@@ -189,7 +189,7 @@ final class MockFnHttpServer implements EmbeddedServer {
             fn.addSharedClassPrefix("com.sun.");
             String queryString = request.getQueryString();
             String requestURI = request.getRequestURI();
-            if (StringUtils.isNotEmpty(requestURI)) {
+            if (StringUtils.isNotEmpty(queryString)) {
                 requestURI += "?" + queryString;
             }
             FnEventBuilder<FnTestingRule> eventBuilder = fn.givenEvent()
