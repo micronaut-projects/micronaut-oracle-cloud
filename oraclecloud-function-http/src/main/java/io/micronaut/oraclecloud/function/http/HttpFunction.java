@@ -20,19 +20,28 @@ import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.DefaultMutableConversionService;
 import io.micronaut.core.propagation.PropagatedContext;
+import io.micronaut.core.util.SupplierUtil;
+import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.body.CloseableByteBody;
 import io.micronaut.http.context.ServerHttpRequestContext;
+import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.function.OciFunction;
+import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpHandler;
+import io.micronaut.servlet.http.body.InputStreamByteBody;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
+import java.util.OptionalLong;
+import java.util.concurrent.Executor;
+import java.util.function.Supplier;
 
 /**
  * A parent HttpFunction for authoring Project.fn gateway functions.
@@ -46,6 +55,7 @@ public class HttpFunction extends OciFunction {
     private ServletHttpHandler<InputEvent, OutputEvent> httpHandler;
 
     private final ConversionService conversionService;
+    private final Supplier<Executor> ioExecutor = SupplierUtil.memoized(() -> getApplicationContext().getBean(Executor.class, Qualifiers.byName(TaskExecutors.BLOCKING)));
 
     /**
      * Default constructor.
@@ -101,19 +111,48 @@ public class HttpFunction extends OciFunction {
     @ReflectiveAccess
     public OutputEvent handleRequest(HTTPGatewayContext gatewayContext, InputEvent inputEvent) {
         FnServletResponse<Object> response = new FnServletResponse<>(gatewayContext, conversionService);
-        FnServletRequest<Object> servletRequest = new FnServletRequest<>(
-                inputEvent, response, gatewayContext, conversionService,
-                httpHandler.getMediaTypeCodecRegistry()
-        );
-        DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-                servletRequest,
-                response
-        );
-        try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {
-            this.httpHandler.service(
-                exchange
-            );
-            return response.getNativeResponse();
-        }
+        /*
+         This is a bit tricky. fnproject only allows access to the body InputStream through this
+         consumeBody method, which can only be called once and, after the lambda finishes, closes
+         the stream. This is incompatible with the ByteBody architecture.
+
+         To work around this limitation, we do a single big consumeBody around the entire request
+         processing. This hopefully encompasses most users of the body stream. Any read operations
+         inside this block are simply forwarded upstream.
+
+         In case there *is* a downstream consumer that has not called allowDiscard and has not
+         consumed all data yet, we call bufferIfNecessary. This call will buffer any remaining data
+         so that this downstream consumer can continue reading.
+
+         To prevent unnecessary buffering when there are no downstream consumers that require the
+         (full) body, we take advantage of the allowDiscard mechanism. If InputStreamByteBody is
+         never split, or all splits are closed or allowDiscarded, then closing the original
+         InputStreamByteBody will also close the InputStream it wraps. This sets a flag in
+         OptionalBufferingInputStream that disables buffering on bufferIfNecessary.
+        */
+
+        return inputEvent.consumeBody(stream -> {
+            OptionalBufferingInputStream optionalBufferingInputStream = new OptionalBufferingInputStream(stream);
+            OptionalLong contentLength = inputEvent.getHeaders().get(HttpHeaders.CONTENT_LENGTH).map(Long::parseLong).map(OptionalLong::of).orElse(OptionalLong.empty());
+            try (CloseableByteBody body = InputStreamByteBody.create(optionalBufferingInputStream, contentLength, ioExecutor.get())) {
+
+                FnServletRequest<Object> servletRequest = new FnServletRequest<>(
+                    body, inputEvent, response, gatewayContext, conversionService,
+                    httpHandler.getMediaTypeCodecRegistry()
+                );
+                DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
+                    servletRequest,
+                    response
+                );
+                try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {
+                    this.httpHandler.service(
+                        exchange
+                    );
+                }
+            }
+            OutputEvent nativeResponse = response.getNativeResponse();
+            optionalBufferingInputStream.bufferIfNecessary();
+            return nativeResponse;
+        });
     }
 }

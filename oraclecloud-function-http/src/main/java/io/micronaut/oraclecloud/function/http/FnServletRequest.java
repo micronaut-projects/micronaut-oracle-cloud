@@ -31,12 +31,12 @@ import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.StringUtils;
-import io.micronaut.core.util.SupplierUtil;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpHeaders;
 import io.micronaut.http.MutableHttpParameters;
 import io.micronaut.http.MutableHttpRequest;
+import io.micronaut.http.ServerHttpRequest;
 import io.micronaut.http.body.ByteBody;
 import io.micronaut.http.body.ByteBody.SplitBackpressureMode;
 import io.micronaut.http.codec.MediaTypeCodec;
@@ -48,16 +48,13 @@ import io.micronaut.http.simple.cookies.SimpleCookies;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpRequest;
 import io.micronaut.servlet.http.ServletHttpResponse;
-import io.micronaut.servlet.http.body.InputStreamByteBody;
 import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
@@ -67,11 +64,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.OptionalLong;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -82,7 +76,7 @@ import java.util.stream.Collectors;
  * @param <B> The body type
  */
 @Internal
-final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B> {
+final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B>, ServerHttpRequest<B> {
 
     private static final String COOKIE_HEADER = "Cookie";
 
@@ -96,36 +90,23 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private MutableConvertibleValues<Object> attributes;
     private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
-    private final ReentrantReadWriteLock byteBodyLock = new ReentrantReadWriteLock();
-    private ByteBody byteBody;
+    private final ByteBody byteBody;
     private URI uri;
 
     public FnServletRequest(
+        ByteBody byteBody,
         InputEvent inputEvent,
         FnServletResponse<Object> response,
         HTTPGatewayContext gatewayContext,
         ConversionService conversionService,
         MediaTypeCodecRegistry codecRegistry
     ) {
+        this.byteBody = byteBody;
         this.inputEvent = inputEvent;
         this.response = response;
         this.gatewayContext = gatewayContext;
         this.conversionService = conversionService;
         this.codecRegistry = codecRegistry;
-    }
-
-    private static Supplier<byte[]> createByteBodySupplier(InputEvent inputEvent) {
-        return SupplierUtil.memoized(() ->
-                inputEvent.consumeBody(inputStream -> {
-                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                    try {
-                        inputStream.transferTo(outputStream);
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                    return outputStream.toByteArray();
-                })
-        );
     }
 
     @Override
@@ -135,7 +116,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public InputStream getInputStream() {
-        throw new UnsupportedOperationException("Calling getInputStream() is not supported. If you need an InputSteam define a parameter of type InputEvent and use the consumeBody method");
+        return byteBody.split(SplitBackpressureMode.FASTEST).toInputStream();
     }
 
     /**
@@ -145,29 +126,12 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
      * @param <T> The function return value
      */
     public <T> T consumeBody(Function<InputStream, T> consumer) {
-        byteBodyLock.readLock().lock();
-        if (byteBody != null) {
-            byteBodyLock.readLock().unlock();
-            return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
-        }
-        byteBodyLock.readLock().unlock();
-        byteBodyLock.writeLock().lock();
-        if (byteBody != null) {
-            byteBodyLock.writeLock().unlock();
-            return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
-        }
-        return inputEvent.consumeBody(inputStream -> {
-            // Store the stream in byte body, so that it is cached and can be reused
-            byteBody = InputStreamByteBody.create(inputStream, OptionalLong.empty(), null);
-            byteBodyLock.writeLock().unlock();
-            // The input event will close the stream, so we must consume it now
-            return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
-        });
+        return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
     }
 
     @Override
     public BufferedReader getReader() {
-        throw new UnsupportedOperationException("Calling getReader() is not supported. If you need an InputSteam define a parameter of type InputEvent and use the consumeBody method");
+        return new BufferedReader(new InputStreamReader(getInputStream(), getCharacterEncoding()));
     }
 
     @NonNull
@@ -362,16 +326,21 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     @Override
     public MutableHttpRequest<B> mutate() {
         FnServletRequest<B> request = new FnServletRequest<>(
+            byteBody,
             inputEvent,
             response,
             gatewayContext,
             conversionService,
             codecRegistry
         );
-        request.byteBody = byteBody;
         request.cookies = cookies;
         request.attributes = attributes;
         return request;
+    }
+
+    @Override
+    public @NonNull ByteBody byteBody() {
+        return byteBody;
     }
 
     /**
