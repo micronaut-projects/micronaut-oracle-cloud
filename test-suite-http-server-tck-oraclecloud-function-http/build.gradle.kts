@@ -28,6 +28,12 @@ java {
     targetCompatibility = JavaVersion.toVersion("17")
 }
 
+micronautBuild {
+    binaryCompatibility {
+        enabled.set(false)
+    }
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
