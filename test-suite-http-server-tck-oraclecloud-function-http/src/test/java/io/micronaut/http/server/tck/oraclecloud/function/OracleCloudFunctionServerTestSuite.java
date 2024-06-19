@@ -31,6 +31,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "io.micronaut.http.server.tck.tests.hateoas.VndErrorTest", // Client cannot parse the VndError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.hateoas.JsonErrorSerdeTest", // Client cannot parse the JsonError type - getBody(VndError.class) returns empty optional
     "io.micronaut.http.server.tck.tests.FilterProxyTest", // See https://github.com/micronaut-projects/micronaut-core/issues/9725
+    "io.micronaut.http.server.tck.tests.filter.RequestFilterTest", // See https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/926
     "io.micronaut.http.server.tck.tests.constraintshandler.ControllerConstraintHandlerTest" // See https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/925
 })
 public class OracleCloudFunctionServerTestSuite {
