@@ -36,6 +36,9 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpHeaders;
 import io.micronaut.http.MutableHttpParameters;
 import io.micronaut.http.MutableHttpRequest;
+import io.micronaut.http.ServerHttpRequest;
+import io.micronaut.http.body.ByteBody;
+import io.micronaut.http.body.ByteBody.SplitBackpressureMode;
 import io.micronaut.http.codec.MediaTypeCodec;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
 import io.micronaut.http.cookie.Cookie;
@@ -62,7 +65,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -74,7 +76,7 @@ import java.util.stream.Collectors;
  * @param <B> The body type
  */
 @Internal
-final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B> {
+final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B>, ServerHttpRequest<B> {
 
     private static final String COOKIE_HEADER = "Cookie";
 
@@ -88,14 +90,18 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private MutableConvertibleValues<Object> attributes;
     private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
-    private final Map<Argument, Optional> consumedBodies = new ConcurrentHashMap<>();
-    private boolean bodyConsumed;
+    private final ByteBody byteBody;
+    private URI uri;
 
     public FnServletRequest(
+        ByteBody byteBody,
         InputEvent inputEvent,
         FnServletResponse<Object> response,
         HTTPGatewayContext gatewayContext,
-        ConversionService conversionService, MediaTypeCodecRegistry codecRegistry) {
+        ConversionService conversionService,
+        MediaTypeCodecRegistry codecRegistry
+    ) {
+        this.byteBody = byteBody;
         this.inputEvent = inputEvent;
         this.response = response;
         this.gatewayContext = gatewayContext;
@@ -110,12 +116,22 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public InputStream getInputStream() {
-        throw new UnsupportedOperationException("Calling getInputStream() is not supported. If you need an InputSteam define a parameter of type InputEvent and use the consumeBody method");
+        return byteBody.split(SplitBackpressureMode.FASTEST).toInputStream();
+    }
+
+    /**
+     * A method that allows consuming body of the {@link InputEvent}.
+     *
+     * @return The result
+     * @param <T> The function return value
+     */
+    public <T> T consumeBody(Function<InputStream, T> consumer) {
+        return consumer.apply(byteBody.split(SplitBackpressureMode.FASTEST).toInputStream());
     }
 
     @Override
     public BufferedReader getReader() {
-        throw new UnsupportedOperationException("Calling getReader() is not supported. If you need an InputSteam define a parameter of type InputEvent and use the consumeBody method");
+        return new BufferedReader(new InputStreamReader(getInputStream(), getCharacterEncoding()));
     }
 
     @NonNull
@@ -124,47 +140,37 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         if (arg == null) {
             return Optional.empty();
         }
-        if (!bodyConsumed) {
-            //noinspection unchecked
-            return consumedBodies.computeIfAbsent(arg, argument -> inputEvent.consumeBody(inputStream -> {
-                this.bodyConsumed = true;
-                final Class<T> type = arg.getType();
-                final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
+        final Class<T> type = arg.getType();
+        final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
 
-                if (isFormSubmission()) {
-                    ConvertibleMultiValues<?> form = parseFormData(inputStream);
+        if (isFormSubmission()) {
+            return consumeBody(inputStream -> {
+                try {
+                    String content = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream, getCharacterEncoding())));
+                    ConvertibleMultiValues<?> form = parseFormData(content);
                     if (ConvertibleValues.class == type || Object.class == type) {
-                        return Optional.of(form);
+                        return Optional.of((T) form);
                     } else {
                         return conversionService.convert(form.asMap(), arg);
                     }
+                } catch (IOException e) {
+                    throw new RuntimeException("Unable to parse body", e);
                 }
+            });
 
-                final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
-                if (codec != null) {
-                    if (ConvertibleValues.class == type || Object.class == type) {
-                        final Map map = codec.decode(Map.class, inputStream);
-                        ConvertibleValues result = ConvertibleValues.of(map);
-                        return Optional.of(result);
-                    } else {
-                        final T value = codec.decode(arg, inputStream);
-                        return Optional.ofNullable(value);
-                    }
+        }
 
-                }
-                return Optional.empty();
-            }));
+        final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
+        if (codec == null) {
+            return Optional.empty();
+        }
+        if (ConvertibleValues.class == type || Object.class == type) {
+            final Map map = consumeBody(inputStream -> codec.decode(Map.class, inputStream));
+            ConvertibleValues result = ConvertibleValues.of(map);
+            return Optional.of((T) result);
         } else {
-            Object body = consumedBodies.getOrDefault(CONVERTIBLE_VALUES_ARGUMENT, Optional.empty())
-                        .orElse(null);
-            if (body != null) {
-                if (ConvertibleValues.class == arg.getType() || Object.class == arg.getType()) {
-                    return Optional.of((T) body);
-                }
-                return consumedBodies.computeIfAbsent(arg, argument -> conversionService.convert(body, argument));
-            } else {
-                return Optional.empty();
-            }
+            final T value = consumeBody(inputStream -> codec.decode(arg, inputStream));
+            return Optional.of(value);
         }
     }
 
@@ -222,7 +228,14 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     @NonNull
     @Override
     public URI getUri() {
-        return URI.create(gatewayContext.getRequestURL());
+        if (uri == null) {
+            synchronized (this) {
+                if (uri == null) {
+                    uri = URI.create(gatewayContext.getRequestURL());
+                }
+            }
+        }
+        return uri;
     }
 
     @Override
@@ -233,7 +246,9 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public MutableHttpRequest<B> uri(URI uri) {
-        // no-op, as URI cannot be changed
+        synchronized (this) {
+            this.uri = uri;
+        }
         return this;
     }
 
@@ -293,13 +308,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             || MediaType.MULTIPART_FORM_DATA_TYPE.equals(contentType);
     }
 
-    private ConvertibleMultiValues<CharSequence> parseFormData(InputStream inputStream) {
-        String body;
-        try {
-            body = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream)));
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to parse body", e);
-        }
+    private ConvertibleMultiValues<CharSequence> parseFormData(String body) {
         Map parameterValues = new QueryStringDecoder(body, false).parameters();
 
         // Remove empty values
@@ -312,6 +321,26 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         }
 
         return new ConvertibleMultiValuesMap<CharSequence>(parameterValues, conversionService);
+    }
+
+    @Override
+    public MutableHttpRequest<B> mutate() {
+        FnServletRequest<B> request = new FnServletRequest<>(
+            byteBody,
+            inputEvent,
+            response,
+            gatewayContext,
+            conversionService,
+            codecRegistry
+        );
+        request.cookies = cookies;
+        request.attributes = attributes;
+        return request;
+    }
+
+    @Override
+    public @NonNull ByteBody byteBody() {
+        return byteBody;
     }
 
     /**
