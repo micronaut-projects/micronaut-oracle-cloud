@@ -18,12 +18,15 @@ package io.micronaut.oraclecloud.oke.workload.identity;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SessionKeySupplier;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.okeworkloadidentity.OkeWorkloadIdentityAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Nullable;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 /**
@@ -42,6 +45,9 @@ import jakarta.inject.Singleton;
 @Factory
 @BootstrapContextCompatible
 public class OkeWorkloadIdentityFactory {
+    @Inject
+    @Nullable
+    SessionKeySupplier sessionKeySupplier;
 
     /**
      * Configures a {@link OkeWorkloadIdentityAuthenticationDetailsProvider} if no other {@link AuthenticationDetailsProvider} is present and
@@ -56,7 +62,11 @@ public class OkeWorkloadIdentityFactory {
     @Primary
     @BootstrapContextCompatible
     protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {
-        return okeWorkloadIdentityConfiguration.getBuilder().build();
+        OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder = okeWorkloadIdentityConfiguration.getBuilder();
+        if (sessionKeySupplier != null) {
+            builder.sessionKeySupplier(sessionKeySupplier);
+        }
+        return builder.build();
     }
 
 }
