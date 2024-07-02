@@ -21,24 +21,25 @@ import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.InstancePrincipalsAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ResourcePrincipalAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.SessionKeySupplier;
 import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
-import io.micronaut.context.annotation.Property;
-import io.micronaut.core.annotation.Nullable;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.context.exceptions.DisabledBeanException;
-
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,6 +77,10 @@ public class OracleCloudCoreFactory {
     public static final String OKE_WORKLOAD_IDENTITY_PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
 
     private OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
+
+    @Inject
+    @Nullable
+    SessionKeySupplier sessionKeySupplier;
 
     /**
      * @param profile The configured profile
@@ -156,7 +161,11 @@ public class OracleCloudCoreFactory {
     @Primary
     @BootstrapContextCompatible
     protected ResourcePrincipalAuthenticationDetailsProvider resourcePrincipalAuthenticationDetailsProvider() {
-        return ResourcePrincipalAuthenticationDetailsProvider.builder().build();
+        ResourcePrincipalAuthenticationDetailsProvider.ResourcePrincipalAuthenticationDetailsProviderBuilder builder = ResourcePrincipalAuthenticationDetailsProvider.builder();
+        if (sessionKeySupplier != null) {
+            builder.sessionKeySupplier(sessionKeySupplier);
+        }
+        return builder.build();
     }
 
     /**
@@ -172,7 +181,11 @@ public class OracleCloudCoreFactory {
     @Primary
     @BootstrapContextCompatible
     protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
-        return instancePrincipalConfiguration.getBuilder().build();
+        InstancePrincipalsAuthenticationDetailsProvider.InstancePrincipalsAuthenticationDetailsProviderBuilder builder = instancePrincipalConfiguration.getBuilder();
+        if (sessionKeySupplier != null) {
+            builder.sessionKeySupplier(sessionKeySupplier);
+        }
+        return builder.build();
     }
 
     /**
