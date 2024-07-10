@@ -39,7 +39,16 @@ import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import jakarta.inject.Singleton;
-
+import java.io.IOException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
@@ -60,20 +69,7 @@ import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic;
-import javax.tools.FileObject;
 import javax.tools.JavaFileObject;
-import javax.tools.StandardLocation;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * An annotation processor that generates the Oracle Cloud SDK integration
@@ -133,24 +129,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                     }
                 }
 
-                if (!factoryClassNames.isEmpty()) {
-                    try {
-                        final FileObject nativeImageProps = filer.createResource(
-                                StandardLocation.CLASS_OUTPUT,
-                                "",
-                                "META-INF/native-image/io.micronaut.oraclecloud/micronaut-oraclecloud-sdk/native-image.properties",
-                                e
-
-                        );
-                        Properties properties = new Properties();
-                        properties.put("Args", "--initialize-at-run-time=" + String.join(",", factoryClassNames));
-                        try (Writer writer = nativeImageProps.openWriter()) {
-                            properties.store(writer, "Generated Native Image Configuration");
-                        }
-                    } catch (IOException ioException) {
-                        messager.printMessage(Diagnostic.Kind.ERROR, "Failed to write native image config: " + ioException.getMessage());
-                    }
-                }
             }
         }
         return false;
