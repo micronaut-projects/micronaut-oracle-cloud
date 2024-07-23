@@ -50,5 +50,4 @@ If you are using OCI SDK clients instrumented by Micronaut framework by default 
 |=======
 |*Name* |*Type* |*Description*
 |micronaut.metrics.oci.sdk.client.enabled | boolean |Whether to enable the OCI SDK client metrics. Default: `true`.
-|micronaut.metrics.oci.sdk.client.ignore-paths | List<String> | List of paths for which metrics won't be collected.
 |=======
