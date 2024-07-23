@@ -14,7 +14,7 @@ import java.io.InputStream;
 @Replaces(ConfigFileAuthenticationDetailsProvider.class)
 public class MockedAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 
-    private static final String dummyPemKey = """
+    private static final String DUMMY_PEM_KEY = """
 -----BEGIN RSA PRIVATE KEY-----
 MIIBOAIBAAJAUczpZlq0T4QOr4F1RAg/lp0CJLn56ldrmis7bDQ1+XiC3/j7DzhP
 oLCd2PWHU/jniJdWAw6wESix/nb0xs/EiQIDAQABAkAqmNqyQmnDPrGnE3NNij4S
@@ -47,7 +47,7 @@ ikw16ABtUnL1IVcwxBPZpSowDd5G3bcJyt+NSQ==
 
     @Override
     public InputStream getPrivateKey() {
-        return new ByteArrayInputStream(dummyPemKey.getBytes());
+        return new ByteArrayInputStream(DUMMY_PEM_KEY.getBytes());
     }
 
     @Override
