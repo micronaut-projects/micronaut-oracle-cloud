@@ -33,6 +33,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
@@ -51,7 +52,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
 
     final HttpClientRegistry<?> mnHttpClientRegistry;
     final HttpClient mnHttpClient;
-    final List<NettyClientFilter> nettyClientFilters;
+    final List<OciNettyClientFilter> nettyClientFilters;
 
     /**
      * {@code null} in bootstrap context.
@@ -67,26 +68,26 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration,
-        @Nullable List<NettyClientFilter> nettyClientFilters
+        @Nullable List<OciNettyClientFilter> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
         this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
-        this.nettyClientFilters = nettyClientFilters == null ? List.of() : nettyClientFilters;
+        this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
     }
 
     // for OKE
     public ManagedNettyHttpProvider(
         HttpClient mnHttpClient,
         ExecutorService ioExecutor,
-        @Nullable List<NettyClientFilter> nettyClientFilters
+        @Nullable List<OciNettyClientFilter> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = null;
         this.mnHttpClient = mnHttpClient;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
-        this.nettyClientFilters = nettyClientFilters == null ? List.of() : nettyClientFilters;
+        this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
     }
 
     @Override

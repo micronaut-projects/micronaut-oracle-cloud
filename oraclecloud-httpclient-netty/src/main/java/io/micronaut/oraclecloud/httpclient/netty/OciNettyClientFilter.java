@@ -17,15 +17,22 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.order.Ordered;
 
 import java.util.Map;
 
-public interface NettyClientFilter {
+/**
+ * OciNettyClientFilter interface allows invoking beforeRequest method before OCI SDK client sends a request and afterResponse invokes after request is sent and response is received from the server.
+ *
+ * @since 4.2.0
+ * @author Nemanja Mikic
+ */
+public interface OciNettyClientFilter extends Ordered {
 
-   void beforeRequest(HttpRequest request, Map<String, Object> context);
+   Map<String, Object> beforeRequest(HttpRequest request);
 
-   HttpResponse afterResponse(HttpRequest request, HttpResponse response, Throwable throwable, Map<String, Object> context);
-
-   int getPriority();
+   HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull Map<String, Object> context);
 
 }

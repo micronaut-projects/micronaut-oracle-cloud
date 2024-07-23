@@ -23,6 +23,7 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.core.order.OrderUtil;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpVersionSelection;
 import io.micronaut.http.client.netty.ConnectionManager;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +47,8 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+
+import static io.micronaut.oraclecloud.httpclient.netty.NettyHttpClientBuilder.OCI_NETTY_FILTERS_KEY;
 
 final class NettyHttpClient implements HttpClient {
     /**
@@ -57,7 +61,7 @@ final class NettyHttpClient implements HttpClient {
     final boolean ownsThreadPool;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
-    final List<NettyClientFilter> nettyClientFilter;
+    final List<OciNettyClientFilter> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
     final String host;
     final int port;
@@ -94,7 +98,7 @@ final class NettyHttpClient implements HttpClient {
         } else {
             hasContext = true;
             for (Map.Entry<ClientProperty<?>, Object> entry : builder.properties.entrySet()) {
-                if (!entry.getValue().equals(EXPECTED_PROPERTIES.get(entry.getKey()))) {
+                if (!entry.getValue().equals(EXPECTED_PROPERTIES.get(entry.getKey())) && !entry.getKey().equals(OCI_NETTY_FILTERS_KEY)) {
                     throw new IllegalArgumentException("Cannot change property " + entry.getKey() + " in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is '" + ManagedNettyHttpProvider.SERVICE_ID + "'.");
                 }
             }
@@ -123,7 +127,13 @@ final class NettyHttpClient implements HttpClient {
             .sorted(Comparator.comparingInt(p -> p.priority))
             .map(p -> p.value)
             .collect(Collectors.toList());
-        nettyClientFilter = builder.nettyClientFilters.stream().sorted(Comparator.comparingInt(p -> p.priority)).map(p -> p.value).collect(Collectors.toList());
+
+        if (builder.properties.containsKey(OCI_NETTY_FILTERS_KEY)) {
+            nettyClientFilter = ((List<OciNettyClientFilter>) builder.properties.get(OCI_NETTY_FILTERS_KEY)).stream().sorted(OrderUtil.COMPARATOR).collect(Collectors.toList());
+        } else {
+            nettyClientFilter = Collections.emptyList();
+        }
+
         requestKey = new DefaultHttpClient.RequestKey(mnClient, builder.baseUri);
         this.port = builder.baseUri.getPort();
         this.host = builder.baseUri.getHost();

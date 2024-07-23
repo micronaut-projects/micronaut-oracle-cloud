@@ -23,6 +23,7 @@ import io.micronaut.discovery.ServiceInstanceList;
 import io.micronaut.http.client.loadbalance.DiscoveryClientLoadBalancerFactory;
 import jakarta.inject.Singleton;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -40,6 +41,6 @@ final class OciServiceInstanceList implements ServiceInstanceList {
 
     @Override
     public List<ServiceInstance> getInstances() {
-        return List.of();
+        return Collections.emptyList();
     }
 }

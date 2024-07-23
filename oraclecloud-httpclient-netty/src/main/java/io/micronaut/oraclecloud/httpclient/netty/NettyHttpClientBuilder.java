@@ -26,12 +26,15 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 final class NettyHttpClientBuilder implements HttpClientBuilder {
+
+    public static final ClientProperty<List<OciNettyClientFilter>> OCI_NETTY_FILTERS_KEY = ClientProperty.create("oci_netty_filters");
+
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();
-    final Collection<PrioritizedValue<NettyClientFilter>> nettyClientFilters = new ArrayList<>();
 
     @Nullable
     ManagedNettyHttpProvider managedProvider;
@@ -43,7 +46,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     NettyHttpClientBuilder(@Nullable ManagedNettyHttpProvider managedProvider) {
         this.managedProvider = managedProvider;
         if (managedProvider != null) {
-            managedProvider.nettyClientFilters.forEach(this::registerNettyClientFilterInterceptor);
+            property(OCI_NETTY_FILTERS_KEY, managedProvider.nettyClientFilters);
         }
     }
 
@@ -63,7 +66,8 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     public <T> HttpClientBuilder property(ClientProperty<T> key, T value) {
         if (key == StandardClientProperties.READ_TIMEOUT ||
             key == StandardClientProperties.CONNECT_TIMEOUT ||
-            key == StandardClientProperties.ASYNC_POOL_SIZE) {
+            key == StandardClientProperties.ASYNC_POOL_SIZE ||
+            key == OCI_NETTY_FILTERS_KEY) {
             properties.put(key, value);
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;
@@ -95,11 +99,11 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
         return this;
     }
 
-    public HttpClientBuilder registerNettyClientFilterInterceptor(NettyClientFilter nettyClientFilter) {
-        Objects.requireNonNull(nettyClientFilter, "interceptor");
-        nettyClientFilters.add(new PrioritizedValue<>(nettyClientFilter.getPriority(), nettyClientFilter));
-        return this;
-    }
+//    public HttpClientBuilder registerNettyClientFilterInterceptor(OciNettyClientFilter nettyClientFilter) {
+//        Objects.requireNonNull(nettyClientFilter, "nettyClientFilter");
+//        nettyClientFilters.add(nettyClientFilter);
+//        return this;
+//    }
 
     @Override
     public HttpClient build() {

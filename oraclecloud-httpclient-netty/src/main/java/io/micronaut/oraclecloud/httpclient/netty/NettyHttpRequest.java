@@ -269,10 +269,8 @@ final class NettyHttpRequest implements HttpRequest {
 
         CompletableFuture<HttpResponse> last = result;
 
-        for (NettyClientFilter filter: client.nettyClientFilter) {
-            Map<String, Object> context = new HashMap<>();
-            filter.beforeRequest(this, context);
-            last = last.handle((response, error) -> filter.afterResponse(this, response, error, context));
+        for (OciNettyClientFilter filter: client.nettyClientFilter) {
+            last = last.handle((response, error) -> filter.afterResponse(this, response, error, filter.beforeRequest(this)));
         }
 
         Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);

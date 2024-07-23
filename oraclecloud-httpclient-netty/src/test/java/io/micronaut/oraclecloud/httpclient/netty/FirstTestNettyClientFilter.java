@@ -4,18 +4,20 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import jakarta.inject.Singleton;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Singleton
-public class FirstTestNettyClientFilter implements NettyClientFilter {
+public class FirstTestNettyClientFilter implements OciNettyClientFilter {
 
     private long startTime;
 
     private long endTime;
 
     @Override
-    public void beforeRequest(HttpRequest request, Map<String, Object> context) {
+    public Map<String, Object> beforeRequest(HttpRequest request) {
         startTime = System.nanoTime();
+        return Collections.emptyMap();
     }
 
     @Override
@@ -33,7 +35,7 @@ public class FirstTestNettyClientFilter implements NettyClientFilter {
     }
 
     @Override
-    public int getPriority() {
+    public int getOrder() {
         return 0;
     }
 }

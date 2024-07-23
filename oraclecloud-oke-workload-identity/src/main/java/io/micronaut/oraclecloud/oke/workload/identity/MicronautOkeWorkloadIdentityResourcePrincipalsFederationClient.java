@@ -45,7 +45,7 @@ import io.micronaut.json.JsonMapper;
 import io.micronaut.json.codec.JsonMediaTypeCodec;
 import io.micronaut.json.codec.JsonStreamMediaTypeCodec;
 import io.micronaut.oraclecloud.httpclient.netty.ManagedNettyHttpProvider;
-import io.micronaut.oraclecloud.httpclient.netty.NettyClientFilter;
+import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.netty.channel.MultithreadEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -78,7 +78,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
     static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 
-    private final List<NettyClientFilter> nettyClientFilters;
+    private final List<OciNettyClientFilter> nettyClientFilters;
 
     /**
      * Constructor of OkeWorkloadIdentityResourcePrincipalsFederationClient.
@@ -97,7 +97,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
         ClientConfigurator clientConfigurator,
         CircuitBreakerConfiguration circuitBreakerConfiguration,
         List<ClientConfigurator> additionalClientConfigurators,
-        List<NettyClientFilter> nettyClientFilters
+        List<OciNettyClientFilter> nettyClientFilters
     ) {
         super(sessionKeySupplier, serviceAccountTokenSupplier, okeTenancyOnlyAuthenticationDetailsProvider, clientConfigurator, circuitBreakerConfiguration, additionalClientConfigurators);
         this.nettyClientFilters = nettyClientFilters;

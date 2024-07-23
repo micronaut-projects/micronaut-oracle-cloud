@@ -24,7 +24,8 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
-import io.micronaut.oraclecloud.httpclient.netty.NettyClientFilter;
+import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
+import jakarta.inject.Inject;
 
 import java.util.List;
 
@@ -38,14 +39,19 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
 
     private boolean enabled = true;
     private final OkeHttpClientConfiguration okeHttpClientConfiguration;
-    private final List<NettyClientFilter> nettyClientFilters;
+    private final List<OciNettyClientFilter> nettyClientFilters;
 
     @ConfigurationBuilder(prefixes = "")
     private final MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder =
         new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder();
 
+    public OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration) {
+        this(okeHttpClientConfiguration, null);
+    }
+
+    @Inject
     public OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration,
-                                            @Nullable List<NettyClientFilter> nettyClientFilters) {
+                                            @Nullable List<OciNettyClientFilter> nettyClientFilters) {
         this.okeHttpClientConfiguration = okeHttpClientConfiguration;
         this.nettyClientFilters = nettyClientFilters;
     }

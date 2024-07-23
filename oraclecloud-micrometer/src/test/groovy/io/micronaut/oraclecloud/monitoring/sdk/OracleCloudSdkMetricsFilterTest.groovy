@@ -5,7 +5,6 @@ import com.oracle.bmc.monitoring.Monitoring
 import com.oracle.bmc.monitoring.requests.GetAlarmRequest
 import io.micrometer.core.instrument.MeterRegistry
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Primary
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.runtime.server.EmbeddedServer
@@ -35,36 +34,10 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         expect:
         context.containsBean(SdkMetricsNettyClientFilter)
         def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
-        meter.id.getTag("uri") == "/20180401/alarms/test"
+        meter.id.getTag("host") == "localhost"
         meter.id.getTag("method") == "GET"
-        meter.id.getTag("serviceId") == "oci"
         meter.id.getTag("status") == "200"
         meter.id.getTag("exception") == "none"
-
-        cleanup:
-        embeddedServer.stop()
-    }
-
-    def "test oci sdk metrics client filter request returns 200 but path is ignored"() {
-        given:
-        ApplicationContext context = ApplicationContext.run([
-                "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.enabled": "false",
-                "micronaut.metrics.oci.sdk.client.ignore-paths[0]": "/20180401/alarms/test2"
-        ])
-
-        EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
-        embeddedServer.start()
-
-        MeterRegistry meterRegistry = context.getBean(MeterRegistry.class)
-
-        Monitoring mon = context.getBean(Monitoring.class)
-        mon.setEndpoint(embeddedServer.getURL().toString())
-        mon.getAlarm(GetAlarmRequest.builder().alarmId("test2").build())
-
-        expect:
-        context.containsBean(SdkMetricsNettyClientFilter)
-        meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client")) == null
 
         cleanup:
         embeddedServer.stop()
@@ -120,11 +93,43 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         exception.message.contains("Error returned by GetAlarm operation in Monitoring service")
         context.containsBean(SdkMetricsNettyClientFilter)
         def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
-        meter.id.getTag("uri") == "NOT_FOUND"
+        meter.id.getTag("host") == "localhost"
         meter.id.getTag("method") == "GET"
-        meter.id.getTag("serviceId") == "oci"
         meter.id.getTag("status") == "404"
         meter.id.getTag("exception") == "none"
+
+        cleanup:
+        embeddedServer.stop()
+    }
+
+    def "test oci sdk metrics client filter request returns 4042" () {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.enabled": "true",
+                "micronaut.metrics.export.oraclecloud.enabled": "false"
+        ])
+
+        EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
+        embeddedServer.start()
+
+        MeterRegistry meterRegistry = context.getBean(MeterRegistry.class)
+
+        Monitoring mon = context.getBean(Monitoring.class)
+        mon.setEndpoint("https://localhost:1111")
+
+        when:
+        mon.getAlarm(GetAlarmRequest.builder().alarmId("not_exists").build())
+
+        then:
+        final BmcException exception = thrown()
+
+        expect:
+        exception.message.contains("Error returned by GetAlarm operation in Monitoring service")
+        context.containsBean(SdkMetricsNettyClientFilter)
+        def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
+        meter.id.getTag("host") == "localhost"
+        meter.id.getTag("method") == "GET"
+        meter.id.getTag("exception") == "HttpClientException"
 
         cleanup:
         embeddedServer.stop()

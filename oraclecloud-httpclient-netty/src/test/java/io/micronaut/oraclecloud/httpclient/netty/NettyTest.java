@@ -99,8 +99,10 @@ public class NettyTest {
         FirstTestNettyClientFilter firstTestNettyClientFilter = new FirstTestNettyClientFilter();
         SecondTestNettyClientFilter secondTestNettyClientFilter = new SecondTestNettyClientFilter();
 
-        clientBuilder.registerNettyClientFilterInterceptor(firstTestNettyClientFilter);
-        clientBuilder.registerNettyClientFilterInterceptor(secondTestNettyClientFilter);
+        clientBuilder.property(NettyHttpClientBuilder.OCI_NETTY_FILTERS_KEY, List.of(
+            firstTestNettyClientFilter,
+            secondTestNettyClientFilter
+        ));
 
         HttpClient client = clientBuilder.build();
         try (HttpResponse response = client.createRequest(Method.GET)
@@ -118,7 +120,7 @@ public class NettyTest {
         Assertions.assertNotEquals(secondTestNettyClientFilter.getEndTime(), 0);
 
         Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
-        Assertions.assertTrue(firstTestNettyClientFilter.getPriority() < secondTestNettyClientFilter.getPriority());
+        Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
         Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() < secondTestNettyClientFilter.getEndTime());
     }
 

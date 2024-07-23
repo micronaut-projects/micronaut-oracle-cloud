@@ -22,8 +22,10 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
-import io.micronaut.oraclecloud.httpclient.netty.NettyClientFilter;
+import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
 
@@ -33,62 +35,46 @@ import java.util.Map;
 
 /**
  * The SdkMetricsNettyClientFilter will emit oci sdk client metrics.
+ *
+ * @since 4.2.0
+ * @author Nemanja Mikic
  */
 @Singleton
 @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
 @Requires(property = SdkMetricsNettyClientFilter.MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
-public class SdkMetricsNettyClientFilter implements NettyClientFilter {
+public class SdkMetricsNettyClientFilter implements OciNettyClientFilter {
 
     public static final String MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED = "micronaut.metrics.oci.sdk.client.enabled";
 
-    static final String UNKNOWN = "UNKNOWN";
-
-    private static final Tag URI_NOT_FOUND = Tag.of("uri", "NOT_FOUND");
-    private static final Tag URI_REDIRECTION = Tag.of("uri", "REDIRECTION");
-    private static final Tag URI_UNAUTHORIZED = Tag.of("uri", "UNAUTHORIZED");
-    private static final Tag URI_BAD_REQUEST = Tag.of("uri", "BAD_REQUEST");
     private static final String METHOD = "method";
     private static final String STATUS = "status";
-    private static final String URI = "uri";
+    private static final String HOST = "host";
     private static final String EXCEPTION = "exception";
-    private static final String SERVICE_ID = "serviceId";
 
     private static final String METRICS_TIMER = "oraclecloud.monitoring.sdk.timer";
     private static final String METRICS_NAME = "oci.sdk.client";
 
     private final Provider<MeterRegistry> meterRegistryProvider;
 
-    private final SdkMetricsNettyClientFilterConfig sdkMetricsNettyClientFilterConfig;
-
-    public SdkMetricsNettyClientFilter(Provider<MeterRegistry> meterRegistryProvider, SdkMetricsNettyClientFilterConfig sdkMetricsNettyClientFilterConfig) {
+    public SdkMetricsNettyClientFilter(Provider<MeterRegistry> meterRegistryProvider) {
         this.meterRegistryProvider = meterRegistryProvider;
-        this.sdkMetricsNettyClientFilterConfig = sdkMetricsNettyClientFilterConfig;
     }
 
     @Override
-    public void beforeRequest(HttpRequest request, Map<String, Object> context) {
-        if (sdkMetricsNettyClientFilterConfig.ignorePaths() != null && sdkMetricsNettyClientFilterConfig.ignorePaths().contains(request.uri().getPath())) {
-            return;
-        }
-
+    public Map<String, Object> beforeRequest(HttpRequest request) {
         Timer.Sample timerSample = Timer.start(meterRegistryProvider.get());
-        context.put(METRICS_TIMER, timerSample);
+        return Map.of(METRICS_TIMER, timerSample);
     }
 
     @Override
-    public HttpResponse afterResponse(HttpRequest request, HttpResponse response, Throwable throwable, Map<String, Object> context) {
-
-        if (sdkMetricsNettyClientFilterConfig.ignorePaths() != null && sdkMetricsNettyClientFilterConfig.ignorePaths().contains(request.uri().getPath())) {
-            return response;
-        }
+    public HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull Map<String, Object> context) {
 
         Timer.Sample timerSample = (Timer.Sample) context.get(METRICS_TIMER);
-        List<Tag> tags = new ArrayList<>();
+        List<Tag> tags = new ArrayList<>(4);
 
         tags.add(method(request.method().name()));
-        tags.add(serviceId("oci"));
         tags.add(exception(throwable));
-        tags.add(uri(response, request.uri().getPath()));
+        tags.add(Tag.of(HOST, request.uri().getHost()));
 
         if (response != null) {
             tags.add(Tag.of(STATUS, String.valueOf(response.status())));
@@ -102,11 +88,6 @@ public class SdkMetricsNettyClientFilter implements NettyClientFilter {
         return response;
     }
 
-    @Override
-    public int getPriority() {
-        return 100;
-    }
-
     /**
      * Get a tag with the HTTP method name.
      *
@@ -115,32 +96,6 @@ public class SdkMetricsNettyClientFilter implements NettyClientFilter {
      */
     private static Tag method(String httpMethod) {
         return httpMethod == null ? null : Tag.of(METHOD, httpMethod);
-    }
-
-    /**
-     * Get a tag with the URI.
-     *
-     * @param httpResponse the HTTP response
-     * @param path         the path of the request
-     * @return Tag of URI
-     */
-    private static Tag uri(HttpResponse httpResponse, String path) {
-        if (httpResponse != null) {
-            int status = httpResponse.status();
-            if (status >= 300 && status < 400) {
-                return URI_REDIRECTION;
-            }
-            if (status >= 400 && status < 500) {
-                if (status  == 401) {
-                    return URI_UNAUTHORIZED;
-                }
-                if (status == 404) {
-                    return URI_NOT_FOUND;
-                }
-                return URI_BAD_REQUEST;
-            }
-        }
-        return Tag.of(URI, sanitizePath(path));
     }
 
     /**
@@ -156,29 +111,8 @@ public class SdkMetricsNettyClientFilter implements NettyClientFilter {
         return Tag.of(EXCEPTION, throwable.getClass().getSimpleName());
     }
 
-    /**
-     * Get a tag with the serviceId used in the call.
-     *
-     * @param serviceId The serviceId used in the call.
-     * @return Tag of serviceId
-     */
-    private static Tag serviceId(String serviceId) {
-        return serviceId == null ? null : Tag.of(SERVICE_ID, serviceId);
-    }
-
-    /**
-     * Sanitize the URI path for double slashes and ending slashes.
-     *
-     * @param path the URI of the request
-     * @return sanitized string
-     */
-    private static String sanitizePath(String path) {
-        if (!StringUtils.isEmpty(path)) {
-            path = path
-                .replaceAll("//+", "/")
-                .replaceAll("/$", "");
-        }
-
-        return path != null ? (path.isEmpty() ? "root" : path) : UNKNOWN;
+    @Override
+    public int getOrder() {
+        return 100;
     }
 }
