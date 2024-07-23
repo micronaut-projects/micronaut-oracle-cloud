@@ -42,3 +42,13 @@ micronaut:
 ----
 
 TIP: See the guide for https://guides.micronaut.io/latest/micronaut-metrics-oci.html[Collect Metrics with the Micronaut Framework and Monitor them on Oracle Cloud] to learn more.
+
+=== OCI SDK client metrics
+
+If you are using OCI SDK clients instrumented by Micronaut framework by default for each request metrics will be collected.
+
+|=======
+|*Name* |*Type* |*Description*
+|micronaut.metrics.oci.sdk.client.enabled | boolean |Whether to enable the OCI SDK client metrics. Default: `true`.
+|micronaut.metrics.oci.sdk.client.ignore-paths | List<String> | List of paths for which metrics won't be collected.
+|=======
