@@ -1,14 +1,11 @@
 package io.micronaut.oraclecloud.monitoring.sdk
 
-import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.model.BmcException
 import com.oracle.bmc.monitoring.Monitoring
 import com.oracle.bmc.monitoring.requests.GetAlarmRequest
 import io.micrometer.core.instrument.MeterRegistry
 import io.micronaut.context.ApplicationContext
-import io.micronaut.context.annotation.Property
-import io.micronaut.context.annotation.Requires
-import io.micronaut.context.env.Environment
+import io.micronaut.context.annotation.Primary
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.runtime.server.EmbeddedServer
@@ -17,8 +14,6 @@ import spock.lang.Specification
 
 
 @MicronautTest(startApplication = false)
-@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
-@Requires(beans = AuthenticationDetailsProvider)
 class OracleCloudSdkMetricsFilterTest extends Specification {
 
     def "test oci sdk metrics client filter request returns 200"() {
@@ -26,7 +21,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
                 "micronaut.metrics.export.oraclecloud.enabled": "false"
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
         embeddedServer.start()
@@ -56,7 +51,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
                 "micronaut.metrics.enabled": "true",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "micronaut.metrics.oci.sdk.client.ignore-paths[0]": "/20180401/alarms/test2"
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
         embeddedServer.start()
@@ -81,7 +76,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
                 "micronaut.metrics.enabled": "true",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "micronaut.metrics.oci.sdk.client.enabled": "false",
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
         embeddedServer.start()
@@ -105,7 +100,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
                 "micronaut.metrics.export.oraclecloud.enabled": "false"
-        ], Environment.ORACLE_CLOUD)
+        ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
         embeddedServer.start()
