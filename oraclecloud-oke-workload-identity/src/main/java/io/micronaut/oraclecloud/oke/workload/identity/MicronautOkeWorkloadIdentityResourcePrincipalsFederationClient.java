@@ -45,6 +45,7 @@ import io.micronaut.json.JsonMapper;
 import io.micronaut.json.codec.JsonMediaTypeCodec;
 import io.micronaut.json.codec.JsonStreamMediaTypeCodec;
 import io.micronaut.oraclecloud.httpclient.netty.ManagedNettyHttpProvider;
+import io.micronaut.oraclecloud.httpclient.netty.NettyClientFilter;
 import io.micronaut.runtime.ApplicationConfiguration;
 import io.netty.channel.MultithreadEventLoopGroup;
 import io.netty.util.concurrent.DefaultThreadFactory;
@@ -77,6 +78,8 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
     static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 
+    private final List<NettyClientFilter> nettyClientFilters;
+
     /**
      * Constructor of OkeWorkloadIdentityResourcePrincipalsFederationClient.
      *
@@ -93,9 +96,11 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
         OkeTenancyOnlyAuthenticationDetailsProvider okeTenancyOnlyAuthenticationDetailsProvider,
         ClientConfigurator clientConfigurator,
         CircuitBreakerConfiguration circuitBreakerConfiguration,
-        List<ClientConfigurator> additionalClientConfigurators
+        List<ClientConfigurator> additionalClientConfigurators,
+        List<NettyClientFilter> nettyClientFilters
     ) {
         super(sessionKeySupplier, serviceAccountTokenSupplier, okeTenancyOnlyAuthenticationDetailsProvider, clientConfigurator, circuitBreakerConfiguration, additionalClientConfigurators);
+        this.nettyClientFilters = nettyClientFilters;
     }
 
     public static OkeNettyClientSslBuilder okeNettyClientSslBuilder(String path) {
@@ -171,7 +176,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
             return null;
         }
 
-        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), Executors.newCachedThreadPool())
+        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), Executors.newCachedThreadPool(), nettyClientFilters)
                 .newBuilder()
                 .baseUri(URI.create(endpoint))
                 .registerRequestInterceptor(

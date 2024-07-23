@@ -30,6 +30,7 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
+import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import jakarta.inject.Provider;
 
@@ -51,17 +52,19 @@ import static java.util.stream.StreamSupport.stream;
  */
 public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
 
-    public OracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
+    public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
+                                    OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
                                     Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        this(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
+        this(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
     }
 
-    public OracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
+    public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
+                                    OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
                                     Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
                                     ThreadFactory threadFactory) {
-        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
+        super(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
     }
 
     /**

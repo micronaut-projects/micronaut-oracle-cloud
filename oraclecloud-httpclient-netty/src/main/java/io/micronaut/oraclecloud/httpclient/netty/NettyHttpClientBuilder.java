@@ -31,6 +31,8 @@ import java.util.Objects;
 
 final class NettyHttpClientBuilder implements HttpClientBuilder {
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();
+    final Collection<PrioritizedValue<NettyClientFilter>> nettyClientFilters = new ArrayList<>();
+
     @Nullable
     ManagedNettyHttpProvider managedProvider;
     final Map<ClientProperty<?>, Object> properties = new HashMap<>();
@@ -40,6 +42,9 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
 
     NettyHttpClientBuilder(@Nullable ManagedNettyHttpProvider managedProvider) {
         this.managedProvider = managedProvider;
+        if (managedProvider != null) {
+            managedProvider.nettyClientFilters.forEach(this::registerNettyClientFilterInterceptor);
+        }
     }
 
     @Override
@@ -87,6 +92,12 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     public HttpClientBuilder registerRequestInterceptor(int priority, RequestInterceptor interceptor) {
         Objects.requireNonNull(interceptor, "interceptor");
         requestInterceptors.add(new PrioritizedValue<>(priority, interceptor));
+        return this;
+    }
+
+    public HttpClientBuilder registerNettyClientFilterInterceptor(NettyClientFilter nettyClientFilter) {
+        Objects.requireNonNull(nettyClientFilter, "interceptor");
+        nettyClientFilters.add(new PrioritizedValue<>(nettyClientFilter.getPriority(), nettyClientFilter));
         return this;
     }
 

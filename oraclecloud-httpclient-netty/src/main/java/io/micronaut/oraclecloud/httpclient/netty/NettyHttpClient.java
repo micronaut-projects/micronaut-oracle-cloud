@@ -57,6 +57,7 @@ final class NettyHttpClient implements HttpClient {
     final boolean ownsThreadPool;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
+    final List<NettyClientFilter> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
     final String host;
     final int port;
@@ -122,6 +123,7 @@ final class NettyHttpClient implements HttpClient {
             .sorted(Comparator.comparingInt(p -> p.priority))
             .map(p -> p.value)
             .collect(Collectors.toList());
+        nettyClientFilter = builder.nettyClientFilters.stream().sorted(Comparator.comparingInt(p -> p.priority)).map(p -> p.value).collect(Collectors.toList());
         requestKey = new DefaultHttpClient.RequestKey(mnClient, builder.baseUri);
         this.port = builder.baseUri.getPort();
         this.host = builder.baseUri.getHost();

@@ -72,6 +72,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
                 mock(OkeTenancyOnlyAuthenticationDetailsProvider.class),
                 mock(ClientConfigurator.class),
                 mock(CircuitBreakerConfiguration.class),
+                new ArrayList<>(),
                 new ArrayList<>()
             );
             Assertions.assertNotNull(micronautOkeWorkloadIdentityResourcePrincipalsFederationClient.defaultHttpClient());

@@ -39,6 +39,7 @@ import java.security.cert.CertificateException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
 @ExtendWith(NettyRule.class)
@@ -78,6 +79,47 @@ public class NettyTest {
                 Assertions.assertEquals("bar", s);
             }
         }
+    }
+
+    @Test
+    public void simpleRequestTestFilters() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/foo", request.uri());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        NettyHttpClientBuilder clientBuilder = (NettyHttpClientBuilder) provider().newBuilder()
+            .baseUri(netty.getEndpoint());
+
+        FirstTestNettyClientFilter firstTestNettyClientFilter = new FirstTestNettyClientFilter();
+        SecondTestNettyClientFilter secondTestNettyClientFilter = new SecondTestNettyClientFilter();
+
+        clientBuilder.registerNettyClientFilterInterceptor(firstTestNettyClientFilter);
+        clientBuilder.registerNettyClientFilterInterceptor(secondTestNettyClientFilter);
+
+        HttpClient client = clientBuilder.build();
+        try (HttpResponse response = client.createRequest(Method.GET)
+            .appendPathPart("foo")
+            .execute().toCompletableFuture()
+            .get()) {
+            String s = response.textBody().toCompletableFuture().get();
+            Assertions.assertEquals("bar", s);
+        }
+        client.close();
+
+        Assertions.assertNotEquals(firstTestNettyClientFilter.getStartTime(), 0);
+        Assertions.assertNotEquals(firstTestNettyClientFilter.getEndTime(), 0);
+        Assertions.assertNotEquals(secondTestNettyClientFilter.getStartTime(), 0);
+        Assertions.assertNotEquals(secondTestNettyClientFilter.getEndTime(), 0);
+
+        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
+        Assertions.assertTrue(firstTestNettyClientFilter.getPriority() < secondTestNettyClientFilter.getPriority());
+        Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() < secondTestNettyClientFilter.getEndTime());
     }
 
     @Test

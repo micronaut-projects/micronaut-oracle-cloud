@@ -265,19 +265,29 @@ final class NettyHttpRequest implements HttpRequest {
             interceptor.intercept(this);
         }
 
-        CompletableFuture<HttpResponse> future = new CompletableFuture<>();
+        CompletableFuture<HttpResponse> result = new CompletableFuture<>();
+
+        CompletableFuture<HttpResponse> last = result;
+
+        for (NettyClientFilter filter: client.nettyClientFilter) {
+            Map<String, Object> context = new HashMap<>();
+            filter.beforeRequest(this, context);
+            last = last.handle((response, error) -> filter.afterResponse(this, response, error, context));
+        }
 
         Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
+        CompletableFuture<HttpResponse> finalResult = result;
         connect.subscribe(ph -> {
             try {
                 io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
-                initializeChannel(ph, nettyRequest, future);
+                initializeChannel(ph, nettyRequest, finalResult);
             } catch (Exception e) {
-                future.completeExceptionally(e);
+                finalResult.completeExceptionally(e);
                 ph.release();
             }
-        }, future::completeExceptionally);
-        return future;
+        }, result::completeExceptionally);
+
+        return result;
     }
 
     private void bufferBody() {

@@ -24,6 +24,7 @@ import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthentica
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.oraclecloud.httpclient.netty.NettyClientFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ import java.util.List;
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
 class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {
     private static OkeHttpClientConfiguration okeHttpClientConfiguration;
+    private static List<NettyClientFilter> nettyClientFilters;
 
     /** The configuration for the circuit breaker. */
     private CircuitBreakerConfiguration circuitBreakerConfig;
@@ -39,6 +41,10 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
 
     public static void setOkeHttpClientConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration) {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.okeHttpClientConfiguration = okeHttpClientConfiguration;
+    }
+
+    public static void setNettyClientFilters(List<NettyClientFilter> nettyClientFilters) {
+        MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.nettyClientFilters = nettyClientFilters;
     }
 
     static OkeHttpClientConfiguration getOkeHttpClientConfiguration() {
@@ -78,7 +84,8 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
             provider,
             configurator,
             circuitBreakerConfig,
-            additionalConfigurators
+            additionalConfigurators,
+            nettyClientFilters
         );
     }
 

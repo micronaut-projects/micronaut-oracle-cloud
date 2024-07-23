@@ -33,6 +33,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -50,6 +51,8 @@ public class ManagedNettyHttpProvider implements HttpProvider {
 
     final HttpClientRegistry<?> mnHttpClientRegistry;
     final HttpClient mnHttpClient;
+    final List<NettyClientFilter> nettyClientFilters;
+
     /**
      * {@code null} in bootstrap context.
      */
@@ -63,23 +66,27 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         @Named(TaskExecutors.BLOCKING) @Nullable ExecutorService ioExecutor,
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
-        OciSerializationConfiguration ociSerializationConfiguration
+        OciSerializationConfiguration ociSerializationConfiguration,
+        @Nullable List<NettyClientFilter> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
         this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
+        this.nettyClientFilters = nettyClientFilters == null ? List.of() : nettyClientFilters;
     }
 
     // for OKE
     public ManagedNettyHttpProvider(
         HttpClient mnHttpClient,
-        ExecutorService ioExecutor
+        ExecutorService ioExecutor,
+        @Nullable List<NettyClientFilter> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = null;
         this.mnHttpClient = mnHttpClient;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
+        this.nettyClientFilters = nettyClientFilters == null ? List.of() : nettyClientFilters;
     }
 
     @Override
