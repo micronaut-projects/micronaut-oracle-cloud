@@ -72,9 +72,10 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter {
         Timer.Sample timerSample = (Timer.Sample) context.get(METRICS_TIMER);
         List<Tag> tags = new ArrayList<>(4);
 
-        tags.add(method(request.method().name()));
-        tags.add(exception(throwable));
         tags.add(Tag.of(HOST, request.uri().getHost()));
+        tags.add(Tag.of(METHOD, request.method().name()));
+
+        tags.add(exception(throwable));
 
         if (response != null) {
             tags.add(Tag.of(STATUS, String.valueOf(response.status())));
@@ -86,16 +87,6 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter {
             .register(meterRegistryProvider.get());
         timerSample.stop(timer);
         return response;
-    }
-
-    /**
-     * Get a tag with the HTTP method name.
-     *
-     * @param httpMethod The name of the HTTP method.
-     * @return Tag of method
-     */
-    private static Tag method(String httpMethod) {
-        return httpMethod == null ? null : Tag.of(METHOD, httpMethod);
     }
 
     /**

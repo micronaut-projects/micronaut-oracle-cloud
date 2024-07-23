@@ -129,7 +129,7 @@ final class NettyHttpClient implements HttpClient {
             .collect(Collectors.toList());
 
         if (builder.properties.containsKey(OCI_NETTY_FILTERS_KEY)) {
-            nettyClientFilter = ((List<OciNettyClientFilter>) builder.properties.get(OCI_NETTY_FILTERS_KEY)).stream().sorted(OrderUtil.COMPARATOR).collect(Collectors.toList());
+            nettyClientFilter = ((List<OciNettyClientFilter>) builder.properties.get(OCI_NETTY_FILTERS_KEY)).stream().sorted(OrderUtil.COMPARATOR).toList();
         } else {
             nettyClientFilter = Collections.emptyList();
         }

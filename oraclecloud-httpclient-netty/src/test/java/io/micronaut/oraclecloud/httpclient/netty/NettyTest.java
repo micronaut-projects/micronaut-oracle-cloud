@@ -39,7 +39,6 @@ import java.security.cert.CertificateException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
 @ExtendWith(NettyRule.class)
@@ -82,7 +81,7 @@ public class NettyTest {
     }
 
     @Test
-    public void simpleRequestTestFilters() throws Exception {
+    void simpleRequestTestFilters() throws Exception {
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(HttpMethod.GET, request.method());
             Assertions.assertEquals("/foo", request.uri());
@@ -114,10 +113,10 @@ public class NettyTest {
         }
         client.close();
 
-        Assertions.assertNotEquals(firstTestNettyClientFilter.getStartTime(), 0);
-        Assertions.assertNotEquals(firstTestNettyClientFilter.getEndTime(), 0);
-        Assertions.assertNotEquals(secondTestNettyClientFilter.getStartTime(), 0);
-        Assertions.assertNotEquals(secondTestNettyClientFilter.getEndTime(), 0);
+        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getStartTime());
+        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getEndTime());
+        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getStartTime());
+        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getEndTime());
 
         Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
         Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
