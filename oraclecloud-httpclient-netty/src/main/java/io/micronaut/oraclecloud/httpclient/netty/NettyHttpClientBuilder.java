@@ -99,12 +99,6 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
         return this;
     }
 
-//    public HttpClientBuilder registerNettyClientFilterInterceptor(OciNettyClientFilter nettyClientFilter) {
-//        Objects.requireNonNull(nettyClientFilter, "nettyClientFilter");
-//        nettyClientFilters.add(nettyClientFilter);
-//        return this;
-//    }
-
     @Override
     public HttpClient build() {
         return new NettyHttpClient(this);
