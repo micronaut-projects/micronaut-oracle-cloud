@@ -269,19 +269,17 @@ final class NettyHttpRequest implements HttpRequest {
 
         CompletableFuture<HttpResponse> last = result;
 
-        for (OciNettyClientFilter filter: client.nettyClientFilter) {
-            Object beforeRequestResult = filter.beforeRequest(this);
-            last = last.handle((response, error) -> filter.afterResponse(this, response, error, beforeRequestResult));
+        for (OciNettyClientFilter<?> filter: client.nettyClientFilter) {
+            last = runFilter(filter, last);
         }
 
         Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
-        CompletableFuture<HttpResponse> finalResult = result;
         connect.subscribe(ph -> {
             try {
                 io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
-                initializeChannel(ph, nettyRequest, finalResult);
+                initializeChannel(ph, nettyRequest, result);
             } catch (Exception e) {
-                finalResult.completeExceptionally(e);
+                result.completeExceptionally(e);
                 ph.release();
             }
         }, result::completeExceptionally);
@@ -448,5 +446,10 @@ final class NettyHttpRequest implements HttpRequest {
         } else if (delayImmediateBody()) {
             ch.writeAndFlush(new DefaultLastHttpContent(immediateBody), ch.voidPromise());
         }
+    }
+
+    private <T> CompletableFuture<HttpResponse> runFilter(OciNettyClientFilter<T> filter, CompletableFuture<HttpResponse> responseFuture) {
+        T beforeRequestResult = filter.beforeRequest(this);
+        return responseFuture.handle((response, error) -> filter.afterResponse(this, response, error, beforeRequestResult));
     }
 }
