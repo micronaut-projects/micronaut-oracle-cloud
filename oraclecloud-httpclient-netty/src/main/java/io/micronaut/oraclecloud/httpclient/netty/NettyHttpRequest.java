@@ -56,7 +56,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_KEY_NAME;
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.METHOD_KEY_NAME;
+
 final class NettyHttpRequest implements HttpRequest {
+
     private static final long UNKNOWN_CONTENT_LENGTH = -1;
 
     private static final String HANDLER_PREFACE = "preface";
@@ -87,6 +91,9 @@ final class NettyHttpRequest implements HttpRequest {
         this.method = method;
         this.uri = new StringBuilder(client.baseUri.toString());
         attributes = new HashMap<>();
+        StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
+        attributes.put(CLASS_KEY_NAME, frame == null ? "N/A" : frame.getClassName());
+        attributes.put(METHOD_KEY_NAME, frame == null ? "N/A" : frame.getMethodName());
         headers = new DefaultHttpHeaders();
         query = new StringBuilder();
     }

@@ -17,6 +17,7 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
+import io.micronaut.core.annotation.Indexed;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.Ordered;
@@ -29,10 +30,22 @@ import io.micronaut.core.order.Ordered;
  * @since 4.2.0
  * @author Nemanja Mikic
  */
+@Indexed(OciNettyClientFilter.class)
 public interface OciNettyClientFilter<R> extends Ordered {
 
-   R beforeRequest(HttpRequest request);
+    /**
+    * The OCI SDK client will execute this method before sending request.
+    * @param request the http requests.
+    */
+    @Nullable R beforeRequest(@NonNull HttpRequest request);
 
-   HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull R context);
+    /**
+     * The OCI SDK client will execute this method after it receives the response or exception is thrown.
+     * @param request the http requests.
+     * @param response the http response.
+     * @param throwable the exception that has been thrown during sending request and receiving response.
+     * @param context the data passed from {@link OciNettyClientFilter#beforeRequest(HttpRequest)}
+     */
+    @Nullable HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @Nullable R context);
 
 }

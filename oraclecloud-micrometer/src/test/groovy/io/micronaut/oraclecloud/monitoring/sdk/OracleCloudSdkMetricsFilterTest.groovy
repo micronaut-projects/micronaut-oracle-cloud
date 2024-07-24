@@ -35,9 +35,11 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         context.containsBean(SdkMetricsNettyClientFilter)
         def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
         meter.id.getTag("host") == "localhost"
-        meter.id.getTag("method") == "GET"
+        meter.id.getTag("http_method") == "GET"
         meter.id.getTag("status") == "200"
         meter.id.getTag("exception") == "none"
+        meter.id.getTag("class_name") == "com.oracle.bmc.monitoring.MonitoringClient"
+        meter.id.getTag("method_name") == "getAlarm"
 
         cleanup:
         embeddedServer.stop()
@@ -94,9 +96,11 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         context.containsBean(SdkMetricsNettyClientFilter)
         def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
         meter.id.getTag("host") == "localhost"
-        meter.id.getTag("method") == "GET"
+        meter.id.getTag("http_method") == "GET"
         meter.id.getTag("status") == "404"
         meter.id.getTag("exception") == "none"
+        meter.id.getTag("class_name") == "com.oracle.bmc.monitoring.MonitoringClient"
+        meter.id.getTag("method_name") == "getAlarm"
 
         cleanup:
         embeddedServer.stop()
@@ -128,8 +132,10 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         context.containsBean(SdkMetricsNettyClientFilter)
         def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
         meter.id.getTag("host") == "localhost"
-        meter.id.getTag("method") == "GET"
+        meter.id.getTag("http_method") == "GET"
         meter.id.getTag("exception") == "HttpClientException"
+        meter.id.getTag("class_name") == "com.oracle.bmc.monitoring.MonitoringClient"
+        meter.id.getTag("method_name") == "getAlarm"
 
         cleanup:
         embeddedServer.stop()

@@ -32,6 +32,9 @@ import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_KEY_NAME;
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.METHOD_KEY_NAME;
+
 /**
  * The SdkMetricsNettyClientFilter will emit oci sdk client metrics.
  *
@@ -45,10 +48,12 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
 
     public static final String MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED = "micronaut.metrics.oci.sdk.client.enabled";
 
-    private static final String METHOD = "method";
+    private static final String METHOD = "http_method";
     private static final String STATUS = "status";
     private static final String HOST = "host";
     private static final String EXCEPTION = "exception";
+    private static final String CLASS_NAME = "class_name";
+    private static final String METHOD_NAME = "method_name";
 
     private static final String METRICS_NAME = "oci.sdk.client";
 
@@ -70,6 +75,8 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
 
         tags.add(Tag.of(HOST, request.uri().getHost()));
         tags.add(Tag.of(METHOD, request.method().name()));
+        tags.add(Tag.of(CLASS_NAME, (String) request.attribute(CLASS_KEY_NAME)));
+        tags.add(Tag.of(METHOD_NAME, (String) request.attribute(METHOD_KEY_NAME)));
 
         tags.add(exception(throwable));
 
