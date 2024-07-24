@@ -39,7 +39,7 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
 
     private boolean enabled = true;
     private final OkeHttpClientConfiguration okeHttpClientConfiguration;
-    private final List<OciNettyClientFilter> nettyClientFilters;
+    private final List<OciNettyClientFilter<?>> nettyClientFilters;
 
     @ConfigurationBuilder(prefixes = "")
     private final MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder =
@@ -51,7 +51,7 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
 
     @Inject
     public OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration,
-                                            @Nullable List<OciNettyClientFilter> nettyClientFilters) {
+                                            @Nullable List<OciNettyClientFilter<?>> nettyClientFilters) {
         this.okeHttpClientConfiguration = okeHttpClientConfiguration;
         this.nettyClientFilters = nettyClientFilters;
     }

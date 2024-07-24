@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
+
 @ExtendWith(NettyRule.class)
 public class NettyTest {
     private static final HttpProvider PROVIDER = new NettyHttpProvider();
@@ -98,7 +100,7 @@ public class NettyTest {
         FirstTestNettyClientFilter firstTestNettyClientFilter = new FirstTestNettyClientFilter();
         SecondTestNettyClientFilter secondTestNettyClientFilter = new SecondTestNettyClientFilter();
 
-        clientBuilder.property(NettyHttpClientBuilder.OCI_NETTY_FILTERS_KEY, List.of(
+        clientBuilder.property(OCI_NETTY_CLIENT_FILTERS_KEY, List.of(
             firstTestNettyClientFilter,
             secondTestNettyClientFilter
         ));
@@ -117,6 +119,11 @@ public class NettyTest {
         Assertions.assertNotEquals(0, firstTestNettyClientFilter.getEndTime());
         Assertions.assertNotEquals(0, secondTestNettyClientFilter.getStartTime());
         Assertions.assertNotEquals(0, secondTestNettyClientFilter.getEndTime());
+
+        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
 
         Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
         Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());

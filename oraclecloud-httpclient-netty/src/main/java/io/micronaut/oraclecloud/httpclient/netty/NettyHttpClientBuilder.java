@@ -26,13 +26,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-final class NettyHttpClientBuilder implements HttpClientBuilder {
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
 
-    public static final ClientProperty<List<OciNettyClientFilter>> OCI_NETTY_FILTERS_KEY = ClientProperty.create("oci_netty_filters");
+final class NettyHttpClientBuilder implements HttpClientBuilder {
 
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();
 
@@ -46,7 +45,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
     NettyHttpClientBuilder(@Nullable ManagedNettyHttpProvider managedProvider) {
         this.managedProvider = managedProvider;
         if (managedProvider != null) {
-            property(OCI_NETTY_FILTERS_KEY, managedProvider.nettyClientFilters);
+            property(OCI_NETTY_CLIENT_FILTERS_KEY, managedProvider.nettyClientFilters);
         }
     }
 
@@ -67,7 +66,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
         if (key == StandardClientProperties.READ_TIMEOUT ||
             key == StandardClientProperties.CONNECT_TIMEOUT ||
             key == StandardClientProperties.ASYNC_POOL_SIZE ||
-            key == OCI_NETTY_FILTERS_KEY) {
+            key == OCI_NETTY_CLIENT_FILTERS_KEY) {
             properties.put(key, value);
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;

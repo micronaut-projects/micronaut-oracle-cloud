@@ -52,7 +52,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
 
     final HttpClientRegistry<?> mnHttpClientRegistry;
     final HttpClient mnHttpClient;
-    final List<OciNettyClientFilter> nettyClientFilters;
+    final List<OciNettyClientFilter<?>> nettyClientFilters;
 
     /**
      * {@code null} in bootstrap context.
@@ -68,7 +68,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration,
-        @Nullable List<OciNettyClientFilter> nettyClientFilters
+        @Nullable List<OciNettyClientFilter<?>> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
         this.mnHttpClient = null;
@@ -81,7 +81,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
     public ManagedNettyHttpProvider(
         HttpClient mnHttpClient,
         ExecutorService ioExecutor,
-        @Nullable List<OciNettyClientFilter> nettyClientFilters
+        @Nullable List<OciNettyClientFilter<?>> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = null;
         this.mnHttpClient = mnHttpClient;

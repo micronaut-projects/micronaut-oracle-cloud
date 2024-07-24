@@ -16,7 +16,11 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.ClientProperty;
+import com.oracle.bmc.http.client.HttpRequest;
+import com.oracle.bmc.http.client.HttpResponse;
 import io.micronaut.core.annotation.Internal;
+
+import java.util.List;
 
 /**
  * {@link com.oracle.bmc.http.client.HttpClientBuilder#property(ClientProperty, Object) Client properties}
@@ -31,6 +35,14 @@ public final class NettyClientProperties {
      * service ID is {@value ManagedNettyHttpProvider#SERVICE_ID}.
      */
     public static final ClientProperty<String> SERVICE_ID = ClientProperty.create("serviceId");
+
+    /**
+     * The Oci Netty client filter property contains list of {@link OciNettyClientFilter} that will be executed
+     * during sending the request. The {@link OciNettyClientFilter#beforeRequest(HttpRequest)} will be executed
+     * before sending and {@link OciNettyClientFilter#afterResponse(HttpRequest, HttpResponse, Throwable, Object)}
+     * will be executed after response is received from the server.
+     */
+    public static final ClientProperty<List<OciNettyClientFilter<?>>> OCI_NETTY_CLIENT_FILTERS_KEY = ClientProperty.create("ociNettyClientFilters");
 
     /**
      * The {@link ManagedNettyHttpProvider} to use for this client.

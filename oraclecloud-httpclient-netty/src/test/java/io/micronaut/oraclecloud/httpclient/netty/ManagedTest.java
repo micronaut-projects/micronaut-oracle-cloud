@@ -32,7 +32,7 @@ public class ManagedTest {
     ApplicationContext ctx;
 
     @Inject
-    List<OciNettyClientFilter> nettyClientFilters;
+    List<OciNettyClientFilter<?>> nettyClientFilters;
 
     @Test
     public void managedClientUsesManagedProvider() {
@@ -53,7 +53,7 @@ public class ManagedTest {
         public MockProvider(
             HttpClientRegistry<?> mnHttpClientRegistry, @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor,
             ObjectMapper jsonMapper, OciSerdeConfiguration ociSerdeConfiguration, OciSerializationConfiguration ociSerializationConfiguration,
-            List<OciNettyClientFilter> nettyClientFilters
+            List<OciNettyClientFilter<?>> nettyClientFilters
             ) {
             super(mnHttpClientRegistry, ioExecutor, jsonMapper, ociSerdeConfiguration, ociSerializationConfiguration, nettyClientFilters);
         }

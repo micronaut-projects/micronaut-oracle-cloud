@@ -48,7 +48,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static io.micronaut.oraclecloud.httpclient.netty.NettyHttpClientBuilder.OCI_NETTY_FILTERS_KEY;
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
 
 final class NettyHttpClient implements HttpClient {
     /**
@@ -61,7 +61,7 @@ final class NettyHttpClient implements HttpClient {
     final boolean ownsThreadPool;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
-    final List<OciNettyClientFilter> nettyClientFilter;
+    final List<OciNettyClientFilter<?>> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
     final String host;
     final int port;
@@ -98,7 +98,7 @@ final class NettyHttpClient implements HttpClient {
         } else {
             hasContext = true;
             for (Map.Entry<ClientProperty<?>, Object> entry : builder.properties.entrySet()) {
-                if (!entry.getValue().equals(EXPECTED_PROPERTIES.get(entry.getKey())) && !entry.getKey().equals(OCI_NETTY_FILTERS_KEY)) {
+                if (!entry.getValue().equals(EXPECTED_PROPERTIES.get(entry.getKey())) && !entry.getKey().equals(OCI_NETTY_CLIENT_FILTERS_KEY)) {
                     throw new IllegalArgumentException("Cannot change property " + entry.getKey() + " in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is '" + ManagedNettyHttpProvider.SERVICE_ID + "'.");
                 }
             }
@@ -128,8 +128,8 @@ final class NettyHttpClient implements HttpClient {
             .map(p -> p.value)
             .collect(Collectors.toList());
 
-        if (builder.properties.containsKey(OCI_NETTY_FILTERS_KEY)) {
-            nettyClientFilter = ((List<OciNettyClientFilter>) builder.properties.get(OCI_NETTY_FILTERS_KEY)).stream().sorted(OrderUtil.COMPARATOR).toList();
+        if (builder.properties.containsKey(OCI_NETTY_CLIENT_FILTERS_KEY)) {
+            nettyClientFilter = ((List<OciNettyClientFilter<?>>) builder.properties.get(OCI_NETTY_CLIENT_FILTERS_KEY)).stream().sorted(OrderUtil.COMPARATOR).toList();
         } else {
             nettyClientFilter = Collections.emptyList();
         }

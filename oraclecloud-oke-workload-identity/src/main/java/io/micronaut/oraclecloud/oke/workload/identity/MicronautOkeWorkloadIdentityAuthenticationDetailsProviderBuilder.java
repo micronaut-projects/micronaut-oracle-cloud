@@ -32,7 +32,7 @@ import java.util.List;
 /** Builder for OkeWorkloadIdentityAuthenticationDetailsProviderBuilder. */
 class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder {
     private static OkeHttpClientConfiguration okeHttpClientConfiguration;
-    private static List<OciNettyClientFilter> nettyClientFilters;
+    private static List<OciNettyClientFilter<?>> nettyClientFilters;
 
     /** The configuration for the circuit breaker. */
     private CircuitBreakerConfiguration circuitBreakerConfig;
@@ -43,7 +43,7 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.okeHttpClientConfiguration = okeHttpClientConfiguration;
     }
 
-    public static void setNettyClientFilters(List<OciNettyClientFilter> nettyClientFilters) {
+    public static void setNettyClientFilters(List<OciNettyClientFilter<?>> nettyClientFilters) {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.nettyClientFilters = nettyClientFilters;
     }
 

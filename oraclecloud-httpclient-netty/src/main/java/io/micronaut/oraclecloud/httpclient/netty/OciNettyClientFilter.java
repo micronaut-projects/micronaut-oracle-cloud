@@ -21,18 +21,16 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.Ordered;
 
-import java.util.Map;
-
 /**
  * OciNettyClientFilter interface allows invoking beforeRequest method before OCI SDK client sends a request and afterResponse invokes after request is sent and response is received from the server.
  *
  * @since 4.2.0
  * @author Nemanja Mikic
  */
-public interface OciNettyClientFilter extends Ordered {
+public interface OciNettyClientFilter<R> extends Ordered {
 
-   Map<String, Object> beforeRequest(HttpRequest request);
+   R beforeRequest(HttpRequest request);
 
-   HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull Map<String, Object> context);
+   HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull R context);
 
 }

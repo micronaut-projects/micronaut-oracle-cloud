@@ -102,7 +102,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         embeddedServer.stop()
     }
 
-    def "test oci sdk metrics client filter request returns 4042" () {
+    def "test oci sdk metrics client filter request returns exception" () {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",

@@ -78,7 +78,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
     static final String KUBERNETES_SERVICE_ACCOUNT_CERT_PATH =
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 
-    private final List<OciNettyClientFilter> nettyClientFilters;
+    private final List<OciNettyClientFilter<?>> nettyClientFilters;
 
     /**
      * Constructor of OkeWorkloadIdentityResourcePrincipalsFederationClient.
@@ -97,7 +97,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
         ClientConfigurator clientConfigurator,
         CircuitBreakerConfiguration circuitBreakerConfiguration,
         List<ClientConfigurator> additionalClientConfigurators,
-        List<OciNettyClientFilter> nettyClientFilters
+        List<OciNettyClientFilter<?>> nettyClientFilters
     ) {
         super(sessionKeySupplier, serviceAccountTokenSupplier, okeTenancyOnlyAuthenticationDetailsProvider, clientConfigurator, circuitBreakerConfiguration, additionalClientConfigurators);
         this.nettyClientFilters = nettyClientFilters;

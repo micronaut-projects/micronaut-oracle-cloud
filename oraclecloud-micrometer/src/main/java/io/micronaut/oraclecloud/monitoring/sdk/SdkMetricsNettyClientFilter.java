@@ -31,7 +31,6 @@ import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The SdkMetricsNettyClientFilter will emit oci sdk client metrics.
@@ -42,7 +41,7 @@ import java.util.Map;
 @Singleton
 @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
 @Requires(property = SdkMetricsNettyClientFilter.MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
-public class SdkMetricsNettyClientFilter implements OciNettyClientFilter {
+public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.Sample> {
 
     public static final String MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED = "micronaut.metrics.oci.sdk.client.enabled";
 
@@ -51,7 +50,6 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter {
     private static final String HOST = "host";
     private static final String EXCEPTION = "exception";
 
-    private static final String METRICS_TIMER = "oraclecloud.monitoring.sdk.timer";
     private static final String METRICS_NAME = "oci.sdk.client";
 
     private final Provider<MeterRegistry> meterRegistryProvider;
@@ -61,15 +59,13 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter {
     }
 
     @Override
-    public Map<String, Object> beforeRequest(HttpRequest request) {
-        Timer.Sample timerSample = Timer.start(meterRegistryProvider.get());
-        return Map.of(METRICS_TIMER, timerSample);
+    public Timer.Sample beforeRequest(HttpRequest request) {
+        return Timer.start(meterRegistryProvider.get());
     }
 
     @Override
-    public HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull Map<String, Object> context) {
+    public HttpResponse afterResponse(HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull Timer.Sample timerSample) {
 
-        Timer.Sample timerSample = (Timer.Sample) context.get(METRICS_TIMER);
         List<Tag> tags = new ArrayList<>(4);
 
         tags.add(Tag.of(HOST, request.uri().getHost()));

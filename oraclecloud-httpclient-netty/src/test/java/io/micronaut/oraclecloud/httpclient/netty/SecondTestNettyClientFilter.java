@@ -4,24 +4,21 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import jakarta.inject.Singleton;
 
-import java.util.Collections;
-import java.util.Map;
-
 @Singleton
-public class SecondTestNettyClientFilter implements OciNettyClientFilter {
+public class SecondTestNettyClientFilter implements OciNettyClientFilter<Void> {
 
     private long startTime;
 
     private long endTime;
 
     @Override
-    public Map<String, Object> beforeRequest(HttpRequest request) {
+    public Void beforeRequest(HttpRequest request) {
         startTime = System.nanoTime();
-        return Collections.emptyMap();
+        return null;
     }
 
     @Override
-    public HttpResponse afterResponse(HttpRequest request, HttpResponse response, Throwable throwable, Map<String, Object> context) {
+    public HttpResponse afterResponse(HttpRequest request, HttpResponse response, Throwable throwable, Void ignored) {
         endTime = System.nanoTime();
         return response;
     }
