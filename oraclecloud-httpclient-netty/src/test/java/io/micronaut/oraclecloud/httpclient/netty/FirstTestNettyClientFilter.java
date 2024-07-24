@@ -5,20 +5,20 @@ import com.oracle.bmc.http.client.HttpResponse;
 import jakarta.inject.Singleton;
 
 @Singleton
-public class FirstTestNettyClientFilter implements OciNettyClientFilter<Void> {
+public class FirstTestNettyClientFilter implements OciNettyClientFilter<Object> {
 
     private long startTime;
 
     private long endTime;
 
     @Override
-    public Void beforeRequest(HttpRequest request) {
+    public Object beforeRequest(HttpRequest request) {
         startTime = System.nanoTime();
-        return null;
+        return new Object();
     }
 
     @Override
-    public HttpResponse afterResponse(HttpRequest request, HttpResponse response, Throwable throwable, Void ignored) {
+    public HttpResponse afterResponse(HttpRequest request, HttpResponse response, Throwable throwable, Object ignored) {
         endTime = System.nanoTime();
         return response;
     }

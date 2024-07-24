@@ -38,7 +38,7 @@ public interface OciNettyClientFilter<R> extends Ordered {
     * @param request the http requests.
     * @return the data that will be passed to {@link OciNettyClientFilter#afterResponse(HttpRequest, HttpResponse, Throwable, Object)}
     */
-    @Nullable R beforeRequest(@NonNull HttpRequest request);
+    @NonNull R beforeRequest(@NonNull HttpRequest request);
 
     /**
      * The OCI SDK client will execute this method after it receives the response or exception is thrown.
@@ -48,6 +48,6 @@ public interface OciNettyClientFilter<R> extends Ordered {
      * @param context the data passed from {@link OciNettyClientFilter#beforeRequest(HttpRequest)}
      * @return the http response
      */
-    @Nullable HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @Nullable R context);
+    @Nullable HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull R context);
 
 }
