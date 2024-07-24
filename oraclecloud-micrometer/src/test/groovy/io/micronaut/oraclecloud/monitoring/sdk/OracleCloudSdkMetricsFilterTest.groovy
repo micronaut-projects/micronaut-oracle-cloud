@@ -38,8 +38,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         meter.id.getTag("http_method") == "GET"
         meter.id.getTag("status") == "200"
         meter.id.getTag("exception") == "none"
-        meter.id.getTag("class_name") == "MonitoringClient"
-        meter.id.getTag("method_name") == "getAlarm"
+        meter.id.getTag("class_and_method") == "MonitoringClient.getAlarm"
 
         cleanup:
         embeddedServer.stop()
@@ -99,8 +98,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         meter.id.getTag("http_method") == "GET"
         meter.id.getTag("status") == "404"
         meter.id.getTag("exception") == "none"
-        meter.id.getTag("class_name") == "MonitoringClient"
-        meter.id.getTag("method_name") == "getAlarm"
+        meter.id.getTag("class_and_method") == "MonitoringClient.getAlarm"
 
         cleanup:
         embeddedServer.stop()
@@ -134,8 +132,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         meter.id.getTag("host") == "localhost"
         meter.id.getTag("http_method") == "GET"
         meter.id.getTag("exception") == "HttpClientException"
-        meter.id.getTag("class_name") == "MonitoringClient"
-        meter.id.getTag("method_name") == "getAlarm"
+        meter.id.getTag("class_and_method") == "MonitoringClient.getAlarm"
 
         cleanup:
         embeddedServer.stop()

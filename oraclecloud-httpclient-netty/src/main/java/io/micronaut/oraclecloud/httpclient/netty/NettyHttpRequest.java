@@ -57,8 +57,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
-import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_KEY_NAME;
-import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.METHOD_KEY_NAME;
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
 final class NettyHttpRequest implements HttpRequest {
 
@@ -93,8 +92,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.uri = new StringBuilder(client.baseUri.toString());
         attributes = new HashMap<>();
         StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
-        attributes.put(CLASS_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A"));
-        attributes.put(METHOD_KEY_NAME, frame == null ? "N/A" : frame.getMethodName());
+        attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());
         headers = new DefaultHttpHeaders();
         query = new StringBuilder();
     }

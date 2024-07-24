@@ -45,14 +45,9 @@ public final class NettyClientProperties {
     public static final ClientProperty<List<OciNettyClientFilter<?>>> OCI_NETTY_CLIENT_FILTERS_KEY = ClientProperty.create("ociNettyClientFilters");
 
     /**
-     * The Client attribute that stores class name of the client that invoked request.
+     * The Client attribute that stores class name with method of the client that invoked request.
      */
-    public static final String CLASS_KEY_NAME = "class";
-
-    /**
-     * The Client attribute that stores method name of the client that invoked request.
-     */
-    public static final String METHOD_KEY_NAME = "method";
+    public static final String CLASS_AND_METHOD_KEY_NAME = "class_and_method";
 
     /**
      * The {@link ManagedNettyHttpProvider} to use for this client.
