@@ -24,6 +24,8 @@ import io.micronaut.core.order.Ordered;
 /**
  * OciNettyClientFilter interface allows invoking beforeRequest method before OCI SDK client sends a request and afterResponse invokes after request is sent and response is received from the server.
  *
+ * @param <R> context object that will be passed from beforeRequest to afterResponse.
+ *
  * @since 4.2.0
  * @author Nemanja Mikic
  */
