@@ -49,6 +49,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.uri = new StringBuilder(client.baseUri.toString());
         attributes = new HashMap<>();
         StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
-        attributes.put(CLASS_KEY_NAME, frame == null ? "N/A" : frame.getClassName());
+        attributes.put(CLASS_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A"));
         attributes.put(METHOD_KEY_NAME, frame == null ? "N/A" : frame.getMethodName());
         headers = new DefaultHttpHeaders();
         query = new StringBuilder();
