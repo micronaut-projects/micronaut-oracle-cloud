@@ -42,6 +42,7 @@ import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -491,7 +492,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             .orElseGet(() -> {
                 String ociClientClasses = processingEnv.getOptions().get(OCI_SDK_CLIENT_CLASSES_OPTION);
                 if (ociClientClasses == null) {
-                    return List.of();
+                    return Collections.emptyList();
                 }
                 return List.of(ociClientClasses.split(","));
             });

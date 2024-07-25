@@ -25,6 +25,7 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.lang.Nullable;
 import io.micrometer.common.util.internal.logging.WarnThenDebugLogger;
+import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import jakarta.inject.Provider;
 import org.slf4j.Logger;
@@ -46,7 +47,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     private final Provider<MonitoringIngestionClient> monitoringIngestionClientProvider;
     private MonitoringIngestionClient monitoringIngestionClient;
 
-    protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
+    protected AbstractOracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
         super(oracleCloudConfig, clock);
         this.monitoringIngestionClientProvider = monitoringIngestionClientProvider;
         this.oracleCloudConfig = oracleCloudConfig;

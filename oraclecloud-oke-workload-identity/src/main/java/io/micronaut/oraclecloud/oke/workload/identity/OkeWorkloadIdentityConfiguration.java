@@ -20,9 +20,14 @@ import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
+import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
+import jakarta.inject.Inject;
+
+import java.util.List;
 
 /**
  * Allows configuration of the {@link OkeWorkloadIdentityAuthenticationDetailsProvider}.
@@ -34,13 +39,21 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
 
     private boolean enabled = true;
     private final OkeHttpClientConfiguration okeHttpClientConfiguration;
+    private final List<OciNettyClientFilter<?>> nettyClientFilters;
 
     @ConfigurationBuilder(prefixes = "")
     private final MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder =
         new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder();
 
     public OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration) {
+        this(okeHttpClientConfiguration, null);
+    }
+
+    @Inject
+    public OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration,
+                                            @Nullable List<OciNettyClientFilter<?>> nettyClientFilters) {
         this.okeHttpClientConfiguration = okeHttpClientConfiguration;
+        this.nettyClientFilters = nettyClientFilters;
     }
 
     @Override
@@ -60,6 +73,7 @@ public class OkeWorkloadIdentityConfiguration implements Toggleable {
      */
     public OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder getBuilder() {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.setOkeHttpClientConfiguration(okeHttpClientConfiguration);
+        MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.setNettyClientFilters(nettyClientFilters);
         return builder;
     }
 }

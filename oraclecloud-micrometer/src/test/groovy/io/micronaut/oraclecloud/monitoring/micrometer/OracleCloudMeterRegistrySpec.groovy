@@ -7,6 +7,7 @@ import io.micrometer.core.instrument.FunctionTimer
 import io.micrometer.core.instrument.Meter
 import io.micrometer.core.instrument.MockClock
 import io.micrometer.core.instrument.Tags
+import io.micronaut.http.client.HttpClientRegistry
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient
 import jakarta.inject.Provider
 import spock.lang.AutoCleanup
@@ -49,7 +50,7 @@ class OracleCloudMeterRegistrySpec extends Specification {
 
     @AutoCleanup
     @Shared
-    private OracleCloudMeterRegistry cloudMeterRegistry = new OracleCloudMeterRegistry(oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
+    private OracleCloudMeterRegistry cloudMeterRegistry = new OracleCloudMeterRegistry(Mock(HttpClientRegistry.class), oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
         @Override
         MonitoringIngestionClient get() {
             monitoringClient

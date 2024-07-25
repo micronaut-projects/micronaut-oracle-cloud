@@ -49,6 +49,7 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
+
 final class NettyHttpRequest implements HttpRequest {
+
     private static final long UNKNOWN_CONTENT_LENGTH = -1;
 
     private static final String HANDLER_PREFACE = "preface";
@@ -87,6 +91,8 @@ final class NettyHttpRequest implements HttpRequest {
         this.method = method;
         this.uri = new StringBuilder(client.baseUri.toString());
         attributes = new HashMap<>();
+        StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
+        attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());
         headers = new DefaultHttpHeaders();
         query = new StringBuilder();
     }
@@ -265,19 +271,26 @@ final class NettyHttpRequest implements HttpRequest {
             interceptor.intercept(this);
         }
 
-        CompletableFuture<HttpResponse> future = new CompletableFuture<>();
+        CompletableFuture<HttpResponse> result = new CompletableFuture<>();
+
+        CompletableFuture<HttpResponse> last = result;
+
+        for (OciNettyClientFilter<?> filter: client.nettyClientFilter) {
+            last = runFilter(filter, last);
+        }
 
         Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
         connect.subscribe(ph -> {
             try {
                 io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
-                initializeChannel(ph, nettyRequest, future);
+                initializeChannel(ph, nettyRequest, result);
             } catch (Exception e) {
-                future.completeExceptionally(e);
+                result.completeExceptionally(e);
                 ph.release();
             }
-        }, future::completeExceptionally);
-        return future;
+        }, result::completeExceptionally);
+
+        return result;
     }
 
     private void bufferBody() {
@@ -439,5 +452,10 @@ final class NettyHttpRequest implements HttpRequest {
         } else if (delayImmediateBody()) {
             ch.writeAndFlush(new DefaultLastHttpContent(immediateBody), ch.voidPromise());
         }
+    }
+
+    private <T> CompletableFuture<HttpResponse> runFilter(OciNettyClientFilter<T> filter, CompletableFuture<HttpResponse> responseFuture) {
+        T beforeRequestResult = filter.beforeRequest(this);
+        return responseFuture.handle((response, error) -> filter.afterResponse(this, response, error, beforeRequestResult));
     }
 }

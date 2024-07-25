@@ -8,8 +8,10 @@ dependencies {
     api mnMicrometer.micrometer.core
     api mn.micronaut.inject
     api mn.micronaut.runtime
-    testImplementation mn.micronaut.http.client
+    implementation mn.micronaut.http.client
     testImplementation mn.micronaut.management
     testImplementation mnTest.micronaut.test.spock
+    testImplementation projects.micronautOraclecloudHttpclientNetty
+    testImplementation projects.micronautOraclecloudSdk
     testRuntimeOnly mn.micronaut.http.server.netty
 }

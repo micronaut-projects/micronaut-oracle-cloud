@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
+
 @ExtendWith(NettyRule.class)
 public class NettyTest {
     private static final HttpProvider PROVIDER = new NettyHttpProvider();
@@ -78,6 +80,54 @@ public class NettyTest {
                 Assertions.assertEquals("bar", s);
             }
         }
+    }
+
+    @Test
+    void simpleRequestTestFilters() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/foo", request.uri());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        NettyHttpClientBuilder clientBuilder = (NettyHttpClientBuilder) provider().newBuilder()
+            .baseUri(netty.getEndpoint());
+
+        FirstTestNettyClientFilter firstTestNettyClientFilter = new FirstTestNettyClientFilter();
+        SecondTestNettyClientFilter secondTestNettyClientFilter = new SecondTestNettyClientFilter();
+
+        clientBuilder.property(OCI_NETTY_CLIENT_FILTERS_KEY, List.of(
+            firstTestNettyClientFilter,
+            secondTestNettyClientFilter
+        ));
+
+        HttpClient client = clientBuilder.build();
+        try (HttpResponse response = client.createRequest(Method.GET)
+            .appendPathPart("foo")
+            .execute().toCompletableFuture()
+            .get()) {
+            String s = response.textBody().toCompletableFuture().get();
+            Assertions.assertEquals("bar", s);
+        }
+        client.close();
+
+        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getStartTime());
+        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getEndTime());
+        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getStartTime());
+        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getEndTime());
+
+        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
+
+        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
+        Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
+        Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() < secondTestNettyClientFilter.getEndTime());
     }
 
     @Test

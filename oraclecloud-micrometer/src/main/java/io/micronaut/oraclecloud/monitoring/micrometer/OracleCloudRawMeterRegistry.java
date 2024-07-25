@@ -33,6 +33,7 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
+import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDatapointProducer;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudCounter;
@@ -61,17 +62,18 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
 
     private final Logger logger = LoggerFactory.getLogger(OracleCloudRawMeterRegistry.class);
 
-    public OracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig,
+    public OracleCloudRawMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig,
                                        Clock clock,
                                        Provider<MonitoringIngestionClient> monitoringIngestionClientProvider
                                        ) {
-        this(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
+        this(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
     }
 
-    public OracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig,
+    public OracleCloudRawMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
+                                       OracleCloudConfig oracleCloudConfig,
                                        Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
                                        ThreadFactory threadFactory) {
-        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
+        super(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
 
     }
 
