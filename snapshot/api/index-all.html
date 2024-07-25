@@ -65,6 +65,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#addBlackListLoggerName(java.lang.String)" class="member-name-link">addBlackListLoggerName(String)</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#afterResponse(com.oracle.bmc.http.client.HttpRequest,com.oracle.bmc.http.client.HttpResponse,java.lang.Throwable,io.micrometer.core.instrument.Timer.Sample)" class="member-name-link">afterResponse(HttpRequest, HttpResponse, Throwable, Timer.Sample)</a> - Method in class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html#afterResponse(com.oracle.bmc.http.client.HttpRequest,com.oracle.bmc.http.client.HttpResponse,java.lang.Throwable,R)" class="member-name-link">afterResponse(HttpRequest, HttpResponse, Throwable, R)</a> - Method in interface io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html" title="interface in io.micronaut.oraclecloud.httpclient.netty">OciNettyClientFilter</a></dt>
+<dd>
+<div class="block">The OCI SDK client will execute this method after it receives the response or exception is thrown.</div>
+</dd>
 <dt><a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataKeys.html#AGENT_CONFIG" class="member-name-link">AGENT_CONFIG</a> - Enum constant in enum class io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataKeys.html" title="enum class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataKeys</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#append(ch.qos.logback.classic.spi.ILoggingEvent)" class="member-name-link">append(ILoggingEvent)</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
@@ -110,6 +116,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudConfig.html#batchSize()" class="member-name-link">batchSize()</a> - Method in interface io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html#beforeRequest(com.oracle.bmc.http.client.HttpRequest)" class="member-name-link">beforeRequest(HttpRequest)</a> - Method in interface io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html" title="interface in io.micronaut.oraclecloud.httpclient.netty">OciNettyClientFilter</a></dt>
+<dd>
+<div class="block">The OCI SDK client will execute this method before sending request.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#beforeRequest(com.oracle.bmc.http.client.HttpRequest)" class="member-name-link">beforeRequest(HttpRequest)</a> - Method in class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html#build()" class="member-name-link">build()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html" title="class in io.micronaut.oraclecloud.certificates.ssl">OracleCloudSSLContextBuilder</a></dt>
 <dd>
 <div class="block">Generates an SslContext that has an already expired self signed cert that should be replaced almost immediately by the Oracle Cloud Certificate server once it is downloaded.</div>
@@ -154,6 +166,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#cipherSuites()" class="member-name-link">cipherSuites()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html#CLASS_AND_METHOD_KEY_NAME" class="member-name-link">CLASS_AND_METHOD_KEY_NAME</a> - Static variable in class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html" title="class in io.micronaut.oraclecloud.httpclient.netty">NettyClientProperties</a></dt>
+<dd>
+<div class="block">The Client attribute that stores class name with method of the client that invoked request.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html#CLIENT_PACKAGE" class="member-name-link">CLIENT_PACKAGE</a> - Static variable in class io.micronaut.oraclecloud.clients.processor.<a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oraclecloud.clients.processor">OracleCloudSdkProcessor</a></dt>
 <dd>
 <div class="block">The package to which client factories will be written.</div>
@@ -287,7 +303,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/function/OciFunction.html#getApplicationContext()" class="member-name-link">getApplicationContext()</a> - Method in class io.micronaut.oraclecloud.function.<a href="io/micronaut/oraclecloud/function/OciFunction.html" title="class in io.micronaut.oraclecloud.function">OciFunction</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#getBaseTimeUnit()" class="member-name-link">getBaseTimeUnit()</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#getBaseTimeUnit()" class="member-name-link">getBaseTimeUnit()</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html#getBaseUrl()" class="member-name-link">getBaseUrl()</a> - Method in class io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -384,6 +400,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/atp/jdbc/ucp/UcpPoolConfigurationListener.html#getOrder()" class="member-name-link">getOrder()</a> - Method in class io.micronaut.oraclecloud.atp.jdbc.ucp.<a href="io/micronaut/oraclecloud/atp/jdbc/ucp/UcpPoolConfigurationListener.html" title="class in io.micronaut.oraclecloud.atp.jdbc.ucp">UcpPoolConfigurationListener</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/httpclient/netty/visitor/OciSdkModelSerdeVisitor.html#getOrder()" class="member-name-link">getOrder()</a> - Method in class io.micronaut.oraclecloud.httpclient.netty.visitor.<a href="io/micronaut/oraclecloud/httpclient/netty/visitor/OciSdkModelSerdeVisitor.html" title="class in io.micronaut.oraclecloud.httpclient.netty.visitor">OciSdkModelSerdeVisitor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#getOrder()" class="member-name-link">getOrder()</a> - Method in class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html#getProfile()" class="member-name-link">getProfile()</a> - Method in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudCoreFactory.html" title="class in io.micronaut.oraclecloud.core">OracleCloudCoreFactory</a></dt>
 <dd>&nbsp;</dd>
@@ -592,6 +610,8 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/primitives/package-summary.html">io.micronaut.oraclecloud.monitoring.primitives</a> - package io.micronaut.oraclecloud.monitoring.primitives</dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/package-summary.html">io.micronaut.oraclecloud.monitoring.sdk</a> - package io.micronaut.oraclecloud.monitoring.sdk</dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/oke/workload/identity/package-summary.html">io.micronaut.oraclecloud.oke.workload.identity</a> - package io.micronaut.oraclecloud.oke.workload.identity</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/serde/package-summary.html">io.micronaut.oraclecloud.serde</a> - package io.micronaut.oraclecloud.serde</dt>
@@ -643,9 +663,9 @@ loadScripts(document, 'script');</script>
 <div class="block"><code>HttpProvider</code> implementation similar to <a href="io/micronaut/oraclecloud/httpclient/netty/NettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty"><code>NettyHttpProvider</code></a>, but managed by an
  <code>ApplicationContext</code>.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClientRegistry,java.util.concurrent.ExecutorService,io.micronaut.serde.ObjectMapper,io.micronaut.oraclecloud.serde.OciSerdeConfiguration,io.micronaut.oraclecloud.serde.OciSerializationConfiguration)" class="member-name-link">ManagedNettyHttpProvider(HttpClientRegistry&lt;?&gt;, ExecutorService, ObjectMapper, OciSerdeConfiguration, OciSerializationConfiguration)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClientRegistry,java.util.concurrent.ExecutorService,io.micronaut.serde.ObjectMapper,io.micronaut.oraclecloud.serde.OciSerdeConfiguration,io.micronaut.oraclecloud.serde.OciSerializationConfiguration,java.util.List)" class="member-name-link">ManagedNettyHttpProvider(HttpClientRegistry&lt;?&gt;, ExecutorService, ObjectMapper, OciSerdeConfiguration, OciSerializationConfiguration, List&lt;OciNettyClientFilter&lt;?&gt;&gt;)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClient,java.util.concurrent.ExecutorService)" class="member-name-link">ManagedNettyHttpProvider(HttpClient, ExecutorService)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html#%3Cinit%3E(io.micronaut.http.client.HttpClient,java.util.concurrent.ExecutorService,java.util.List)" class="member-name-link">ManagedNettyHttpProvider(HttpClient, ExecutorService, List&lt;OciNettyClientFilter&lt;?&gt;&gt;)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ManagedNettyHttpProvider.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ManagedNettyHttpProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigCondition.html#matches(io.micronaut.context.condition.ConditionContext)" class="member-name-link">matches(ConditionContext)</a> - Method in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition</a></dt>
 <dd>&nbsp;</dd>
@@ -655,6 +675,8 @@ loadScripts(document, 'script');</script>
 <div class="deprecation-comment">Use <a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud"><code>OracleCloudMetadataConfiguration</code></a> instead.</div>
 </div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED" class="member-name-link">MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED</a> - Static variable in class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html#modify(io.micronaut.oraclecloud.atp.wallet.Wallet)" class="member-name-link">modify(Wallet)</a> - Method in class io.micronaut.oraclecloud.atp.wallet.<a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html" title="class in io.micronaut.oraclecloud.atp.wallet">Wallets</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html#modify(io.micronaut.oraclecloud.atp.wallet.Wallet,char%5B%5D)" class="member-name-link">modify(Wallet, char[])</a> - Method in class io.micronaut.oraclecloud.atp.wallet.<a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html" title="class in io.micronaut.oraclecloud.atp.wallet">Wallets</a></dt>
@@ -725,6 +747,11 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:O">O</h2>
 <dl class="index">
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html#OCI_NETTY_CLIENT_FILTERS_KEY" class="member-name-link">OCI_NETTY_CLIENT_FILTERS_KEY</a> - Static variable in class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html" title="class in io.micronaut.oraclecloud.httpclient.netty">NettyClientProperties</a></dt>
+<dd>
+<div class="block">The Oci Netty client filter property contains list of <a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html" title="interface in io.micronaut.oraclecloud.httpclient.netty"><code>OciNettyClientFilter</code></a> that will be executed
+ during sending the request.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html#OCI_SDK_CLIENT_CLASSES_OPTION" class="member-name-link">OCI_SDK_CLIENT_CLASSES_OPTION</a> - Static variable in class io.micronaut.oraclecloud.clients.processor.<a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oraclecloud.clients.processor">OracleCloudSdkProcessor</a></dt>
 <dd>
 <div class="block">Processing environment option used to specify the client classes to process.</div>
@@ -740,6 +767,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/function/OciFunction.html#%3Cinit%3E(io.micronaut.context.ApplicationContext)" class="member-name-link">OciFunction(ApplicationContext)</a> - Constructor for class io.micronaut.oraclecloud.function.<a href="io/micronaut/oraclecloud/function/OciFunction.html" title="class in io.micronaut.oraclecloud.function">OciFunction</a></dt>
 <dd>
 <div class="block">Construct a function with the given context.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.httpclient.netty">OciNettyClientFilter</a>&lt;<a href="io/micronaut/oraclecloud/httpclient/netty/OciNettyClientFilter.html" title="type parameter in OciNettyClientFilter">R</a>&gt; - Interface in <a href="io/micronaut/oraclecloud/httpclient/netty/package-summary.html">io.micronaut.oraclecloud.httpclient.netty</a></dt>
+<dd>
+<div class="block">OciNettyClientFilter interface allows invoking beforeRequest method before OCI SDK client sends a request and afterResponse invokes after request is sent and response is received from the server.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/serde/OciSdkMicronautSerializer.html" class="type-name-link" title="class in io.micronaut.oraclecloud.serde">OciSdkMicronautSerializer</a> - Class in <a href="io/micronaut/oraclecloud/serde/package-summary.html">io.micronaut.oraclecloud.serde</a></dt>
 <dd>
@@ -777,6 +808,8 @@ loadScripts(document, 'script');</script>
 <div class="block">Allows configuration of the <code>OkeWorkloadIdentityAuthenticationDetailsProvider</code>.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html#%3Cinit%3E(io.micronaut.oraclecloud.oke.workload.identity.OkeHttpClientConfiguration)" class="member-name-link">OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration)</a> - Constructor for class io.micronaut.oraclecloud.oke.workload.identity.<a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html" title="class in io.micronaut.oraclecloud.oke.workload.identity">OkeWorkloadIdentityConfiguration</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html#%3Cinit%3E(io.micronaut.oraclecloud.oke.workload.identity.OkeHttpClientConfiguration,java.util.List)" class="member-name-link">OkeWorkloadIdentityConfiguration(OkeHttpClientConfiguration, List&lt;OciNettyClientFilter&lt;?&gt;&gt;)</a> - Constructor for class io.micronaut.oraclecloud.oke.workload.identity.<a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityConfiguration.html" title="class in io.micronaut.oraclecloud.oke.workload.identity">OkeWorkloadIdentityConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityFactory.html" class="type-name-link" title="class in io.micronaut.oraclecloud.oke.workload.identity">OkeWorkloadIdentityFactory</a> - Class in <a href="io/micronaut/oraclecloud/oke/workload/identity/package-summary.html">io.micronaut.oraclecloud.oke.workload.identity</a></dt>
 <dd>
@@ -850,7 +883,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.html#%3Cinit%3E()" class="member-name-link">OracleCloudClientConfigurationProperties()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudClientConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#oracleCloudConfig" class="member-name-link">oracleCloudConfig</a> - Variable in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#oracleCloudConfig" class="member-name-link">oracleCloudConfig</a> - Variable in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudConfig.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a> - Interface in <a href="io/micronaut/oraclecloud/monitoring/micrometer/package-summary.html">io.micronaut.oraclecloud.monitoring.micrometer</a></dt>
 <dd>
@@ -935,9 +968,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block"><code>StepMeterRegistry</code> for Oracle Cloud Monitoring that produces aggregated data.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider)" class="member-name-link">OracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#%3Cinit%3E(io.micronaut.http.client.HttpClientRegistry,io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider)" class="member-name-link">OracleCloudMeterRegistry(HttpClientRegistry&lt;?&gt;, OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider,java.util.concurrent.ThreadFactory)" class="member-name-link">OracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;, ThreadFactory)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#%3Cinit%3E(io.micronaut.http.client.HttpClientRegistry,io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider,java.util.concurrent.ThreadFactory)" class="member-name-link">OracleCloudMeterRegistry(HttpClientRegistry&lt;?&gt;, OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;, ThreadFactory)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/OracleCloudMeterRegistryFactory.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring">OracleCloudMeterRegistryFactory</a> - Class in <a href="io/micronaut/oraclecloud/monitoring/package-summary.html">io.micronaut.oraclecloud.monitoring</a></dt>
 <dd>
@@ -957,9 +990,9 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block"><code>StepMeterRegistry</code> for Oracle Cloud Monitoring that produces raw data.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider)" class="member-name-link">OracleCloudRawMeterRegistry(OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#%3Cinit%3E(io.micronaut.http.client.HttpClientRegistry,io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider)" class="member-name-link">OracleCloudRawMeterRegistry(HttpClientRegistry&lt;?&gt;, OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#%3Cinit%3E(io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider,java.util.concurrent.ThreadFactory)" class="member-name-link">OracleCloudRawMeterRegistry(OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;, ThreadFactory)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#%3Cinit%3E(io.micronaut.http.client.HttpClientRegistry,io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig,io.micrometer.core.instrument.Clock,jakarta.inject.Provider,java.util.concurrent.ThreadFactory)" class="member-name-link">OracleCloudRawMeterRegistry(HttpClientRegistry&lt;?&gt;, OracleCloudConfig, Clock, Provider&lt;MonitoringIngestionClient&gt;, ThreadFactory)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html" class="type-name-link" title="class in io.micronaut.oraclecloud.clients.processor">OracleCloudSdkProcessor</a> - Class in <a href="io/micronaut/oraclecloud/clients/processor/package-summary.html">io.micronaut.oraclecloud.clients.processor</a></dt>
 <dd>
@@ -1072,7 +1105,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#param-profile"><code>profile</code></a> record component.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html#publish()" class="member-name-link">publish()</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMeterRegistry</a></dt>
+<dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#publish()" class="member-name-link">publish()</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <h2 class="title" id="I:R">R</h2>
@@ -1153,6 +1186,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">the type of client to generate.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a> - Class in <a href="io/micronaut/oraclecloud/monitoring/sdk/package-summary.html">io.micronaut.oraclecloud.monitoring.sdk</a></dt>
+<dd>
+<div class="block">The SdkMetricsNettyClientFilter will emit oci sdk client metrics.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#%3Cinit%3E(jakarta.inject.Provider)" class="member-name-link">SdkMetricsNettyClientFilter(Provider&lt;MeterRegistry&gt;)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html#SERVICE_ID" class="member-name-link">SERVICE_ID</a> - Static variable in class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html" title="class in io.micronaut.oraclecloud.httpclient.netty">NettyClientProperties</a></dt>
 <dd>
 <div class="block">The Micronaut HTTP client service ID to use for this client.</div>
