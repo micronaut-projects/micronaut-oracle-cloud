@@ -91,6 +91,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private Cookies cookies;
     private final MediaTypeCodecRegistry codecRegistry;
     private final ByteBody byteBody;
+    private Object cachedBody;
     private URI uri;
 
     public FnServletRequest(
@@ -116,7 +117,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public InputStream getInputStream() {
-        return byteBody.split(SplitBackpressureMode.FASTEST).toInputStream();
+        return byteBody.toInputStream();
     }
 
     /**
@@ -144,20 +145,24 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         final MediaType contentType = getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
 
         if (isFormSubmission()) {
-            return consumeBody(inputStream -> {
+            ConvertibleMultiValues<?> form;
+            if (cachedBody instanceof ConvertibleMultiValues<?> storedForm) {
+                form = storedForm;
+            } else {
                 try {
-                    String content = IOUtils.readText(new BufferedReader(new InputStreamReader(inputStream, getCharacterEncoding())));
-                    ConvertibleMultiValues<?> form = parseFormData(content);
-                    if (ConvertibleValues.class == type || Object.class == type) {
-                        return Optional.of((T) form);
-                    } else {
-                        return conversionService.convert(form.asMap(), arg);
-                    }
+                    String content = IOUtils.readText(new BufferedReader(new InputStreamReader(byteBody.toInputStream(), getCharacterEncoding())));
+                    form = parseFormData(content);
                 } catch (IOException e) {
                     throw new RuntimeException("Unable to parse body", e);
                 }
-            });
+                cachedBody = form;
+            }
 
+            if (ConvertibleValues.class == type || Object.class == type) {
+                return Optional.of((T) form);
+            } else {
+                return conversionService.convert(form.asMap(), arg);
+            }
         }
 
         final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
@@ -165,11 +170,19 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             return Optional.empty();
         }
         if (ConvertibleValues.class == type || Object.class == type) {
-            final Map map = consumeBody(inputStream -> codec.decode(Map.class, inputStream));
+            if (cachedBody instanceof ConvertibleValues) {
+                return Optional.of((T) cachedBody);
+            }
+            final Map map = codec.decode(Map.class, byteBody.toInputStream());
             ConvertibleValues result = ConvertibleValues.of(map);
+            cachedBody = result;
             return Optional.of((T) result);
         } else {
+            if (cachedBody != null && cachedBody.getClass().isAssignableFrom(type)) {
+                return Optional.of((T) cachedBody);
+            }
             final T value = consumeBody(inputStream -> codec.decode(arg, inputStream));
+            cachedBody = value;
             return Optional.of(value);
         }
     }
