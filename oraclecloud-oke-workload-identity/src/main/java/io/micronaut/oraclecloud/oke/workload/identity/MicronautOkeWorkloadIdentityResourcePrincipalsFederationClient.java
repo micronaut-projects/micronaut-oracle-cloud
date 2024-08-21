@@ -37,7 +37,7 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.body.ContextlessMessageBodyHandlerRegistry;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.http.codec.MediaTypeCodecRegistry;
-import io.micronaut.http.netty.body.ByteBufRawMessageBodyHandler;
+import io.micronaut.http.netty.body.NettyByteBufMessageBodyHandler;
 import io.micronaut.http.netty.body.NettyJsonHandler;
 import io.micronaut.http.netty.body.NettyJsonStreamHandler;
 import io.micronaut.http.netty.body.NettyWritableBodyWriter;
@@ -150,7 +150,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
         ContextlessMessageBodyHandlerRegistry registry = new ContextlessMessageBodyHandlerRegistry(
             applicationConfiguration,
             NettyByteBufferFactory.DEFAULT,
-            new ByteBufRawMessageBodyHandler(),
+            new NettyByteBufMessageBodyHandler(),
             new NettyWritableBodyWriter(applicationConfiguration)
         );
         registry.add(MediaType.APPLICATION_JSON_TYPE, new NettyJsonHandler<>(mapper));
