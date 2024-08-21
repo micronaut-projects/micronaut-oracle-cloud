@@ -20,7 +20,6 @@ netty-http3 = "0.0.28.Final"
 
 micronaut-gradle-plugin = "4.4.2"
 micronaut-groovy = "4.3.0"
-micronaut-logging = "1.3.0"
 micronaut-validation = "4.5.0"
 micronaut-kotlin = "4.4.0"
 micronaut-micrometer = "5.8.0"
@@ -30,6 +29,7 @@ micronaut-serde = "2.11.0"
 micronaut-servlet = "4.10.0"
 micronaut-sql = "5.8.1"
 micronaut-test = "4.5.0"
+micronaut-logging = "1.4.0"
 micronaut-discovery-client = "4.3.0"
 
 [libraries]
