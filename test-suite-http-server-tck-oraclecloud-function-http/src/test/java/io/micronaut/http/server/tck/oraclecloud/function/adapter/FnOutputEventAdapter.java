@@ -79,6 +79,9 @@ public class FnOutputEventAdapter<B> implements HttpResponse<B> {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             event.writeToOutput(bos);
             byte[] bytes = bos.toByteArray();
+            if (bytes.length == 0) {
+                return Optional.empty();
+            }
             return (Optional<B>) Optional.of(bytes);
         } catch (IOException e) {
             return Optional.empty();
