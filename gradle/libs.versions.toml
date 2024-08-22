@@ -30,7 +30,7 @@ micronaut-sql = "5.8.1"
 micronaut-test = "4.5.0"
 micronaut-logging = "1.4.0"
 micronaut-validation = "4.7.0"
-micronaut-discovery-client = "4.3.0"
+micronaut-discovery-client = "4.4.0"
 
 [libraries]
 # Core
