@@ -63,8 +63,6 @@ final class NettyHttpClient implements HttpClient {
     final List<RequestInterceptor> requestInterceptors;
     final List<OciNettyClientFilter<?>> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
-    final String host;
-    final int port;
     final boolean buffered;
     final Closeable upstreamHttpClient;
     final ConnectionManager connectionManager;
@@ -92,7 +90,7 @@ final class NettyHttpClient implements HttpClient {
             if (builder.properties.containsKey(StandardClientProperties.READ_TIMEOUT)) {
                 cfg.setReadTimeout((Duration) builder.properties.get(StandardClientProperties.READ_TIMEOUT));
             }
-            mnClient = new DefaultHttpClient((URI) null, cfg);
+            mnClient = DefaultHttpClient.builder().configuration(cfg).build();
             blockingIoExecutor = Executors.newCachedThreadPool();
             jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         } else {
@@ -134,9 +132,7 @@ final class NettyHttpClient implements HttpClient {
             nettyClientFilter = Collections.emptyList();
         }
 
-        requestKey = new DefaultHttpClient.RequestKey(mnClient, builder.baseUri);
-        this.port = builder.baseUri.getPort();
-        this.host = builder.baseUri.getHost();
+        requestKey = new DefaultHttpClient.RequestKey(mnClient, this.baseUri);
         this.buffered = builder.buffered;
     }
 
