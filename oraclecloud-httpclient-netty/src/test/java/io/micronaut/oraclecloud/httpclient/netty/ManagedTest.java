@@ -50,12 +50,13 @@ public class ManagedTest {
     public static class MockProvider extends ManagedNettyHttpProvider {
         int buildersCreated = 0;
 
-        public MockProvider(
+        MockProvider(
             HttpClientRegistry<?> mnHttpClientRegistry, @Named(TaskExecutors.BLOCKING) ExecutorService ioExecutor,
             ObjectMapper jsonMapper, OciSerdeConfiguration ociSerdeConfiguration, OciSerializationConfiguration ociSerializationConfiguration,
-            List<OciNettyClientFilter<?>> nettyClientFilters
+            List<OciNettyClientFilter<?>> nettyClientFilters,
+            OciNettyConfiguration configuration
             ) {
-            super(mnHttpClientRegistry, ioExecutor, jsonMapper, ociSerdeConfiguration, ociSerializationConfiguration, nettyClientFilters);
+            super(mnHttpClientRegistry, ioExecutor, jsonMapper, ociSerdeConfiguration, ociSerializationConfiguration, nettyClientFilters, configuration);
         }
 
         @Override

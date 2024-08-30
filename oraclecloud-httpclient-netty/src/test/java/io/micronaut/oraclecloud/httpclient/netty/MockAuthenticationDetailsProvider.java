@@ -4,6 +4,7 @@ import com.oracle.bmc.auth.AuthCachingPolicy;
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.io.InputStream;
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
 @Singleton
 @Replaces(ConfigFileAuthenticationDetailsProvider.class)
+@Requires(property = "spec.name", notEquals = "DomainSocketProxyTest")
 public class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
 
     @Override
