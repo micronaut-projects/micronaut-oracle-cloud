@@ -2,6 +2,7 @@ package io.micronaut.oraclecloud.factory;
 
 import com.oracle.bmc.objectstorage.ObjectStorageAsyncClient
 import com.oracle.bmc.objectstorage.ObjectStorageClient
+import io.micronaut.context.annotation.Requires
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
 import io.micronaut.core.annotation.NonNull
@@ -42,6 +43,7 @@ class ObjectStorageFactorySpec extends Specification {
     }
 
     @Singleton
+    @Requires(property = "spec.name", notEquals = "DomainSocketProxyTest")
     static class DatabaseClientBuilderListener
             implements BeanCreatedEventListener<ObjectStorageClient.Builder> {
         @Override
@@ -55,6 +57,7 @@ class ObjectStorageFactorySpec extends Specification {
     }
 
     @Singleton
+    @Requires(property = "spec.name", notEquals = "DomainSocketProxyTest")
     static class DatabaseAsyncClientBuilderListener
             implements BeanCreatedEventListener<ObjectStorageAsyncClient.Builder> {
         @Override

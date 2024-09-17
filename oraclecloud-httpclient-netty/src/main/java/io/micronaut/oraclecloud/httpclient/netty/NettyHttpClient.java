@@ -38,6 +38,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,6 +60,7 @@ final class NettyHttpClient implements HttpClient {
 
     final boolean hasContext;
     final boolean ownsThreadPool;
+    final boolean proxyDomainSocket;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
     final List<OciNettyClientFilter<?>> nettyClientFilter;
@@ -83,6 +85,7 @@ final class NettyHttpClient implements HttpClient {
         if (builder.managedProvider == null) {
             hasContext = false;
             ownsThreadPool = true;
+            proxyDomainSocket = false;
             DefaultHttpClientConfiguration cfg = new DefaultHttpClientConfiguration();
             if (builder.properties.containsKey(StandardClientProperties.CONNECT_TIMEOUT)) {
                 cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.CONNECT_TIMEOUT));
@@ -117,10 +120,11 @@ final class NettyHttpClient implements HttpClient {
                 blockingIoExecutor = builder.managedProvider.ioExecutor;
             }
             jsonMapper = builder.managedProvider.jsonMapper;
+            proxyDomainSocket = builder.managedProvider.configuration.proxyDomainSocket() != null;
         }
         upstreamHttpClient = mnClient;
         connectionManager = mnClient.connectionManager();
-        baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
+        this.baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
         requestInterceptors = builder.requestInterceptors.stream()
             .sorted(Comparator.comparingInt(p -> p.priority))
             .map(p -> p.value)
@@ -132,7 +136,16 @@ final class NettyHttpClient implements HttpClient {
             nettyClientFilter = Collections.emptyList();
         }
 
-        requestKey = new DefaultHttpClient.RequestKey(mnClient, this.baseUri);
+        URI baseUriForRequestKey = builder.baseUri;
+        if (proxyDomainSocket && baseUriForRequestKey.getScheme().equals("https")) {
+            // use a normal HTTP connection to the domain socket proxy.
+            try {
+                baseUriForRequestKey = new URI("http", baseUriForRequestKey.getSchemeSpecificPart(), baseUriForRequestKey.getFragment());
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        requestKey = new DefaultHttpClient.RequestKey(mnClient, baseUriForRequestKey);
         this.buffered = builder.buffered;
     }
 

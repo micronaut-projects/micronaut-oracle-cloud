@@ -60,21 +60,24 @@ public class ManagedNettyHttpProvider implements HttpProvider {
     @Nullable
     final ExecutorService ioExecutor;
     final JsonMapper jsonMapper;
+    final OciNettyConfiguration configuration;
 
     @Inject
-    public ManagedNettyHttpProvider(
+    ManagedNettyHttpProvider(
         HttpClientRegistry<?> mnHttpClientRegistry,
         @Named(TaskExecutors.BLOCKING) @Nullable ExecutorService ioExecutor,
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration,
-        @Nullable List<OciNettyClientFilter<?>> nettyClientFilters
+        @Nullable List<OciNettyClientFilter<?>> nettyClientFilters,
+        OciNettyConfiguration configuration
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
         this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
+        this.configuration = configuration;
     }
 
     // for OKE
@@ -88,6 +91,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         this.ioExecutor = ioExecutor;
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
+        this.configuration = new OciNettyConfiguration(null);
     }
 
     @Override

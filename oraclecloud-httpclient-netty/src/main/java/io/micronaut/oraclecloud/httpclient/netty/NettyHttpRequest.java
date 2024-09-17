@@ -290,7 +290,7 @@ final class NettyHttpRequest implements HttpRequest {
             }
         }, result::completeExceptionally);
 
-        return result;
+        return last;
     }
 
     private void bufferBody() {
@@ -342,9 +342,15 @@ final class NettyHttpRequest implements HttpRequest {
             }
         }
 
-        String pathAndQuery = uri.getRawPath();
-        if (uri.getRawQuery() != null) {
-            pathAndQuery = pathAndQuery + "?" + uri.getRawQuery();
+        String pathAndQuery;
+        if (client.proxyDomainSocket) {
+            // when proxying, we need to include the full uri
+            pathAndQuery = uri.toASCIIString();
+        } else {
+            pathAndQuery = uri.getRawPath();
+            if (uri.getRawQuery() != null) {
+                pathAndQuery = pathAndQuery + "?" + uri.getRawQuery();
+            }
         }
 
         boolean hasTransferHeader = headers.contains(HttpHeaderNames.CONTENT_LENGTH) ||
