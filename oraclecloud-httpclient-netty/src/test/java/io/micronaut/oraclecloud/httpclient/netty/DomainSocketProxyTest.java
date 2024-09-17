@@ -3,12 +3,18 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.Region;
 import com.oracle.bmc.Service;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.http.signing.RequestSigner;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.http.netty.channel.EventLoopGroupRegistry;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -17,8 +23,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.nio.NioServerDomainSocketChannel;
-import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -36,9 +42,6 @@ import java.net.UnixDomainSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -47,13 +50,8 @@ public class DomainSocketProxyTest {
     public void test() throws Exception {
         Path tmpDir = Files.createTempDirectory("DomainSocketProxyTest");
         Path socketFile = tmpDir.resolve("sock");
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(2048);
-        KeyPair keyPair = kpg.generateKeyPair();
         try (ApplicationContext ctx = ApplicationContext.run(Map.of(
             "spec.name", "DomainSocketProxyTest",
-            "oci.private-key", "-----BEGIN PRIVATE KEY-----\n" + Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()) + "\n-----END PRIVATE KEY-----",
-            "oci.tenant-id", "tenant-id",
             "oci.region", Region.EU_FRANKFURT_1,
             "oci.netty.proxy-domain-socket", socketFile
         ))) {
@@ -72,7 +70,7 @@ public class DomainSocketProxyTest {
                                 public void channelRead(@NotNull ChannelHandlerContext ctx, @NotNull Object msg) throws Exception {
                                     System.out.println(msg);
 
-                                    DefaultFullHttpRequest request = (DefaultFullHttpRequest) msg;
+                                    FullHttpRequest request = (FullHttpRequest) msg;
 
                                     Assertions.assertEquals(HttpMethod.GET, request.method());
                                     Assertions.assertEquals("https://objectstorage.eu-frankfurt-1.oraclecloud.com/n/namespaceName/b?compartmentId=compartmentId", request.uri());
@@ -100,7 +98,9 @@ public class DomainSocketProxyTest {
 
 
     @Singleton
+    @Internal
     @Requires(property = "spec.name", value = "DomainSocketProxyTest")
+    @Requires(property = "oci.netty.proxy-domain-socket")
     static class MockRequestSigner implements RequestSignerFactory {
         @Override
         public RequestSigner createRequestSigner(Service service, AbstractAuthenticationDetailsProvider abstractAuthProvider) {
@@ -111,5 +111,25 @@ public class DomainSocketProxyTest {
                 }
             };
         }
+    }
+
+    @Singleton
+    @Internal
+    @Replaces(ConfigFileAuthenticationDetailsProvider.class)
+    @Requires(property = "spec.name", value = "DomainSocketProxyTest")
+    @Requires(property = "oci.netty.proxy-domain-socket")
+    static class NoOpAuthDetailsProvider implements AbstractAuthenticationDetailsProvider, RegionProvider {
+
+        private final Region region;
+
+        NoOpAuthDetailsProvider(@NonNull @Property(name = "oci.region") String regionId) {
+            this.region = Region.fromRegionId(regionId);
+        }
+
+        @Override
+        public Region getRegion() {
+            return region;
+        }
+
     }
 }
