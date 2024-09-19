@@ -26,6 +26,7 @@ import java.util.List;
  *
  * @param privateKey           private key
  * @param certificate          X509 certificate file
+ * @param intermediate         X509 certificate intermediate files
  */
 public record CertificateEvent(@NonNull PrivateKey privateKey, @NonNull X509Certificate certificate, @NonNull List<X509Certificate> intermediate) {
 
