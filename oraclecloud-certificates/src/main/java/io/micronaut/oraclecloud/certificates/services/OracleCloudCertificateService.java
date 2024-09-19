@@ -38,10 +38,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.PrivateKey;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Service to contact an Oracle Cloud Certificate service and setup a certificate on a given basis.
@@ -92,9 +96,22 @@ public class OracleCloudCertificateService {
                 .certificateBundleType(GetCertificateBundleRequest.CertificateBundleType.CertificateContentWithPrivateKey)
                 .build());
 
+            List<X509Certificate> intermediate = Collections.emptyList();
+
+            if (certificateBundle.getCertificateBundle().getCertChainPem() != null) {
+                intermediate = cf.generateCertificates(
+                        new ByteArrayInputStream(
+                            certificateBundle
+                                .getCertificateBundle()
+                                .getCertChainPem()
+                                .getBytes())).stream().map(cert -> ((X509Certificate) cert))
+                    .collect(Collectors.toList());
+            }
+
             CertificateEvent certificateEvent = new CertificateEvent(
                 getPrivateKey(certificateBundle),
-                (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes()))
+                (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes())),
+                intermediate
             );
 
             return Optional.of(certificateEvent);
