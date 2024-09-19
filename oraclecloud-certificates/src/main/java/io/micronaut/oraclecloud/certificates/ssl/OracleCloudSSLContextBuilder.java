@@ -28,6 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -61,8 +64,12 @@ public final class OracleCloudSSLContextBuilder implements ServerSslBuilder {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("New certificate received and replaced the proxied SSL context");
             }
+            List<X509Certificate> chain = new ArrayList<>();
+            chain.add(certificateEvent.certificate());
+            chain.addAll(certificateEvent.intermediate());
+
             SslContext sslContext = SslContextBuilder
-                .forServer(certificateEvent.privateKey(), certificateEvent.certificate())
+                .forServer(certificateEvent.privateKey(), chain.toArray(new X509Certificate[]{}))
                 .build();
             delegatedSslContext.setNewSslContext(sslContext);
         } catch (SSLException e) {

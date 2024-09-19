@@ -19,13 +19,15 @@ import io.micronaut.core.annotation.NonNull;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 /**
  * Event used to alert when a new Oracle Cloud certificate is ready for use.
  *
  * @param privateKey           private key
  * @param certificate          X509 certificate file
+ * @param intermediate         X509 certificate intermediate files
  */
-public record CertificateEvent(@NonNull PrivateKey privateKey, @NonNull X509Certificate certificate) {
+public record CertificateEvent(@NonNull PrivateKey privateKey, @NonNull X509Certificate certificate, @NonNull List<X509Certificate> intermediate) {
 
 }
