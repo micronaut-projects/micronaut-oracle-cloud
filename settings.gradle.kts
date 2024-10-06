@@ -10,6 +10,13 @@ pluginManagement {
     includeBuild("settings-build-logic")
 }
 
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
+    }
+}
+
 buildscript {
     configurations {
         classpath {
