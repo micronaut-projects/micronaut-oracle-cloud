@@ -8,21 +8,16 @@ import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.common.ClientBuilderBase;
 import com.oracle.bmc.http.internal.BaseSyncClient;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.BeanContext;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.annotation.AnnotationMetadata;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.HttpClientConfiguration;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.http.client.HttpVersionSelection;
-import io.micronaut.http.client.LoadBalancer;
+import io.micronaut.http.client.RawHttpClient;
+import io.micronaut.http.client.RawHttpClientRegistry;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.http.client.netty.DefaultNettyHttpClientRegistry;
-import io.micronaut.inject.InjectionPoint;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -62,28 +57,14 @@ public class ManagedPropertyTest {
     @Singleton
     @Replaces(DefaultNettyHttpClientRegistry.class)
     @Requires(property = "spec.name", value = "ManagedPropertyTest")
-    static class MockHttpClientRegistry implements HttpClientRegistry<HttpClient> {
+    static class MockHttpClientRegistry implements RawHttpClientRegistry {
 
         boolean clientRegistered = false;
 
         @Override
-        public @NonNull HttpClient getClient(@NonNull AnnotationMetadata annotationMetadata) {
-            return new DefaultHttpClient();
-        }
-
-        @Override
-        public @NonNull HttpClient getClient(@NonNull HttpVersionSelection httpVersion, @NonNull String clientId, @Nullable String path) {
+        public @NonNull RawHttpClient getRawClient(@NonNull HttpVersionSelection httpVersion, @NonNull String clientId, @Nullable String path) {
             clientRegistered = true;
-            return new DefaultHttpClient();
-        }
-
-        @Override
-        public @NonNull HttpClient resolveClient(@Nullable InjectionPoint<?> injectionPoint, @Nullable LoadBalancer loadBalancer, @Nullable HttpClientConfiguration configuration, @NonNull BeanContext beanContext) {
-            return new DefaultHttpClient();
-        }
-
-        @Override
-        public void disposeClient(AnnotationMetadata annotationMetadata) {
+            return DefaultHttpClient.builder().build();
         }
     }
 

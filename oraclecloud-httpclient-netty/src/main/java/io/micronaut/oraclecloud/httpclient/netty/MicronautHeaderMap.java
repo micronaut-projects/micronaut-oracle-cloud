@@ -15,7 +15,9 @@
  */
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import io.netty.handler.codec.http.HttpHeaders;
+import io.micronaut.core.annotation.Internal;
+import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.MutableHttpHeaders;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -24,13 +26,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * {@link java.util.Map} wrapper around netty {@link HttpHeaders}. Read-only.
+ * {@link java.util.Map} wrapper around micronaut {@link HttpHeaders}.
  */
-@Deprecated
-final class HeaderMap extends AbstractMap<String, List<String>> {
+@Internal
+final class MicronautHeaderMap extends AbstractMap<String, List<String>> {
     private final HttpHeaders headers;
 
-    HeaderMap(HttpHeaders headers) {
+    MicronautHeaderMap(HttpHeaders headers) {
         this.headers = headers;
     }
 
@@ -64,13 +66,13 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
             return null;
         }
         List<String> items = headers.getAll(s);
-        headers.remove(s);
+        ((MutableHttpHeaders) headers).remove(s);
         return items.isEmpty() ? null : items; // follow remove() contract
     }
 
     @Override
     public boolean containsKey(Object key) {
-        return key instanceof String && headers.contains((String) key);
+        return key instanceof String s && headers.contains(s);
     }
 
     @Override
@@ -78,7 +80,7 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
         return new KeySet();
     }
 
-    private class KeySet extends AbstractSet<String> {
+    private final class KeySet extends AbstractSet<String> {
         @Override
         public boolean contains(Object o) {
             return containsKey(o);
@@ -86,7 +88,7 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
 
         @Override
         public boolean remove(Object o) {
-            return HeaderMap.this.remove(o) != null;
+            return MicronautHeaderMap.this.remove(o) != null;
         }
 
         @Override
@@ -100,7 +102,7 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
         }
     }
 
-    private static class HeaderIterator implements Iterator<Entry<String, List<String>>> {
+    private static final class HeaderIterator implements Iterator<Entry<String, List<String>>> {
         final HttpHeaders headers;
         final Iterator<String> keyItr;
 

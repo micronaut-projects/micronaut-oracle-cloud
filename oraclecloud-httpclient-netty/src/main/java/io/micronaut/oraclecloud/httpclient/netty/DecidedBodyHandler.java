@@ -32,6 +32,7 @@ import java.util.NoSuchElementException;
  * consume the body. First any data buffered by {@link UndecidedBodyHandler} is processed, then a {@link HandlerImpl}
  * is added to the pipeline to directly process the remaining chunks.
  */
+@Deprecated
 abstract class DecidedBodyHandler {
     private boolean done = false;
     private volatile ChannelHandlerContext context;

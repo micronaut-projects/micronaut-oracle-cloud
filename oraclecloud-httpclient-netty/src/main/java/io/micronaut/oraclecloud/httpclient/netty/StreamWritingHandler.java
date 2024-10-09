@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 /**
  * Channel handler that writes data from a given {@link InputStream} to the channel.
  */
+@Deprecated
 final class StreamWritingHandler extends ChannelInboundHandlerAdapter {
     public static final int MAX_WRITE_TARGET = 1024 * 16;
     private final InputStream stream;

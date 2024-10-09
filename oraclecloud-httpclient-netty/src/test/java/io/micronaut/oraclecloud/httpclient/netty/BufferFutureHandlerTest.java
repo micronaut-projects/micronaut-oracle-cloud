@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Deprecated
 class BufferFutureHandlerTest {
     @Test
     public void normal() throws Exception {

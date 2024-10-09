@@ -32,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
  * Handler that buffers some input data until the user decides whether they want it all buffered or as a stream. After
  * that, handling is delegated to {@link StreamReadingHandler} or {@link BufferFutureHandler}.
  */
+@Deprecated
 final class UndecidedBodyHandler extends ChannelInboundHandlerAdapter {
     private final Runnable release;
     private final ByteBufAllocator alloc;

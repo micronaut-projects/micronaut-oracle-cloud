@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
  * {@link io.netty.handler.codec.http.LastHttpContent} is received completes a {@link #future} with
  * the accumulated data.
  */
+@Deprecated
 final class BufferFutureHandler extends DecidedBodyHandler {
     final CompletableFuture<ByteBuf> future = new CompletableFuture<>();
     private CompositeByteBuf buffer;

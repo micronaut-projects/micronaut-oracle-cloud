@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * Handler that discards incoming data.
  */
+@Deprecated
 final class DiscardingHandler extends DecidedBodyHandler {
     static final DiscardingHandler INSTANCE = new DiscardingHandler();
 
