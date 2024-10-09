@@ -15,7 +15,8 @@
  */
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import io.netty.handler.codec.http.HttpHeaders;
+import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.MutableHttpHeaders;
 
 import java.util.AbstractMap;
 import java.util.AbstractSet;
@@ -24,13 +25,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * {@link java.util.Map} wrapper around netty {@link HttpHeaders}. Read-only.
+ * {@link java.util.Map} wrapper around micronaut {@link HttpHeaders}.
  */
-@Deprecated
-final class HeaderMap extends AbstractMap<String, List<String>> {
+final class MicronautHeaderMap extends AbstractMap<String, List<String>> {
     private final HttpHeaders headers;
 
-    HeaderMap(HttpHeaders headers) {
+    MicronautHeaderMap(HttpHeaders headers) {
         this.headers = headers;
     }
 
@@ -64,7 +64,7 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
             return null;
         }
         List<String> items = headers.getAll(s);
-        headers.remove(s);
+        ((MutableHttpHeaders) headers).remove(s);
         return items.isEmpty() ? null : items; // follow remove() contract
     }
 
@@ -86,7 +86,7 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
 
         @Override
         public boolean remove(Object o) {
-            return HeaderMap.this.remove(o) != null;
+            return MicronautHeaderMap.this.remove(o) != null;
         }
 
         @Override

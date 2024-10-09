@@ -17,9 +17,10 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpResponse;
 import io.micronaut.core.type.Argument;
+import io.micronaut.http.ByteBodyHttpResponse;
+import io.micronaut.http.body.AvailableByteBody;
+import io.micronaut.http.body.ByteBody;
 import io.micronaut.json.JsonMapper;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,56 +33,60 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
-@Deprecated
-final class NettyHttpResponse implements HttpResponse {
+final class MicronautHttpResponse implements HttpResponse {
     private final JsonMapper jsonMapper;
-    private final io.netty.handler.codec.http.HttpResponse nettyResponse;
-    private final LimitedBufferingBodyHandler limitedBufferingBodyHandler;
-    private final UndecidedBodyHandler undecidedBodyHandler;
+    private final io.micronaut.http.HttpResponse<?> mnResponse;
     private final Executor offloadExecutor;
+    private LimitedBufferingSubscriber limitedBufferingSubscriber;
 
-    NettyHttpResponse(JsonMapper jsonMapper, io.netty.handler.codec.http.HttpResponse nettyResponse, LimitedBufferingBodyHandler limitedBufferingBodyHandler, UndecidedBodyHandler undecidedBodyHandler, Executor offloadExecutor) {
+    MicronautHttpResponse(JsonMapper jsonMapper, io.micronaut.http.HttpResponse<?> mnResponse, Executor offloadExecutor) {
         this.jsonMapper = jsonMapper;
-        this.nettyResponse = nettyResponse;
-        this.limitedBufferingBodyHandler = limitedBufferingBodyHandler;
-        this.undecidedBodyHandler = undecidedBodyHandler;
+        this.mnResponse = mnResponse;
         this.offloadExecutor = offloadExecutor;
     }
 
     @Override
     public int status() {
-        return nettyResponse.status().code();
+        return mnResponse.code();
     }
 
     @Override
     public Map<String, List<String>> headers() {
-        return new HeaderMap(nettyResponse.headers());
+        return new MicronautHeaderMap(mnResponse.getHeaders());
+    }
+
+    private ByteBody byteBody() {
+        if (!(mnResponse instanceof ByteBodyHttpResponse<?> bbhr)) {
+            throw new UnsupportedOperationException("A micronaut client filter replaced the HTTP response. This is not supported for the micronaut-oracle-cloud HTTP client.");
+        }
+        return bbhr.byteBody();
     }
 
     @Override
     public CompletionStage<InputStream> streamBody() {
-        return undecidedBodyHandler.asInputStream();
+        ByteBody byteBody = byteBody();
+        limitedBufferingSubscriber = new LimitedBufferingSubscriber(4096);
+        byteBody.split(ByteBody.SplitBackpressureMode.SLOWEST).toByteBufferPublisher().subscribe(limitedBufferingSubscriber);
+        return CompletableFuture.completedFuture(byteBody.toInputStream());
     }
 
     /**
      * Get the body as a buffer, falling back to {@link LimitedBufferingBodyHandler} if the body has already been
      * requested previously as another type.
      */
-    private CompletableFuture<ByteBuf> bodyAsBuffer() {
-        CompletableFuture<ByteBuf> buffer;
-        if (undecidedBodyHandler.hasDecided()) {
-            buffer = limitedBufferingBodyHandler.getFuture().thenApply(ByteBuf::retain);
+    private CompletableFuture<byte[]> bodyAsBuffer() {
+        if (limitedBufferingSubscriber != null) {
+            return limitedBufferingSubscriber.future;
         } else {
-            buffer = undecidedBodyHandler.asBuffer();
+            return byteBody().buffer().thenApply(AvailableByteBody::toByteArray);
         }
-        return buffer;
     }
 
     @Override
     public <T> CompletionStage<T> body(Class<T> type) {
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                if (!buf.isReadable()) {
+                if (buf.length == 0) {
                     /* This is a bit weird. jax-rs Response.readEntity says:
                      * "for a zero-length response entities returns a corresponding Java object
                      * that represents zero-length data."
@@ -101,11 +106,9 @@ final class NettyHttpResponse implements HttpResponse {
                     return null;
                 }
 
-                return jsonMapper.readValue(new ByteBufInputStream(buf), type);
+                return jsonMapper.readValue(buf, type);
             } catch (IOException e) {
                 throw new CompletionException(e);
-            } finally {
-                buf.release();
             }
         });
     }
@@ -115,24 +118,16 @@ final class NettyHttpResponse implements HttpResponse {
         Argument<List<T>> listArgument = Argument.listOf(type);
         return thenApply(bodyAsBuffer(), buf -> {
             try {
-                return jsonMapper.readValue(new ByteBufInputStream(buf), listArgument);
+                return jsonMapper.readValue(buf, listArgument);
             } catch (IOException e) {
                 throw new CompletionException(e);
-            } finally {
-                buf.release();
             }
         });
     }
 
     @Override
     public CompletionStage<String> textBody() {
-        return thenApply(bodyAsBuffer(), buf -> {
-            try {
-                return buf.toString(StandardCharsets.UTF_8);
-            } finally {
-                buf.release();
-            }
-        });
+        return thenApply(bodyAsBuffer(), buf -> new String(buf, StandardCharsets.UTF_8));
     }
 
     private <T, U> CompletionStage<U> thenApply(CompletionStage<T> stage, Function<? super T, ? extends U> fn) {
@@ -145,8 +140,11 @@ final class NettyHttpResponse implements HttpResponse {
 
     @Override
     public void close() {
-        if (!undecidedBodyHandler.hasDecided()) {
-            undecidedBodyHandler.discard();
+        if (limitedBufferingSubscriber != null) {
+            limitedBufferingSubscriber.close();
+        }
+        if (mnResponse instanceof ByteBodyHttpResponse<?> c) {
+            c.close();
         }
     }
 }

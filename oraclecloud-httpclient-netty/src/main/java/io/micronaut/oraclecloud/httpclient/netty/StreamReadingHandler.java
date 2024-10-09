@@ -26,6 +26,7 @@ import java.io.InterruptedIOException;
 /**
  * Channel handler that exposes inbound data as an {@link InputStream}.
  */
+@Deprecated
 class StreamReadingHandler extends DecidedBodyHandler {
     private final Object monitor = new Object();
     private CompositeByteBuf buffer;

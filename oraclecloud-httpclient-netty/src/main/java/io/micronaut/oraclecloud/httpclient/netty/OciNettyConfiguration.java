@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2022 original authors
+ * Copyright 2017-2024 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,29 +15,22 @@
  */
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import io.netty.buffer.ByteBuf;
+import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.core.annotation.Experimental;
+import io.micronaut.core.bind.annotation.Bindable;
 
 /**
- * Handler that discards incoming data.
+ * Configuration properties specific to the managed client.
+ *
+ * @param legacyNettyClient Use the legacy implementation of the netty client.
+ * @author Jonas Konrad
+ * @since 4.3.0
  */
-@Deprecated
-final class DiscardingHandler extends DecidedBodyHandler {
-    static final DiscardingHandler INSTANCE = new DiscardingHandler();
-
-    private DiscardingHandler() {
-    }
-
-    @Override
-    boolean onError(Throwable cause) {
-        return false;
-    }
-
-    @Override
-    void onData(ByteBuf data) {
-        data.release();
-    }
-
-    @Override
-    void onComplete() {
-    }
+@ConfigurationProperties(OciNettyConfiguration.PREFIX)
+record OciNettyConfiguration(
+    @Experimental
+    @Bindable(defaultValue = "false")
+    boolean legacyNettyClient
+) {
+    static final String PREFIX = "oci.netty";
 }

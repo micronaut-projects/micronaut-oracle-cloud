@@ -59,6 +59,7 @@ import java.util.concurrent.Executor;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
+@Deprecated
 final class NettyHttpRequest implements HttpRequest {
 
     private static final long UNKNOWN_CONTENT_LENGTH = -1;

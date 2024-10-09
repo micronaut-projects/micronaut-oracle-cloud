@@ -1,6 +1,7 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
-import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.micronaut.http.HttpRequest;
+import io.micronaut.http.MutableHttpHeaders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,10 +11,10 @@ import java.util.List;
 class HeaderMapTest {
     @Test
     public void containsCaseInsensitive() {
-        DefaultHttpHeaders headers = new DefaultHttpHeaders();
+        MutableHttpHeaders headers = HttpRequest.GET("").getHeaders();
         headers.add("Foo", "bar");
 
-        HeaderMap map = new HeaderMap(headers);
+        MicronautHeaderMap map = new MicronautHeaderMap(headers);
         Assertions.assertTrue(map.containsKey("foo"));
         Assertions.assertTrue(map.containsKey("FOO"));
         Assertions.assertTrue(map.containsKey("Foo"));

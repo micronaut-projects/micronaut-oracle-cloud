@@ -127,7 +127,7 @@ public class NettyTest {
 
         Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
         Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
-        Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() < secondTestNettyClientFilter.getEndTime());
+        Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() > secondTestNettyClientFilter.getEndTime());
     }
 
     @Test
