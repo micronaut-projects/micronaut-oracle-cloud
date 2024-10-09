@@ -20,6 +20,7 @@ import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import io.micronaut.buffer.netty.NettyByteBufferFactory;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpMethod;
@@ -52,6 +53,7 @@ import java.util.concurrent.Executor;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
+@Internal
 final class MicronautHttpRequest implements HttpRequest {
 
     private static final long UNKNOWN_CONTENT_LENGTH = -1;

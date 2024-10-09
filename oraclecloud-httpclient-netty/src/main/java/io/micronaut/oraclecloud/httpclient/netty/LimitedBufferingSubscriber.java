@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.httpclient.netty;
 
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.io.buffer.ByteBuffer;
 import io.micronaut.core.io.buffer.ReferenceCounted;
 import org.reactivestreams.Subscriber;
@@ -31,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
  * @author Jonas Konrad
  * @since 4.3
  */
+@Internal
 final class LimitedBufferingSubscriber implements Subscriber<ByteBuffer<?>>, Closeable {
     final CompletableFuture<byte[]> future = new CompletableFuture<>();
 

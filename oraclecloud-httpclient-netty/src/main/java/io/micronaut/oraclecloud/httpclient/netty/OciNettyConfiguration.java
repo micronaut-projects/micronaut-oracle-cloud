@@ -17,6 +17,7 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.annotation.Experimental;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.bind.annotation.Bindable;
 
 /**
@@ -26,6 +27,7 @@ import io.micronaut.core.bind.annotation.Bindable;
  * @author Jonas Konrad
  * @since 4.3.0
  */
+@Internal
 @ConfigurationProperties(OciNettyConfiguration.PREFIX)
 record OciNettyConfiguration(
     @Experimental

@@ -20,6 +20,7 @@ import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 
 import java.net.URI;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
 
+@Internal
 final class NettyHttpClientBuilder implements HttpClientBuilder {
 
     final Collection<PrioritizedValue<RequestInterceptor>> requestInterceptors = new ArrayList<>();

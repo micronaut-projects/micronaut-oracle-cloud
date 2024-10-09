@@ -23,6 +23,7 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpVersionSelection;
@@ -52,6 +53,7 @@ import java.util.stream.Collectors;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
 
+@Internal
 final class NettyHttpClient implements HttpClient {
     /**
      * Default settings of {@link ClientConfiguration}. They are set by BaseClient,

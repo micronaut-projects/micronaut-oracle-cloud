@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpResponse;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.ByteBodyHttpResponse;
 import io.micronaut.http.body.AvailableByteBody;
@@ -33,6 +34,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
+@Internal
 final class MicronautHttpResponse implements HttpResponse {
     private final JsonMapper jsonMapper;
     private final io.micronaut.http.HttpResponse<?> mnResponse;
