@@ -14,6 +14,7 @@ import java.util.Queue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+@Deprecated
 class StreamWritingHandlerTest {
     @Test
     public void test() {

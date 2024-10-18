@@ -22,7 +22,8 @@ import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.client.HttpClient;
-import io.micronaut.http.client.HttpClientRegistry;
+import io.micronaut.http.client.RawHttpClient;
+import io.micronaut.http.client.RawHttpClientRegistry;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
@@ -50,8 +51,8 @@ import java.util.concurrent.ExecutorService;
 public class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
-    final HttpClientRegistry<?> mnHttpClientRegistry;
-    final HttpClient mnHttpClient;
+    final RawHttpClientRegistry mnHttpClientRegistry;
+    final RawHttpClient mnHttpClient;
     final List<OciNettyClientFilter<?>> nettyClientFilters;
 
     /**
@@ -60,17 +61,20 @@ public class ManagedNettyHttpProvider implements HttpProvider {
     @Nullable
     final ExecutorService ioExecutor;
     final JsonMapper jsonMapper;
+    final OciNettyConfiguration configuration;
 
     @Inject
     public ManagedNettyHttpProvider(
-        HttpClientRegistry<?> mnHttpClientRegistry,
+        RawHttpClientRegistry mnHttpClientRegistry,
         @Named(TaskExecutors.BLOCKING) @Nullable ExecutorService ioExecutor,
         ObjectMapper jsonMapper,
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration,
-        @Nullable List<OciNettyClientFilter<?>> nettyClientFilters
+        @Nullable List<OciNettyClientFilter<?>> nettyClientFilters,
+        OciNettyConfiguration configuration
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
+        this.configuration = configuration;
         this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
@@ -84,10 +88,11 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         @Nullable List<OciNettyClientFilter<?>> nettyClientFilters
     ) {
         this.mnHttpClientRegistry = null;
-        this.mnHttpClient = mnHttpClient;
+        this.mnHttpClient = (RawHttpClient) mnHttpClient;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
+        this.configuration = new OciNettyConfiguration(false);
     }
 
     @Override
