@@ -34,7 +34,6 @@ import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.timeout.ReadTimeoutException;
 
@@ -149,7 +148,7 @@ final class NettyHttpClient implements HttpClient {
     }
 
     ByteBufAllocator alloc() {
-        return connectionManager == null ? PooledByteBufAllocator.DEFAULT : connectionManager.alloc();
+        return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
     }
 
     @SuppressWarnings("deprecation")

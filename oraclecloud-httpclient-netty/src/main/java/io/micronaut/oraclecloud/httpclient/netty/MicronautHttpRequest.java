@@ -62,8 +62,7 @@ final class MicronautHttpRequest implements HttpRequest {
 
     private final Map<String, Object> attributes;
 
-    @Nullable
-    private MutableHttpRequest<?> mnRequest = null;
+    private final MutableHttpRequest<?> mnRequest;
 
     private final StringBuilder uri;
     private final StringBuilder query;
@@ -96,7 +95,7 @@ final class MicronautHttpRequest implements HttpRequest {
     private MicronautHttpRequest(MicronautHttpRequest from) {
         this.client = from.client;
         this.attributes = new HashMap<>(from.attributes);
-        this.mnRequest = from.mnRequest == null ? null : copyRequest(from.mnRequest);
+        this.mnRequest = copyRequest(from.mnRequest);
         this.uri = new StringBuilder(from.uri);
         this.query = new StringBuilder(from.query);
         this.offloadExecutor = from.offloadExecutor;
@@ -119,9 +118,6 @@ final class MicronautHttpRequest implements HttpRequest {
 
     @Override
     public Method method() {
-        if (mnRequest == null) {
-            return null;
-        }
         return switch (mnRequest.getMethod()) {
             case GET -> Method.GET;
             case HEAD -> Method.HEAD;
@@ -225,9 +221,6 @@ final class MicronautHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest header(String name, String value) {
-        if (mnRequest == null) {
-            mnRequest = io.micronaut.http.HttpRequest.POST("", null); // placeholder
-        }
         mnRequest.header(name, value);
         if (HttpHeaderNames.EXPECT.contentEqualsIgnoreCase(name)) {
             expectContinue = HttpHeaderValues.CONTINUE.contentEqualsIgnoreCase(value);
