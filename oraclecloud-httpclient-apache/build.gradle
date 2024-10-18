@@ -1,0 +1,44 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-standalone-module'
+}
+
+dependencies {
+    api platform(libs.oci.bom)
+    implementation(libs.oci.common) {
+        exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
+    }
+    api(libs.oci.common.httpclient)
+
+    compileOnly(mn.micronaut.core) // annotations
+    annotationProcessor(mn.micronaut.inject.java)
+    implementation(libs.apache.http.core5)
+
+    // jackson serializer
+    compileOnly(mn.jackson.databind)
+    compileOnly(mn.jackson.datatype.jsr310)
+    testImplementation(mn.jackson.databind)
+    testImplementation(mn.jackson.datatype.jsr310)
+
+    // serde serializer
+    compileOnly(mnSerde.micronaut.serde.api)
+    compileOnly(libs.oci.oke.workload.identity)
+    testImplementation(mnSerde.micronaut.serde.api)
+    testImplementation(libs.oci.oke.workload.identity)
+
+    testImplementation(mn.netty.codec.http)
+
+    [projects.micronautOraclecloudBmcMonitoring,
+     projects.micronautOraclecloudBmcIdentity,
+     projects.micronautOraclecloudBmcObjectstorage,
+     projects.micronautOraclecloudBmcKeymanagement,
+     projects.micronautOraclecloudBmcSecrets,
+     projects.micronautOraclecloudBmcVault,
+     projects.micronautOraclecloudBmcLogging,
+     projects.micronautOraclecloudBmcLoggingingestion,
+     projects.micronautOraclecloudBmcLoggingsearch,
+     projects.micronautOraclecloudBmcStreaming
+    ].forEach(module -> testImplementation(module))
+}
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
