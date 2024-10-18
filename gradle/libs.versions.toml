@@ -18,6 +18,8 @@ oci = "3.47.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
+managed-apache-http-core5 = "5.2.5"
+
 micronaut-gradle-plugin = "4.4.2"
 micronaut-groovy = "4.4.0"
 micronaut-kotlin = "4.4.0"
@@ -77,6 +79,7 @@ oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
 oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
+apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }

@@ -1,0 +1,8 @@
+/**
+ * This plugin must only be used on projects which need to be published, but
+ * are not regular Micronaut modules with annotation processing and such.
+ */
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-base'
+    id 'io.micronaut.build.internal.base-module'
+}
