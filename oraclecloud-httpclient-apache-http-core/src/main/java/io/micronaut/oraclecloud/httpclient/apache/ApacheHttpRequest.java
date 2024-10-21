@@ -292,7 +292,7 @@ final class ApacheHttpRequest implements HttpRequest {
     }
 
     private void writeEntity(ClassicHttpRequest request, SessionOutputBuffer buffer, OutputStream rawStream) throws IOException {
-        Header contentLength = request.getFirstHeader("content-length");
+        Header contentLength = request.getFirstHeader(HttpHeaders.CONTENT_LENGTH);
         OutputStream bodyStream;
         if (contentLength != null) {
             long len = Long.parseLong(contentLength.getValue());

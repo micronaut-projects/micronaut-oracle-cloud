@@ -27,7 +27,7 @@ import java.util.List;
  * Extension to {@link Serializer} for blocking reads/writes.
  */
 @Internal
-interface ApacheSerializer extends Serializer {
+sealed interface ApacheSerializer extends Serializer permits JacksonSerializer, SerdeSerializer {
     <T> T readValue(InputStream inputStream, Class<T> type) throws IOException;
 
     <T> List<T> readList(InputStream inputStream, Class<T> type) throws IOException;

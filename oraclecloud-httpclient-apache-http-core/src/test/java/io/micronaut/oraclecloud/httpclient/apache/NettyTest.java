@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -424,6 +425,31 @@ public class NettyTest {
                 Assertions.fail("Exception is not a processing exception");
             }
         }
+    }
+
+    @Test
+    public void interceptorOrderTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        List<String> intercepts = new ArrayList<>();
+        try (HttpClient client = provider().newBuilder()
+            .property(ApacheHttpProvider.SOCKET_PATH, netty.getSocketFile())
+            .baseUri("https://example.com")
+            .registerRequestInterceptor(0, req -> intercepts.add("pr0"))
+            .registerRequestInterceptor(2, req -> intercepts.add("pr2"))
+            .registerRequestInterceptor(1, req -> intercepts.add("pr1"))
+            .build()) {
+            client.createRequest(Method.GET)
+                .execute().toCompletableFuture()
+                .get().close();
+        }
+
+        Assertions.assertEquals(List.of("pr0", "pr1", "pr2"), intercepts);
     }
 
     @Serdeable
