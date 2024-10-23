@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache.serde.filter;
+package io.micronaut.oraclecloud.httpclient.apache.core.serde.filter;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import io.micronaut.context.annotation.Secondary;

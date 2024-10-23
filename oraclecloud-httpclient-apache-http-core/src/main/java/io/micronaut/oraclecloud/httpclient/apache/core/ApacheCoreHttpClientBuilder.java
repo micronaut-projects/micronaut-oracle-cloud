@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClient;
@@ -29,16 +29,16 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Internal
-final class ApacheHttpClientBuilder implements HttpClientBuilder {
+final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
     static final String SOCKET_PATH_PROPERTY = "io.micronaut.oraclecloud.httpclient.apache.socket-path";
 
-    final ApacheHttpProvider provider;
+    final ApacheCoreHttpProvider provider;
     final Collection<PrioritizedInterceptor> requestInterceptors = new ArrayList<>();
     URI baseUri;
     boolean buffered = true;
     Path socketPath;
 
-    ApacheHttpClientBuilder(ApacheHttpProvider provider) {
+    ApacheCoreHttpClientBuilder(ApacheCoreHttpProvider provider) {
         this.provider = provider;
         String socketPathProperty = System.getProperty(SOCKET_PATH_PROPERTY);
         if (socketPathProperty != null) {
@@ -62,7 +62,7 @@ final class ApacheHttpClientBuilder implements HttpClientBuilder {
     public <T> HttpClientBuilder property(ClientProperty<T> key, T value) {
         if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;
-        } else if (key == ApacheHttpProvider.SOCKET_PATH) {
+        } else if (key == ApacheCoreHttpProvider.SOCKET_PATH) {
             socketPath = (Path) value;
         } else {
             throw new IllegalArgumentException("Unknown or unsupported HTTP client property " + key);
@@ -79,7 +79,7 @@ final class ApacheHttpClientBuilder implements HttpClientBuilder {
 
     @Override
     public HttpClient build() {
-        return new ApacheHttpClient(this);
+        return new ApacheCoreHttpClient(this);
     }
 
     record PrioritizedInterceptor(int priority, RequestInterceptor interceptor) {

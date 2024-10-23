@@ -25,7 +25,7 @@ dependencies {
     testImplementation(mnSerde.micronaut.serde.api)
     testImplementation(libs.oci.oke.workload.identity)
 
-    testImplementation(mn.netty.codec.http)
+    testImplementation(projects.testSuiteHttpClient)
 
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,
@@ -41,4 +41,10 @@ dependencies {
 }
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
+}
+
+micronautBuild {
+    binaryCompatibility {
+        enabled.set(false)
+    }
 }

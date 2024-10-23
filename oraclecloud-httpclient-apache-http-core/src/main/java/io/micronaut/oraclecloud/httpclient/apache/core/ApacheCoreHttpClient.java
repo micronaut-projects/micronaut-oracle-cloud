@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.oracle.bmc.http.client.HttpClient;
@@ -30,19 +30,19 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Internal
-final class ApacheHttpClient implements HttpClient {
-    final ApacheHttpProvider provider;
+final class ApacheCoreHttpClient implements HttpClient {
+    final ApacheCoreHttpProvider provider;
     final Path socketPath;
     final URI baseUri;
     final List<RequestInterceptor> requestInterceptors;
     final boolean buffered;
 
-    ApacheHttpClient(ApacheHttpClientBuilder builder) {
+    ApacheCoreHttpClient(ApacheCoreHttpClientBuilder builder) {
         provider = builder.provider;
-        socketPath = Objects.requireNonNull(builder.socketPath, "Please specify a socket path in the system property " + ApacheHttpClientBuilder.SOCKET_PATH_PROPERTY + " or set it on the client using the ApacheHttpProvider.SOCKET_PATH property");
+        socketPath = Objects.requireNonNull(builder.socketPath, "Please specify a socket path in the system property " + ApacheCoreHttpClientBuilder.SOCKET_PATH_PROPERTY + " or set it on the client using the ApacheHttpProvider.SOCKET_PATH property");
         requestInterceptors = builder.requestInterceptors.stream()
-            .sorted(Comparator.comparingInt(ApacheHttpClientBuilder.PrioritizedInterceptor::priority))
-            .map(ApacheHttpClientBuilder.PrioritizedInterceptor::interceptor)
+            .sorted(Comparator.comparingInt(ApacheCoreHttpClientBuilder.PrioritizedInterceptor::priority))
+            .map(ApacheCoreHttpClientBuilder.PrioritizedInterceptor::interceptor)
             .collect(Collectors.toList());
         baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
         buffered = builder.buffered;
@@ -50,7 +50,7 @@ final class ApacheHttpClient implements HttpClient {
 
     @Override
     public HttpRequest createRequest(Method method) {
-        return new ApacheHttpRequest(this, method);
+        return new ApacheCoreHttpRequest(this, method);
     }
 
     @Override

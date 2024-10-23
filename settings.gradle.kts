@@ -65,6 +65,7 @@ include("docs-examples:example-http-function-kotlin")
 include("test-suite-java")
 include("test-suite-graal-function")
 include("test-suite-graal-logging")
+include("test-suite-http-client")
 include("test-suite-http-server-tck-oraclecloud-function-http")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

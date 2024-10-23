@@ -13,24 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache.serde;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
-import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.ConfigurationProperties;
+import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.bind.annotation.Bindable;
-import io.micronaut.serde.config.SerdeConfiguration;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 /**
- * OCI-specific serde configuration.
+ * Extension to {@link Serializer} for blocking reads/writes.
  */
-@ConfigurationProperties("oci.serde")
-@Bean(typed = OciSerdeConfiguration.class)
 @Internal
-@BootstrapContextCompatible
-public interface OciSerdeConfiguration extends SerdeConfiguration {
-    @Override
-    @Bindable(defaultValue = "false")
-    boolean isWriteBinaryAsArray();
+sealed interface ApacheCoreSerializer extends Serializer permits JacksonSerializer, SerdeSerializer {
+    <T> T readValue(InputStream inputStream, Class<T> type) throws IOException;
+
+    <T> List<T> readList(InputStream inputStream, Class<T> type) throws IOException;
+
+    void writeValue(OutputStream outputStream, Object value) throws IOException;
 }

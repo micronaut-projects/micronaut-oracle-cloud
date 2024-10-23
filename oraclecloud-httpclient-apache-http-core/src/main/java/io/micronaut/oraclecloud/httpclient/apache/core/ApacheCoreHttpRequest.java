@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
@@ -57,8 +57,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-final class ApacheHttpRequest implements HttpRequest {
-    private final ApacheHttpClient client;
+final class ApacheCoreHttpRequest implements HttpRequest {
+    private final ApacheCoreHttpClient client;
 
     private final Method method;
     private final StringBuilder uri;
@@ -67,7 +67,7 @@ final class ApacheHttpRequest implements HttpRequest {
     private final Map<String, Object> attributes;
     private HttpEntity entity;
 
-    ApacheHttpRequest(ApacheHttpClient client, Method method) {
+    ApacheCoreHttpRequest(ApacheCoreHttpClient client, Method method) {
         this.client = client;
         this.method = method;
         this.uri = new StringBuilder(client.baseUri.toString());
@@ -77,7 +77,7 @@ final class ApacheHttpRequest implements HttpRequest {
         this.entity = null;
     }
 
-    private ApacheHttpRequest(ApacheHttpRequest prototype) {
+    private ApacheCoreHttpRequest(ApacheCoreHttpRequest prototype) {
         this.client = prototype.client;
         this.method = prototype.method;
         this.uri = prototype.uri;
@@ -200,7 +200,7 @@ final class ApacheHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest copy() {
-        return new ApacheHttpRequest(this);
+        return new ApacheCoreHttpRequest(this);
     }
 
     @Override
@@ -225,13 +225,16 @@ final class ApacheHttpRequest implements HttpRequest {
         SocketChannel channel = null;
         Exception ex = null;
         try {
+            Header expect = request.getFirstHeader(HttpHeaders.EXPECT);
+            boolean expectContinue = expect != null && expect.getValue().equalsIgnoreCase(HeaderElements.CONTINUE);
+
             if (!request.containsHeader(HttpHeaders.CONTENT_LENGTH) && !request.containsHeader(HttpHeaders.TRANSFER_ENCODING)) {
                 if (entity == null) {
                     request.addHeader(HttpHeaders.CONTENT_LENGTH, 0);
                 } else if (entity.getContentLength() >= 0) {
                     request.addHeader(HttpHeaders.CONTENT_LENGTH, entity.getContentLength());
                 } else {
-                    if (client.buffered) {
+                    if (client.buffered || !(expectContinue && entity.getContentLength() == -1)) {
                         byte[] bytes = entity.getContent().readAllBytes();
                         entity = HttpEntities.create(bytes, null);
                         request.addHeader(HttpHeaders.CONTENT_LENGTH, bytes.length);
@@ -242,9 +245,6 @@ final class ApacheHttpRequest implements HttpRequest {
             }
 
             channel = SocketChannel.open(UnixDomainSocketAddress.of(client.socketPath));
-
-            Header expect = request.getFirstHeader(HttpHeaders.EXPECT);
-            boolean expectContinue = expect != null && expect.getValue().equalsIgnoreCase(HeaderElements.CONTINUE);
 
             OutputStream os = Channels.newOutputStream(channel);
             SessionOutputBuffer outputBuffer = new SessionOutputBufferImpl(Http1Config.DEFAULT.getBufferSize());
@@ -272,7 +272,7 @@ final class ApacheHttpRequest implements HttpRequest {
                 classicHttpResponse.setEntity(new InputStreamEntity(new ChunkedInputStream(inBuffer, is), null));
             }
 
-            ApacheHttpResponse response = new ApacheHttpResponse(client, channel, classicHttpResponse);
+            ApacheCoreHttpResponse response = new ApacheCoreHttpResponse(client, channel, classicHttpResponse);
             channel = null; // response will close the channel
             return CompletableFuture.completedFuture(response);
         } catch (Exception e) {

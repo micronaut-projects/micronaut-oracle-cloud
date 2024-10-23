@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache.serde.serializers;
+package io.micronaut.oraclecloud.httpclient.apache.core.serde.serializers;
 
 import com.oracle.bmc.http.internal.ResponseHelper;
 import io.micronaut.context.annotation.Secondary;

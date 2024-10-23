@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.oracle.bmc.http.client.HttpResponse;
 import io.micronaut.core.annotation.Internal;
@@ -37,12 +37,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Internal
-final class ApacheHttpResponse implements HttpResponse {
-    private final ApacheHttpClient client;
+final class ApacheCoreHttpResponse implements HttpResponse {
+    private final ApacheCoreHttpClient client;
     private final Closeable channel;
     private final ClassicHttpResponse response;
 
-    ApacheHttpResponse(ApacheHttpClient client, Closeable channel, ClassicHttpResponse response) {
+    ApacheCoreHttpResponse(ApacheCoreHttpClient client, Closeable channel, ClassicHttpResponse response) {
         this.client = client;
         this.channel = channel;
         this.response = response;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -47,11 +47,11 @@ import java.util.Set;
 
 @Internal
 @Singleton
-@Bean(typed = ApacheSerializer.class)
+@Bean(typed = ApacheCoreSerializer.class)
 @Requires(classes = {ObjectMapper.class, JavaTimeModule.class})
 @Requires(property = "spec.name", notEquals = "ManagedSerdeNettyTest")
 @BootstrapContextCompatible
-final class JacksonSerializer implements ApacheSerializer {
+final class JacksonSerializer implements ApacheCoreSerializer {
     private final ObjectMapper objectMapper = JsonMapper.builder()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)

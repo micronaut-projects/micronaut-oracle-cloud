@@ -1,4 +1,4 @@
-package io.micronaut.oraclecloud.httpclient.netty;
+package io.micronaut.oraclecloud.httpclient;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -7,7 +7,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioDomainSocketChannel;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -20,10 +20,8 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.runners.model.MultipleFailureException;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.List;
@@ -41,7 +39,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
     boolean timeout;
     Consumer<Channel> channelCustomizer;
     private List<Throwable> errors;
-    private Channel serverChannel;
+    Channel serverChannel;
     private NioEventLoopGroup group;
 
     public URI getEndpoint() {
@@ -54,7 +52,8 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        ((NettyTest) context.getTestInstance().get()).netty = this;
+        NettyTest test = (NettyTest) context.getTestInstance().get();
+        test.netty = this;
 
         Thread testThread = Thread.currentThread();
 
@@ -69,9 +68,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
         group = new NioEventLoopGroup(1);
 
         ServerBootstrap bootstrap = new ServerBootstrap()
-                .channel(NioServerSocketChannel.class)
                 .group(group, group)
-                .localAddress("127.0.0.1", 0)
                 .childHandler(new ChannelInitializer<Channel>() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
@@ -146,15 +143,16 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                         errors.add(cause);
                                         testThread.interrupt();
                                         ctx.close();
-                                        ctx.channel().parent().close(); // close the server too
+                                        if (!(ctx.channel() instanceof NioDomainSocketChannel)) { // https://github.com/netty/netty/pull/14409
+                                            ctx.channel().parent().close(); // close the server too
+                                        }
                                     }
                                 });
                         channelCustomizer.accept(ch);
                     }
                 });
+        test.setupBootstrap(bootstrap);
         serverChannel = bootstrap.bind().syncUninterruptibly().channel();
-        InetSocketAddress addr = (InetSocketAddress) serverChannel.localAddress();
-        endpoint = "http://" + addr.getHostString() + ":" + addr.getPort();
     }
 
     @Override
@@ -165,6 +163,12 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
         } catch (Throwable t) {
             errors.add(t);
         }
-        MultipleFailureException.assertEmpty(errors);
+        if (!errors.isEmpty()) {
+            Throwable main = errors.get(0);
+            for (int i = 1; i < errors.size(); i++) {
+                main.addSuppressed(errors.get(i));
+            }
+            throw main instanceof Exception e ? e : new Exception(main);
+        }
     }
 }

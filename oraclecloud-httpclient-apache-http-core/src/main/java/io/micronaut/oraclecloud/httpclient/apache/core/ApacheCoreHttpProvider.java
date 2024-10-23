@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
@@ -35,14 +35,14 @@ import java.nio.file.Path;
 @Internal
 @Singleton
 @BootstrapContextCompatible
-public final class ApacheHttpProvider implements HttpProvider {
+public final class ApacheCoreHttpProvider implements HttpProvider {
     public static final ClientProperty<Path> SOCKET_PATH = ClientProperty.create("socketPath");
 
-    private final ApacheSerializer serializer;
+    private final ApacheCoreSerializer serializer;
 
-    public ApacheHttpProvider() {
+    public ApacheCoreHttpProvider() {
         // SPI constructor
-        ApacheSerializer s;
+        ApacheCoreSerializer s;
         try {
             s = new JacksonSerializer();
         } catch (LinkageError e1) {
@@ -57,18 +57,18 @@ public final class ApacheHttpProvider implements HttpProvider {
     }
 
     @Inject
-    ApacheHttpProvider(ApacheSerializer serializer) {
+    ApacheCoreHttpProvider(ApacheCoreSerializer serializer) {
         this.serializer = serializer;
     }
 
     @Override
     public HttpClientBuilder newBuilder() {
-        return new ApacheHttpClientBuilder(this);
+        return new ApacheCoreHttpClientBuilder(this);
     }
 
     @SuppressWarnings("ClassEscapesDefinedScope")
     @Override
-    public ApacheSerializer getSerializer() {
+    public ApacheCoreSerializer getSerializer() {
         return serializer;
     }
 }

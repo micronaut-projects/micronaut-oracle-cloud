@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.httpclient.apache;
+package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.type.Argument;
-import io.micronaut.oraclecloud.httpclient.apache.serde.OciSerdeConfiguration;
-import io.micronaut.oraclecloud.httpclient.apache.serde.OciSerializationConfiguration;
+import io.micronaut.oraclecloud.httpclient.apache.core.serde.OciSerdeConfiguration;
+import io.micronaut.oraclecloud.httpclient.apache.core.serde.OciSerializationConfiguration;
 import io.micronaut.serde.ObjectMapper;
 import io.micronaut.serde.config.annotation.SerdeConfig;
 import jakarta.inject.Inject;
@@ -33,11 +33,11 @@ import java.util.List;
 import java.util.Map;
 
 @Singleton
-@Bean(typed = ApacheSerializer.class)
+@Bean(typed = ApacheCoreSerializer.class)
 @Requires(bean = ObjectMapper.class)
 @Requires(property = "spec.name", notEquals = "ManagedJacksonNettyTest")
 @BootstrapContextCompatible
-final class SerdeSerializer implements ApacheSerializer {
+final class SerdeSerializer implements ApacheCoreSerializer {
     private final ObjectMapper objectMapper;
 
     @Inject
