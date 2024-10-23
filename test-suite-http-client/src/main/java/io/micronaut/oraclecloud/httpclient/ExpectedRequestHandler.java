@@ -1,4 +1,4 @@
-package io.micronaut.oraclecloud.httpclient.netty;
+package io.micronaut.oraclecloud.httpclient;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;

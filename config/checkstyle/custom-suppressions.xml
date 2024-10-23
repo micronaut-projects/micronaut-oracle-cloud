@@ -7,5 +7,6 @@
 <suppressions>
     <suppress checks="DesignForExtension" files=".*docs-examples.*" />
     <suppress checks="[a-zA-Z0-9]*" files="io[\\/]micronaut[\\/]oraclecloud[\\/]atp[\\/]wallet" />
+    <suppress checks="[a-zA-Z0-9]*" files="io[\\/]micronaut[\\/]oraclecloud[\\/]httpclient[\\/](NettyTest|NettyRule|ExpectedRequestHandler)" />
     <suppress checks="MissingJavadocType" files=".*doc-examples.*" />
 </suppressions>

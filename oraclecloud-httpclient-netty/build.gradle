@@ -32,6 +32,7 @@ dependencies {
     testImplementation mn.micronaut.management
     testImplementation mn.micronaut.context
     testImplementation projects.micronautOraclecloudCommon
+    testImplementation projects.testSuiteHttpClient
 
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,
