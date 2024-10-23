@@ -10,3 +10,17 @@ tasks.withType(Javadoc).configureEach {
 repositories {
     mavenCentral()
 }
+
+if (System.getenv("SONAR_TOKEN") != null) {
+    // tck classes excluded from coverage
+    def coverageExcludes = [
+            "**/io/micronaut/oraclecloud/httpclient/ExpectedRequestHandler.java",
+            "**/io/micronaut/oraclecloud/httpclient/NettyRule.java",
+            "**/io/micronaut/oraclecloud/httpclient/NettyTest.java"
+    ]
+    sonarqube {
+        properties {
+            property "sonar.exclusions", coverageExcludes.join(",")
+        }
+    }
+}
