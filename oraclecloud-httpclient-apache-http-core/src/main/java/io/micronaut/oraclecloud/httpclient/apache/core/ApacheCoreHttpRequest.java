@@ -210,6 +210,10 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        for (RequestInterceptor requestInterceptor : client.requestInterceptors) {
+            requestInterceptor.intercept(this);
+        }
+
         ClassicHttpRequest request = DefaultClassicHttpRequestFactory.INSTANCE
             .newHttpRequest(method.name(), buildUri());
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
@@ -218,59 +222,39 @@ final class ApacheCoreHttpRequest implements HttpRequest {
             }
         }
 
-        for (RequestInterceptor requestInterceptor : client.requestInterceptors) {
-            requestInterceptor.intercept(this);
-        }
-
         SocketChannel channel = null;
         Exception ex = null;
         try {
-            Header expect = request.getFirstHeader(HttpHeaders.EXPECT);
-            boolean expectContinue = expect != null && expect.getValue().equalsIgnoreCase(HeaderElements.CONTINUE);
-
-            if (!request.containsHeader(HttpHeaders.CONTENT_LENGTH) && !request.containsHeader(HttpHeaders.TRANSFER_ENCODING)) {
-                if (entity == null) {
-                    request.addHeader(HttpHeaders.CONTENT_LENGTH, 0);
-                } else if (entity.getContentLength() >= 0) {
-                    request.addHeader(HttpHeaders.CONTENT_LENGTH, entity.getContentLength());
-                } else {
-                    if (client.buffered || !(expectContinue && entity.getContentLength() == -1)) {
-                        byte[] bytes = entity.getContent().readAllBytes();
-                        entity = HttpEntities.create(bytes, null);
-                        request.addHeader(HttpHeaders.CONTENT_LENGTH, bytes.length);
-                    } else {
-                        request.addHeader(HttpHeaders.TRANSFER_ENCODING, HeaderElements.CHUNKED_ENCODING);
-                    }
-                }
-            }
+            fillContentLength(request);
 
             channel = SocketChannel.open(UnixDomainSocketAddress.of(client.socketPath));
 
+            // write request headers
             OutputStream os = Channels.newOutputStream(channel);
             SessionOutputBuffer outputBuffer = new SessionOutputBufferImpl(Http1Config.DEFAULT.getBufferSize());
             DefaultHttpRequestWriterFactory.INSTANCE.create().write(request, outputBuffer, os);
+
+            // write request body
+            boolean expectContinue = isExpectContinue(request);
             if (!expectContinue) {
                 writeEntity(request, outputBuffer, os);
             } else {
                 outputBuffer.flush(os);
             }
 
+            // read response
             InputStream is = Channels.newInputStream(channel);
             SessionInputBufferImpl inBuffer = new SessionInputBufferImpl(Http1Config.DEFAULT.getBufferSize());
             HttpMessageParser<ClassicHttpResponse> parser = DefaultHttpResponseParserFactory.INSTANCE.create(Http1Config.DEFAULT);
             ClassicHttpResponse classicHttpResponse = parser.parse(inBuffer, is);
+
+            // if we are told to continue, write the body and read the next response
             if (expectContinue && classicHttpResponse.getCode() == HttpStatus.SC_CONTINUE) {
                 writeEntity(request, outputBuffer, os);
                 classicHttpResponse = parser.parse(inBuffer, is);
             }
-            Header contentLength = classicHttpResponse.getFirstHeader(HttpHeaders.CONTENT_LENGTH);
-            Header transferEncoding = classicHttpResponse.getFirstHeader(HttpHeaders.TRANSFER_ENCODING);
-            if (contentLength != null) {
-                long n = Long.parseLong(contentLength.getValue());
-                classicHttpResponse.setEntity(new InputStreamEntity(new ContentLengthInputStream(inBuffer, is, n), n, null));
-            } else if (transferEncoding != null && transferEncoding.getValue().equalsIgnoreCase(HeaderElements.CHUNKED_ENCODING)) {
-                classicHttpResponse.setEntity(new InputStreamEntity(new ChunkedInputStream(inBuffer, is), null));
-            }
+
+            readAndSetResponseEntity(classicHttpResponse, inBuffer, is);
 
             ApacheCoreHttpResponse response = new ApacheCoreHttpResponse(client, channel, classicHttpResponse);
             channel = null; // response will close the channel
@@ -287,6 +271,42 @@ final class ApacheCoreHttpRequest implements HttpRequest {
                         ex.addSuppressed(ioe);
                     }
                 }
+            }
+        }
+    }
+
+    private static boolean isExpectContinue(ClassicHttpRequest request) {
+        Header expect = request.getFirstHeader(HttpHeaders.EXPECT);
+        return expect != null && expect.getValue().equalsIgnoreCase(HeaderElements.CONTINUE);
+    }
+
+    private void fillContentLength(ClassicHttpRequest request) throws IOException {
+        if (!request.containsHeader(HttpHeaders.CONTENT_LENGTH) && !request.containsHeader(HttpHeaders.TRANSFER_ENCODING)) {
+            if (entity == null) {
+                request.addHeader(HttpHeaders.CONTENT_LENGTH, 0);
+            } else if (entity.getContentLength() >= 0) {
+                request.addHeader(HttpHeaders.CONTENT_LENGTH, entity.getContentLength());
+            } else {
+                if (client.buffered || !(isExpectContinue(request) && entity.getContentLength() == -1)) {
+                    byte[] bytes = entity.getContent().readAllBytes();
+                    entity = HttpEntities.create(bytes, null);
+                    request.addHeader(HttpHeaders.CONTENT_LENGTH, bytes.length);
+                } else {
+                    request.addHeader(HttpHeaders.TRANSFER_ENCODING, HeaderElements.CHUNKED_ENCODING);
+                }
+            }
+        }
+    }
+
+    private static void readAndSetResponseEntity(ClassicHttpResponse classicHttpResponse, SessionInputBufferImpl inBuffer, InputStream is) {
+        Header contentLength = classicHttpResponse.getFirstHeader(HttpHeaders.CONTENT_LENGTH);
+        if (contentLength != null) {
+            long n = Long.parseLong(contentLength.getValue());
+            classicHttpResponse.setEntity(new InputStreamEntity(new ContentLengthInputStream(inBuffer, is, n), n, null));
+        } else {
+            Header transferEncoding = classicHttpResponse.getFirstHeader(HttpHeaders.TRANSFER_ENCODING);
+            if (transferEncoding != null && transferEncoding.getValue().equalsIgnoreCase(HeaderElements.CHUNKED_ENCODING)) {
+                classicHttpResponse.setEntity(new InputStreamEntity(new ChunkedInputStream(inBuffer, is), null));
             }
         }
     }
