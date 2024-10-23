@@ -18,7 +18,7 @@ oci = "3.47.0"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
-micronaut-gradle-plugin = "4.4.2"
+micronaut-gradle-plugin = "4.4.3"
 micronaut-groovy = "4.4.0"
 micronaut-kotlin = "4.4.0"
 micronaut-micrometer = "5.8.0"
