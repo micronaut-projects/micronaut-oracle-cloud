@@ -22,7 +22,6 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
@@ -32,7 +31,6 @@ import java.util.function.Consumer;
 
 public class NettyRule implements BeforeEachCallback, AfterEachCallback {
     private Queue<ExpectedRequestHandler> handlers;
-    private String endpoint;
 
     boolean handleContinue;
     boolean aggregate;
@@ -41,10 +39,6 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
     private List<Throwable> errors;
     Channel serverChannel;
     private NioEventLoopGroup group;
-
-    public URI getEndpoint() {
-        return URI.create(endpoint);
-    }
 
     public void handleOneRequest(ExpectedRequestHandler handler) {
         handlers.add(handler);

@@ -90,8 +90,8 @@ final class SerdeSerializer implements ApacheCoreSerializer {
 
         private static final ObjectMapper DEFAULT_MAPPER = ObjectMapper.create(
             DEFAULT_MAPPER_CONFIG,
-            "io.micronaut.oraclecloud.httpclient.apache.serde.filter",
-            "io.micronaut.oraclecloud.httpclient.apache.serde.serializers"
+            "io.micronaut.oraclecloud.httpclient.apache.core.serde.filter",
+            "io.micronaut.oraclecloud.httpclient.apache.core.serde.serializers"
         );
     }
 }

@@ -70,6 +70,7 @@ commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'co
 oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
 oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version.ref = "oci" }
 oci-common-httpclient = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient', version.ref = "oci" }
+oci-common-httpclient-jersey3 = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3', version.ref = "oci" }
 oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version.ref = "oci" }
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
