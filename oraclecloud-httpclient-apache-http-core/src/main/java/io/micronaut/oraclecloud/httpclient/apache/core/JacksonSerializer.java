@@ -33,6 +33,7 @@ import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.Secondary;
 import io.micronaut.core.annotation.Internal;
 import jakarta.inject.Singleton;
 
@@ -51,6 +52,7 @@ import java.util.Set;
 @Requires(classes = {ObjectMapper.class, JavaTimeModule.class})
 @Requires(property = "spec.name", notEquals = "ManagedSerdeNettyTest")
 @BootstrapContextCompatible
+@Secondary
 final class JacksonSerializer implements ApacheCoreSerializer {
     private final ObjectMapper objectMapper = JsonMapper.builder()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

@@ -27,10 +27,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 @Internal
 final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
     static final String SOCKET_PATH_PROPERTY = "io.micronaut.oraclecloud.httpclient.apache.socket-path";
+
+    static final Logger LOG = Logger.getLogger(ApacheCoreHttpClientBuilder.class.getName());
 
     final ApacheCoreHttpProvider provider;
     final Collection<PrioritizedInterceptor> requestInterceptors = new ArrayList<>();
@@ -64,6 +67,14 @@ final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
             buffered = (Boolean) value;
         } else if (key == ApacheCoreHttpProvider.SOCKET_PATH) {
             socketPath = (Path) value;
+        } else if (key == StandardClientProperties.READ_TIMEOUT
+            || key == StandardClientProperties.CONNECT_TIMEOUT
+            || key == StandardClientProperties.ASYNC_POOL_SIZE
+        ) {
+            // Those properties are frequently set in Micronaut applications, so
+            // it would break them unless we ignore them here.
+            LOG.warning("Attempted to set standard client property '"
+                + key.getName() + "' that is not supported for apache core client.");
         } else {
             throw new IllegalArgumentException("Unknown or unsupported HTTP client property " + key);
         }
