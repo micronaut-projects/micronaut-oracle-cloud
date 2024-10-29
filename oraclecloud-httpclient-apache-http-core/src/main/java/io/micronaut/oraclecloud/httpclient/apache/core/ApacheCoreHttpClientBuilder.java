@@ -21,19 +21,20 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.core.annotation.Internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 @Internal
 final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
     static final String SOCKET_PATH_PROPERTY = "io.micronaut.oraclecloud.httpclient.apache.socket-path";
 
-    static final Logger LOG = Logger.getLogger(ApacheCoreHttpClientBuilder.class.getName());
+    static final Logger LOG = LoggerFactory.getLogger(ApacheCoreHttpClientBuilder.class);
 
     final ApacheCoreHttpProvider provider;
     final Collection<PrioritizedInterceptor> requestInterceptors = new ArrayList<>();
@@ -71,10 +72,8 @@ final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
             || key == StandardClientProperties.CONNECT_TIMEOUT
             || key == StandardClientProperties.ASYNC_POOL_SIZE
         ) {
-            // Those properties are frequently set in Micronaut applications, so
-            // it would break them unless we ignore them here.
-            LOG.warning("Attempted to set standard client property '"
-                + key.getName() + "' that is not supported for apache core client.");
+            // Those properties are set in by unmanaged clients sometimes
+            LOG.debug("Attempted to set standard client property '{}' that is not supported for apache core client.", key.getName());
         } else {
             throw new IllegalArgumentException("Unknown or unsupported HTTP client property " + key);
         }
