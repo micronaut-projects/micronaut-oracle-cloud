@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnixDomainSocketAddress;
 import java.nio.channels.Channels;
 import java.nio.channels.SocketChannel;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
@@ -61,7 +63,7 @@ final class ApacheCoreHttpRequest implements HttpRequest {
     private final ApacheCoreHttpClient client;
 
     private final Method method;
-    private final StringBuilder uri;
+    private final StringBuilder path;
     private final StringBuilder query;
     private final Map<String, List<String>> headers;
     private final Map<String, Object> attributes;
@@ -70,9 +72,9 @@ final class ApacheCoreHttpRequest implements HttpRequest {
     ApacheCoreHttpRequest(ApacheCoreHttpClient client, Method method) {
         this.client = client;
         this.method = method;
-        this.uri = new StringBuilder(client.baseUri.toString());
+        this.path = new StringBuilder(client.baseUri.getPath());
         this.query = new StringBuilder();
-        this.headers = new HashMap<>();
+        this.headers = caseInsensitiveMap();
         this.attributes = new HashMap<>();
         this.entity = null;
     }
@@ -80,15 +82,27 @@ final class ApacheCoreHttpRequest implements HttpRequest {
     private ApacheCoreHttpRequest(ApacheCoreHttpRequest prototype) {
         this.client = prototype.client;
         this.method = prototype.method;
-        this.uri = prototype.uri;
-        this.query = prototype.query;
+        this.path = new StringBuilder(prototype.path);
+        this.query = new StringBuilder(prototype.query);
         // deep copy
         this.headers = prototype.headers.entrySet()
             .stream()
             .map(e -> Map.entry(e.getKey(), new ArrayList<>(e.getValue())))
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            .collect(Collectors.toMap(
+                Map.Entry::getKey,
+                Map.Entry::getValue,
+                (a, b) -> {
+                    a.addAll(b);
+                    return a;
+                },
+                ApacheCoreHttpRequest::caseInsensitiveMap
+            ));
         this.attributes = new HashMap<>(prototype.attributes);
         this.entity = prototype.entity;
+    }
+
+    private static <V> Map<String, V> caseInsensitiveMap() {
+        return new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     }
 
     @Override
@@ -123,19 +137,19 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest appendPathPart(String encodedPathPart) {
-        boolean hasSlashLeft = uri.charAt(uri.length() - 1) == '/';
+        boolean hasSlashLeft = !path.isEmpty() && path.charAt(path.length() - 1) == '/';
         boolean hasSlashRight = encodedPathPart.startsWith("/");
         if (hasSlashLeft) {
             if (hasSlashRight) {
-                uri.append(encodedPathPart, 1, encodedPathPart.length());
+                path.append(encodedPathPart, 1, encodedPathPart.length());
             } else {
-                uri.append(encodedPathPart);
+                path.append(encodedPathPart);
             }
         } else {
             if (hasSlashRight) {
-                uri.append(encodedPathPart);
+                path.append(encodedPathPart);
             } else {
-                uri.append('/').append(encodedPathPart);
+                path.append('/').append(encodedPathPart);
             }
         }
         return this;
@@ -150,24 +164,28 @@ final class ApacheCoreHttpRequest implements HttpRequest {
         return this;
     }
 
-    private String buildUri() {
-        int length = uri.length();
+    private String buildRelativeUri() {
+        int length = path.length();
         if (!query.isEmpty()) {
-            uri.append('?').append(query);
+            path.append('?').append(query);
         }
-        String built = uri.toString();
-        uri.setLength(length); // remove query again
+        String built = path.toString();
+        path.setLength(length); // remove query again
         return built;
     }
 
     @Override
     public URI uri() {
-        return URI.create(buildUri());
+        try {
+            return new URI(client.baseUri.getScheme(), client.baseUri.getAuthority(), path.toString(), query.isEmpty() ? null : query.toString(), null);
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     @Override
     public HttpRequest header(String name, String value) {
-        headers.computeIfAbsent(name, k -> new ArrayList<>()).add(value);
+        headers.computeIfAbsent(name, k -> new ArrayList<>(1)).add(value);
         return this;
     }
 
@@ -210,12 +228,17 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        if (client.baseUri.getHost() != null) {
+            headers.remove("host");
+            header("host", client.baseUri.getHost());
+        }
+
         for (RequestInterceptor requestInterceptor : client.requestInterceptors) {
             requestInterceptor.intercept(this);
         }
 
         ClassicHttpRequest request = DefaultClassicHttpRequestFactory.INSTANCE
-            .newHttpRequest(method.name(), buildUri());
+            .newHttpRequest(method.name(), buildRelativeUri());
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             for (String value : entry.getValue()) {
                 request.addHeader(entry.getKey(), value);
