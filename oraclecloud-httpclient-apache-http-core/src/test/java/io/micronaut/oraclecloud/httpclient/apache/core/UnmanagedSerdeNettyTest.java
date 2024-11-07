@@ -5,6 +5,6 @@ import com.oracle.bmc.http.client.HttpProvider;
 public class UnmanagedSerdeNettyTest extends ApacheNettyTest {
     @Override
     HttpProvider provider() {
-        return new ApacheCoreHttpProvider(new SerdeSerializer());
+        return new ApacheCoreHttpProvider(new SerdeSerializer(), null);
     }
 }
