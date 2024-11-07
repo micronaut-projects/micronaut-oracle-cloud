@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.serde.serializers;
 
 import com.oracle.bmc.http.internal.ResponseHelper;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.type.Argument;
@@ -33,6 +34,7 @@ import java.util.Map;
  */
 @Internal
 @Singleton
+@BootstrapContextCompatible
 final class ErrorCodeAndMessageDeserializer implements Deserializer<ResponseHelper.ErrorCodeAndMessage> {
 
     @Override

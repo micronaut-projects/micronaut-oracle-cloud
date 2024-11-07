@@ -50,7 +50,7 @@ class OracleCloudMeterRegistrySpec extends Specification {
 
     @AutoCleanup
     @Shared
-    private OracleCloudMeterRegistry cloudMeterRegistry = new OracleCloudMeterRegistry(Mock(HttpClientRegistry.class), oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
+    private OracleCloudMeterRegistry cloudMeterRegistry = new OracleCloudMeterRegistry(oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
         @Override
         MonitoringIngestionClient get() {
             monitoringClient

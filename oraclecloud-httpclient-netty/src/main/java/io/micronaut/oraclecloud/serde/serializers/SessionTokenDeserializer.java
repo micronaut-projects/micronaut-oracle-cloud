@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.serde.serializers;
 
 import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.SessionToken;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.io.IOException;
  */
 @Internal
 @Singleton
+@BootstrapContextCompatible
 final class SessionTokenDeserializer implements CustomizableDeserializer<SessionToken> {
 
     @Override

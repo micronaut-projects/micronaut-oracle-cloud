@@ -1,37 +1,37 @@
 [versions]
-micronaut = "4.6.2"
+micronaut = "4.7.2"
 micronaut-platform = "4.5.1"
 micronaut-docs = "2.0.0"
-fn = '1.0.190'
-graal-svm = "23.1.4"
+fn = '1.0.196'
+graal-svm = "23.1.5"
 javapoet = '1.13.0'
-jetty = '11.0.21'
+jetty = '11.0.24'
 kotlin = '1.9.25'
 logback-json-classic = '0.1.5'
-mockito = '5.12.0'
+mockito = '5.14.2'
 slf4j-jcl = '2.0.13'
 commons-lang3 = '3.16.0'
 shadow = '8.0.0'
-groovy = "4.0.22"
+groovy = "4.0.23"
 spock = "2.3-groovy-4.0"
-oci = "3.47.0"
+oci = "3.53.0"
+bcpkixjdk15to18 = "1.79"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
 managed-apache-http-core5 = "5.2.5"
-
-micronaut-gradle-plugin = "4.4.2"
+micronaut-gradle-plugin = "4.4.4"
 micronaut-groovy = "4.4.0"
 micronaut-kotlin = "4.4.0"
-micronaut-micrometer = "5.8.0"
-micronaut-reactor = "3.5.0"
-micronaut-rxjava2 = "2.5.0"
-micronaut-serde = "2.11.0"
-micronaut-servlet = "4.10.1"
-micronaut-sql = "5.8.1"
+micronaut-micrometer = "5.9.1"
+micronaut-reactor = "3.6.0"
+micronaut-rxjava2 = "2.6.0"
+micronaut-serde = "2.12.0"
+micronaut-servlet = "4.12.0"
+micronaut-sql = "5.8.2"
 micronaut-test = "4.5.0"
-micronaut-logging = "1.4.0"
-micronaut-validation = "4.7.0"
+micronaut-logging = "1.5.0"
+micronaut-validation = "4.8.0"
 micronaut-discovery-client = "4.4.0"
 
 [libraries]
@@ -80,7 +80,11 @@ oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
 oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
+<<<<<<< HEAD
 apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
+=======
+bcpkixjdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "bcpkixjdk15to18"}
+>>>>>>> 4.3.x
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
