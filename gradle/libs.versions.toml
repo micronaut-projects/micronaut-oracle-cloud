@@ -80,11 +80,8 @@ oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
 oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
-<<<<<<< HEAD
 apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
-=======
 bcpkixjdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "bcpkixjdk15to18"}
->>>>>>> 4.3.x
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
