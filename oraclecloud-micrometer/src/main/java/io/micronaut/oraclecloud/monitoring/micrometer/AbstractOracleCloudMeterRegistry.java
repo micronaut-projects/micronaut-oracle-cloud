@@ -47,13 +47,31 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     private final Provider<MonitoringIngestionClient> monitoringIngestionClientProvider;
     private MonitoringIngestionClient monitoringIngestionClient;
 
-    protected AbstractOracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
+    protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
         super(oracleCloudConfig, clock);
         this.monitoringIngestionClientProvider = monitoringIngestionClientProvider;
         this.oracleCloudConfig = oracleCloudConfig;
         config().namingConvention(new OracleCloudMetricsNamingConvention());
         config().commonTags("application", this.oracleCloudConfig.applicationName());
         start(threadFactory);
+    }
+
+    /**
+     *
+     * @param httpClientRegistry Http Client Registry
+     * @param oracleCloudConfig Oracle Cloud Config
+     * @param clock Clock
+     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
+     * @param threadFactory Thread Factory
+     * @deprecated Use {@link AbstractOracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider, ThreadFactory)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "4.3.0")
+    protected AbstractOracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
+                                               OracleCloudConfig oracleCloudConfig,
+                                               Clock clock,
+                                               Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
+                                               ThreadFactory threadFactory) {
+        this(oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
     }
 
     @Override

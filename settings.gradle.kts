@@ -25,7 +25,7 @@ buildscript {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "7.2.0"
+    id("io.micronaut.build.shared.settings") version "7.2.3"
     id("me.champeau.includegit") version "0.1.6"
     id("io.micronaut.build.internal.ocisdk")
 }
@@ -41,6 +41,7 @@ include("oraclecloud-common")
 include("oraclecloud-function")
 include("oraclecloud-function-http")
 include("oraclecloud-function-http-test")
+include("oraclecloud-httpclient-apache-http-core")
 include("oraclecloud-httpclient-netty")
 include("oraclecloud-serde-processor")
 include("oraclecloud-logging")
@@ -64,6 +65,7 @@ include("docs-examples:example-http-function-kotlin")
 include("test-suite-java")
 include("test-suite-graal-function")
 include("test-suite-graal-logging")
+include("test-suite-http-client")
 include("test-suite-http-server-tck-oraclecloud-function-http")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 

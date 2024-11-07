@@ -5,7 +5,7 @@ import io.micronaut.context.ApplicationContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-public class NettyManagedTest extends NettyTest {
+public class NettyManagedTest extends NettyUnmanagedTest {
     ApplicationContext ctx;
 
     @BeforeEach

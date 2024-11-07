@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.serde.filter;
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.serde.PropertyFilter;
 import io.micronaut.serde.Serializer;
@@ -36,6 +37,7 @@ import jakarta.inject.Singleton;
 @Internal
 @Singleton
 @Named(ExplicitlySetBmcModel.EXPLICITLY_SET_FILTER_NAME)
+@BootstrapContextCompatible
 final class ExplicitlySetPropertyFilter implements PropertyFilter {
 
     @Override

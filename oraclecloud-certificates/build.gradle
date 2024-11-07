@@ -7,7 +7,7 @@ dependencies {
     implementation mn.micronaut.http.server.netty
     implementation mn.micronaut.inject.java
     implementation mn.micronaut.retry
-
+    implementation(libs.bcpkixjdk15to18)
     compileOnly libs.netty.incubator.codec.http3
 
     testImplementation mnTest.micronaut.test.spock

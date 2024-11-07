@@ -52,6 +52,28 @@ import static java.util.stream.StreamSupport.stream;
  */
 public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
 
+    /**
+     *
+     * @param oracleCloudConfig Oracle Cloud Config
+     * @param clock Clock
+     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
+     */
+    public OracleCloudMeterRegistry(
+                                    OracleCloudConfig oracleCloudConfig,
+                                    Clock clock,
+                                    Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
+    }
+
+    /**
+     *
+     * @param httpClientRegistry Http Client Registry
+     * @param oracleCloudConfig Oracle Cloud Config
+     * @param clock Clock
+     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
+     * @deprecated Use {@link OracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider, ThreadFactory)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "4.3.0")
     public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
                                     OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
@@ -59,6 +81,16 @@ public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
         this(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
     }
 
+    /**
+     *
+     * @param httpClientRegistry Http Client Registry
+     * @param oracleCloudConfig Oracle Cloud Config
+     * @param clock Clock
+     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
+     * @param threadFactory Thread Factory
+     * @deprecated Use {@link OracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider, ThreadFactory)} instead.
+     */
+    @Deprecated(forRemoval = true, since = "4.3.0")
     public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
                                     OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
