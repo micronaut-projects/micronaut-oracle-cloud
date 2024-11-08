@@ -71,10 +71,10 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         OciSerdeConfiguration ociSerdeConfiguration,
         OciSerializationConfiguration ociSerializationConfiguration,
         @Nullable List<OciNettyClientFilter<?>> nettyClientFilters,
-        OciNettyConfiguration configuration
+        @Nullable OciNettyConfiguration configuration
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
-        this.configuration = configuration;
+        this.configuration = configuration == null ? new OciNettyConfiguration(false) : configuration;
         this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
