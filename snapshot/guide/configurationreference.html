@@ -46,7 +46,7 @@
         <div class="docs-content">
             <div class="project">
                 <h1>Configuration Reference</h1>
-                <p><strong>Version:</strong>4.3.0-SNAPSHOT</p>
+                <p><strong>Version:</strong>4.3.1-SNAPSHOT</p>
                 <p></p>
             </div>
 <div class="sect2">
@@ -879,9 +879,48 @@
 </div>
 <div class="sect2">
 <h3 id="_micronaut_oraclecloud_vault_config_properties">Micronaut Oraclecloud Vault Config Properties</h3>
+<a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVault" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVault">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVault.html">OracleCloudVaultConfiguration$OracleCloudVault</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].ocid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The OCID of the vault that contains secrets that will be retrieved, decoded and set as config vars.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].compartment-ocid</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The compartment OCID where the vault resides.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].includes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gets the includes array.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].excludes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gets the excludes array.</p></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.html">OracleCloudVaultConfiguration</a></caption>
+<caption class="title">Table 14. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.html">OracleCloudVaultConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -905,7 +944,7 @@
 <div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVaultClientDiscoveryConfiguration.html">OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration</a></caption>
+<caption class="title">Table 15. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVaultClientDiscoveryConfiguration.html">OracleCloudVaultConfiguration$OracleCloudVaultClientDiscoveryConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -934,34 +973,15 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/discovery/config/ConfigDiscoveryConfiguration.Format.html">ConfigDiscoveryConfiguration$Format</a></p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVault" href="#io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfiguration$OracleCloudVault">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/discovery/vault/OracleCloudVaultConfiguration.OracleCloudVault.html">OracleCloudVaultConfiguration$OracleCloudVault</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
 <tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].ocid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The OCID of the vault that contains secrets that will be retrieved, decoded and set as config vars.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.config.retry-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the number of attempts to retry when retrieving a secret from the Oracle Cloud Vault.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.vaults[*].compartment-ocid</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The compartment OCID where the vault resides.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.vault.config.retry-delay</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the delay between retries retrieving a secret from the Oracle Cloud Vault.</p></td>
 </tr>
 </tbody>
 </table>
