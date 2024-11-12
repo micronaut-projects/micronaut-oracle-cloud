@@ -5,6 +5,6 @@ import com.oracle.bmc.http.client.HttpProvider;
 public class UnmanagedJacksonNettyTest extends ApacheNettyTest {
     @Override
     HttpProvider provider() {
-        return new ApacheCoreHttpProvider(new JacksonSerializer());
+        return new ApacheCoreHttpProvider(new JacksonSerializer(), null);
     }
 }

@@ -20,6 +20,8 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.util.StringUtils;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -39,6 +41,7 @@ public final class ApacheCoreHttpProvider implements HttpProvider {
     public static final ClientProperty<Path> SOCKET_PATH = ClientProperty.create("socketPath");
 
     private final ApacheCoreSerializer serializer;
+    private final @Nullable ApacheCoreClientConfiguration clientConfiguration;
 
     public ApacheCoreHttpProvider() {
         // SPI constructor
@@ -54,16 +57,25 @@ public final class ApacheCoreHttpProvider implements HttpProvider {
             }
         }
         serializer = s;
+        clientConfiguration = null;
     }
 
     @Inject
-    ApacheCoreHttpProvider(ApacheCoreSerializer serializer) {
+    ApacheCoreHttpProvider(
+            ApacheCoreSerializer serializer,
+            @Nullable ApacheCoreClientConfiguration clientConfiguration
+    ) {
         this.serializer = serializer;
+        this.clientConfiguration = clientConfiguration;
     }
 
     @Override
     public HttpClientBuilder newBuilder() {
-        return new ApacheCoreHttpClientBuilder(this);
+        ApacheCoreHttpClientBuilder builder = new ApacheCoreHttpClientBuilder(this);
+        if (clientConfiguration != null && StringUtils.isNotEmpty(clientConfiguration.proxyDomainSocket())) {
+            builder.property(SOCKET_PATH, Path.of(clientConfiguration.proxyDomainSocket()));
+        }
+        return builder;
     }
 
     @SuppressWarnings("ClassEscapesDefinedScope")

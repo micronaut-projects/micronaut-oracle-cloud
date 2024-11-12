@@ -132,7 +132,8 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public Object body() {
-        throw new UnsupportedOperationException("Request body access is not supported. Are you trying to use the request signer?");
+        // Retrieving body is not supported for this client, but AuthNFilter will request it even when RequestSigner does not need it.
+        return null;
     }
 
     @Override
