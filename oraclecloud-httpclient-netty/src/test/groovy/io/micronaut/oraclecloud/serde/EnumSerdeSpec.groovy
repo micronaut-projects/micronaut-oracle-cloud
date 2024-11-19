@@ -2,37 +2,24 @@ package io.micronaut.oraclecloud.serde
 
 
 import io.micronaut.oraclecloud.serde.model.TestStateEnum
-import io.micronaut.runtime.server.EmbeddedServer
 
 class EnumSerdeSpec extends SerdeSpecBase {
 
     void "test enum serialization"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         expect:
-        echoTest(embeddedServer, TestStateEnum.Active) == '"active"'
-        echoTest(embeddedServer, TestStateEnum.Inactive) == '"inactive"'
-        echoTest(embeddedServer, TestStateEnum.Deleted) == '"deleted"'
-        echoTest(embeddedServer, TestStateEnum.UnknownEnumValue) == 'null'
-
-        cleanup:
-        embeddedServer.close()
+        serialize(TestStateEnum.Active) == '"active"'
+        serialize(TestStateEnum.Inactive) == '"inactive"'
+        serialize(TestStateEnum.Deleted) == '"deleted"'
+        serialize(TestStateEnum.UnknownEnumValue) == 'null'
     }
 
-    void "test enum deserializatioin"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
+    void "test enum deserialization"() {
         expect:
-        echoTest(embeddedServer, '"active"', TestStateEnum) == TestStateEnum.Active
-        echoTest(embeddedServer, '"inactive"', TestStateEnum) == TestStateEnum.Inactive
-        echoTest(embeddedServer, '"deleted"', TestStateEnum) == TestStateEnum.Deleted
-        echoTest(embeddedServer, 'null', TestStateEnum) == TestStateEnum.UnknownEnumValue
-        echoTest(embeddedServer, '"unknown value"', TestStateEnum) == TestStateEnum.UnknownEnumValue
-
-        cleanup:
-        embeddedServer.close()
+        deserialize('"active"', TestStateEnum) == TestStateEnum.Active
+        deserialize('"inactive"', TestStateEnum) == TestStateEnum.Inactive
+        deserialize('"deleted"', TestStateEnum) == TestStateEnum.Deleted
+        deserialize('null', TestStateEnum) == TestStateEnum.UnknownEnumValue
+        deserialize('"unknown value"', TestStateEnum) == TestStateEnum.UnknownEnumValue
     }
 
 }
