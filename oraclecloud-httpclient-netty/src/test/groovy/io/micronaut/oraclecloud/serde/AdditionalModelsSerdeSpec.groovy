@@ -4,25 +4,18 @@ import com.oracle.bmc.auth.internal.GetResourcePrincipalSessionTokenRequest
 import com.oracle.bmc.auth.internal.JWK
 import com.oracle.bmc.auth.internal.X509FederationClient
 import com.oracle.bmc.model.RegionSchema
-import io.micronaut.runtime.server.EmbeddedServer
 
 class AdditionalModelsSerdeSpec extends SerdeSpecBase {
 
     void "test additional models are serdeable"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         expect:
-        json == echoTest(embeddedServer, value)
+        json == serialize(value)
 
         when:
-        echoTest(embeddedServer, json, value.getClass())
+        deserialize(json, value.getClass())
 
         then:
         noExceptionThrown()
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         value | json

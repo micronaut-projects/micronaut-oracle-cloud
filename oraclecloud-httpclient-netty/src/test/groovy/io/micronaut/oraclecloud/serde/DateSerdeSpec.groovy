@@ -1,7 +1,6 @@
 package io.micronaut.oraclecloud.serde
 
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
-import io.micronaut.runtime.server.EmbeddedServer
 
 import java.time.Instant
 import java.time.LocalDateTime
@@ -12,9 +11,6 @@ import java.time.ZonedDateTime
 class DateSerdeSpec extends SerdeSpecBase {
 
     void "test Date serialization"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
         def dateTime = ZonedDateTime.of(
                 LocalDateTime.of(2000, Month.JANUARY, 2, 3, 4, 5, (int) 678e6),
@@ -22,20 +18,15 @@ class DateSerdeSpec extends SerdeSpecBase {
         )
         def date = new Date(dateTime.toInstant().toEpochMilli())
 
-        var value = echoTest(embeddedServer, date).replaceAll('"', '')
+        var value = serialize(date).replaceAll('"', '')
         var requiredValue = "2000-01-02T08:04:05.678Z"
 
         then:
         requiredValue == value
-
-        cleanup:
-        embeddedServer.close()
     }
 
     void "test Date deserialization '#dateString'"() {
         given:
-        EmbeddedServer embeddedServer = initContext()
-
         Calendar calendar = Calendar.getInstance(
                 TimeZone.getTimeZone(ZoneId.of('-05:00')),
                 Locale.CANADA
@@ -45,35 +36,26 @@ class DateSerdeSpec extends SerdeSpecBase {
         Date requiredDate = calendar.getTime()
 
         when:
-        var dateModel = echoTest(embeddedServer, dateString, DateModel)
+        var dateModel = deserialize(dateString, DateModel)
 
         then:
         requiredDate == dateModel.date
 
-        cleanup:
-        embeddedServer.close()
-
         where:
-        dateString                                       | _
-        '{"date":"2000-01-02T03:04:56.789-05:00"}'        | _
-        '{"date":"2000-01-02T08:04:56.789Z"}'            | _
-        '{"date":"2000-01-02T09:04:56.789+01:00"}'        | _
+        dateString                                 | _
+        '{"date":"2000-01-02T03:04:56.789-05:00"}' | _
+        '{"date":"2000-01-02T08:04:56.789Z"}'      | _
+        '{"date":"2000-01-02T09:04:56.789+01:00"}' | _
     }
 
     void "test Date deserialization '#dateText'"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
         var body = "{\"date\":\"${dateText}\"}"
-        var dateModel = echoTest(embeddedServer, body.toString(), DateModel)
+        var dateModel = deserialize(body.toString(), DateModel)
         var date = Date.from(Instant.parse(dateText))
 
         then:
         date == dateModel.date
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         dateText | _
