@@ -1,7 +1,12 @@
-package io.micronaut.oraclecloud.factory;
+package io.micronaut.oraclecloud.factory
 
+import com.oracle.bmc.Region
+import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageAsyncClient
 import com.oracle.bmc.objectstorage.ObjectStorageClient
+import io.micronaut.context.annotation.BootstrapContextCompatible
+import io.micronaut.context.annotation.Primary
+import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
 import io.micronaut.core.annotation.NonNull
@@ -64,6 +69,18 @@ class ObjectStorageFactorySpec extends Specification {
             var builder = event.bean
             builder.endpoint(ASYNC_ENDPOINT)
             return builder
+        }
+    }
+
+    @Singleton
+    @BootstrapContextCompatible
+    @Primary
+    @Replaces(RegionProvider.class)
+    static class RegionProviderReplacement implements RegionProvider {
+
+        @Override
+        Region getRegion() {
+            return null
         }
     }
 
