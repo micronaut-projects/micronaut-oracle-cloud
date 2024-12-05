@@ -95,6 +95,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
     private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider)";
     private static final String RETURN_BUILDER_STATEMENT_WITHOUT_REGION = "return clientBuilder.build(authenticationDetailsProvider)";
+    private static final List<String> FACTORIES_THAT_DOESNT_SUPPORT_REGION = List.of("KmsCrypto", "KmsManagement", "IdentityDomains", "Stream");
+
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -391,10 +393,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
         final MethodSpec.Builder buildMethod = MethodSpec.methodBuilder("build");
 
-        List<String> factoriesToIgnore = List.of("KmsCrypto", "KmsManagement", "IdentityDomains", "Stream");
-
-        final boolean isRegionCompatible = factoriesToIgnore.stream().noneMatch(factoryName::startsWith);
-
         buildMethod.returns(ClassName.get(packageName, simpleName))
                 .addParameter(builderType, "clientBuilder")
                 .addParameter(authProviderType, "authenticationDetailsProvider")
@@ -403,7 +401,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addAnnotation(requiresSpec.build())
                 .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
-                .addStatement(isRegionCompatible ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION);
+                .addStatement(FACTORIES_THAT_DOESNT_SUPPORT_REGION.stream().noneMatch(factoryName::startsWith) ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION);
         if (isBootstrapCompatible) {
             buildMethod.addAnnotation(BootstrapContextCompatible.class);
         }
