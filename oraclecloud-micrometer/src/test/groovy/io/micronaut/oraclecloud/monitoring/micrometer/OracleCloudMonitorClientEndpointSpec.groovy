@@ -14,7 +14,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import spock.lang.Specification
 
-@MicronautTest
+@MicronautTest(startApplication = false)
 @Property(name="micronaut.metrics.export.oraclecloud.enabled", value = "false")
 @Property(name="spec.name", value = "OracleCloudMonitorClientEndpointSpec")
 class OracleCloudMonitorClientEndpointSpec extends Specification {
