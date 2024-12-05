@@ -15,6 +15,9 @@ import org.junit.jupiter.api.Test;
 @MicronautTest(startApplication = false)
 @Property(name = "spec.name", value = "VaultRegionProviderTest")
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
+@Property(name = "oci.vault.config.enabled", value = "false")
+@Property(name = "micronaut.config-client.enabled", value = "false")
+@Property(name = "datasources.enabled", value = "false")
 @Requires(bean = AbstractAuthenticationDetailsProvider.class)
 class VaultRegionProviderTest {
 
