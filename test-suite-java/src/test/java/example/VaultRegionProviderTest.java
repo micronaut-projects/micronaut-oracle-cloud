@@ -1,30 +1,28 @@
 package example;
 
 import com.oracle.bmc.Region;
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.vault.Vaults;
 import com.oracle.bmc.vault.VaultsClient;
-import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.env.Environment;
+import io.micronaut.context.annotation.Property;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
 
+@MicronautTest(startApplication = false)
+@Property(name = "spec.name", value = "VaultRegionProviderTest")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
+@Requires(bean = AbstractAuthenticationDetailsProvider.class)
 class VaultRegionProviderTest {
+
+    @Inject
+    Vaults vaults;
 
     @Test
     void testVaultLoadSecrets() {
-
-        ApplicationContext context = ApplicationContext.run(
-                Map.of(
-                    "spec.name", "VaultRegionProviderTest",
-                    "micronaut.config-client.enabled", false,
-                    "oci.vault.config.enabled", false,
-                    "micronaut.metrics.export.oraclecloud.enabled",  false
-                ), Environment.ORACLE_CLOUD);
-
-        Vaults vaults = context.getBean(Vaults.class);
-
         Assertions.assertEquals(Region.EU_JOVANOVAC_1.getEndpoint(VaultsClient.SERVICE).get(), vaults.getEndpoint());
     }
 
