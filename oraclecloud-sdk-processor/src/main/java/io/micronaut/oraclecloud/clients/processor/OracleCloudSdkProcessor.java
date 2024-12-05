@@ -93,7 +93,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
 
-    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider)";
+    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return regionProvider.getRegion() != null ? clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider) : clientBuilder.build(authenticationDetailsProvider)";
     private static final String RETURN_BUILDER_STATEMENT_WITHOUT_REGION = "return clientBuilder.build(authenticationDetailsProvider)";
     private static final List<String> FACTORIES_THAT_DOESNT_SUPPORT_REGION = List.of("KmsCrypto", "KmsManagement", "IdentityDomains", "Stream");
 
