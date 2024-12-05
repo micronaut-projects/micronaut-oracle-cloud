@@ -79,7 +79,7 @@ loadScripts(document, 'script');</script>
 <div class="type-signature"><span class="annotations">@Singleton
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">MonitoringIngestionClient</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Oracle SDK provides <code>MonitoringClient</code> that is constructed with default <code>https://telemetry.&lt;region&gt;.oraclecloud.com</code> endpoint.
+<div class="block">Oracle SDK provides <code>MonitoringClient</code> that is constructed with default endpoint based on region provided by region provider.
  For sending metrics to the Oracle Cloud Monitoring service the <code>MonitoringClient.postMetricData(PostMetricDataRequest)</code> is used
  but the endpoint must be configured to <code>https://telemetry-ingestion.&lt;region&gt;.oraclecloud.com</code>. This bean encapsulates creation
  and configuration of the <code>MonitoringClient</code> to use <code>MonitoringClient.postMetricData(PostMetricDataRequest)</code>
