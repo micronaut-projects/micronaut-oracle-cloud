@@ -92,6 +92,9 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
      * Processing environment option used to specify the client classes to process.
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
+
+    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider)";
+    private static final String RETURN_BUILDER_STATEMENT_WITHOUT_REGION = "return clientBuilder.build(authenticationDetailsProvider)";
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -353,11 +356,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final String factoryName = simpleName + "Factory";
         final String factoryPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE);
         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
+
         final MethodSpec.Builder constructor = buildConstructor(simpleName, builder);
         ClassName builderType = getBuilderClassNameForClient(packageName, simpleName);
         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
         builder.addAnnotation(Factory.class);
         final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
+        final ClassName regionProvider = ClassName.get("com.oracle.bmc.auth", "RegionProvider");
         final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class)
                 .addMember("classes", simpleName + ".class")
                 .addMember("beans", authProviderType.canonicalName() + ".class");
@@ -386,14 +391,19 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
         final MethodSpec.Builder buildMethod = MethodSpec.methodBuilder("build");
 
+        List<String> factoriesToIgnore = List.of("KmsCrypto", "KmsManagement", "IdentityDomains", "Stream");
+
+        final boolean isRegionCompatible = factoriesToIgnore.stream().noneMatch(factoryName::startsWith);
+
         buildMethod.returns(ClassName.get(packageName, simpleName))
                 .addParameter(builderType, "clientBuilder")
                 .addParameter(authProviderType, "authenticationDetailsProvider")
-                .addAnnotation(Singleton.class)
+                .addParameter(regionProvider, "regionProvider")
+            .addAnnotation(Singleton.class)
                 .addAnnotation(requiresSpec.build())
                 .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
-                .addCode("return clientBuilder.build(authenticationDetailsProvider);");
+                .addStatement(isRegionCompatible ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION);
         if (isBootstrapCompatible) {
             buildMethod.addAnnotation(BootstrapContextCompatible.class);
         }
