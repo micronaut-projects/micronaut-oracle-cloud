@@ -105,7 +105,12 @@ public class MonitoringIngestionClient {
         if (delegate == null) {
             synchronized (MonitoringIngestionClient.class) {
                 if (delegate == null) {
-                    String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringClient.SERVICE).orElseThrow();
+                    if (regionProvider.getRegion() == null) {
+                        throw new IllegalArgumentException("Region is required for the Monitoring Ingestion client");
+                    }
+
+                    String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringClient.SERVICE)
+                        .orElse(String.format("https://telemetry-ingestion.%s.oraclecloud.com", regionProvider.getRegion().getRegionId()));
 
                     MonitoringClient.Builder builder = MonitoringClient.builder().
                             endpoint(ingestionEndpoint);
