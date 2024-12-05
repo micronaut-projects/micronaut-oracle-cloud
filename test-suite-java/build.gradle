@@ -20,6 +20,5 @@ dependencies {
     implementation mnMicrometer.micronaut.micrometer.core
     implementation mnMicrometer.micrometer.core
     implementation project(':micronaut-oraclecloud-micrometer')
-    testImplementation(projects.micronautOraclecloudBmcVault)
     runtimeOnly mnLogging.logback.classic
 }
