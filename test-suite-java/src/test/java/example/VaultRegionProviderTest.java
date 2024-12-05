@@ -18,7 +18,7 @@ class VaultRegionProviderTest {
         ApplicationContext context = ApplicationContext.run(
                 Map.of(
                     "spec.name", "VaultRegionProviderTest",
-                    "micronaut.config-client.enabled", true,
+                    "micronaut.config-client.enabled", false,
                     "oci.vault.config.enabled", false,
                     "micronaut.metrics.export.oraclecloud.enabled",  false
                 ), Environment.ORACLE_CLOUD);
