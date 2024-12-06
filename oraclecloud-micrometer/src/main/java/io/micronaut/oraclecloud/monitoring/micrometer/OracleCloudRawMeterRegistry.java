@@ -33,7 +33,6 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDatapointProducer;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudCounter;
@@ -47,7 +46,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -62,18 +60,10 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
 
     private final Logger logger = LoggerFactory.getLogger(OracleCloudRawMeterRegistry.class);
 
-    public OracleCloudRawMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig,
-                                       Clock clock,
-                                       Provider<MonitoringIngestionClient> monitoringIngestionClientProvider
-                                       ) {
-        this(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
-    }
-
-    public OracleCloudRawMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
+    public OracleCloudRawMeterRegistry(
                                        OracleCloudConfig oracleCloudConfig,
-                                       Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
-                                       ThreadFactory threadFactory) {
-        super(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
+                                       Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
 
     }
 

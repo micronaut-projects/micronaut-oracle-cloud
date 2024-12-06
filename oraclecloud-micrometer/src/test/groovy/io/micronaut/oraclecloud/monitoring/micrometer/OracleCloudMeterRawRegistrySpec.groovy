@@ -1,9 +1,7 @@
 package io.micronaut.oraclecloud.monitoring.micrometer
 
-import com.oracle.bmc.monitoring.MonitoringClient
 import com.oracle.bmc.monitoring.model.Datapoint
 import io.micrometer.core.instrument.*
-import io.micronaut.http.client.HttpClientRegistry
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient
 import jakarta.inject.Provider
 import spock.lang.AutoCleanup
@@ -47,7 +45,7 @@ class OracleCloudMeterRawRegistrySpec extends Specification {
 
     @AutoCleanup
     @Shared
-    private OracleCloudRawMeterRegistry cloudMeterRegistry = new OracleCloudRawMeterRegistry(Mock(HttpClientRegistry.class), oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
+    private OracleCloudRawMeterRegistry cloudMeterRegistry = new OracleCloudRawMeterRegistry(oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
         @Override
         MonitoringIngestionClient get() {
             monitoringClient

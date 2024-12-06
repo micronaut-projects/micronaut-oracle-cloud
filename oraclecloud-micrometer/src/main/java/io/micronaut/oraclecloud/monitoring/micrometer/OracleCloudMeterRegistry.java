@@ -30,7 +30,6 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import jakarta.inject.Provider;
 
@@ -38,7 +37,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -63,40 +61,6 @@ public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
                                     Clock clock,
                                     Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
         super(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
-    }
-
-    /**
-     *
-     * @param httpClientRegistry Http Client Registry
-     * @param oracleCloudConfig Oracle Cloud Config
-     * @param clock Clock
-     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
-     * @deprecated Use {@link OracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider, ThreadFactory)} instead.
-     */
-    @Deprecated(forRemoval = true, since = "4.3.0")
-    public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
-                                    OracleCloudConfig oracleCloudConfig,
-                                    Clock clock,
-                                    Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        this(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
-    }
-
-    /**
-     *
-     * @param httpClientRegistry Http Client Registry
-     * @param oracleCloudConfig Oracle Cloud Config
-     * @param clock Clock
-     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
-     * @param threadFactory Thread Factory
-     * @deprecated Use {@link OracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider, ThreadFactory)} instead.
-     */
-    @Deprecated(forRemoval = true, since = "4.3.0")
-    public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
-                                    OracleCloudConfig oracleCloudConfig,
-                                    Clock clock,
-                                    Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
-                                    ThreadFactory threadFactory) {
-        super(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
     }
 
     /**
