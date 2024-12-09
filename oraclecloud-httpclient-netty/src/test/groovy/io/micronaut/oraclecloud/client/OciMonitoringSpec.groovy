@@ -92,8 +92,7 @@ class OciMonitoringSpec extends Specification {
     }
 
     MonitoringClient createTelemetryClient() {
-        String ingestionEndpoint = String.format("https://telemetry-ingestion.%s.oraclecloud.com",
-                regionProvider.getRegion().getRegionId());
+        String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringClient.SERVICE).orElseThrow()
         return MonitoringClient.builder().endpoint(ingestionEndpoint).build(authenticationDetailsProvider)
     }
 
