@@ -34,6 +34,7 @@ import java.util.Objects;
  * @param <B> The builder type
  * @param <T> The client type
  */
+@Internal
 public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>, T> {
     private final B builder;
 
