@@ -28,7 +28,7 @@ class MonitorRegionProviderSpec extends Specification {
         String endpoint = monitoring.getEndpoint()
 
         then:
-        Region.EU_JOVANOVAC_1.getEndpoint(MonitoringClient.SERVICE).get() ==endpoint
+        Region.EU_JOVANOVAC_1.getEndpoint(MonitoringClient.SERVICE).get() == endpoint
     }
 
 }
