@@ -21,7 +21,7 @@ import spock.lang.Specification
 class MonitorRegionProviderSpec extends Specification {
 
     @Inject
-    Monitoring monitoring;
+    Monitoring monitoring
 
     void 'test the' () {
         when:
