@@ -1,6 +1,5 @@
 package io.micronaut.oraclecloud.monitoring.micrometer
 
-import com.oracle.bmc.monitoring.MonitoringClient
 import com.oracle.bmc.monitoring.model.Datapoint
 import io.micrometer.core.instrument.*
 import io.micronaut.http.client.HttpClientRegistry

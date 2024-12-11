@@ -30,7 +30,7 @@ import jakarta.inject.Singleton;
 import java.util.Objects;
 
 /**
- * Oracle SDK provides {@link MonitoringClient} that is constructed with default {@code https://telemetry.<region>.oraclecloud.com} endpoint.
+ * Oracle SDK provides {@link MonitoringClient} that is constructed with default endpoint based on region provided by region provider.
  * For sending metrics to the Oracle Cloud Monitoring service the {@link MonitoringClient#postMetricData(PostMetricDataRequest)} is used
  * but the endpoint must be configured to {@code https://telemetry-ingestion.<region>.oraclecloud.com}. This bean encapsulates creation
  * and configuration of the {@link MonitoringClient} to use {@link MonitoringClient#postMetricData(PostMetricDataRequest)}
@@ -105,8 +105,13 @@ public class MonitoringIngestionClient {
         if (delegate == null) {
             synchronized (MonitoringIngestionClient.class) {
                 if (delegate == null) {
-                    String ingestionEndpoint = String.format("https://telemetry-ingestion.%s.oraclecloud.com",
-                            regionProvider.getRegion().getRegionId());
+                    if (regionProvider.getRegion() == null) {
+                        throw new IllegalArgumentException("Region is required for the Monitoring Ingestion client");
+                    }
+
+                    String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringClient.SERVICE)
+                        .orElse(String.format("https://telemetry-ingestion.%s.oraclecloud.com", regionProvider.getRegion().getRegionId()));
+
                     MonitoringClient.Builder builder = MonitoringClient.builder().
                             endpoint(ingestionEndpoint);
 
