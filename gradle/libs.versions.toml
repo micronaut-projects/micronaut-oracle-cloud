@@ -1,5 +1,5 @@
 [versions]
-micronaut = "4.7.4"
+micronaut = "4.7.7"
 micronaut-platform = "4.5.1"
 micronaut-docs = "2.0.0"
 fn = '1.0.196'
@@ -19,16 +19,16 @@ bcpkixjdk15to18 = "1.79"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
-managed-apache-http-core5 = "5.2.5"
+managed-apache-http-core5 = "5.3.1"
 micronaut-gradle-plugin = "4.4.4"
 micronaut-groovy = "4.5.0"
-micronaut-kotlin = "4.4.0"
+micronaut-kotlin = "4.5.0"
 micronaut-micrometer = "5.9.2"
 micronaut-reactor = "3.6.0"
 micronaut-rxjava2 = "2.6.0"
-micronaut-serde = "2.12.0"
+micronaut-serde = "2.13.0"
 micronaut-servlet = "4.12.0"
-micronaut-sql = "5.8.2"
+micronaut-sql = "5.8.3"
 micronaut-test = "4.5.0"
 micronaut-logging = "1.5.0"
 micronaut-validation = "4.8.0"

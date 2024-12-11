@@ -6,7 +6,9 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.exceptions.HttpStatusException
+import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
 import spock.lang.Timeout
 
 import java.util.concurrent.TimeUnit
@@ -14,11 +16,11 @@ import java.util.concurrent.TimeUnit
 @MicronautTest
 class RegionsClientSpec extends SerdeSpecBase {
 
+    @Inject
+    EmbeddedServer server
+
     @Timeout(value = 10, unit = TimeUnit.SECONDS)
     void "test region from imds deserialization"() {
-        given:
-        var server = initContext()
-
         when:
         // fail once, it should retry
         Region region = Region.getRegionFromImds(server.getURL().toString() + "/opc/v2/");
