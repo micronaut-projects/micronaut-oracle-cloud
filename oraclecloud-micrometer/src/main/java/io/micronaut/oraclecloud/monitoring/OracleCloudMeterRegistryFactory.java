@@ -22,7 +22,6 @@ import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
@@ -123,7 +122,7 @@ public class OracleCloudMeterRegistryFactory {
     @Bean(preDestroy = "close")
     @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
-    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        return new OracleCloudRawMeterRegistry(httpClientRegistry, oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        return new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
     }
 }
