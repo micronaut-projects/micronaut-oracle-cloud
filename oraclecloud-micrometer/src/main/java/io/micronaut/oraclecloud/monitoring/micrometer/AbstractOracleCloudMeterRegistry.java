@@ -25,7 +25,6 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.lang.Nullable;
 import io.micrometer.common.util.internal.logging.WarnThenDebugLogger;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import jakarta.inject.Provider;
 import org.slf4j.Logger;
@@ -54,24 +53,6 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
         config().namingConvention(new OracleCloudMetricsNamingConvention());
         config().commonTags("application", this.oracleCloudConfig.applicationName());
         start(threadFactory);
-    }
-
-    /**
-     *
-     * @param httpClientRegistry Http Client Registry
-     * @param oracleCloudConfig Oracle Cloud Config
-     * @param clock Clock
-     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
-     * @param threadFactory Thread Factory
-     * @deprecated Use {@link AbstractOracleCloudMeterRegistry(OracleCloudConfig, Clock, Provider, ThreadFactory)} instead.
-     */
-    @Deprecated(forRemoval = true, since = "4.3.0")
-    protected AbstractOracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
-                                               OracleCloudConfig oracleCloudConfig,
-                                               Clock clock,
-                                               Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
-                                               ThreadFactory threadFactory) {
-        this(oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
     }
 
     @Override
