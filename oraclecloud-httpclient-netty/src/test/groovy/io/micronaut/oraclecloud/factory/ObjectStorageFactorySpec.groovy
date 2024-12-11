@@ -79,7 +79,6 @@ class ObjectStorageFactorySpec extends Specification {
     @Requires(property = "spec.name", value = "ObjectStorageFactorySpec")
     @Singleton
     @BootstrapContextCompatible
-    @Primary
     @Replaces(RegionProvider.class)
     static class RegionProviderReplacement implements RegionProvider {
 
