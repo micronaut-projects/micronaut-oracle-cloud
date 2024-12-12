@@ -16,12 +16,14 @@
 package io.micronaut.oraclecloud.oke.kubernetes.client;
 
 import com.oracle.bmc.containerengine.model.CreateClusterKubeconfigContentDetails.Endpoint;
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.core.util.StringUtils;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * Configuration for the OKE kubernetes client.
@@ -41,10 +43,11 @@ import io.micronaut.core.util.StringUtils;
 @Requires(property = OkeKubernetesClientConfig.ENABLED, value = StringUtils.TRUE, defaultValue = StringUtils.TRUE)
 @Requires(property = OkeKubernetesClientConfig.CLUSTER_ID)
 @ConfigurationProperties(OkeKubernetesClientConfig.PREFIX)
+@BootstrapContextCompatible
 public record OkeKubernetesClientConfig(
         @Bindable(defaultValue = StringUtils.TRUE)
         boolean enabled,
-        @NonNull
+        @NonNull @NotBlank
         String clusterId,
         @Nullable @Bindable(defaultValue = "PublicEndpoint")
         Endpoint endpointType

@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 @BootstrapContextCompatible
 @Replaces(KubeConfigLoader.class)
 @Requires(beans = OkeKubernetesClientConfig.class)
-public class OkeKubeConfigLoader extends AbstractKubeConfigLoader {
+final class OkeKubeConfigLoader extends AbstractKubeConfigLoader {
 
     private static final String TOKEN_VERSION = "2.0.0";
 

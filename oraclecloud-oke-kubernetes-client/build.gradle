@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
     api mnKubernetes.micronaut.kubernetes.client.openapi.common
+    implementation mnValidation.validation
     implementation projects.micronautOraclecloudBmcContainerengine
 
     testImplementation mnKubernetes.micronaut.kubernetes.client.openapi
