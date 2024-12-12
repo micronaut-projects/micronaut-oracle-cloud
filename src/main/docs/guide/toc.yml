@@ -15,5 +15,6 @@ logging: OCI Logging service
 vault: Secure Distributed Configuration with Oracle Cloud Vault
 cloudStorage: Oracle Cloud Storage Support
 certificates: OCI Certificate SSL Support
+okeKubernetesClient: OCI OKE Kubernetes Client
 oracleCloudGuides: Guides
 repository: Repository
