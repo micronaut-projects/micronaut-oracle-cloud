@@ -14,6 +14,7 @@ import spock.lang.Specification
  * Set {@code oci.oke.kubernetes.client.cluster-id} property and make sure you have a valid OCI configuration to run it.
  */
 @Requires(bean = AuthenticationDetailsProvider.class)
+@Requires(property = "oci.oke.kubernetes.client.cluster-id")
 @Property(name = "oci.oke.kubernetes.client.endpoint-type", value = 'PublicEndpoint')
 @MicronautTest
 class ProductionKubernetesSpec extends Specification {

@@ -59,6 +59,9 @@ class MockKubernetesSpec extends Specification {
         then:
         list.getItems().size() == 1
         list.getItems()[0].metadata.name == 'my-test-name-1'
+
+        cleanup:
+        clientContext.close()
     }
 
     @Controller
