@@ -76,11 +76,11 @@ public class OracleCloudCoreFactory {
 
     public static final String OKE_WORKLOAD_IDENTITY_PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".config.oke-workload-identity";
 
-    private OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
-
     @Inject
     @Nullable
     SessionKeySupplier sessionKeySupplier;
+
+    private OracleCloudConfigFileConfigurationProperties ociConfigFileConfiguration;
 
     /**
      * @param profile The configured profile

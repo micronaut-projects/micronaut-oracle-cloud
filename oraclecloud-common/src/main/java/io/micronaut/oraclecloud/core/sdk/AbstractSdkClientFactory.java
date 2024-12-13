@@ -60,7 +60,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
             builder.clientConfigurator(clientConfigurator);
         }
         if (regionProvider != null && regionProvider.getRegion() != null
-                && builder instanceof RegionalClientBuilder<?,?> regional
+            && builder instanceof RegionalClientBuilder<?, ?> regional
         ) {
             regional.region(regionProvider.getRegion());
         }
