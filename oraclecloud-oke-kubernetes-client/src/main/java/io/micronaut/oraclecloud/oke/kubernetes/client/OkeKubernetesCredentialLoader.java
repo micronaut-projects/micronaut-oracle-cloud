@@ -16,12 +16,14 @@
 package io.micronaut.oraclecloud.oke.kubernetes.client;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+import com.oracle.bmc.containerengine.ContainerEngine;
 import com.oracle.bmc.http.signing.RequestSigner;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
 import com.oracle.bmc.http.signing.SigningStrategy;
 import com.oracle.bmc.http.signing.internal.DefaultRequestSignerFactory;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.uri.UriBuilder;
@@ -60,7 +62,8 @@ import org.slf4j.LoggerFactory;
     AbstractAuthenticationDetailsProvider.class,
     OkeKubernetesClientConfig.class
 })
-final class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
+@Internal
+public class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
 
     private static final String EXPECTED_COMMAND = "oci";
     private static final String[] EXPECTED_ARGS = {"ce", "cluster", "generate-token"};
@@ -71,7 +74,7 @@ final class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
     private static final String AUTHORIZATION_HEADER = "authorization";
     private static final String DATE_HEADER = "date";
 
-    private static final String TOKEN_URL_FORMAT = "https://containerengine.%s.oraclecloud.com/cluster_request/%s";
+    private static final String TOKEN_URL_FORMAT = "%s/cluster_request/%s";
     private static final String EXEC_CREDENTIAL_API_VERSION = "client.authentication.k8s.io/v1beta1";
     private static final String EXEC_CREDENTIAL_KIND = "ExecCredential";
 
@@ -84,6 +87,7 @@ final class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
 
     private static final Duration BUFFER = Duration.ofSeconds(60);
 
+    private final String containerEngineEndpoint;
     private final RequestSigner requestSigner;
     private final KubeConfig kubeConfig;
 
@@ -92,7 +96,10 @@ final class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
     OkeKubernetesCredentialLoader(
             @Nullable RequestSignerFactory requestSignerFactory,
             @NonNull AbstractAuthenticationDetailsProvider authProvider,
-            KubeConfigLoader kubeConfigLoader) {
+            KubeConfigLoader kubeConfigLoader,
+            @NonNull ContainerEngine containerEngine
+    ) {
+        containerEngineEndpoint = containerEngine.getEndpoint();
         if (requestSignerFactory == null) {
             requestSignerFactory = new DefaultRequestSignerFactory(SigningStrategy.STANDARD);
         }
@@ -170,9 +177,6 @@ final class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
         if (clusterId == null) {
             throw new IllegalStateException("Cluster ID is required, but was not found in the kubeconfig exec command");
         }
-        if (region == null) {
-            throw new IllegalStateException("Region is required, but was not found in the kubeconfig exec command");
-        }
         return new ParsedExecCommand(region, clusterId);
     }
 
@@ -199,7 +203,7 @@ final class OkeKubernetesCredentialLoader implements KubernetesTokenLoader {
      */
     private ExecCredential loadCredential(ParsedExecCommand command) {
         LOG.debug("Creating OKE kubernetes client credential");
-        URI uri = URI.create(String.format(TOKEN_URL_FORMAT, command.region, command.clusterId));
+        URI uri = URI.create(String.format(TOKEN_URL_FORMAT, containerEngineEndpoint, command.clusterId));
         Map<String, String> headers = requestSigner.signRequest(uri, "GET", Collections.emptyMap(), null);
 
         // The authentication headers are formatted inside the URI

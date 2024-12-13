@@ -68,8 +68,6 @@ class MockKubernetesSpec extends Specification {
     @Requires(property = 'spec.name', value = 'MockKubernetesSpec-Server')
     static class KubernetesController {
 
-        static final String EXPECTED_AUTH = "https://containerengine.us-phoenix-1.oraclecloud.com/cluster_request/test-cluster-id?authorization=test&date=2024-02-12"
-
         static final String KUBE_CONFIG = """\
 apiVersion: v1
 kind: Config
@@ -116,8 +114,9 @@ current-context: test-context
         @Get("/api/v1/namespaces")
         V1NamespaceList namespaces(@Header("authorization") auth) {
             var content = new String(Base64.getUrlDecoder().decode(auth.substring("Bearer ".length())), StandardCharsets.UTF_8)
-            if (content != EXPECTED_AUTH) {
-                throw new HttpServerException("Incorrect auth")
+            String expectedAuth = server.getURI().toString() + "/cluster_request/test-cluster-id?authorization=test&date=2024-02-12"
+            if (content != expectedAuth) {
+                throw new HttpServerException("Incorrect auth: " + content + ". Expected: " + expectedAuth)
             }
             return new V1NamespaceList([
                     new V1Namespace().metadata(new V1ObjectMeta().name("my-test-name-1"))
