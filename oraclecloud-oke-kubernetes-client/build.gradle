@@ -1,0 +1,28 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+dependencies {
+    api mnKubernetes.micronaut.kubernetes.client.openapi.common
+    implementation mnValidation.validation
+    implementation projects.micronautOraclecloudBmcContainerengine
+
+    testImplementation mnKubernetes.micronaut.kubernetes.client.openapi
+    api projects.micronautOraclecloudCommon
+    testImplementation mn.micronaut.context
+    testAnnotationProcessor mn.micronaut.inject.java
+    testImplementation mn.micronaut.inject.java
+    testImplementation mn.micronaut.inject.groovy
+    testImplementation mn.micronaut.inject.groovy.test
+    testImplementation mn.micronaut.http.server.netty
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+
+micronautBuild {
+    binaryCompatibility {
+        enabled = false
+    }
+}

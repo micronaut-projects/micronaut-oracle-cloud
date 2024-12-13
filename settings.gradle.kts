@@ -46,6 +46,7 @@ include("oraclecloud-httpclient-netty")
 include("oraclecloud-serde-processor")
 include("oraclecloud-logging")
 include("oraclecloud-micrometer")
+include("oraclecloud-oke-kubernetes-client")
 include("oraclecloud-oke-workload-identity")
 include("oraclecloud-sdk-base")
 include("oraclecloud-sdk")
@@ -82,6 +83,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-validation")
     importMicronautCatalog("micronaut-discovery-client")
+    importMicronautCatalog("micronaut-kubernetes")
 }
 
 val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.versions.toml").toPath())!!
