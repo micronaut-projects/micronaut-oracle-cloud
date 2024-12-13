@@ -78,9 +78,11 @@
                                 
                                 <div class="toc-item" style="margin-left:0"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#oracleCloudGuides"><strong>18</strong><span>Guides</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#okeKubernetesClient"><strong>18</strong><span>OCI OKE Kubernetes Client</span></a></div>
                                 
-                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>19</strong><span>Repository</span></a></div>
+                                <div class="toc-item" style="margin-left:0"><a href="#oracleCloudGuides"><strong>19</strong><span>Guides</span></a></div>
+                                
+                                <div class="toc-item" style="margin-left:0"><a href="#repository"><strong>20</strong><span>Repository</span></a></div>
                                 
                             </div>
                         </div>
@@ -145,9 +147,11 @@
         
         <div class="toc-item" style="margin-left:0px" id="toc-item-certificates"><a href="#certificates"><strong>17</strong><span>OCI Certificate SSL Support</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-oracleCloudGuides"><a href="#oracleCloudGuides"><strong>18</strong><span>Guides</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-okeKubernetesClient"><a href="#okeKubernetesClient"><strong>18</strong><span>OCI OKE Kubernetes Client</span></a></div>
         
-        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>19</strong><span>Repository</span></a></div>
+        <div class="toc-item" style="margin-left:0px" id="toc-item-oracleCloudGuides"><a href="#oracleCloudGuides"><strong>19</strong><span>Guides</span></a></div>
+        
+        <div class="toc-item" style="margin-left:0px" id="toc-item-repository"><a href="#repository"><strong>20</strong><span>Repository</span></a></div>
         
         </div>
     </div>
@@ -3913,7 +3917,153 @@ If you only want this configuration to be active in the Oracle Cloud environment
 </tbody>
 </table>
 
-<h1 id="oracleCloudGuides"><a class="anchor" href="#oracleCloudGuides"></a>18 Guides</h1>
+<h1 id="okeKubernetesClient"><a class="anchor" href="#okeKubernetesClient"></a>18 OCI OKE Kubernetes Client</h1>
+
+<div class='contribute-btn'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/4.4.x/src/main/docs/guide/okeKubernetesClient.adoc"'>
+        <i class='fa fa-pencil-square-o'></i> Improve this doc
+    </button>
+</div>
+
+
+<div class="paragraph">
+<p>The <code>micronaut-oraclecloud-oke-kubernetes-client</code> module integrates <a href="https://micronaut-projects.github.io/micronaut-kubernetes/latest/guide/#kubernetes-client-openapi">Micronaut Kubernetes Client</a> with the OKE and OCI Container Engine service.</p>
+</div>
+<div class="paragraph">
+<p>When the module is enabled, the client will retrieve a kubeconfig from the OKE cluster and provide authentication
+for requests to the OKE API server. This module is not needed for Kubernetes nodes that do not connect to
+the Kubernetes API server. Instead, this is useful for sending requests to manage the OKE cluster.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to use an OCI client inside an OKE node, use the <code>micronaut-oraclecloud-oke-workload-identity</code> module instead.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To begin, add a dependency on the <code>micronaut-oraclecloud-oke-kubernetes-client</code> module:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">runtimeOnly(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-oke-kubernetes-client")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-oraclecloud-oke-kubernetes-client&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Add a dependency on one of the Kubernetes OpenAPI clients (there is a blocking and a reactor version):</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.kubernetes:micronaut-kubernetes-client-openapi")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.kubernetes&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-kubernetes-client-openapi&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Then configure the OKE kubernetes client cluster id:</p>
+</div>
+<div class="openblock">
+<div class="title">Configuring cluster id</div>
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">oci.oke.kubernetes.client.cluster-id=ocid..my-cluster-id</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  oke:
+    kubernetes:
+      client:
+        cluster-id: 'ocid..my-cluster-id'</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[oci]
+  [oci.oke]
+    [oci.oke.kubernetes]
+      [oci.oke.kubernetes.client]
+        cluster-id="ocid..my-cluster-id"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">oci {
+  oke {
+    kubernetes {
+      client {
+        clusterId = "ocid..my-cluster-id"
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  oci {
+    oke {
+      kubernetes {
+        client {
+          cluster-id = "ocid..my-cluster-id"
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "oci": {
+    "oke": {
+      "kubernetes": {
+        "client": {
+          "cluster-id": "ocid..my-cluster-id"
+        }
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>See all available configuration properties in <a href="https://micronaut-projects.github.io/micronaut-oracle-cloud/snapshot/guide/configurationreference.html#io.micronaut.oraclecloud.oke.kubernetes.client.OkeKubernetesClientConfig">OkeKubernetesClientConfig</a>.</p>
+</div>
+
+<h1 id="oracleCloudGuides"><a class="anchor" href="#oracleCloudGuides"></a>19 Guides</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/4.4.x/src/main/docs/guide/oracleCloudGuides.adoc"'>
@@ -3929,7 +4079,7 @@ If you only want this configuration to be active in the Oracle Cloud environment
 <p><a href="https://guides.micronaut.io/latest/tag-oracle_cloud.html" class="bare">https://guides.micronaut.io/latest/tag-oracle_cloud.html</a></p>
 </div>
 
-<h1 id="repository"><a class="anchor" href="#repository"></a>19 Repository</h1>
+<h1 id="repository"><a class="anchor" href="#repository"></a>20 Repository</h1>
 
 <div class='contribute-btn'>
     <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/4.4.x/src/main/docs/guide/repository.adoc"'>
