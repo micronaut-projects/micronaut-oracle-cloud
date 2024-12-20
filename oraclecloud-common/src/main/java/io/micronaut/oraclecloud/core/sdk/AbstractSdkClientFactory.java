@@ -19,6 +19,7 @@ import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
+import com.oracle.bmc.common.RegionalClientBuilder;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
@@ -44,14 +45,23 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      * @param clientConfiguration The client config
      * @param clientConfigurator The client configurator (optional)
      * @param requestSignerFactory The request signer factory (optional)
+     * @param regionProvider The region provider (optional)
      */
     protected AbstractSdkClientFactory(
             B builder,
             ClientConfiguration clientConfiguration,
             @Nullable ClientConfigurator clientConfigurator,
-            @Nullable RequestSignerFactory requestSignerFactory) {
+            @Nullable RequestSignerFactory requestSignerFactory,
+            @Nullable RegionProvider regionProvider
+    ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
         builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+        if (regionProvider != null && regionProvider.getRegion() != null
+            && !(regionProvider instanceof AbstractAuthenticationDetailsProvider)
+            && builder instanceof RegionalClientBuilder<?, ?> regional
+        ) {
+            regional.region(regionProvider.getRegion());
+        }
         if (clientConfigurator != null) {
             builder.clientConfigurator(clientConfigurator);
         }
@@ -73,14 +83,12 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      *
      * @param clientBuilder The builder for client
      * @param authenticationDetailsProvider The authentication details provider
-     * @param regionProvider The region provider
      * @return The client to build
      */
     protected abstract @NonNull T build(
         @NonNull B clientBuilder,
-        @NonNull AbstractAuthenticationDetailsProvider authenticationDetailsProvider,
-        @NonNull RegionProvider regionProvider
-        );
+        @NonNull AbstractAuthenticationDetailsProvider authenticationDetailsProvider
+    );
 
     /**
      * Set the HTTP provider for this client. This is injected by the application context, in order
