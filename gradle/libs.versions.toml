@@ -15,7 +15,7 @@ shadow = '8.0.0'
 groovy = "4.0.24"
 spock = "2.3-groovy-4.0"
 oci = "3.53.0"
-bcpkixjdk15to18 = "1.79"
+bcpkixjdk15to18 = "1.80"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
