@@ -164,6 +164,9 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest appendPathPart(String encodedPathPart) {
+        // java-sdk follows whatwg spec for escaping, but RFC 2396 (followed by java.net.URI) does not permit pipe characters
+        encodedPathPart = encodedPathPart.replace("|", "%7c");
+
         boolean hasSlashLeft = uri.charAt(uri.length() - 1) == '/';
         boolean hasSlashRight = encodedPathPart.startsWith("/");
         if (hasSlashLeft) {
