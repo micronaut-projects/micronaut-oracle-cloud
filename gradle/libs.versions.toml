@@ -19,7 +19,7 @@ bcpkixjdk15to18 = "1.79"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
 
-managed-apache-http-core5 = "5.3.1"
+managed-apache-http-core5 = "5.3.3"
 micronaut-gradle-plugin = "4.4.4"
 micronaut-groovy = "4.5.0"
 micronaut-kotlin = "4.5.0"
