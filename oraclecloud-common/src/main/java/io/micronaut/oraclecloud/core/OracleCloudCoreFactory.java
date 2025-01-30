@@ -234,9 +234,9 @@ public class OracleCloudCoreFactory {
                     var headers = Map.of("Authorization", AbstractFederationClientAuthenticationDetailsProviderBuilder.AUTHORIZATION_HEADER_VALUE);
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
                         URLBasedX509CertificateSupplier.ResourceDetails.builder().url(
-                            new URL(baseMetadataUrl + "identity/cert.pem")).headers(headers).build(),
+                            new URL(baseMetadataUrl + "identity/cert.pem")).headers(cfg.isV2Enabled() ? headers : null).build(),
                         URLBasedX509CertificateSupplier.ResourceDetails.builder().url(
-                            new URL(baseMetadataUrl + "identity/key.pem")).headers(headers).build(),
+                            new URL(baseMetadataUrl + "identity/key.pem")).headers(cfg.isV2Enabled() ? headers : null).build(),
                         (char[]) null
                     );
                     tenantId = AuthUtils.getTenantIdFromCertificate(
