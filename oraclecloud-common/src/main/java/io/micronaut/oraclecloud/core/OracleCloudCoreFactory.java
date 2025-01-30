@@ -43,6 +43,7 @@ import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -229,9 +230,12 @@ public class OracleCloudCoreFactory {
                 try {
                     String baseMetadataUrl = cfg.getBaseUrl();
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
-                            new URL(baseMetadataUrl + "identity/cert.pem"),
-                            new URL(baseMetadataUrl + "identity/key.pem"),
-                            (char[]) null
+                        URLBasedX509CertificateSupplier.ResourceDetails.builder().url(
+                            new URL(baseMetadataUrl + "identity/cert.pem"))
+                            .headers(Map.of("Authorization", "Bearer Oracle")).build(),
+                        URLBasedX509CertificateSupplier.ResourceDetails.builder().url(
+                            new URL(baseMetadataUrl + "identity/key.pem")).headers(Map.of("Authorization", "Bearer Oracle")).build()
+                        ,(char[]) null
                     );
                     tenantId = AuthUtils.getTenantIdFromCertificate(
                             urlBasedX509CertificateSupplier.getCertificateAndKeyPair().getCertificate()
