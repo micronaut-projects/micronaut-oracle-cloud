@@ -16,6 +16,8 @@
 package io.micronaut.oraclecloud.monitoring;
 
 import com.oracle.bmc.ClientConfiguration;
+import com.oracle.bmc.Service;
+import com.oracle.bmc.Services;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.http.ClientConfigurator;
@@ -41,6 +43,7 @@ import java.util.Objects;
  */
 @Singleton
 public class MonitoringIngestionClient {
+    public static final Service SERVICE = Services.serviceBuilder().serviceName("MONITORING-INGESTION").serviceEndpointPrefix("telemetry-ingestion").serviceEndpointTemplate("https://telemetry-ingestion.{region}.{secondLevelDomain}").build();
 
     private final ClientConfiguration clientConfiguration;
     private final ClientConfigurator clientConfigurator;
@@ -109,7 +112,7 @@ public class MonitoringIngestionClient {
                         throw new IllegalArgumentException("Region is required for the Monitoring Ingestion client");
                     }
 
-                    String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringClient.SERVICE)
+                    String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringIngestionClient.SERVICE)
                         .orElse(String.format("https://telemetry-ingestion.%s.oraclecloud.com", regionProvider.getRegion().getRegionId()));
 
                     MonitoringClient.Builder builder = MonitoringClient.builder().
