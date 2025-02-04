@@ -57,7 +57,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Abstract base factory for SDK objects.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory)" class="member-name-link">AbstractSdkClientFactory(B, ClientConfiguration, ClientConfigurator, RequestSignerFactory)</a> - Constructor for class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
+<dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider)" class="member-name-link">AbstractSdkClientFactory(B, ClientConfiguration, ClientConfigurator, RequestSignerFactory, RegionProvider)</a> - Constructor for class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -141,7 +141,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generates an SslContext that has an already expired self signed cert that should be replaced almost immediately by the Oracle Cloud Certificate server once it is downloaded.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#build(B,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider,com.oracle.bmc.auth.RegionProvider)" class="member-name-link">build(B, AbstractAuthenticationDetailsProvider, RegionProvider)</a> - Method in class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
+<dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#build(B,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider)" class="member-name-link">build(B, AbstractAuthenticationDetailsProvider)</a> - Method in class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
 <dd>
 <div class="block">Builds the client based on its builder to make sure user can configure
  required parameters in the builder.</div>
@@ -1316,6 +1316,8 @@ loadScripts(document, 'script');</script>
 <div class="block">The SdkMetricsNettyClientFilter will emit oci sdk client metrics.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#%3Cinit%3E(jakarta.inject.Provider)" class="member-name-link">SdkMetricsNettyClientFilter(Provider&lt;MeterRegistry&gt;)</a> - Constructor for class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/monitoring/MonitoringIngestionClient.html#SERVICE" class="member-name-link">SERVICE</a> - Static variable in class io.micronaut.oraclecloud.monitoring.<a href="io/micronaut/oraclecloud/monitoring/MonitoringIngestionClient.html" title="class in io.micronaut.oraclecloud.monitoring">MonitoringIngestionClient</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html#SERVICE_ID" class="member-name-link">SERVICE_ID</a> - Static variable in class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html" title="class in io.micronaut.oraclecloud.httpclient.netty">NettyClientProperties</a></dt>
 <dd>
