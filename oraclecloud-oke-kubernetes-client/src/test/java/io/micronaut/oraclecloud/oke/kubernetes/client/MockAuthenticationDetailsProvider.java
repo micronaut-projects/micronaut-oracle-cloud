@@ -1,4 +1,4 @@
-package io.micronaut.oraclecloud.httpclient.netty;
+package io.micronaut.oraclecloud.oke.kubernetes.client;
 
 import com.oracle.bmc.auth.AuthCachingPolicy;
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
