@@ -4,6 +4,7 @@ import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +13,7 @@ import java.io.InputStream;
 @Singleton
 @Primary
 @Replaces(ConfigFileAuthenticationDetailsProvider.class)
+@Requires(missingBeans = AuthenticationDetailsProvider.class)
 public class MockedAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 
     private static final String DUMMY_PEM_KEY = """
