@@ -21,13 +21,18 @@ import io.micronaut.serde.annotation.Serdeable;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -169,6 +174,48 @@ public abstract class NettyTest {
                 .get()) {
                 Assertions.assertEquals(200, response.status());
             }
+        }
+    }
+
+    @Test
+    @Timeout(10)
+    public void streamingResponse() throws Exception {
+        int chunkSize = 8192;
+        int numberOfChunks = 10;
+
+        netty.aggregate = false;
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/foo", request.uri());
+
+            DefaultHttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+            response.headers().add("content-length", chunkSize * numberOfChunks);
+            ctx.writeAndFlush(response).addListener(new ChannelFutureListener() {
+                int n = numberOfChunks;
+
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    if (n-- == 0) {
+                        ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT, ctx.voidPromise());
+                    } else {
+                        ctx.writeAndFlush(new DefaultHttpContent(Unpooled.wrappedBuffer(new byte[chunkSize]))).addListener(this);
+                    }
+                }
+            });
+        });
+
+        try (
+            HttpClient client = newBuilder()
+                .property(StandardClientProperties.BUFFER_REQUEST, false)
+                .build();
+            HttpResponse response = client.createRequest(Method.GET)
+                .appendPathPart("foo")
+                .execute().toCompletableFuture()
+                .get();
+            InputStream stream = response.streamBody().toCompletableFuture().get()) {
+
+            Assertions.assertEquals(200, response.status());
+            Assertions.assertEquals(chunkSize * numberOfChunks, stream.readAllBytes().length);
         }
     }
 
