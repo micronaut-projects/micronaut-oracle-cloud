@@ -13,7 +13,6 @@ import java.io.InputStream;
 @Singleton
 @Primary
 @Replaces(ConfigFileAuthenticationDetailsProvider.class)
-@Requires(missingBeans = AuthenticationDetailsProvider.class)
 public class MockedAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 
     private static final String DUMMY_PEM_KEY = """
