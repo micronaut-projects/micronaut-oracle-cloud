@@ -4,7 +4,6 @@ import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 
 import java.io.ByteArrayInputStream;
