@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Property(name = "oci.tenantId", value = "something")
 @Property(name = "oci.region", value = "ap-mumbai-1")
 @Property(name = "oci.passphrase", value = "junk")
+@Property(name= "oci.config.enabled", value ="false")
 public class OracleCloudCustomAuthConfigTest {
 
     @Test
