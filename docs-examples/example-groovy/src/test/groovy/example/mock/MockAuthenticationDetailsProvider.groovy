@@ -4,6 +4,7 @@ import com.oracle.bmc.auth.AuthCachingPolicy
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import groovy.transform.CompileStatic
+import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 
 import jakarta.inject.Singleton
@@ -12,6 +13,7 @@ import jakarta.inject.Singleton
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
 @Singleton
 @Replaces(ConfigFileAuthenticationDetailsProvider)
+@Primary
 class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
     String keyId
     InputStream privateKey
