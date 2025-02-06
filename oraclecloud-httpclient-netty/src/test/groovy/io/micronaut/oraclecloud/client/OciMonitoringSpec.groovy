@@ -94,7 +94,7 @@ class OciMonitoringSpec extends Specification {
     }
 
     MonitoringClient createTelemetryClient() {
-        Service service = Services.serviceBuilder().serviceName("MONITORING")
+        Service service = Services.serviceBuilder().serviceName("MONITORING-INGESTION")
                 .serviceEndpointPrefix("telemetry-ingestion")
                 .serviceEndpointTemplate("https://telemetry-ingestion.{region}.{secondLevelDomain}")
                 .build()
