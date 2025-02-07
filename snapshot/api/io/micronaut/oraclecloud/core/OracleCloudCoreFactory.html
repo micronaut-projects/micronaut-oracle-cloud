@@ -340,7 +340,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="configFileAuthenticationDetailsProvider()">
 <h3>configFileAuthenticationDetailsProvider</h3>
 <div class="member-signature"><span class="annotations">@Singleton
-@Requires(condition=<a href="OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition.class</a>) @Requires(missingProperty="oci.tenant-id") @Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(missingBeans=com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.class) @Requires(property="oci.config.enabled",notEquals="false",defaultValue="true")
+@Requires(condition=<a href="OracleCloudConfigCondition.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigCondition.class</a>) @Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(missingBeans=com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.class) @Requires(property="oci.config.enabled",notEquals="false",defaultValue="true")
 @Primary
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type">com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider</span>&nbsp;<span class="element-name">configFileAuthenticationDetailsProvider</span>()
                                                                                                        throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/io/IOException.html" title="class or interface in java.io" class="external-link">IOException</a></span></div>
@@ -364,8 +364,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="simpleAuthenticationDetailsProvider(io.micronaut.oraclecloud.core.OracleCloudAuthConfigurationProperties)">
 <h3>simpleAuthenticationDetailsProvider</h3>
 <div class="member-signature"><span class="annotations">@Singleton
-@Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(missingBeans=com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.class) @Requires(property="oci.tenant-id")
-@Primary
+@Requires(missingProperty="oci.config.instance-principal") @Requires(missingProperty="oci.config.oke-workload-identity") @Requires(missingBeans=com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider.class) @Requires(missingBeans=com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider.class) @Requires(property="oci.tenant-id")
 </span><span class="modifiers">protected</span>&nbsp;<span class="return-type">com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider</span>&nbsp;<span class="element-name">simpleAuthenticationDetailsProvider</span><wbr><span class="parameters">(<a href="OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudAuthConfigurationProperties</a>&nbsp;config)</span></div>
 <div class="block">Configures a <code>SimpleAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present.</div>
 <dl class="notes">
