@@ -57,6 +57,8 @@ final class LimitedBufferingSubscriber implements Subscriber<ByteBuffer<?>>, Clo
         }
         if (closed) {
             s.cancel();
+        } else {
+            s.request(1);
         }
     }
 
