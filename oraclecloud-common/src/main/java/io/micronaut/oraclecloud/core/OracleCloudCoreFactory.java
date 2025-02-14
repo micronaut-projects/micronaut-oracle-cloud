@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.ClientConfiguration;
+import com.oracle.bmc.auth.AbstractFederationClientAuthenticationDetailsProviderBuilder;
 import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
@@ -43,7 +44,9 @@ import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Optional;
+
 
 /**
  * Sets up core beans for integration with Oracle cloud clients. The following beans are exposed:
@@ -228,10 +231,13 @@ public class OracleCloudCoreFactory {
                 String tenantId;
                 try {
                     String baseMetadataUrl = cfg.getBaseUrl();
+                    var headers = Map.of("Authorization", AbstractFederationClientAuthenticationDetailsProviderBuilder.AUTHORIZATION_HEADER_VALUE);
                     urlBasedX509CertificateSupplier = new URLBasedX509CertificateSupplier(
-                            new URL(baseMetadataUrl + "identity/cert.pem"),
-                            new URL(baseMetadataUrl + "identity/key.pem"),
-                            (char[]) null
+                        URLBasedX509CertificateSupplier.ResourceDetails.builder().url(
+                            new URL(baseMetadataUrl + "identity/cert.pem")).headers(cfg.isV2Enabled() ? headers : null).build(),
+                        URLBasedX509CertificateSupplier.ResourceDetails.builder().url(
+                            new URL(baseMetadataUrl + "identity/key.pem")).headers(cfg.isV2Enabled() ? headers : null).build(),
+                        (char[]) null
                     );
                     tenantId = AuthUtils.getTenantIdFromCertificate(
                             urlBasedX509CertificateSupplier.getCertificateAndKeyPair().getCertificate()
