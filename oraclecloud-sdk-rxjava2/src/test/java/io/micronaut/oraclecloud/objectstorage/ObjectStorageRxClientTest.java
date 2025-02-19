@@ -5,6 +5,7 @@ import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.oraclecloud.clients.rxjava2.objectstorage.ObjectStorageRxClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -42,6 +43,7 @@ public class ObjectStorageRxClientTest {
     }
 
     @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
+    @Primary
     private static class MockAuth implements BasicAuthenticationDetailsProvider {
         @Override
         public String getKeyId() {

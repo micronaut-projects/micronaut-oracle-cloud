@@ -15,6 +15,7 @@ import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
 import com.oracle.bmc.responses.AsyncHandler;
 import io.micronaut.context.annotation.Bean;
+import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -69,6 +70,7 @@ public class ObjectStorageReactorClientTest {
     }
 
     @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
+    @Primary
     private static class MockAuth implements BasicAuthenticationDetailsProvider {
         @Override
         public String getKeyId() {
