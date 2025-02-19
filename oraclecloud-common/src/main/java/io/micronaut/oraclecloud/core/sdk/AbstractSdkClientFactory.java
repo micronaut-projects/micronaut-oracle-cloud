@@ -19,8 +19,6 @@ import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
-import com.oracle.bmc.common.InternalBuilderAccess;
-import com.oracle.bmc.common.RegionalClientBuilder;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
@@ -57,13 +55,6 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
     ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
         builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
-        String endpoint = InternalBuilderAccess.getEndpoint(builder);
-        if (endpoint == null && regionProvider != null && regionProvider.getRegion() != null
-            && !(regionProvider instanceof AbstractAuthenticationDetailsProvider)
-            && builder instanceof RegionalClientBuilder<?, ?> regional
-        ) {
-            regional.region(regionProvider.getRegion());
-        }
 
         if (clientConfigurator != null) {
             builder.clientConfigurator(clientConfigurator);

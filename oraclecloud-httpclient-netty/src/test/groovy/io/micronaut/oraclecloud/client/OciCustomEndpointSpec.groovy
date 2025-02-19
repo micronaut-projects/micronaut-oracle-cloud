@@ -1,56 +1,57 @@
 package io.micronaut.oraclecloud.client
 
 import com.oracle.bmc.Region
-import com.oracle.bmc.auth.AuthCachingPolicy
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.monitoring.MonitoringClient
+import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Primary
-import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
-import io.micronaut.core.annotation.NonNull
-
+import io.micronaut.context.env.Environment
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import spock.lang.Specification
 
+
+
 @Requires(bean = AuthenticationDetailsProvider)
 @Requires(bean = RegionProvider)
-@MicronautTest
-@Property(name = "spec.name", value = "OciCustomEndpointSpec")
+@MicronautTest(startApplication = false)
 class OciCustomEndpointSpec extends Specification {
 
     private static final CUSTOM_ENDPOINT = "https://this-is-my-custom-endpoint.com/test"
 
     @Inject
-    @NonNull
-    AuthenticationDetailsProvider authenticationDetailsProvider
-
-    @Inject
     MonitoringClient.Builder client
 
     void "test get compartment"() {
+
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "spec.name"            : "OciCustomEndpointSpec",
+                "oci.config.enabled"   : "false"
+
+        ], Environment.ORACLE_CLOUD)
+
         when:
-        var client = buildClient()
+        AuthenticationDetailsProvider authenticationDetailsProvider = context.getBean(AuthenticationDetailsProvider)
+        MonitoringClient.Builder clientBuilder = context.getBean(MonitoringClient.Builder)
+        var client = clientBuilder.endpoint(CUSTOM_ENDPOINT).build(authenticationDetailsProvider)
 
         then:
+        MockAuthenticationDetailsProvider == authenticationDetailsProvider.getClass()
         client.getEndpoint() == CUSTOM_ENDPOINT
-    }
-
-    MonitoringClient buildClient() {
-        return client.endpoint(CUSTOM_ENDPOINT).build(authenticationDetailsProvider)
     }
 
     @Singleton
     @Primary
     @Replaces(RegionProvider.class)
     @Bean(typed = RegionProvider.class)
-    @Requires(property = "spec.name", notEquals = "OciCustomEndpointSpec")
+    @Requires(property = "spec.name", value = "OciCustomEndpointSpec")
     static class TestRegionProvider implements RegionProvider {
 
         @Override
@@ -60,10 +61,10 @@ class OciCustomEndpointSpec extends Specification {
     }
 
     @Singleton
-    @Replaces(ConfigFileAuthenticationDetailsProvider.class)
+    @Replaces(AuthenticationDetailsProvider.class)
     @Primary
-    @Requires(property = "spec.name", notEquals = "OciCustomEndpointSpec")
-    static class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
+    @Requires(property = "spec.name", value = "OciCustomEndpointSpec")
+    static class MockAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
         private static final String DUMMY_PEM_KEY = """
 -----BEGIN RSA PRIVATE KEY-----
 MIIBOAIBAAJAUczpZlq0T4QOr4F1RAg/lp0CJLn56ldrmis7bDQ1+XiC3/j7DzhP
@@ -93,6 +94,21 @@ ikw16ABtUnL1IVcwxBPZpSowDd5G3bcJyt+NSQ==
         @Override
         char[] getPassphraseCharacters() {
             return new char[0]
+        }
+
+        @Override
+        String getFingerprint() {
+            return null
+        }
+
+        @Override
+        String getTenantId() {
+            return null
+        }
+
+        @Override
+        String getUserId() {
+            return null
         }
     }
 }
