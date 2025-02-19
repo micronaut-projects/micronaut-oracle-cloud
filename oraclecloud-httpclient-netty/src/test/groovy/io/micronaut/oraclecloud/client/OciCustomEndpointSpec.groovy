@@ -6,6 +6,7 @@ import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.monitoring.MonitoringClient
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Primary
+import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.annotation.NonNull
@@ -18,6 +19,7 @@ import spock.lang.Specification
 @Requires(bean = AuthenticationDetailsProvider)
 @Requires(bean = RegionProvider)
 @MicronautTest
+@Property(name = "spec.name", value = "OciCustomEndpointSpec")
 class OciCustomEndpointSpec extends Specification {
 
     private static final CUSTOM_ENDPOINT = "https://this-is-my-custom-endpoint.com/test"
@@ -45,6 +47,7 @@ class OciCustomEndpointSpec extends Specification {
     @Primary
     @Replaces(RegionProvider.class)
     @Bean(typed = RegionProvider.class)
+    @Requires(property = "spec.name", notEquals = "OciCustomEndpointSpec")
     static class TestRegionProvider implements RegionProvider {
 
         @Override
