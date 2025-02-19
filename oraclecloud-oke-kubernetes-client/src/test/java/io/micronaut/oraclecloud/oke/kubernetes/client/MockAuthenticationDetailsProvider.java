@@ -1,8 +1,6 @@
 package io.micronaut.oraclecloud.oke.kubernetes.client;
 
-import com.oracle.bmc.auth.AuthCachingPolicy;
-import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 import jakarta.inject.Singleton;
@@ -10,11 +8,10 @@ import jakarta.inject.Singleton;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-@AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
 @Singleton
-@Replaces(ConfigFileAuthenticationDetailsProvider.class)
+@Replaces(AuthenticationDetailsProvider.class)
 @Primary
-public class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
+public class MockAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 
     private static final String DUMMY_PEM_KEY = """
 -----BEGIN RSA PRIVATE KEY-----
@@ -45,5 +42,20 @@ ikw16ABtUnL1IVcwxBPZpSowDd5G3bcJyt+NSQ==
     @Override
     public char[] getPassphraseCharacters() {
         return new char[0];
+    }
+
+    @Override
+    public String getFingerprint() {
+        return "";
+    }
+
+    @Override
+    public String getTenantId() {
+        return "";
+    }
+
+    @Override
+    public String getUserId() {
+        return "";
     }
 }

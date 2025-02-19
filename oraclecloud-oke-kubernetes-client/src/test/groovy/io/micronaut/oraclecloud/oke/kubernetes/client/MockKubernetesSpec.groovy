@@ -4,12 +4,14 @@ import com.oracle.bmc.Region
 import com.oracle.bmc.Service
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider
 import com.oracle.bmc.auth.AuthCachingPolicy
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.containerengine.ContainerEngineClient
 import com.oracle.bmc.http.signing.RequestSigner
 import com.oracle.bmc.http.signing.RequestSignerFactory
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
@@ -165,6 +167,8 @@ current-context: test-context
 
     @Singleton
     @Requires(property = 'spec.name', value = 'MockKubernetesSpec')
+    @Primary
+    @Replaces(RegionProvider.class)
     static class MockRegionProvider implements RegionProvider {
         @Override
         Region getRegion() {
