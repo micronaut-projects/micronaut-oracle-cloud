@@ -51,7 +51,8 @@ public class ApacheNettyTest extends NettyTest {
 
     @Override
     protected void setupBootstrap(ServerBootstrap bootstrap) throws Exception {
-        socketDirectory = Files.createTempDirectory("oraclecloud-httpclient-apache");
+        // If prefix is too long the java.net.SocketException: Unix domain path too long will keep happening.
+        socketDirectory = Files.createTempDirectory("a");
         socketFile = socketDirectory.resolve("socket");
         bootstrap
             .channel(NioServerDomainSocketChannel.class)
