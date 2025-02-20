@@ -95,7 +95,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
 
-    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return regionProvider != null && regionProvider.getRegion() != null && $T.getEndpoint(clientBuilder) == null &&  $T.getRegion(clientBuilder) == null ? clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider) : clientBuilder.build(authenticationDetailsProvider)";
+    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return regionProvider != null && regionProvider.getRegion() != null && $T.getEndpoint(clientBuilder) == null ? clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider) : clientBuilder.build(authenticationDetailsProvider)";
 
     private static final String RETURN_BUILDER_STATEMENT_WITHOUT_REGION = "return clientBuilder.build(authenticationDetailsProvider)";
 
@@ -404,7 +404,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addAnnotation(requiresSpec.build())
                 .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
-                .addStatement(FACTORIES_THAT_DOESNT_SUPPORT_REGION.stream().noneMatch(factoryName::startsWith) ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION, InternalBuilderAccess.class, InternalBuilderAccess.class);
+                .addStatement(FACTORIES_THAT_DOESNT_SUPPORT_REGION.stream().noneMatch(factoryName::startsWith) ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION, InternalBuilderAccess.class);
 
         if (isBootstrapCompatible) {
             buildMethod.addAnnotation(BootstrapContextCompatible.class);

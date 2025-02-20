@@ -1,6 +1,7 @@
 package io.micronaut.oraclecloud.client
 
 import com.oracle.bmc.Region
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.monitoring.MonitoringClient
@@ -9,6 +10,7 @@ import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
+import io.micronaut.context.annotation.Factory
 import io.micronaut.context.env.Environment
 import io.micronaut.oraclecloud.httpclient.netty.MockAuthenticationDetailsProvider
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
@@ -32,6 +34,7 @@ class OciCustomEndpointSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "spec.name"            : "OciCustomEndpointSpec",
+                "spec.name.provider"   : "OciCustomEndpointSpec",
                 "oci.config.enabled"   : "false"
 
         ], Environment.ORACLE_CLOUD)
@@ -51,6 +54,7 @@ class OciCustomEndpointSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "spec.name"            : "OciCustomEndpointSpec",
+                "spec.name.provider"   : "OciCustomEndpointSpec",
                 "oci.config.enabled"   : "false"
 
         ], Environment.ORACLE_CLOUD)
@@ -65,12 +69,45 @@ class OciCustomEndpointSpec extends Specification {
         client.getEndpoint() == "https://telemetry.us-ashburn-1.oraclecloud.com"
     }
 
+    void "test custom region factory"() {
+
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "spec.name"            : "OciCustomEndpointSpecFactory",
+                "spec.name.provider"   : "OciCustomEndpointSpec",
+                "oci.config.enabled"   : "false"
+
+        ], Environment.ORACLE_CLOUD)
+
+        when:
+        AuthenticationDetailsProvider authenticationDetailsProvider = context.getBean(AuthenticationDetailsProvider)
+        MonitoringClient client = context.getBean(MonitoringClient)
+
+        then:
+        MockAuthenticationDetailsProvider == authenticationDetailsProvider.getClass()
+        client.getEndpoint() == "https://telemetry.us-ashburn-1.oraclecloud.com"
+    }
+
+    @Factory
+    @Requires(property = "spec.name", value = "OciCustomEndpointSpecFactory")
+    static class FactoryReplacement {
+
+        @Singleton
+        @Requires(
+                classes = [MonitoringClient.class],
+                beans = [AbstractAuthenticationDetailsProvider.class]
+        )
+        @Replaces(MonitoringClient.Builder.class)
+        protected MonitoringClient.Builder builder() {
+            return new MonitoringClient.Builder(MonitoringClient.SERVICE).region(Region.US_ASHBURN_1);
+        }
+    }
 
     @Singleton
     @Primary
     @Replaces(RegionProvider.class)
     @Bean(typed = RegionProvider.class)
-    @Requires(property = "spec.name", value = "OciCustomEndpointSpec")
+    @Requires(property = "spec.name.provider", value = "OciCustomEndpointSpec")
     static class TestRegionProvider implements RegionProvider {
 
         @Override
