@@ -140,6 +140,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
+    @Requires(missingBeans = ConfigFileAuthenticationDetailsProvider.class)
     @Requires(missingBeans = SessionTokenAuthenticationDetailsProvider.class)
     @Requires(missingBeans = ConfigFileAuthenticationDetailsProvider.class)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)

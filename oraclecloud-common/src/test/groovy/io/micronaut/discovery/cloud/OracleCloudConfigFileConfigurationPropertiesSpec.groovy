@@ -2,6 +2,7 @@ package io.micronaut.discovery.cloud
 
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider
+import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider
 import io.micronaut.context.ApplicationContext
 import io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties
 import spock.lang.Ignore
@@ -48,8 +49,9 @@ security_token_file=${testPath}/oci_api_key.pem
         ])
 
         expect:
-        ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
+        !ctx.containsBean(SimpleAuthenticationDetailsProvider)
         !ctx.containsBean(SessionTokenAuthenticationDetailsProvider)
+        ctx.containsBean(ConfigFileAuthenticationDetailsProvider)
 
         cleanup:
         ctx.close()

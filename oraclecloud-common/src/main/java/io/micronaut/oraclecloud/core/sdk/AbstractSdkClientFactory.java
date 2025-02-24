@@ -56,12 +56,6 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
     ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
         builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
-        if (regionProvider != null && regionProvider.getRegion() != null
-            && !(regionProvider instanceof AbstractAuthenticationDetailsProvider)
-            && builder instanceof RegionalClientBuilder<?, ?> regional
-        ) {
-            regional.region(regionProvider.getRegion());
-        }
         if (clientConfigurator != null) {
             builder.clientConfigurator(clientConfigurator);
         }

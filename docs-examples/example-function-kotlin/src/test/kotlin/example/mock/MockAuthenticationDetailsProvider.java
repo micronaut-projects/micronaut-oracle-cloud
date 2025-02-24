@@ -1,8 +1,7 @@
 package example.mock;
 
 import com.oracle.bmc.auth.AuthCachingPolicy;
-import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Replaces;
 
@@ -11,9 +10,9 @@ import java.io.InputStream;
 
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
 @Singleton
-@Replaces(ConfigFileAuthenticationDetailsProvider.class)
+@Replaces(AuthenticationDetailsProvider.class)
 @Primary
-public class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
+public class MockAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 
     @Override
     public String getKeyId() {
@@ -33,5 +32,20 @@ public class MockAuthenticationDetailsProvider implements BasicAuthenticationDet
     @Override
     public char[] getPassphraseCharacters() {
         return null;
+    }
+
+    @Override
+    public String getFingerprint() {
+        return "";
+    }
+
+    @Override
+    public String getTenantId() {
+        return "";
+    }
+
+    @Override
+    public String getUserId() {
+        return "";
     }
 }
