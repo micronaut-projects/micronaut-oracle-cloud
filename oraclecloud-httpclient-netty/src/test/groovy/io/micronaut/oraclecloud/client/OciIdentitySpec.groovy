@@ -20,6 +20,7 @@ import static com.oracle.bmc.identity.requests.ListCompartmentsRequest.AccessLev
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
+@Property(name = "use.real.auth", value = "true")
 class OciIdentitySpec extends Specification {
 
     @Property(name = "vault.secrets.compartment.ocid")

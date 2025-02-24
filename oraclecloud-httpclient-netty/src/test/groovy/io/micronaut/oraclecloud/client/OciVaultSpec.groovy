@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
+@Property(name = "use.real.auth", value = "true")
 class OciVaultSpec extends Specification {
 
     @Shared
