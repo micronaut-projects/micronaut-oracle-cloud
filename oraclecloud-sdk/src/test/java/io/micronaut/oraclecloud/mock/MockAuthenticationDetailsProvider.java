@@ -1,6 +1,7 @@
 package io.micronaut.oraclecloud.mock;
 
 import com.oracle.bmc.auth.AuthCachingPolicy;
+import com.oracle.bmc.auth.AuthenticationDetailsProvider;
 import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
 import io.micronaut.context.annotation.Primary;
@@ -11,7 +12,7 @@ import java.io.InputStream;
 
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
 @Singleton
-@Replaces(ConfigFileAuthenticationDetailsProvider.class)
+@Replaces(AuthenticationDetailsProvider.class)
 @Primary
 public class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
 
