@@ -3,7 +3,6 @@ package io.micronaut.oraclecloud.client
 import com.oracle.bmc.Service
 import com.oracle.bmc.Services
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.monitoring.MonitoringClient
 import com.oracle.bmc.monitoring.model.Datapoint
@@ -94,7 +93,7 @@ class OciMonitoringSpec extends Specification {
     }
 
     MonitoringClient createTelemetryClient() {
-        Service service = Services.serviceBuilder().serviceName("MONITORING")
+        Service service = Services.serviceBuilder().serviceName("MONITORING_INGESTION")
                 .serviceEndpointPrefix("telemetry-ingestion")
                 .serviceEndpointTemplate("https://telemetry-ingestion.{region}.{secondLevelDomain}")
                 .build()
