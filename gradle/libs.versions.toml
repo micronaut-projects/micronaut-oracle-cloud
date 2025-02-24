@@ -2,7 +2,7 @@
 micronaut = "4.7.13"
 micronaut-platform = "4.7.5"
 micronaut-docs = "2.0.0"
-fn = '1.0.200'
+fn = '1.0.201'
 graal-svm = "23.1.6"
 javapoet = '1.13.0'
 jetty = '11.0.24'
