@@ -50,8 +50,8 @@ class OracleCloudV2MetadataCertSpec extends Specification {
 
         cleanup:
         ctx.close()
-        server.stop()
-        serverNew.stop()
+        server.close()
+        serverNew.close()
     }
 
     @Controller("/opc/v2")

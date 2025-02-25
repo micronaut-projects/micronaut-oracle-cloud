@@ -45,6 +45,8 @@ class NettyHttpClientTest {
             expected.put("foo", "bar");
             Assertions.assertEquals(expected, body);
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     @Test
@@ -65,6 +67,8 @@ class NettyHttpClientTest {
                     .streamBody().toCompletableFuture().get();
             Assertions.assertEquals("abcdef", new String(toByteArray(responseStream, 6), StandardCharsets.UTF_8));
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     private static byte[] toByteArray(InputStream stream, int n) throws IOException {
@@ -97,6 +101,8 @@ class NettyHttpClientTest {
                     .textBody().toCompletableFuture().get();
             Assertions.assertEquals("abcdef", response);
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     @Test
@@ -125,6 +131,8 @@ class NettyHttpClientTest {
                 });
             Assertions.assertNull(result.toCompletableFuture().get());
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     @Controller

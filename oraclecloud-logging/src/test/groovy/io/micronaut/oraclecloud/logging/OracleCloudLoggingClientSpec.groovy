@@ -16,6 +16,9 @@ class OracleCloudLoggingClientSpec extends Specification {
 
         expect:
         !context.containsBean(OracleCloudLoggingClient)
+
+        cleanup:
+        context.close()
     }
 
 

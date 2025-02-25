@@ -47,7 +47,7 @@ class OracleCloudV2MetadataResolverSpec extends Specification {
 
         cleanup:
         ctx.close()
-        server.stop()
+        server.close()
     }
 
     @Controller("/opc/v2")
