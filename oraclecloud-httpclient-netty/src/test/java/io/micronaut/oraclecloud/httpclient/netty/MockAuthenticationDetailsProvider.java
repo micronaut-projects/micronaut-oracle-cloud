@@ -13,6 +13,7 @@ import java.io.InputStream;
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
 @Singleton
 @Replaces(AuthenticationDetailsProvider.class)
+@Primary
 @Requires(missingProperty = "use.real.auth")
 public class MockAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 

@@ -6,6 +6,7 @@ import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
+import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.StandardClientProperties;
@@ -45,6 +46,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.time.Instant;
@@ -52,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -702,6 +705,33 @@ public abstract class NettyTest {
                  .get()) {
             SessionTokenAuthenticationDetailsProvider.SessionToken resp = response.body(SessionTokenAuthenticationDetailsProvider.SessionToken.class).toCompletableFuture().get();
             Assertions.assertEquals("foo", resp.getToken());
+        }
+    }
+
+    @Test
+    public void pipeTest() throws Exception {
+        String testString = "foo|bar";
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/" + URLEncoder.encode(testString, StandardCharsets.UTF_8).toLowerCase(Locale.ROOT), request.uri().toLowerCase(Locale.ROOT));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .build()) {
+            HttpRequest request = client.createRequest(Method.GET)
+                .appendPathPart(testString);
+            Assertions.assertEquals("/" + testString, request.uri().getPath());
+            try (HttpResponse response = request
+                .execute().toCompletableFuture()
+                .get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("bar", s);
+            }
         }
     }
 

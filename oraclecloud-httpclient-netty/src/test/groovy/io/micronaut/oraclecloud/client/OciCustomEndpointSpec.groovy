@@ -46,6 +46,9 @@ class OciCustomEndpointSpec extends Specification {
         then:
         MockAuthenticationDetailsProvider == authenticationDetailsProvider.getClass()
         client.getEndpoint() == CUSTOM_ENDPOINT
+
+        cleanup:
+        context.close()
     }
 
     void "test custom region"() {
@@ -65,6 +68,9 @@ class OciCustomEndpointSpec extends Specification {
         then:
         MockAuthenticationDetailsProvider == authenticationDetailsProvider.getClass()
         client.getEndpoint() == "https://telemetry.us-ashburn-1.oraclecloud.com"
+
+        cleanup:
+        context.close()
     }
 
     void "test custom region factory"() {
@@ -83,6 +89,9 @@ class OciCustomEndpointSpec extends Specification {
         then:
         MockAuthenticationDetailsProvider == authenticationDetailsProvider.getClass()
         client.getEndpoint() == "https://telemetry.us-ashburn-1.oraclecloud.com"
+
+        cleanup:
+        context.close()
     }
 
     @Factory
