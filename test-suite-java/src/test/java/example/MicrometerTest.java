@@ -40,6 +40,7 @@ class MicrometerTest {
                 register(cloudMeterRegistry);
             counter.increment(5.0);
             Thread.sleep(2000);
+            context.close();
         });
     }
 

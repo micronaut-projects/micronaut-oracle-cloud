@@ -13,9 +13,7 @@ import java.io.InputStream;
 @Singleton
 @Replaces(AuthenticationDetailsProvider.class)
 @Primary
-@Requires(missingProperty = "vault.secrets.compartment.ocid")
-@Requires(missingProperty = "vault.ocid")
-@Requires(missingProperty = "monitoring.compartment.ocid")
+@Requires(missingProperty = "use.real.auth")
 public class MockAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
 
     @Override

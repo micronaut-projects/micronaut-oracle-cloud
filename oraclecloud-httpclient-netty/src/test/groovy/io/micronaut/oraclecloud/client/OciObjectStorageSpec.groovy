@@ -22,6 +22,7 @@ import spock.lang.Stepwise
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
+@Property(name = "use.real.auth", value = "true")
 class OciObjectStorageSpec extends Specification {
 
     @Shared

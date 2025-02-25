@@ -45,7 +45,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.UnixDomainSocketAddress;
 import java.nio.channels.Channels;
 import java.nio.channels.SocketChannel;
@@ -138,6 +137,9 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest appendPathPart(String encodedPathPart) {
+        // java-sdk follows whatwg spec for escaping, but RFC 2396 (followed by java.net.URI) does not permit pipe characters
+        encodedPathPart = encodedPathPart.replace("|", "%7c");
+
         boolean hasSlashLeft = !path.isEmpty() && path.charAt(path.length() - 1) == '/';
         boolean hasSlashRight = encodedPathPart.startsWith("/");
         if (hasSlashLeft) {
@@ -177,11 +179,7 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public URI uri() {
-        try {
-            return new URI(client.baseUri.getScheme(), client.baseUri.getAuthority(), path.toString(), query.isEmpty() ? null : query.toString(), null);
-        } catch (URISyntaxException e) {
-            throw new IllegalStateException(e);
-        }
+        return URI.create(client.baseUri + buildRelativeUri());
     }
 
     @Override

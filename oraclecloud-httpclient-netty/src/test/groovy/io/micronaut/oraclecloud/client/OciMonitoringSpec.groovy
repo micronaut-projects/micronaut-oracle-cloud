@@ -24,6 +24,7 @@ import java.time.temporal.ChronoUnit
 @Requires(property = "monitoring.compartment.ocid")
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
+@Property(name = "use.real.auth", value = "true")
 class OciMonitoringSpec extends Specification {
 
     @Property(name = "monitoring.compartment.ocid")
