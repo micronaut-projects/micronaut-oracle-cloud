@@ -1,5 +1,5 @@
 [versions]
-micronaut = "4.7.13"
+micronaut = "4.8.6"
 micronaut-platform = "4.7.5"
 micronaut-docs = "2.0.0"
 fn = '1.0.201'
@@ -12,7 +12,7 @@ mockito = '5.15.2'
 slf4j-jcl = '2.0.13'
 commons-lang3 = '3.17.0'
 shadow = '8.0.0'
-groovy = "4.0.25"
+groovy = "4.0.26"
 spock = "2.3-groovy-4.0"
 oci = "3.53.0"
 bcpkixjdk15to18 = "1.80"
@@ -25,15 +25,15 @@ micronaut-groovy = "4.6.0"
 micronaut-kotlin = "4.5.0"
 micronaut-kubernetes = "6.2.1"
 micronaut-micrometer = "5.9.3"
-micronaut-reactor = "3.6.0"
+micronaut-reactor = "3.7.0"
 micronaut-rxjava2 = "2.7.0"
-micronaut-serde = "2.13.1"
+micronaut-serde = "2.14.0"
 micronaut-servlet = "4.12.0"
 micronaut-sql = "6.1.0"
-micronaut-test = "4.6.2"
+micronaut-test = "4.7.0"
 micronaut-logging = "1.6.1"
-micronaut-validation = "4.8.1"
-micronaut-discovery-client = "4.5.2"
+micronaut-validation = "4.9.0"
+micronaut-discovery-client = "4.6.0"
 
 [libraries]
 # Core
