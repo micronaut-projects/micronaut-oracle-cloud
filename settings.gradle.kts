@@ -10,23 +10,9 @@ pluginManagement {
     includeBuild("settings-build-logic")
 }
 
-buildscript {
-    configurations {
-        classpath {
-            resolutionStrategy {
-                eachDependency {
-                    if (requested.group == "org.eclipse.jgit") {
-                        useVersion("5.13.0.202109080827-r")
-                    }
-                }
-            }
-        }
-    }
-}
-
 plugins {
-    id("io.micronaut.build.shared.settings") version "7.2.3"
-    id("me.champeau.includegit") version "0.1.6"
+    id("io.micronaut.build.shared.settings") version "7.4.0"
+    id("me.champeau.includegit") version "0.2.0"
     id("io.micronaut.build.internal.ocisdk")
 }
 
