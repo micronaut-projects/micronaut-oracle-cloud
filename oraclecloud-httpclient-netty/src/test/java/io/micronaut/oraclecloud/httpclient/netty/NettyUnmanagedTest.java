@@ -32,13 +32,13 @@ public class NettyUnmanagedTest extends NettyTest {
 
     @Override
     protected HttpClientBuilder newBuilder() {
-        return provider().newBuilder().baseUri(getEndpoint());
+        return provider().newBuilder().baseUri(endpoint());
     }
 
     @Override
     protected void customize(ClientBuilderBase<?, ?> client) {
         client.httpProvider(provider())
-            .endpoint(getEndpoint());
+            .endpoint(endpoint());
     }
 
     @Override
@@ -48,7 +48,8 @@ public class NettyUnmanagedTest extends NettyTest {
             .localAddress("127.0.0.1", 0);
     }
 
-    private String getEndpoint() {
+    @Override
+    public String endpoint() {
         InetSocketAddress addr = (InetSocketAddress) getServerChannel().localAddress();
         return "http://" + addr.getHostString() + ":" + addr.getPort();
     }

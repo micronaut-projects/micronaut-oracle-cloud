@@ -68,6 +68,8 @@ public abstract class NettyTest {
 
     protected abstract HttpClientBuilder newBuilder();
 
+    protected abstract String endpoint();
+
     protected abstract void customize(ClientBuilderBase<?, ?> client);
 
     protected abstract void setupBootstrap(ServerBootstrap bootstrap) throws Exception;
@@ -729,6 +731,30 @@ public abstract class NettyTest {
             try (HttpResponse response = request
                 .execute().toCompletableFuture()
                 .get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("bar", s);
+            }
+        }
+    }
+
+    @Test
+    public void localBaseUriTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .baseUri("https://example.com")
+            .build()) {
+            client.updateEndpoint(endpoint());
+
+            HttpRequest request = client.createRequest(Method.GET);
+            try (HttpResponse response = request.execute().toCompletableFuture().get()) {
                 String s = response.textBody().toCompletableFuture().get();
                 Assertions.assertEquals("bar", s);
             }

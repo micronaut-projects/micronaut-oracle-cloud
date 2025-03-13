@@ -34,6 +34,7 @@ final class ApacheCoreHttpClient implements HttpClient {
     final ApacheCoreHttpProvider provider;
     final Path socketPath;
     final URI baseUri;
+    volatile ThreadLocal<URI> localBaseUri = null;
     final List<RequestInterceptor> requestInterceptors;
     final boolean buffered;
 
@@ -61,5 +62,31 @@ final class ApacheCoreHttpClient implements HttpClient {
     @Override
     public boolean isProcessingException(Exception e) {
         return e instanceof JacksonException;
+    }
+
+    URI baseUri() {
+        ThreadLocal<URI> localBaseUri = this.localBaseUri;
+        if (localBaseUri != null) {
+            URI loc = localBaseUri.get();
+            if (loc != null) {
+                return loc;
+            }
+        }
+        return baseUri;
+    }
+
+    @Override
+    public void updateEndpoint(String baseTarget) {
+        ThreadLocal<URI> localBaseUri = this.localBaseUri;
+        if (localBaseUri == null) {
+            synchronized (this) {
+                localBaseUri = this.localBaseUri;
+                if (localBaseUri == null) {
+                    localBaseUri = new ThreadLocal<>();
+                    this.localBaseUri = localBaseUri;
+                }
+            }
+        }
+        localBaseUri.set(URI.create(baseTarget));
     }
 }

@@ -39,8 +39,13 @@ public class ApacheNettyTest extends NettyTest {
     @Override
     protected final HttpClientBuilder newBuilder() {
         return provider().newBuilder()
-            .baseUri("https://example.com")
+            .baseUri(endpoint())
             .property(ApacheCoreHttpProvider.SOCKET_PATH, socketFile);
+    }
+
+    @Override
+    protected String endpoint() {
+        return "https://example.com";
     }
 
     @Override

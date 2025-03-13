@@ -66,6 +66,7 @@ final class NettyHttpClient implements HttpClient {
     final boolean hasContext;
     final boolean ownsThreadPool;
     final URI baseUri;
+    volatile ThreadLocal<URI> localBaseUri = null;
     final List<RequestInterceptor> requestInterceptors;
     final List<OciNettyClientFilter<?>> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
@@ -74,7 +75,6 @@ final class NettyHttpClient implements HttpClient {
     final boolean buffered;
     final ConnectionManager connectionManager;
     final RawHttpClient upstreamHttpClient;
-    final DefaultHttpClient.RequestKey requestKey;
     final JsonMapper jsonMapper;
 
     static {
@@ -141,7 +141,6 @@ final class NettyHttpClient implements HttpClient {
             nettyClientFilter = Collections.emptyList();
         }
 
-        requestKey = legacyNettyClient ? new DefaultHttpClient.RequestKey((DefaultHttpClient) mnClient, builder.baseUri) : null;
         this.port = builder.baseUri.getPort();
         this.host = builder.baseUri.getHost();
         this.buffered = builder.buffered;
@@ -149,6 +148,17 @@ final class NettyHttpClient implements HttpClient {
 
     ByteBufAllocator alloc() {
         return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
+    }
+
+    URI baseUri() {
+        ThreadLocal<URI> localBaseUri = this.localBaseUri;
+        if (localBaseUri != null) {
+            URI loc = localBaseUri.get();
+            if (loc != null) {
+                return loc;
+            }
+        }
+        return baseUri;
     }
 
     @SuppressWarnings("deprecation")
@@ -179,5 +189,20 @@ final class NettyHttpClient implements HttpClient {
         if (ownsThreadPool) {
             blockingIoExecutor.shutdown();
         }
+    }
+
+    @Override
+    public void updateEndpoint(String baseTarget) {
+        ThreadLocal<URI> localBaseUri = this.localBaseUri;
+        if (localBaseUri == null) {
+            synchronized (this) {
+                localBaseUri = this.localBaseUri;
+                if (localBaseUri == null) {
+                    localBaseUri = new ThreadLocal<>();
+                    this.localBaseUri = localBaseUri;
+                }
+            }
+        }
+        localBaseUri.set(URI.create(baseTarget));
     }
 }
