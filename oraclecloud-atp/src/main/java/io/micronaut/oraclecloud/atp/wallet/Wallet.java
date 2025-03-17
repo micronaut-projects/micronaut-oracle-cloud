@@ -217,7 +217,7 @@ final class Wallet implements CanConfigureOracleDataSource {
                 final String aliasPrefix = CONNECT_STRING;
                 final String expected = serviceAlias;
                 @SuppressWarnings("unchecked")
-                final Enumeration<String> e = store.internalAliases();
+                final Enumeration<String> e = (Enumeration<String>) store.internalAliases();
                 int index = 1;
                 while (e.hasMoreElements()) {
                     final String alias = e.nextElement();
