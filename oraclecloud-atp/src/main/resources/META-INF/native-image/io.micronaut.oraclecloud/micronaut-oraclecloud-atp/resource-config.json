@@ -1,0 +1,6 @@
+{
+  "bundles":[{
+    "name":"oracle.security.pki.resources.OraclePKIMsg",
+    "classNames":["oracle.security.pki.resources.OraclePKIMsg", "oracle.security.pki.resources.OraclePKIMsg_en"]
+  }]
+}
