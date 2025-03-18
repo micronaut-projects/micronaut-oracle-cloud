@@ -77,8 +77,8 @@ oci-common-httpclient-jersey3 = { module = 'com.oracle.oci.sdk:oci-java-sdk-comm
 oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version.ref = "oci" }
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
-oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
 oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom" }
+oracle-security-oraclepki = { module = "com.oracle.database.security:oraclepki", version.ref = "oracle-database-security" }
 oracle-security-cert = { module = "com.oracle.database.security:osdt_cert", version.ref = "oracle-database-security" }
 oracle-security-core = { module = "com.oracle.database.security:osdt_core", version.ref = "oracle-database-security" }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
