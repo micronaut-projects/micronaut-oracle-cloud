@@ -62,6 +62,7 @@ final class ApacheCoreHttpRequest implements HttpRequest {
     private final ApacheCoreHttpClient client;
 
     private final Method method;
+    private final URI baseUri;
     private final StringBuilder path;
     private final StringBuilder query;
     private final Map<String, List<String>> headers;
@@ -71,7 +72,8 @@ final class ApacheCoreHttpRequest implements HttpRequest {
     ApacheCoreHttpRequest(ApacheCoreHttpClient client, Method method) {
         this.client = client;
         this.method = method;
-        this.path = new StringBuilder(client.baseUri.getPath());
+        this.baseUri = client.baseUri();
+        this.path = new StringBuilder(baseUri.getPath());
         this.query = new StringBuilder();
         this.headers = caseInsensitiveMap();
         this.attributes = new HashMap<>();
@@ -81,6 +83,7 @@ final class ApacheCoreHttpRequest implements HttpRequest {
     private ApacheCoreHttpRequest(ApacheCoreHttpRequest prototype) {
         this.client = prototype.client;
         this.method = prototype.method;
+        this.baseUri = prototype.baseUri;
         this.path = new StringBuilder(prototype.path);
         this.query = new StringBuilder(prototype.query);
         // deep copy
@@ -179,7 +182,7 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public URI uri() {
-        return URI.create(client.baseUri + buildRelativeUri());
+        return URI.create(baseUri + buildRelativeUri());
     }
 
     @Override
@@ -227,9 +230,9 @@ final class ApacheCoreHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
-        if (client.baseUri.getHost() != null) {
+        if (baseUri.getHost() != null) {
             headers.remove("host");
-            header("host", client.baseUri.getHost());
+            header("host", baseUri.getHost());
         }
 
         for (RequestInterceptor requestInterceptor : client.requestInterceptors) {

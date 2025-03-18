@@ -19,7 +19,8 @@ public class Jersey3Test extends NettyTest {
         return Jersey3HttpProvider.getInstance();
     }
 
-    private String endpoint() {
+    @Override
+    public String endpoint() {
         InetSocketAddress addr = (InetSocketAddress) getServerChannel().localAddress();
         return "http://" + addr.getHostString() + ":" + addr.getPort();
     }

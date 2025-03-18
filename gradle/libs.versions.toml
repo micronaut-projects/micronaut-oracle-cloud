@@ -1,6 +1,6 @@
 [versions]
-micronaut = "4.8.6"
-micronaut-platform = "4.7.5"
+micronaut = "4.8.7"
+micronaut-platform = "4.7.6"
 micronaut-docs = "2.0.0"
 fn = '1.0.201'
 graal-svm = "23.1.6"
@@ -14,7 +14,8 @@ commons-lang3 = '3.17.0'
 shadow = '8.0.0'
 groovy = "4.0.26"
 spock = "2.3-groovy-4.0"
-oci = "3.53.0"
+oci = "3.60.0"
+oracle-database-security = "21.17.0.0"
 bcpkixjdk15to18 = "1.80"
 protobuf = '0.9.4'
 netty-http3 = "0.0.28.Final"
@@ -22,14 +23,14 @@ netty-http3 = "0.0.28.Final"
 managed-apache-http-core5 = "5.3.3"
 micronaut-gradle-plugin = "4.4.5"
 micronaut-groovy = "4.6.0"
-micronaut-kotlin = "4.5.0"
-micronaut-kubernetes = "6.2.1"
-micronaut-micrometer = "5.9.3"
+micronaut-kotlin = "4.6.0"
+micronaut-kubernetes = "7.0.0"
+micronaut-micrometer = "5.10.0"
 micronaut-reactor = "3.7.0"
 micronaut-rxjava2 = "2.7.0"
 micronaut-serde = "2.14.0"
-micronaut-servlet = "4.12.0"
-micronaut-sql = "6.1.0"
+micronaut-servlet = "5.1.1"
+micronaut-sql = "6.1.1"
 micronaut-test = "4.7.0"
 micronaut-logging = "1.6.1"
 micronaut-validation = "4.9.0"
@@ -78,8 +79,8 @@ oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-o
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
 oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
 oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom" }
-oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
-oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
+oracle-security-cert = { module = "com.oracle.database.security:osdt_cert", version.ref = "oracle-database-security" }
+oracle-security-core = { module = "com.oracle.database.security:osdt_core", version.ref = "oracle-database-security" }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
 apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
