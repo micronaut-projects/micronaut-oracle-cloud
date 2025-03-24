@@ -4,14 +4,17 @@ import com.oracle.bmc.generativeaiagentruntime.model.ChatResult;
 import com.oracle.bmc.generativeaiagentruntime.model.GenerationTrace;
 import com.oracle.bmc.generativeaiagentruntime.model.Message;
 import com.oracle.bmc.generativeaiagentruntime.model.MessageContent;
+import com.oracle.bmc.generativeaiagentruntime.model.Trace;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest(startApplication = false)
@@ -26,6 +29,15 @@ public class TraceDeserdeTest {
 
         assertNotNull(value);
         assertEquals("{\"message\":{\"content\":{\"text\":\"some text\"}},\"traces\":[{\"traceType\":\"GENERATION_TRACE\",\"generation\":\"test\"}]}", value);
+
+        ChatResult chatResult = jsonMapper.readValue(value, ChatResult.class);
+        assertNotNull(chatResult);
+        List<Trace> traces = chatResult.getTraces();
+        assertNotNull(traces);
+        assertEquals(1, traces.size());
+        Trace trace = traces.get(0);
+        assertNotNull(trace);
+        assertInstanceOf(GenerationTrace.class, trace);
     }
 
 }
