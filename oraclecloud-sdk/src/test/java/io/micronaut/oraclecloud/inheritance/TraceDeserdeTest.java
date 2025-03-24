@@ -30,7 +30,7 @@ public class TraceDeserdeTest {
         assertNotNull(value);
         assertEquals("{\"message\":{\"content\":{\"text\":\"some text\"}},\"traces\":[{\"traceType\":\"GENERATION_TRACE\",\"generation\":\"test\"}]}", value);
 
-        ChatResult chatResult = jsonMapper.readValue(value, ChatResult.class);
+        ChatResult chatResult = jsonMapper.readValue("{\"message\":{\"content\":{\"text\":\"some text\"}},\"traces\":[{\"traceType\":\"GENERATION_TRACE\",\"generation\":\"test\"}, {}]}", ChatResult.class);
         assertNotNull(chatResult);
         List<Trace> traces = chatResult.getTraces();
         assertNotNull(traces);
