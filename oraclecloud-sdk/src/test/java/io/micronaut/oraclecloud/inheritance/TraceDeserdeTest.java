@@ -10,7 +10,6 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +33,7 @@ public class TraceDeserdeTest {
         assertNotNull(chatResult);
         List<Trace> traces = chatResult.getTraces();
         assertNotNull(traces);
-        assertEquals(1, traces.size());
+        assertEquals(2, traces.size());
         Trace trace = traces.get(0);
         assertNotNull(trace);
         assertInstanceOf(GenerationTrace.class, trace);
