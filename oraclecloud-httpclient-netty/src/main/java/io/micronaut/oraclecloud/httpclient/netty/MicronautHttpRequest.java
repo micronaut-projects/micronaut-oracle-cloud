@@ -77,7 +77,7 @@ final class MicronautHttpRequest implements HttpRequest {
 
     public MicronautHttpRequest(NettyHttpClient nettyHttpClient, Method method) {
         client = nettyHttpClient;
-        this.uri = new StringBuilder(client.baseUri().toString());
+        this.uri = new StringBuilder(client.baseUri());
         attributes = new HashMap<>();
         StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
         attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());

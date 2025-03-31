@@ -92,8 +92,9 @@ final class NettyHttpRequest implements HttpRequest {
     public NettyHttpRequest(NettyHttpClient nettyHttpClient, Method method) {
         client = nettyHttpClient;
         this.method = method;
-        this.baseUri = client.baseUri();
-        this.uri = new StringBuilder(baseUri.toString());
+        String baseUri = client.baseUri();
+        this.baseUri = URI.create(baseUri);
+        this.uri = new StringBuilder(baseUri);
         attributes = new HashMap<>();
         StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
         attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());
