@@ -761,6 +761,30 @@ public abstract class NettyTest {
         }
     }
 
+    @Test
+    public void localBaseUriTestInvalid() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .baseUri("https://example.com[]") // invalid
+            .build()) {
+            client.updateEndpoint(endpoint());
+
+            HttpRequest request = client.createRequest(Method.GET);
+            try (HttpResponse response = request.execute().toCompletableFuture().get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("bar", s);
+            }
+        }
+    }
+
     @Serdeable
     public static class MyBean {
         private String s;
