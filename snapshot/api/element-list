@@ -28,5 +28,6 @@ io.micronaut.oraclecloud.monitoring
 io.micronaut.oraclecloud.monitoring.micrometer
 io.micronaut.oraclecloud.monitoring.primitives
 io.micronaut.oraclecloud.monitoring.sdk
+io.micronaut.oraclecloud.oke.kubernetes.client
 io.micronaut.oraclecloud.oke.workload.identity
 io.micronaut.oraclecloud.serde
