@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 final class ApacheCoreHttpClient implements HttpClient {
     final ApacheCoreHttpProvider provider;
     final Path socketPath;
-    final URI baseUri;
+    final String baseUri;
     volatile ThreadLocal<URI> localBaseUri = null;
     final List<RequestInterceptor> requestInterceptors;
     final boolean buffered;
@@ -72,7 +72,7 @@ final class ApacheCoreHttpClient implements HttpClient {
                 return loc;
             }
         }
-        return baseUri;
+        return URI.create(baseUri);
     }
 
     @Override

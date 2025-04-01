@@ -65,13 +65,11 @@ final class NettyHttpClient implements HttpClient {
     final boolean legacyNettyClient;
     final boolean hasContext;
     final boolean ownsThreadPool;
-    final URI baseUri;
+    final String baseUri;
     volatile ThreadLocal<URI> localBaseUri = null;
     final List<RequestInterceptor> requestInterceptors;
     final List<OciNettyClientFilter<?>> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
-    final String host;
-    final int port;
     final boolean buffered;
     final ConnectionManager connectionManager;
     final RawHttpClient upstreamHttpClient;
@@ -141,8 +139,6 @@ final class NettyHttpClient implements HttpClient {
             nettyClientFilter = Collections.emptyList();
         }
 
-        this.port = builder.baseUri.getPort();
-        this.host = builder.baseUri.getHost();
         this.buffered = builder.buffered;
     }
 
@@ -150,12 +146,12 @@ final class NettyHttpClient implements HttpClient {
         return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
     }
 
-    URI baseUri() {
+    String baseUri() {
         ThreadLocal<URI> localBaseUri = this.localBaseUri;
         if (localBaseUri != null) {
             URI loc = localBaseUri.get();
             if (loc != null) {
-                return loc;
+                return loc.toString();
             }
         }
         return baseUri;
