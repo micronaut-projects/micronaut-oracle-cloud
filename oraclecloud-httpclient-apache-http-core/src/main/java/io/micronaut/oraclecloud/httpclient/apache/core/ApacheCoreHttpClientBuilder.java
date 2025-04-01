@@ -38,7 +38,7 @@ final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
 
     final ApacheCoreHttpProvider provider;
     final Collection<PrioritizedInterceptor> requestInterceptors = new ArrayList<>();
-    URI baseUri;
+    String baseUri;
     boolean buffered = true;
     Path socketPath;
 
@@ -52,13 +52,13 @@ final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
 
     @Override
     public HttpClientBuilder baseUri(URI uri) {
-        this.baseUri = Objects.requireNonNull(uri, "baseUri");
+        this.baseUri = Objects.requireNonNull(uri, "baseUri").toString();
         return this;
     }
 
     @Override
     public HttpClientBuilder baseUri(String uri) {
-        this.baseUri = URI.create(Objects.requireNonNull(uri, "baseUri"));
+        this.baseUri = Objects.requireNonNull(uri, "baseUri");
         return this;
     }
 
