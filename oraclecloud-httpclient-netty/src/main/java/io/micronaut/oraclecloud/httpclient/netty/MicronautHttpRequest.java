@@ -358,6 +358,7 @@ final class MicronautHttpRequest implements HttpRequest {
         return walker.walk(stream ->
             stream.dropWhile(frame -> !frame.getClassName().contains("com.oracle.bmc.http.internal") && !frame.getClassName().contains("Client"))
                 .skip(2)
+                .dropWhile(nextFrame -> !nextFrame.getClassName().contains("Client"))
                 .findFirst()
         );
     }
