@@ -5,6 +5,7 @@ import com.oracle.bmc.monitoring.Monitoring
 import com.oracle.bmc.monitoring.requests.GetAlarmRequest
 import io.micrometer.core.instrument.MeterRegistry
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Requires
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.runtime.server.EmbeddedServer
@@ -13,13 +14,14 @@ import spock.lang.Specification
 
 
 @MicronautTest(startApplication = false)
-class OracleCloudSdkMetricsFilterTest extends Specification {
+class OracleCloudSdkMetricsFilterSpec extends Specification {
 
     def "test oci sdk metrics client filter request returns 200"() {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.enabled": "false"
+                "micronaut.metrics.export.oraclecloud.enabled": "false",
+                "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
@@ -50,6 +52,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
                 "micronaut.metrics.enabled": "true",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "micronaut.metrics.oci.sdk.client.enabled": "false",
+                "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
@@ -73,7 +76,8 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.enabled": "false"
+                "micronaut.metrics.export.oraclecloud.enabled": "false",
+                "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
@@ -108,7 +112,8 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.enabled": "false"
+                "micronaut.metrics.export.oraclecloud.enabled": "false",
+                "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
 
         EmbeddedServer embeddedServer = context.getBean(EmbeddedServer)
@@ -138,6 +143,7 @@ class OracleCloudSdkMetricsFilterTest extends Specification {
         embeddedServer.stop()
     }
 
+    @Requires(property = "spec.name", value = "OracleCloudSdkMetricsFilterSpec")
     @Controller('/20180401/alarms')
     static class WordsController {
 
