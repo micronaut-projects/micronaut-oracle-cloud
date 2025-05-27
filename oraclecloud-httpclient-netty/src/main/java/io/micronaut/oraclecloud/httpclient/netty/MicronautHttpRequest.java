@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.OptionalLong;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -79,7 +80,7 @@ final class MicronautHttpRequest implements HttpRequest {
         client = nettyHttpClient;
         this.uri = new StringBuilder(client.baseUri.toString());
         attributes = new HashMap<>();
-        StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
+        StackWalker.StackFrame frame = findFrame().orElse(null);
         attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());
         query = new StringBuilder();
         mnRequest = io.micronaut.http.HttpRequest.create(switch (method) {
@@ -350,5 +351,15 @@ final class MicronautHttpRequest implements HttpRequest {
                 mnRequest.getHeaders().add(HttpHeaders.TRANSFER_ENCODING, "chunked");
             }
         }
+    }
+
+    private Optional<StackWalker.StackFrame> findFrame() {
+        StackWalker walker = StackWalker.getInstance();
+        return walker.walk(stream ->
+            stream.dropWhile(frame -> !frame.getClassName().contains("com.oracle.bmc.http.internal") && !frame.getClassName().contains("Client"))
+                .skip(2)
+                .dropWhile(nextFrame -> !nextFrame.getClassName().contains("Client"))
+                .findFirst()
+        );
     }
 }

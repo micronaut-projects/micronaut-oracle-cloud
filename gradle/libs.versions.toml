@@ -1,6 +1,6 @@
 [versions]
-micronaut = "4.8.6"
-micronaut-platform = "4.7.5"
+micronaut = "4.8.14"
+micronaut-platform = "4.8.2"
 micronaut-docs = "2.0.0"
 fn = '1.0.201'
 graal-svm = "23.1.6"
