@@ -31,7 +31,7 @@ micronaut-serde = "2.14.0"
 micronaut-servlet = "5.3.1"
 micronaut-sql = "6.1.1"
 micronaut-test = "4.7.0"
-micronaut-logging = "1.6.1"
+micronaut-logging = "1.7.0"
 micronaut-validation = "4.9.0"
 micronaut-discovery-client = "4.7.0"
 
