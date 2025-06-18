@@ -7,7 +7,6 @@ graal-svm = "23.1.7"
 javapoet = '1.13.0'
 kotlin = '1.9.25'
 logback-json-classic = '0.1.5'
-mockito = '5.18.0'
 slf4j-jcl = '2.0.17'
 commons-lang3 = '3.17.0'
 shadow = '8.0.0'
@@ -66,7 +65,6 @@ junit-platform-engine = { module = "org.junit.platform:junit-platform-suite-engi
 kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
 kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
 logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-json-classic' }
-mockito = { module = 'org.mockito:mockito-core', version.ref = 'mockito' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
 oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
