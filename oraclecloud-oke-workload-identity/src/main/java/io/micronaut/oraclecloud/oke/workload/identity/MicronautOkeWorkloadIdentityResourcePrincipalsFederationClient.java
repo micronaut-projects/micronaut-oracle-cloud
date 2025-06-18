@@ -29,26 +29,11 @@ import com.oracle.bmc.http.internal.ClientIdFilter;
 import com.oracle.bmc.http.internal.LogHeadersFilter;
 import com.oracle.bmc.http.signing.RequestSigner;
 import com.oracle.bmc.util.internal.StringUtils;
-import io.micronaut.buffer.netty.NettyByteBufferFactory;
-import io.micronaut.core.annotation.AnnotationMetadataResolver;
-import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.io.ResourceResolver;
-import io.micronaut.http.MediaType;
-import io.micronaut.http.body.ContextlessMessageBodyHandlerRegistry;
 import io.micronaut.http.client.netty.DefaultHttpClient;
-import io.micronaut.http.codec.MediaTypeCodecRegistry;
-import io.micronaut.http.netty.body.NettyByteBufMessageBodyHandler;
-import io.micronaut.http.netty.body.NettyJsonHandler;
-import io.micronaut.http.netty.body.NettyJsonStreamHandler;
-import io.micronaut.http.netty.body.NettyWritableBodyWriter;
-import io.micronaut.json.JsonMapper;
-import io.micronaut.json.codec.JsonMediaTypeCodec;
-import io.micronaut.json.codec.JsonStreamMediaTypeCodec;
+import io.micronaut.http.client.netty.DefaultHttpClientBuilder;
 import io.micronaut.oraclecloud.httpclient.netty.ManagedNettyHttpProvider;
 import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
-import io.micronaut.runtime.ApplicationConfiguration;
-import io.netty.channel.MultithreadEventLoopGroup;
-import io.netty.util.concurrent.DefaultThreadFactory;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
@@ -145,28 +130,15 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
     }
 
     DefaultHttpClient defaultHttpClient() {
-        JsonMapper mapper = JsonMapper.createDefault();
-        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
-        ContextlessMessageBodyHandlerRegistry registry = new ContextlessMessageBodyHandlerRegistry(
-            applicationConfiguration,
-            NettyByteBufferFactory.DEFAULT,
-            new NettyByteBufMessageBodyHandler(),
-            new NettyWritableBodyWriter(applicationConfiguration)
-        );
-        registry.add(MediaType.APPLICATION_JSON_TYPE, new NettyJsonHandler<>(mapper));
-        registry.add(MediaType.APPLICATION_JSON_STREAM_TYPE, new NettyJsonStreamHandler<>(mapper));
         // Set ca cert when talking to proxymux using https.
-
-        return new DefaultHttpClient(null,
-            getOkeHttpClientConfiguration(), null, new DefaultThreadFactory(MultithreadEventLoopGroup.class),
-            okeNettyClientSslBuilder(KUBERNETES_SERVICE_ACCOUNT_CERT_PATH),
-            MediaTypeCodecRegistry.of(
-                new JsonMediaTypeCodec(mapper, applicationConfiguration, null),
-                new JsonStreamMediaTypeCodec(mapper, applicationConfiguration, null)
-            ),
-            registry,
-            AnnotationMetadataResolver.DEFAULT,
-            ConversionService.SHARED);
+        DefaultHttpClientBuilder builder = DefaultHttpClient.builder();
+        OkeHttpClientConfiguration configuration = getOkeHttpClientConfiguration();
+        if (configuration != null) {
+            builder.configuration(configuration);
+        }
+        return builder
+            .nettyClientSslBuilder(okeNettyClientSslBuilder(KUBERNETES_SERVICE_ACCOUNT_CERT_PATH))
+            .build();
     }
 
     @Override
