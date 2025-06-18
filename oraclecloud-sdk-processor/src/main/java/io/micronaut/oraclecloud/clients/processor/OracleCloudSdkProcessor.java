@@ -15,6 +15,8 @@
  */
 package io.micronaut.oraclecloud.clients.processor;
 
+import com.oracle.bmc.auth.RegionProvider;
+import com.oracle.bmc.common.InternalBuilderAccess;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
@@ -92,6 +94,13 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
      * Processing environment option used to specify the client classes to process.
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
+
+    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return regionProvider != null && regionProvider.getRegion() != null && $T.getEndpoint(clientBuilder) == null ? clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider) : clientBuilder.build(authenticationDetailsProvider)";
+
+    private static final String RETURN_BUILDER_STATEMENT_WITHOUT_REGION = "return clientBuilder.build(authenticationDetailsProvider)";
+
+    private static final List<String> FACTORIES_THAT_DOESNT_SUPPORT_REGION = List.of("KmsCrypto", "KmsManagement", "IdentityDomains", "Stream");
+
     private Filer filer;
     private Messager messager;
     private Elements elements;
@@ -353,9 +362,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
         final String factoryName = simpleName + "Factory";
         final String factoryPackageName = packageName.replace("com.oracle.bmc", CLIENT_PACKAGE);
         final TypeSpec.Builder builder = defineSuperclass(packageName, simpleName, factoryName);
+
         final MethodSpec.Builder constructor = buildConstructor(simpleName, builder);
         ClassName builderType = getBuilderClassNameForClient(packageName, simpleName);
         builder.addField(FieldSpec.builder(builderType, "builder", Modifier.PRIVATE).build());
+        builder.addField(FieldSpec.builder(ClassName.get(RegionProvider.class), "regionProvider", Modifier.PRIVATE).build());
         builder.addAnnotation(Factory.class);
         final ClassName authProviderType = ClassName.get("com.oracle.bmc.auth", "AbstractAuthenticationDetailsProvider");
         final AnnotationSpec.Builder requiresSpec = AnnotationSpec.builder(Requires.class)
@@ -393,7 +404,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addAnnotation(requiresSpec.build())
                 .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
-                .addCode("return clientBuilder.build(authenticationDetailsProvider);");
+                .addStatement(FACTORIES_THAT_DOESNT_SUPPORT_REGION.stream().noneMatch(factoryName::startsWith) ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION, InternalBuilderAccess.class);
+
         if (isBootstrapCompatible) {
             buildMethod.addAnnotation(BootstrapContextCompatible.class);
         }
@@ -432,9 +444,12 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                                 .addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http.signing", "RequestSignerFactory"), "requestSignerFactory")
                                 .addAnnotation(Nullable.class).build())
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
+                                .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, clientConfigurator, requestSignerFactory)")
-                        .addStatement("builder = super.getBuilder()").build());
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, clientConfigurator, requestSignerFactory, regionProvider)")
+                        .addStatement("builder = super.getBuilder()")
+                .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
         return constructor;
     }

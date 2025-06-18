@@ -1,36 +1,39 @@
 [versions]
-micronaut = "4.7.0-SNAPSHOT"
-micronaut-platform = "4.5.1"
+micronaut = "4.8.14"
+micronaut-platform = "4.7.6"
 micronaut-docs = "2.0.0"
-fn = '1.0.190'
-graal-svm = "23.1.4"
+fn = '1.0.207'
+graal-svm = "23.1.7"
 javapoet = '1.13.0'
-jetty = '11.0.21'
 kotlin = '1.9.25'
 logback-json-classic = '0.1.5'
-mockito = '5.12.0'
-slf4j-jcl = '2.0.13'
-commons-lang3 = '3.16.0'
+mockito = '5.18.0'
+slf4j-jcl = '2.0.17'
+commons-lang3 = '3.17.0'
 shadow = '8.0.0'
-groovy = "4.0.22"
+groovy = "4.0.26"
 spock = "2.3-groovy-4.0"
-oci = "3.47.0"
-protobuf = '0.9.4'
-netty-http3 = "0.0.28.Final"
+oci = "3.67.1"
+oracle-database-security = "21.17.0.0"
+bcpkixjdk15to18 = "1.80"
+protobuf = '0.9.5'
+netty-http3 = "0.0.29.Final"
 
-micronaut-gradle-plugin = "4.4.2"
-micronaut-groovy = "4.4.0"
-micronaut-kotlin = "4.4.0"
-micronaut-micrometer = "5.8.0"
-micronaut-reactor = "3.5.0"
-micronaut-rxjava2 = "2.5.0"
-micronaut-serde = "2.11.0"
-micronaut-servlet = "4.10.1"
-micronaut-sql = "5.8.1"
-micronaut-test = "4.5.0"
-micronaut-logging = "1.4.0"
-micronaut-validation = "4.7.0"
-micronaut-discovery-client = "4.4.0"
+managed-apache-http-core5 = "5.3.4"
+micronaut-gradle-plugin = "4.5.3"
+micronaut-groovy = "4.6.0"
+micronaut-kotlin = "4.6.0"
+micronaut-kubernetes = "7.0.0"
+micronaut-micrometer = "5.10.2"
+micronaut-reactor = "3.7.0"
+micronaut-rxjava2 = "2.7.0"
+micronaut-serde = "2.14.0"
+micronaut-servlet = "5.3.1"
+micronaut-sql = "6.1.1"
+micronaut-test = "4.7.0"
+micronaut-logging = "1.6.1"
+micronaut-validation = "4.9.0"
+micronaut-discovery-client = "4.6.0"
 
 [libraries]
 # Core
@@ -39,6 +42,7 @@ micronaut-core = { module = 'io.micronaut:micronaut-core-bom', version.ref = 'mi
 # micronaut boms
 micronaut-groovy = { module = "io.micronaut.groovy:micronaut-groovy-bom", version.ref = "micronaut-groovy" }
 micronaut-kotlin = { module = "io.micronaut.kotlin:micronaut-kotlin-bom", version.ref = "micronaut-kotlin" }
+micronaut-kubernetes = { module = "io.micronaut.kubernetes:micronaut-kubernetes-bom", version.ref = "micronaut-kubernetes" }
 micronaut-micrometer = { module = "io.micronaut.micrometer:micronaut-micrometer-bom", version.ref = "micronaut-micrometer" }
 micronaut-reactor = { module = "io.micronaut.reactor:micronaut-reactor-bom", version.ref = "micronaut-reactor" }
 micronaut-rxjava2 = { module = "io.micronaut.rxjava2:micronaut-rxjava2-bom", version.ref = "micronaut-rxjava2" }
@@ -56,7 +60,6 @@ fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
 fn-testing-junit4 = { module = 'com.fnproject.fn:testing-junit4', version.ref = 'fn' }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm"}
 javapoet = { module = 'com.squareup:javapoet', version.ref = 'javapoet' }
-jetty = { module = 'org.eclipse.jetty:jetty-server', version.ref = 'jetty' }
 junit-jupiter = { module = 'org.junit.jupiter:junit-jupiter-engine', version = '' }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-suite-engine" }
 kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
@@ -68,15 +71,18 @@ commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'co
 oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
 oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version.ref = "oci" }
 oci-common-httpclient = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient', version.ref = "oci" }
+oci-common-httpclient-jersey3 = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3', version.ref = "oci" }
 oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version.ref = "oci" }
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }
 oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
 oracle-jdbc-bom = { module = "com.oracle.database.jdbc:ojdbc-bom" }
-oracle-security-cert = { module = 'com.oracle.database.security:osdt_cert' }
-oracle-security-core = { module = 'com.oracle.database.security:osdt_core' }
+oracle-security-cert = { module = "com.oracle.database.security:osdt_cert", version.ref = "oracle-database-security" }
+oracle-security-core = { module = "com.oracle.database.security:osdt_core", version.ref = "oracle-database-security" }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
+apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
+bcpkixjdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "bcpkixjdk15to18"}
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }

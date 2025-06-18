@@ -1,5 +1,5 @@
 plugins {
-    id("io.micronaut.build.internal.oraclecloud-module")
+    id("io.micronaut.build.internal.oraclecloud-tests")
     id("java-library")
 }
 
@@ -26,12 +26,6 @@ dependencies {
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
     targetCompatibility = JavaVersion.toVersion("17")
-}
-
-micronautBuild {
-    binaryCompatibility {
-        enabled.set(false)
-    }
 }
 
 tasks.named<Test>("test") {

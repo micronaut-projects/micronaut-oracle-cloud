@@ -4,75 +4,52 @@ import com.fasterxml.jackson.annotation.JsonFilter
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
 import io.micronaut.oraclecloud.serde.model.BaseModel
 import io.micronaut.oraclecloud.serde.model.ComplexModel
-import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Unroll
 
 class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
     void "OCI SDK Model serialization test"() throws Exception {
         given:
-        EmbeddedServer embeddedServer = initContext()
         MyModel myModel = new MyModel("value")
 
         when:
-        var body = echoTest(embeddedServer, myModel)
+        var body = serialize(myModel)
 
         then:
         '{"string":"value"}' == body
-
-        cleanup:
-        embeddedServer.close()
     }
 
     void "Explicitly set OCI SDK Model serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var body = echoTest(embeddedServer, new MyModel(null))
+        var body = serialize(new MyModel(null))
 
         then:
         '{"string":null}' == body
 
         when:
-        body = echoTest(embeddedServer, new MyModel())
+        body = serialize(new MyModel())
 
         then:
         '{}' == body
-
-        cleanup:
-        embeddedServer.close()
     }
 
     void "Test extra properties deserialization does not throw exception"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
         var value = '{"string":"value","extraString":"extraValue"}'
-        var myModel = echoTest(embeddedServer, value, MyModel)
+        var myModel = deserialize(value, MyModel)
 
         then:
         notThrown(Exception)
         myModel.string == "value"
-
-        cleanup:
-        embeddedServer.close()
     }
 
     @Unroll
     void "Complex model serialization test #modelBuilder"() {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var response = echoTest(embeddedServer, modelBuilder.build())
+        var response = serialize(modelBuilder.build())
 
         then:
         response == json
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         modelBuilder                                                                                    | json
@@ -87,16 +64,11 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
     @Unroll
     void "Simple model deserialization for #modelBuilder"() {
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var response = echoTest(embeddedServer, json, BaseModel)
+        var response = deserialize(json, BaseModel)
 
         then:
         modelBuilder.build().equals(response, false)
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         modelBuilder                                            | json
@@ -111,16 +83,11 @@ class ExplicitlySetSerdeSpec extends SerdeSpecBase {
 
     @Unroll
     void "Complex model deserialization for #modelBuilder"() {
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var response = echoTest(embeddedServer, json, BaseModel)
+        var response = deserialize(json, BaseModel)
 
         then:
         modelBuilder.build().equals(response, false)
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         modelBuilder                                                                                    | json

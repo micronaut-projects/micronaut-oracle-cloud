@@ -25,6 +25,9 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         expect:
         !context.containsBean(OracleCloudMeterRegistry)
         !context.containsBean(OracleCloudRawMeterRegistry)
+
+        cleanup:
+        context.close()
     }
 
     def "test it not loads when disabled"() {
@@ -36,6 +39,9 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         expect:
         !context.containsBean(OracleCloudMeterRegistry)
         !context.containsBean(OracleCloudRawMeterRegistry)
+
+        cleanup:
+        context.close()
     }
 
     def "test it loads by default"() {
@@ -47,6 +53,9 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
 
         expect:
         context.containsBean(OracleCloudMeterRegistry)
+
+        cleanup:
+        context.close()
     }
 
     def "test raw metrics meter registry"() {
@@ -60,6 +69,9 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         expect:
         context.containsBean(OracleCloudRawMeterRegistry)
         !context.containsBean(OracleCloudMeterRegistry)
+
+        cleanup:
+        context.close()
     }
 
     def "test raw metrics meter registry loads when both are true"() {
@@ -74,6 +86,9 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         expect:
         context.containsBean(OracleCloudRawMeterRegistry)
         !context.containsBean(OracleCloudMeterRegistry)
+
+        cleanup:
+        context.close()
     }
 
     def "test raw metrics meter registry loads when raw is true and aggregated is false"() {
@@ -91,5 +106,8 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         context.containsBean(OracleCloudConfig)
         OracleCloudConfig oracleCloudConfig = context.getBean(OracleCloudConfig)
         oracleCloudConfig.enabled()
+
+        cleanup:
+        context.close()
     }
 }

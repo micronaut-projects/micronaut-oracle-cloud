@@ -1,0 +1,49 @@
+package io.micronaut.oraclecloud.oke.kubernetes.client;
+
+import com.oracle.bmc.auth.AuthCachingPolicy;
+import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider;
+import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Replaces;
+import jakarta.inject.Singleton;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+@AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
+@Singleton
+@Replaces(ConfigFileAuthenticationDetailsProvider.class)
+@Primary
+public class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
+
+    private static final String DUMMY_PEM_KEY = """
+-----BEGIN RSA PRIVATE KEY-----
+MIIBOAIBAAJAUczpZlq0T4QOr4F1RAg/lp0CJLn56ldrmis7bDQ1+XiC3/j7DzhP
+oLCd2PWHU/jniJdWAw6wESix/nb0xs/EiQIDAQABAkAqmNqyQmnDPrGnE3NNij4S
+4JBNL8vFDOEr13eKUWYKEvAAYEnscgyWQvGb7yvAQ5z/YBYatnAjakHRDO5kXtAB
+AiEAoQm2tcP3IiBm8BxstWKJlJ3xYA1euqLFdPnAaPQ5L6ECIQCCCYE0CSeLxgWw
+YqJyStqFbAzlUO1yarWIL3L61IeL6QIgenKQYxVmzKQmoVx7rFAInOCbsJV5+h/a
+VF+zVhqdgQECIEZZ3gzI5xw3hdxngHtVA+QrEM7/eXbtREjpYstRMAQBAiAy3g7Q
+ikw16ABtUnL1IVcwxBPZpSowDd5G3bcJyt+NSQ==
+-----END RSA PRIVATE KEY-----""";
+
+    @Override
+    public String getKeyId() {
+        return null;
+    }
+
+    @Override
+    public InputStream getPrivateKey() {
+        return new ByteArrayInputStream(DUMMY_PEM_KEY.getBytes());
+    }
+
+    @Override
+    public String getPassPhrase() {
+        return null;
+    }
+
+    @Override
+    public char[] getPassphraseCharacters() {
+        return new char[0];
+    }
+}

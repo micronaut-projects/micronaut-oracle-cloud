@@ -1,37 +1,19 @@
 package io.micronaut.oraclecloud.serde
 
-import com.oracle.bmc.http.client.HttpClient
-import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
-import io.micronaut.context.ApplicationContext
-import io.micronaut.core.beans.BeanIntrospection
-import io.micronaut.oraclecloud.httpclient.netty.NettyHttpProvider
-import io.micronaut.runtime.server.EmbeddedServer
-import spock.lang.Specification
 
-import static com.oracle.bmc.http.client.Method.POST
+import com.oracle.bmc.http.client.HttpProvider
+import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel
+import io.micronaut.core.beans.BeanIntrospection
+import spock.lang.Specification
 
 class SerdeSpecBase extends Specification {
 
-    EmbeddedServer initContext() {
-        ApplicationContext ctx = ApplicationContext.run([
-                'micronaut.server.port': '-1'
-        ])
-        return ctx.getBean(EmbeddedServer.class).start()
+    String serialize(Object requestBody) throws Exception {
+        return HttpProvider.getDefault().serializer.writeValueAsString(requestBody)
     }
 
-    static <T> T echoTest(EmbeddedServer embeddedServer, Object requestBody, Class<T> bodyType = String) throws Exception {
-        try (HttpClient client = new NettyHttpProvider().newBuilder()
-                .baseUri(embeddedServer.URI)
-                .build()) {
-            var response = client.createRequest(POST)
-                    .appendPathPart('/echo')
-                    .body(requestBody)
-                    .execute().toCompletableFuture().get()
-            if (bodyType == String) {
-                return response.textBody().toCompletableFuture().get()
-            }
-            return response.body(bodyType).toCompletableFuture().get()
-        }
+    <T> T deserialize(String value, Class<T> type) throws Exception {
+        return HttpProvider.getDefault().serializer.readValue(value, type)
     }
 
     ExplicitlySetBmcModel copyExplicitlySet(ExplicitlySetBmcModel from, ExplicitlySetBmcModel to) {

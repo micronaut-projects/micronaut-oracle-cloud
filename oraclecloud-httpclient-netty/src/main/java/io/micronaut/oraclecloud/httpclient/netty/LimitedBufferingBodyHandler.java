@@ -28,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
  * Handler that buffers some response bytes until a set limit. This way, when normal body reading fails, we can still
  * read a potentially short error message from this handler.
  */
+@Deprecated
 final class LimitedBufferingBodyHandler extends ChannelInboundHandlerAdapter {
     private final int maxBuffer;
     private CompositeByteBuf buffer;

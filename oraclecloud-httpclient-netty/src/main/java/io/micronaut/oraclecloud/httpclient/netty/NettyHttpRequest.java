@@ -19,8 +19,10 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
+import io.micronaut.core.execution.ExecutionFlow;
 import io.micronaut.http.client.netty.BlockHint;
 import io.micronaut.http.client.netty.ConnectionManager;
+import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -41,7 +43,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +60,7 @@ import java.util.concurrent.Executor;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
+@Deprecated
 final class NettyHttpRequest implements HttpRequest {
 
     private static final long UNKNOWN_CONTENT_LENGTH = -1;
@@ -74,6 +76,7 @@ final class NettyHttpRequest implements HttpRequest {
     private final Method method;
     private final HttpHeaders headers;
 
+    private final URI baseUri;
     private final StringBuilder uri;
     private final StringBuilder query;
 
@@ -89,7 +92,9 @@ final class NettyHttpRequest implements HttpRequest {
     public NettyHttpRequest(NettyHttpClient nettyHttpClient, Method method) {
         client = nettyHttpClient;
         this.method = method;
-        this.uri = new StringBuilder(client.baseUri.toString());
+        String baseUri = client.baseUri();
+        this.baseUri = URI.create(baseUri);
+        this.uri = new StringBuilder(baseUri);
         attributes = new HashMap<>();
         StackWalker.StackFrame frame = StackWalker.getInstance().walk(s -> s.filter(stackFrame -> stackFrame.getClassName().contains("com.oracle.bmc") && !stackFrame.getClassName().contains("com.oracle.bmc.http.internal")).toList()).stream().findFirst().orElse(null);
         attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());
@@ -102,6 +107,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.attributes = new HashMap<>(from.attributes);
         this.method = from.method;
         this.headers = from.headers.copy();
+        this.baseUri = from.baseUri;
         this.uri = new StringBuilder(from.uri);
         this.query = new StringBuilder(from.query);
         this.offloadExecutor = from.offloadExecutor;
@@ -163,6 +169,9 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public HttpRequest appendPathPart(String encodedPathPart) {
+        // java-sdk follows whatwg spec for escaping, but RFC 2396 (followed by java.net.URI) does not permit pipe characters
+        encodedPathPart = encodedPathPart.replace("|", "%7c");
+
         boolean hasSlashLeft = uri.charAt(uri.length() - 1) == '/';
         boolean hasSlashRight = encodedPathPart.startsWith("/");
         if (hasSlashLeft) {
@@ -279,16 +288,21 @@ final class NettyHttpRequest implements HttpRequest {
             last = runFilter(filter, last);
         }
 
-        Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
-        connect.subscribe(ph -> {
-            try {
-                io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
-                initializeChannel(ph, nettyRequest, result);
-            } catch (Exception e) {
-                result.completeExceptionally(e);
-                ph.release();
+        DefaultHttpClient.RequestKey rk = new DefaultHttpClient.RequestKey((DefaultHttpClient) client.upstreamHttpClient, baseUri);
+        ExecutionFlow<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(rk, blockHint);
+        connect.onComplete((ph, t) -> {
+            if (t == null) {
+                try {
+                    io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
+                    initializeChannel(ph, nettyRequest, result);
+                } catch (Exception e) {
+                    result.completeExceptionally(e);
+                    ph.release();
+                }
+            } else {
+                result.completeExceptionally(t);
             }
-        }, result::completeExceptionally);
+        });
 
         return result;
     }

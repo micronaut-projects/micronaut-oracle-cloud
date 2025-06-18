@@ -15,6 +15,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Deprecated
 class UndecidedBodyHandlerTest {
     @Test
     public void fullyBufferedStream() throws Exception {

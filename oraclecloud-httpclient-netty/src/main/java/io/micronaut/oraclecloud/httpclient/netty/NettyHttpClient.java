@@ -23,9 +23,12 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpVersionSelection;
+import io.micronaut.http.client.RawHttpClient;
+import io.micronaut.http.client.exceptions.ResponseClosedException;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.json.JsonMapper;
@@ -34,7 +37,6 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.timeout.ReadTimeoutException;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -50,23 +52,27 @@ import java.util.stream.Collectors;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
 
+@Internal
 final class NettyHttpClient implements HttpClient {
     /**
-     * Default settings of {@link com.oracle.bmc.ClientConfiguration}. They are set by BaseClient,
+     * Default settings of {@link ClientConfiguration}. They are set by BaseClient,
      * so we ignore them if they are the default value.
      */
     private static final Map<ClientProperty<?>, Object> EXPECTED_PROPERTIES;
 
+    private static final boolean LEGACY_NETTY_CLIENT = Boolean.getBoolean("io.micronaut.oraclecloud.httpclient.netty.legacy-netty-client");
+
+    final boolean legacyNettyClient;
     final boolean hasContext;
     final boolean ownsThreadPool;
-    final URI baseUri;
+    final String baseUri;
+    volatile ThreadLocal<URI> localBaseUri = null;
     final List<RequestInterceptor> requestInterceptors;
     final List<OciNettyClientFilter<?>> nettyClientFilter;
     final ExecutorService blockingIoExecutor;
     final boolean buffered;
-    final Closeable upstreamHttpClient;
     final ConnectionManager connectionManager;
-    final DefaultHttpClient.RequestKey requestKey;
+    final RawHttpClient upstreamHttpClient;
     final JsonMapper jsonMapper;
 
     static {
@@ -79,7 +85,8 @@ final class NettyHttpClient implements HttpClient {
     }
 
     NettyHttpClient(NettyHttpClientBuilder builder) {
-        DefaultHttpClient mnClient;
+        this.legacyNettyClient = LEGACY_NETTY_CLIENT || (builder.managedProvider != null && builder.managedProvider.configuration.legacyNettyClient());
+        RawHttpClient mnClient;
         if (builder.managedProvider == null) {
             hasContext = false;
             ownsThreadPool = true;
@@ -90,7 +97,7 @@ final class NettyHttpClient implements HttpClient {
             if (builder.properties.containsKey(StandardClientProperties.READ_TIMEOUT)) {
                 cfg.setReadTimeout((Duration) builder.properties.get(StandardClientProperties.READ_TIMEOUT));
             }
-            mnClient = DefaultHttpClient.builder().configuration(cfg).build();
+            mnClient = RawHttpClient.create(null, cfg);
             blockingIoExecutor = Executors.newCachedThreadPool();
             jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         } else {
@@ -101,9 +108,9 @@ final class NettyHttpClient implements HttpClient {
                 }
             }
             if (builder.managedProvider.mnHttpClient != null) {
-                mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClient;
+                mnClient = builder.managedProvider.mnHttpClient;
             } else {
-                mnClient = (DefaultHttpClient) builder.managedProvider.mnHttpClientRegistry.getClient(
+                mnClient = builder.managedProvider.mnHttpClientRegistry.getRawClient(
                     HttpVersionSelection.forClientConfiguration(new DefaultHttpClientConfiguration()),
                     builder.serviceId,
                     null
@@ -119,7 +126,7 @@ final class NettyHttpClient implements HttpClient {
             jsonMapper = builder.managedProvider.jsonMapper;
         }
         upstreamHttpClient = mnClient;
-        connectionManager = mnClient.connectionManager();
+        connectionManager = legacyNettyClient ? ((DefaultHttpClient) mnClient).connectionManager() : null;
         baseUri = Objects.requireNonNull(builder.baseUri, "baseUri");
         requestInterceptors = builder.requestInterceptors.stream()
             .sorted(Comparator.comparingInt(p -> p.priority))
@@ -132,23 +139,38 @@ final class NettyHttpClient implements HttpClient {
             nettyClientFilter = Collections.emptyList();
         }
 
-        requestKey = new DefaultHttpClient.RequestKey(mnClient, this.baseUri);
         this.buffered = builder.buffered;
     }
 
     ByteBufAllocator alloc() {
-        return connectionManager.alloc();
+        return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
     }
 
+    String baseUri() {
+        ThreadLocal<URI> localBaseUri = this.localBaseUri;
+        if (localBaseUri != null) {
+            URI loc = localBaseUri.get();
+            if (loc != null) {
+                return loc.toString();
+            }
+        }
+        return baseUri;
+    }
+
+    @SuppressWarnings("deprecation")
     @Override
     public HttpRequest createRequest(Method method) {
-        return new NettyHttpRequest(this, method);
+        return legacyNettyClient ? new NettyHttpRequest(this, method) : new MicronautHttpRequest(this, method);
     }
 
     @Override
     public boolean isProcessingException(Exception e) {
         // these exceptions will allow the client to retry the request
-        return e instanceof JacksonException || e instanceof PrematureChannelClosureException || e instanceof ReadTimeoutException;
+        return e instanceof JacksonException ||
+            e instanceof PrematureChannelClosureException ||
+            e instanceof ReadTimeoutException ||
+            e instanceof io.micronaut.http.client.exceptions.ReadTimeoutException ||
+            e instanceof ResponseClosedException;
     }
 
     @Override
@@ -163,5 +185,20 @@ final class NettyHttpClient implements HttpClient {
         if (ownsThreadPool) {
             blockingIoExecutor.shutdown();
         }
+    }
+
+    @Override
+    public void updateEndpoint(String baseTarget) {
+        ThreadLocal<URI> localBaseUri = this.localBaseUri;
+        if (localBaseUri == null) {
+            synchronized (this) {
+                localBaseUri = this.localBaseUri;
+                if (localBaseUri == null) {
+                    localBaseUri = new ThreadLocal<>();
+                    this.localBaseUri = localBaseUri;
+                }
+            }
+        }
+        localBaseUri.set(URI.create(baseTarget));
     }
 }

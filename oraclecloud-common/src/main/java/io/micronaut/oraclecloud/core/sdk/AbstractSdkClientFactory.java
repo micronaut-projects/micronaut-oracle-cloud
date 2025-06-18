@@ -17,7 +17,9 @@ package io.micronaut.oraclecloud.core.sdk;
 
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
+import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
+import com.oracle.bmc.common.RegionalClientBuilder;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
@@ -33,6 +35,7 @@ import java.util.Objects;
  * @param <B> The builder type
  * @param <T> The client type
  */
+@Internal
 public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>, T> {
     private final B builder;
 
@@ -42,12 +45,15 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      * @param clientConfiguration The client config
      * @param clientConfigurator The client configurator (optional)
      * @param requestSignerFactory The request signer factory (optional)
+     * @param regionProvider The region provider (optional)
      */
     protected AbstractSdkClientFactory(
             B builder,
             ClientConfiguration clientConfiguration,
             @Nullable ClientConfigurator clientConfigurator,
-            @Nullable RequestSignerFactory requestSignerFactory) {
+            @Nullable RequestSignerFactory requestSignerFactory,
+            @Nullable RegionProvider regionProvider
+    ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
         builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
         if (clientConfigurator != null) {

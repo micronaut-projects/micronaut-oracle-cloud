@@ -1,7 +1,14 @@
-package io.micronaut.oraclecloud.factory;
+package io.micronaut.oraclecloud.factory
 
+import com.oracle.bmc.Region
+import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageAsyncClient
 import com.oracle.bmc.objectstorage.ObjectStorageClient
+import io.micronaut.context.annotation.BootstrapContextCompatible
+import io.micronaut.context.annotation.Primary
+import io.micronaut.context.annotation.Property
+import io.micronaut.context.annotation.Replaces
+import io.micronaut.context.annotation.Requires
 import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
 import io.micronaut.core.annotation.NonNull
@@ -10,7 +17,7 @@ import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import spock.lang.Specification
 
-
+@Property(name = "spec.name", value = "ObjectStorageFactorySpec")
 @MicronautTest
 class ObjectStorageFactorySpec extends Specification {
 
@@ -41,6 +48,7 @@ class ObjectStorageFactorySpec extends Specification {
         asyncClient.endpoint == ASYNC_ENDPOINT
     }
 
+    @Requires(property = "spec.name", value = "ObjectStorageFactorySpec")
     @Singleton
     static class DatabaseClientBuilderListener
             implements BeanCreatedEventListener<ObjectStorageClient.Builder> {
@@ -54,6 +62,7 @@ class ObjectStorageFactorySpec extends Specification {
         }
     }
 
+    @Requires(property = "spec.name", value = "ObjectStorageFactorySpec")
     @Singleton
     static class DatabaseAsyncClientBuilderListener
             implements BeanCreatedEventListener<ObjectStorageAsyncClient.Builder> {
@@ -64,6 +73,18 @@ class ObjectStorageFactorySpec extends Specification {
             var builder = event.bean
             builder.endpoint(ASYNC_ENDPOINT)
             return builder
+        }
+    }
+
+    @Requires(property = "spec.name", value = "ObjectStorageFactorySpec")
+    @Singleton
+    @BootstrapContextCompatible
+    @Replaces(RegionProvider.class)
+    static class RegionProviderReplacement implements RegionProvider {
+
+        @Override
+        Region getRegion() {
+            return null
         }
     }
 

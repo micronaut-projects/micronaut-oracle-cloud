@@ -20,6 +20,7 @@ import io.micronaut.context.annotation.Requires
 import io.micronaut.core.annotation.NonNull
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
+import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Stepwise
@@ -31,6 +32,7 @@ import java.time.temporal.ChronoUnit
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
 @Stepwise
+@Property(name = "use.real.auth", value = "true")
 class OciLoggingSpec extends Specification {
 
     @Shared
@@ -175,6 +177,8 @@ class OciLoggingSpec extends Specification {
         response.__httpStatusCode__ < 300
     }
 
+    // https://ge.micronaut.io/scans/tests?search.relativeStartTime=P90D&search.timeZoneId=Europe%2FMadrid&tests.container=io.micronaut.oraclecloud.client.OciLoggingSpec&tests.test=get%20ingested%20logs
+    @Ignore("This test is flaky ")
     void "get ingested logs"() {
         given:
         var loggingSearchClient = buildLoggingSearchClient()

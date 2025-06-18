@@ -22,7 +22,6 @@ import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.util.StringUtils;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
@@ -95,7 +94,6 @@ public class OracleCloudMeterRegistryFactory {
      * the oraclecloudmonitoring is enabled and raw metrics disabled.
      * Will be true by default when this configuration is included in project.
      *
-     * @param httpClientRegistry the http client registry
      * @param oracleCloudConfig the OracleCloudConfig configuration
      * @param monitoringIngestionClientProvider  the monitoring ingestion client provider
      * @return the registry
@@ -105,9 +103,9 @@ public class OracleCloudMeterRegistryFactory {
     @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.TRUE, defaultValue = StringUtils.FALSE)
-    OracleCloudMeterRegistry oracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig,
+    OracleCloudMeterRegistry oracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
                                                       Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        return new OracleCloudMeterRegistry(httpClientRegistry, oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+        return new OracleCloudMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
     }
 
     /**
@@ -124,7 +122,7 @@ public class OracleCloudMeterRegistryFactory {
     @Bean(preDestroy = "close")
     @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
-    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(HttpClientRegistry<?> httpClientRegistry, OracleCloudConfig oracleCloudConfig, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        return new OracleCloudRawMeterRegistry(httpClientRegistry, oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+    OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
+        return new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
     }
 }

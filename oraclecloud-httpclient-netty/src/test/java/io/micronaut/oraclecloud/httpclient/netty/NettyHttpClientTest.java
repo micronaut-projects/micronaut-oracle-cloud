@@ -9,8 +9,8 @@ import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.client.exceptions.ReadTimeoutException;
 import io.micronaut.runtime.server.EmbeddedServer;
-import io.netty.handler.timeout.ReadTimeoutException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 class NettyHttpClientTest {
@@ -44,6 +45,8 @@ class NettyHttpClientTest {
             expected.put("foo", "bar");
             Assertions.assertEquals(expected, body);
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     @Test
@@ -64,6 +67,8 @@ class NettyHttpClientTest {
                     .streamBody().toCompletableFuture().get();
             Assertions.assertEquals("abcdef", new String(toByteArray(responseStream, 6), StandardCharsets.UTF_8));
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     private static byte[] toByteArray(InputStream stream, int n) throws IOException {
@@ -96,6 +101,8 @@ class NettyHttpClientTest {
                     .textBody().toCompletableFuture().get();
             Assertions.assertEquals("abcdef", response);
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     @Test
@@ -116,11 +123,16 @@ class NettyHttpClientTest {
                 .appendPathPart("/slow")
                 .execute()
                 .exceptionally(e -> {
+                    if (e instanceof CompletionException) {
+                        e = e.getCause();
+                    }
                     Assertions.assertInstanceOf(ReadTimeoutException.class, e);
                     return null;
                 });
             Assertions.assertNull(result.toCompletableFuture().get());
         }
+        embeddedServer.close();
+        ctx.close();
     }
 
     @Controller

@@ -2,10 +2,13 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpProvider;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.core.util.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 
-public class NettyManagedTest extends NettyTest {
+public class NettyManagedTest extends NettyUnmanagedTest {
     ApplicationContext ctx;
 
     @BeforeEach
@@ -21,5 +24,12 @@ public class NettyManagedTest extends NettyTest {
     @Override
     HttpProvider provider() {
         return ctx.getBean(HttpProvider.class);
+    }
+
+    @DisabledIfEnvironmentVariable(named = "CI", matches = StringUtils.TRUE,
+            disabledReason = "It is flaky https://ge.micronaut.io/scans/tests?tests.container=io.micronaut.oraclecloud.httpclient.netty.NettyManagedTest&tests.test=connectionReuse()")
+    @Test
+    public void connectionReuse() throws Exception {
+        super.connectionReuse();
     }
 }

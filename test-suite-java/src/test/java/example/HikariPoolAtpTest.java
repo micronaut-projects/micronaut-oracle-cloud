@@ -49,5 +49,6 @@ class HikariPoolAtpTest {
         ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL");
         resultSet.next();
         Assertions.assertEquals("X", resultSet.getString(1));
+        context.close();
     }
 }

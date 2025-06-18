@@ -24,6 +24,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.DefaultMutableConversionService;
+import io.micronaut.core.io.buffer.ByteArrayBufferFactory;
 import io.micronaut.core.propagation.PropagatedContext;
 import io.micronaut.core.util.SupplierUtil;
 import io.micronaut.http.HttpHeaders;
@@ -35,7 +36,7 @@ import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpHandler;
-import io.micronaut.servlet.http.body.InputStreamByteBody;
+import io.micronaut.http.body.stream.InputStreamByteBody;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
@@ -134,7 +135,7 @@ public class HttpFunction extends OciFunction {
         return inputEvent.consumeBody(stream -> {
             OptionalBufferingInputStream optionalBufferingInputStream = new OptionalBufferingInputStream(stream);
             OptionalLong contentLength = inputEvent.getHeaders().get(HttpHeaders.CONTENT_LENGTH).map(Long::parseLong).map(OptionalLong::of).orElse(OptionalLong.empty());
-            try (CloseableByteBody body = InputStreamByteBody.create(optionalBufferingInputStream, contentLength, ioExecutor.get())) {
+            try (CloseableByteBody body = InputStreamByteBody.create(optionalBufferingInputStream, contentLength, ioExecutor.get(), ByteArrayBufferFactory.INSTANCE)) {
 
                 FnServletRequest<Object> servletRequest = new FnServletRequest<>(
                     body, inputEvent, response, gatewayContext, conversionService,

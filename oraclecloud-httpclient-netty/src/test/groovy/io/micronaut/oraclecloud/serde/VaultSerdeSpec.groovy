@@ -12,17 +12,11 @@ import java.time.Instant
 class VaultSerdeSpec extends SerdeSpecBase {
 
     void "SecretContent serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var body = echoTest(embeddedServer, content)
+        var body = serialize(content)
 
         then:
         serialized == body
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         content | serialized
@@ -33,17 +27,11 @@ class VaultSerdeSpec extends SerdeSpecBase {
     }
 
     void "SecretContent deserialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        def content = echoTest(embeddedServer, body, SecretContentDetails)
+        def content = deserialize(body, SecretContentDetails)
 
         then:
         equalsIgnoreExplicitlySet(expected, content)
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         expected   | body
@@ -54,17 +42,11 @@ class VaultSerdeSpec extends SerdeSpecBase {
     }
 
     void "SecretRule serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var body = echoTest(embeddedServer, content)
+        var body = serialize(content)
 
         then:
         serialized.replace("'", '"') == body
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         content | serialized
@@ -79,17 +61,11 @@ class VaultSerdeSpec extends SerdeSpecBase {
     }
 
     void "SecretRule deserialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        def content = echoTest(embeddedServer, body.replace("'", '"'), SecretRule)
+        def content = deserialize(body.replace("'", '"'), SecretRule)
 
         then:
         equalsIgnoreExplicitlySet(expected, content)
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         expected  | body

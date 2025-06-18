@@ -30,7 +30,6 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import io.micrometer.core.lang.Nullable;
-import io.micronaut.http.client.HttpClientRegistry;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import jakarta.inject.Provider;
 
@@ -38,7 +37,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,19 +50,17 @@ import static java.util.stream.StreamSupport.stream;
  */
 public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
 
-    public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
+    /**
+     *
+     * @param oracleCloudConfig Oracle Cloud Config
+     * @param clock Clock
+     * @param monitoringIngestionClientProvider Monitoring Ingestion Client Provider
+     */
+    public OracleCloudMeterRegistry(
                                     OracleCloudConfig oracleCloudConfig,
                                     Clock clock,
                                     Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        this(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
-    }
-
-    public OracleCloudMeterRegistry(HttpClientRegistry<?> httpClientRegistry,
-                                    OracleCloudConfig oracleCloudConfig,
-                                    Clock clock,
-                                    Provider<MonitoringIngestionClient> monitoringIngestionClientProvider,
-                                    ThreadFactory threadFactory) {
-        super(httpClientRegistry, oracleCloudConfig, clock, monitoringIngestionClientProvider, threadFactory);
+        super(oracleCloudConfig, clock, monitoringIngestionClientProvider, new NamedThreadFactory("oraclecloud-metrics-publisher"));
     }
 
     /**

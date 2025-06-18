@@ -32,6 +32,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 
+@Deprecated
 final class NettyHttpResponse implements HttpResponse {
     private final JsonMapper jsonMapper;
     private final io.netty.handler.codec.http.HttpResponse nettyResponse;

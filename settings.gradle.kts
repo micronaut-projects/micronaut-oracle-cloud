@@ -10,30 +10,9 @@ pluginManagement {
     includeBuild("settings-build-logic")
 }
 
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-        maven { setUrl("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-    }
-}
-
-buildscript {
-    configurations {
-        classpath {
-            resolutionStrategy {
-                eachDependency {
-                    if (requested.group == "org.eclipse.jgit") {
-                        useVersion("5.13.0.202109080827-r")
-                    }
-                }
-            }
-        }
-    }
-}
-
 plugins {
-    id("io.micronaut.build.shared.settings") version "7.2.0"
-    id("me.champeau.includegit") version "0.1.6"
+    id("io.micronaut.build.shared.settings") version "7.4.0"
+    id("me.champeau.includegit") version "0.2.0"
     id("io.micronaut.build.internal.ocisdk")
 }
 
@@ -48,10 +27,12 @@ include("oraclecloud-common")
 include("oraclecloud-function")
 include("oraclecloud-function-http")
 include("oraclecloud-function-http-test")
+include("oraclecloud-httpclient-apache-http-core")
 include("oraclecloud-httpclient-netty")
 include("oraclecloud-serde-processor")
 include("oraclecloud-logging")
 include("oraclecloud-micrometer")
+include("oraclecloud-oke-kubernetes-client")
 include("oraclecloud-oke-workload-identity")
 include("oraclecloud-sdk-base")
 include("oraclecloud-sdk")
@@ -71,6 +52,7 @@ include("docs-examples:example-http-function-kotlin")
 include("test-suite-java")
 include("test-suite-graal-function")
 include("test-suite-graal-logging")
+include("test-suite-http-client")
 include("test-suite-http-server-tck-oraclecloud-function-http")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -87,6 +69,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-validation")
     importMicronautCatalog("micronaut-discovery-client")
+    importMicronautCatalog("micronaut-kubernetes")
 }
 
 val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.versions.toml").toPath())!!

@@ -16,6 +16,8 @@
 package io.micronaut.oraclecloud.monitoring;
 
 import com.oracle.bmc.ClientConfiguration;
+import com.oracle.bmc.Service;
+import com.oracle.bmc.Services;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.http.ClientConfigurator;
@@ -30,7 +32,7 @@ import jakarta.inject.Singleton;
 import java.util.Objects;
 
 /**
- * Oracle SDK provides {@link MonitoringClient} that is constructed with default {@code https://telemetry.<region>.oraclecloud.com} endpoint.
+ * Oracle SDK provides {@link MonitoringClient} that is constructed with default endpoint based on region provided by region provider.
  * For sending metrics to the Oracle Cloud Monitoring service the {@link MonitoringClient#postMetricData(PostMetricDataRequest)} is used
  * but the endpoint must be configured to {@code https://telemetry-ingestion.<region>.oraclecloud.com}. This bean encapsulates creation
  * and configuration of the {@link MonitoringClient} to use {@link MonitoringClient#postMetricData(PostMetricDataRequest)}
@@ -41,6 +43,7 @@ import java.util.Objects;
  */
 @Singleton
 public class MonitoringIngestionClient {
+    public static final Service SERVICE = Services.serviceBuilder().serviceName("MONITORING-INGESTION").serviceEndpointPrefix("telemetry-ingestion").serviceEndpointTemplate("https://telemetry-ingestion.{region}.{secondLevelDomain}").build();
 
     private final ClientConfiguration clientConfiguration;
     private final ClientConfigurator clientConfigurator;
@@ -105,8 +108,13 @@ public class MonitoringIngestionClient {
         if (delegate == null) {
             synchronized (MonitoringIngestionClient.class) {
                 if (delegate == null) {
-                    String ingestionEndpoint = String.format("https://telemetry-ingestion.%s.oraclecloud.com",
-                            regionProvider.getRegion().getRegionId());
+                    if (regionProvider.getRegion() == null) {
+                        throw new IllegalArgumentException("Region is required for the Monitoring Ingestion client");
+                    }
+
+                    String ingestionEndpoint = regionProvider.getRegion().getEndpoint(MonitoringIngestionClient.SERVICE)
+                        .orElse(String.format("https://telemetry-ingestion.%s.oraclecloud.com", regionProvider.getRegion().getRegionId()));
+
                     MonitoringClient.Builder builder = MonitoringClient.builder().
                             endpoint(ingestionEndpoint);
 

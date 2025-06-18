@@ -45,5 +45,8 @@ class OracleCloudMeterRegistryFactorySpec extends Specification {
 
         then:
         noExceptionThrown()
+
+        cleanup:
+        context.close()
     }
 }

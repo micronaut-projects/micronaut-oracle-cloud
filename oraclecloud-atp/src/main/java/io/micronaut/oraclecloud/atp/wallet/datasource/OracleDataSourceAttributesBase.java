@@ -114,7 +114,7 @@ class OracleDataSourceAttributesBase<T extends OracleDataSourceAttributes>
                 dataSource.setURL(url);
             }
             if (user != null) {
-                dataSource.setUser(url);
+                dataSource.setUser(user);
             }
             if (password != null) {
                 dataSource.setPassword(new String(password));

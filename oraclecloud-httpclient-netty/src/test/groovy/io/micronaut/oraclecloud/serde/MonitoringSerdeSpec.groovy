@@ -3,52 +3,42 @@ package io.micronaut.oraclecloud.serde
 
 import com.oracle.bmc.monitoring.model.Alarm
 import com.oracle.bmc.monitoring.model.Metric
-import io.micronaut.runtime.server.EmbeddedServer
 
 class MonitoringSerdeSpec extends SerdeSpecBase {
 
     void "Metric serialization test"() throws Exception {
         given:
-        EmbeddedServer embeddedServer = initContext()
         Metric metric = Metric.builder()
                 .compartmentId("a")
                 .build()
 
         when:
-        var body = echoTest(embeddedServer, metric)
+        var body = serialize(metric)
 
         then:
         '{"compartmentId":"a"}' == body
-
-        cleanup:
-        embeddedServer.close()
     }
 
     void "Explicitly set Metric serialization test"() throws Exception {
         given:
-        EmbeddedServer embeddedServer = initContext()
         Metric metric = Metric.builder()
                 .compartmentId("a")
                 .dimensions(null)
                 .build()
 
         when:
-        var body = echoTest(embeddedServer, metric)
+        var body = serialize(metric)
 
         then:
         '{"compartmentId":"a","dimensions":null}' == body
-
-        cleanup:
-        embeddedServer.close()
     }
 
     void "Metric deserialization test"() throws Exception {
         given:
-        EmbeddedServer embeddedServer = initContext()
         var body = '{"compartmentId":"a","dimensions":null,"namespace":"name"}'
 
         when:
-        var metric = echoTest(embeddedServer, body, Metric)
+        var metric = deserialize(body, Metric)
 
         then:
         Metric expected = Metric.builder()
@@ -57,23 +47,14 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
                 .namespace("name")
                 .build()
         equalsIgnoreExplicitlySet(expected, metric)
-
-        cleanup:
-        embeddedServer.close()
     }
 
     void "Alarm.Severity serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var body = echoTest(embeddedServer, severity)
+        var body = serialize(severity)
 
         then:
         expected == body
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         severity                        | expected
@@ -83,17 +64,11 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
     }
 
     void "Alarm.Severity deserialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var severity = echoTest(embeddedServer, body, Alarm.Severity)
+        var severity = deserialize(body, Alarm.Severity)
 
         then:
         expected == severity
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         body         | expected
@@ -104,17 +79,11 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
     }
 
     void "Alarm serialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var body = echoTest(embeddedServer, alarm)
+        var body = serialize(alarm)
 
         then:
         expected == body
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         alarm   | expected
@@ -129,17 +98,11 @@ class MonitoringSerdeSpec extends SerdeSpecBase {
     }
 
     void "Alarm deserialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        def alarm = echoTest(embeddedServer, body, Alarm)
+        def alarm = deserialize(body, Alarm)
 
         then:
         equalsIgnoreExplicitlySet(expected, alarm)
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         expected   | body

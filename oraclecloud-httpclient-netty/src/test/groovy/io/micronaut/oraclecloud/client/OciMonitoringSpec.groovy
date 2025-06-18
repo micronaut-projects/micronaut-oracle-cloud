@@ -1,7 +1,8 @@
 package io.micronaut.oraclecloud.client
 
+import com.oracle.bmc.Service
+import com.oracle.bmc.Services
 import com.oracle.bmc.auth.AuthenticationDetailsProvider
-import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import com.oracle.bmc.auth.RegionProvider
 import com.oracle.bmc.monitoring.MonitoringClient
 import com.oracle.bmc.monitoring.model.Datapoint
@@ -23,6 +24,7 @@ import java.time.temporal.ChronoUnit
 @Requires(property = "monitoring.compartment.ocid")
 @Requires(bean = AuthenticationDetailsProvider)
 @MicronautTest
+@Property(name = "use.real.auth", value = "true")
 class OciMonitoringSpec extends Specification {
 
     @Property(name = "monitoring.compartment.ocid")
@@ -92,8 +94,11 @@ class OciMonitoringSpec extends Specification {
     }
 
     MonitoringClient createTelemetryClient() {
-        String ingestionEndpoint = String.format("https://telemetry-ingestion.%s.oraclecloud.com",
-                regionProvider.getRegion().getRegionId());
+        Service service = Services.serviceBuilder().serviceName("MONITORING-INGESTION")
+                .serviceEndpointPrefix("telemetry-ingestion")
+                .serviceEndpointTemplate("https://telemetry-ingestion.{region}.{secondLevelDomain}")
+                .build()
+        String ingestionEndpoint = regionProvider.getRegion().getEndpoint(service).orElseThrow()
         return MonitoringClient.builder().endpoint(ingestionEndpoint).build(authenticationDetailsProvider)
     }
 

@@ -1,31 +1,43 @@
-package io.micronaut.oraclecloud.httpclient.netty;
+package io.micronaut.oraclecloud.httpclient;
 
 import com.oracle.bmc.Region;
+import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
+import com.oracle.bmc.common.ClientBuilderBase;
 import com.oracle.bmc.http.client.HttpClient;
-import com.oracle.bmc.http.client.HttpProvider;
+import com.oracle.bmc.http.client.HttpClientBuilder;
+import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import com.oracle.bmc.http.client.io.DuplicatableInputStream;
+import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.requests.DeleteAlarmRequest;
 import com.oracle.bmc.streaming.model.PutMessagesDetails;
 import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
 import io.micronaut.serde.annotation.Serdeable;
+import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.DefaultHttpContent;
+import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.ByteArrayInputStream;
@@ -34,27 +46,36 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
-
 @ExtendWith(NettyRule.class)
-public class NettyTest {
-    private static final HttpProvider PROVIDER = new NettyHttpProvider();
-
-    public NettyRule netty;
+public abstract class NettyTest {
+    protected NettyRule netty;
 
     public static void computeContentLength(FullHttpResponse response) {
         response.headers().add(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
     }
 
-    HttpProvider provider() {
-        return PROVIDER;
+    protected abstract HttpClientBuilder newBuilder();
+
+    protected abstract String endpoint();
+
+    protected abstract void customize(ClientBuilderBase<?, ?> client);
+
+    protected abstract void setupBootstrap(ServerBootstrap bootstrap) throws Exception;
+
+    protected final Channel getServerChannel() {
+        return netty.serverChannel;
     }
 
     @Test
@@ -69,8 +90,7 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .build()) {
             try (HttpResponse response = client.createRequest(Method.GET)
                 .appendPathPart("foo")
@@ -80,54 +100,6 @@ public class NettyTest {
                 Assertions.assertEquals("bar", s);
             }
         }
-    }
-
-    @Test
-    void simpleRequestTestFilters() throws Exception {
-        netty.handleOneRequest((ctx, request) -> {
-            Assertions.assertEquals(HttpMethod.GET, request.method());
-            Assertions.assertEquals("/foo", request.uri());
-
-            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
-            response.headers().add("Content-Type", "text/plain");
-            computeContentLength(response);
-            ctx.writeAndFlush(response);
-        });
-
-        NettyHttpClientBuilder clientBuilder = (NettyHttpClientBuilder) provider().newBuilder()
-            .baseUri(netty.getEndpoint());
-
-        FirstTestNettyClientFilter firstTestNettyClientFilter = new FirstTestNettyClientFilter();
-        SecondTestNettyClientFilter secondTestNettyClientFilter = new SecondTestNettyClientFilter();
-
-        clientBuilder.property(OCI_NETTY_CLIENT_FILTERS_KEY, List.of(
-            firstTestNettyClientFilter,
-            secondTestNettyClientFilter
-        ));
-
-        HttpClient client = clientBuilder.build();
-        try (HttpResponse response = client.createRequest(Method.GET)
-            .appendPathPart("foo")
-            .execute().toCompletableFuture()
-            .get()) {
-            String s = response.textBody().toCompletableFuture().get();
-            Assertions.assertEquals("bar", s);
-        }
-        client.close();
-
-        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getStartTime());
-        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getEndTime());
-        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getStartTime());
-        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getEndTime());
-
-        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
-        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
-        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
-        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
-
-        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
-        Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
-        Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() < secondTestNettyClientFilter.getEndTime());
     }
 
     @Test
@@ -143,12 +115,12 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
@@ -169,13 +141,13 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)), 3)
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
@@ -196,17 +168,59 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)), 3)
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
             }
+        }
+    }
+
+    @Test
+    @Timeout(10)
+    public void streamingResponse() throws Exception {
+        int chunkSize = 8192;
+        int numberOfChunks = 10;
+
+        netty.aggregate = false;
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/foo", request.uri());
+
+            DefaultHttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+            response.headers().add("content-length", chunkSize * numberOfChunks);
+            ctx.writeAndFlush(response).addListener(new ChannelFutureListener() {
+                int n = numberOfChunks;
+
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    if (n-- == 0) {
+                        ctx.writeAndFlush(LastHttpContent.EMPTY_LAST_CONTENT, ctx.voidPromise());
+                    } else {
+                        ctx.writeAndFlush(new DefaultHttpContent(Unpooled.wrappedBuffer(new byte[chunkSize]))).addListener(this);
+                    }
+                }
+            });
+        });
+
+        try (
+            HttpClient client = newBuilder()
+                .property(StandardClientProperties.BUFFER_REQUEST, false)
+                .build();
+            HttpResponse response = client.createRequest(Method.GET)
+                .appendPathPart("foo")
+                .execute().toCompletableFuture()
+                .get();
+            InputStream stream = response.streamBody().toCompletableFuture().get()) {
+
+            Assertions.assertEquals(200, response.status());
+            Assertions.assertEquals(chunkSize * numberOfChunks, stream.readAllBytes().length);
         }
     }
 
@@ -216,6 +230,7 @@ public class NettyTest {
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(request.method(), HttpMethod.PUT);
             Assertions.assertEquals("100-continue", request.headers().get("Expect"));
+            Assertions.assertEquals("3", request.headers().get("content-length"));
 
             DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR,
                 Unpooled.wrappedBuffer("{\"code\":\"foo\",\"message\":\"bar\"}".getBytes(StandardCharsets.UTF_8)));
@@ -236,14 +251,14 @@ public class NettyTest {
             }
         }
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
             try (HttpResponse response = client.createRequest(Method.PUT)
                 .header("expect", "100-continue")
                 .appendPathPart("foo")
-                .body(new FailingInputStream())
+                .body(new FailingInputStream(), 3)
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(500, response.status());
@@ -271,14 +286,14 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .property(StandardClientProperties.BUFFER_REQUEST, true)
             .build()) {
             try (HttpResponse response = client.createRequest(Method.PUT)
                 .header("expect", "100-continue")
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
@@ -287,7 +302,10 @@ public class NettyTest {
     }
 
     @Test
-    public void bufferByDefault() throws Exception {
+    public void bufferWithoutLength() throws Exception {
+        // even when BUFFER_REQUEST is set to false, the jersey client will buffer requests that
+        // are not given with explicit length, and those requests will then get a content-length.
+
         netty.aggregate = false;
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(request.method(), HttpMethod.PUT);
@@ -299,13 +317,40 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
             try (HttpResponse response = client.createRequest(Method.PUT)
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .header("content-type", "text/plain")
+                .execute().toCompletableFuture()
+                .get()) {
+                Assertions.assertEquals(200, response.status());
+            }
+        }
+    }
+
+    @Test
+    public void bufferWithLength() throws Exception {
+        netty.aggregate = false;
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(request.method(), HttpMethod.PUT);
+            Assertions.assertEquals(3, request.headers().getInt("content-length"));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .property(StandardClientProperties.BUFFER_REQUEST, false)
+            .build()) {
+            try (HttpResponse response = client.createRequest(Method.PUT)
+                .appendPathPart("foo")
+                .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)), 3)
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
@@ -333,14 +378,14 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .property(StandardClientProperties.BUFFER_REQUEST, false)
             .build()) {
             try (HttpResponse response = client.createRequest(Method.PUT)
                 .header("expect", "100-continue")
                 .appendPathPart("foo")
                 .body(new ByteArrayInputStream("xyz".getBytes(StandardCharsets.UTF_8)))
+                .header("content-type", "text/plain")
                 .execute().toCompletableFuture()
                 .get()) {
                 Assertions.assertEquals(200, response.status());
@@ -364,8 +409,7 @@ public class NettyTest {
             });
         }
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .build()) {
             for (int i = 0; i < 2; i++) {
                 try (HttpResponse response = client.createRequest(Method.GET)
@@ -404,8 +448,7 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient lowLevelClient = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient lowLevelClient = newBuilder()
             .build()) {
             try (HttpResponse response = lowLevelClient.createRequest(Method.GET).execute().toCompletableFuture().get()) {
                 return response.body(type).toCompletableFuture().get();
@@ -430,9 +473,9 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (MonitoringClient monitoringClient = MonitoringClient.builder()
-            .httpProvider(provider())
-            .endpoint(netty.getEndpoint().toString())
+        MonitoringClient.Builder builder = MonitoringClient.builder();
+        customize(builder);
+        try (MonitoringClient monitoringClient = builder
             .build(SimpleAuthenticationDetailsProvider.builder()
                 .tenantId("tenantId")
                 .userId("userId")
@@ -470,8 +513,7 @@ public class NettyTest {
             ctx.writeAndFlush(response);
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
                 .body(PutMessagesDetails.builder()
@@ -480,6 +522,7 @@ public class NettyTest {
                         .value("bar".getBytes(StandardCharsets.UTF_8))
                         .build()))
                     .build())
+                .header("content-type", "application/json")
                 .execute().toCompletableFuture()
                 .get()) {
                 PutMessagesResult s = response.body(PutMessagesResult.class).toCompletableFuture().get();
@@ -509,11 +552,11 @@ public class NettyTest {
         // empty string should be included in json
         bean.s = "";
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .build()) {
             try (HttpResponse response = client.createRequest(Method.POST)
                 .body(bean)
+                .header("content-type", "application/json")
                 .execute().toCompletableFuture()
                 .get()) {
                 String s = response.textBody().toCompletableFuture().get();
@@ -523,14 +566,14 @@ public class NettyTest {
     }
 
     @Test
+    @Timeout(60)
     public void timeoutRetryTest() throws Exception {
         netty.timeout = false; // no server-side timeout
         netty.handleOneRequest((ctx, request) -> {
             // no response sent
         });
 
-        try (HttpClient client = provider().newBuilder()
-            .baseUri(netty.getEndpoint())
+        try (HttpClient client = newBuilder()
             .build()) {
             try (HttpResponse response = client.createRequest(Method.GET)
                 .execute().toCompletableFuture()
@@ -551,6 +594,197 @@ public class NettyTest {
         }
     }
 
+    @Test
+    public void interceptorOrderTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        List<String> intercepts = new ArrayList<>();
+        try (HttpClient client = newBuilder()
+            .registerRequestInterceptor(0, req -> intercepts.add("pr0"))
+            .registerRequestInterceptor(2, req -> intercepts.add("pr2"))
+            .registerRequestInterceptor(1, req -> intercepts.add("pr1"))
+            .build()) {
+            client.createRequest(Method.GET)
+                .execute().toCompletableFuture()
+                .get().close();
+        }
+
+        Assertions.assertEquals(List.of("pr0", "pr1", "pr2"), intercepts);
+    }
+
+    @Test
+    public void explicitlySetTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/", request.uri());
+            Assertions.assertEquals("{\"foo\":null}", ((FullHttpRequest) request).content().toString(StandardCharsets.UTF_8));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        ExplicitlySetBean bean = new ExplicitlySetBean(null, null);
+        bean.markPropertyAsExplicitlySet("foo");
+
+        try (HttpClient client = newBuilder().build()) {
+            client.createRequest(Method.POST)
+                .body(bean)
+                .header("content-type", "application/json")
+                .execute().toCompletableFuture()
+                .get().close();
+        }
+    }
+
+    @Test
+    public void dateFormatTest() throws Exception {
+        // the original java-sdk forces serializing the millis here, even when they are 0. We don't
+        // support that behavior in serde, so this only tests non-0 millis :)
+        String instant = "2024-10-23T18:47:01.001Z";
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/", request.uri());
+            Assertions.assertEquals("{\"date\":\"" + instant + "\"}", ((FullHttpRequest) request).content().toString(StandardCharsets.UTF_8));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.EMPTY_BUFFER);
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder().build()) {
+            client.createRequest(Method.POST)
+                .body(new DateBean(Date.from(Instant.parse(instant))))
+                .header("content-type", "application/json")
+                .execute().toCompletableFuture()
+                .get().close();
+        }
+    }
+
+    @Test
+    public void errorCodeAndMessageTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.copiedBuffer("{\"code\":\"MyCode\",\"message\":\"msg\"}", StandardCharsets.UTF_8));
+            response.headers().add("Content-Type", "application/json");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder().build();
+             HttpResponse response = client.createRequest(Method.GET)
+                 .execute().toCompletableFuture()
+                 .get()) {
+            ResponseHelper.ErrorCodeAndMessage resp = response.body(ResponseHelper.ErrorCodeAndMessage.class).toCompletableFuture().get();
+            Assertions.assertEquals("MyCode", resp.getCode());
+            Assertions.assertEquals("msg", resp.getMessage());
+        }
+    }
+
+    @Test
+    public void sessionTokenTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/", request.uri());
+            Assertions.assertEquals("{\"currentToken\":\"xyz\"}", ((FullHttpRequest) request).content().toString(StandardCharsets.UTF_8));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.copiedBuffer("{\"token\":\"foo\"}", StandardCharsets.UTF_8));
+            response.headers().add("Content-Type", "application/json");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder().build();
+             HttpResponse response = client.createRequest(Method.POST)
+                 .body(new SessionTokenAuthenticationDetailsProvider.SessionTokenRefreshRequest.SessionTokenRequest("xyz"))
+                 .header("content-type", "application/json")
+                 .execute().toCompletableFuture()
+                 .get()) {
+            SessionTokenAuthenticationDetailsProvider.SessionToken resp = response.body(SessionTokenAuthenticationDetailsProvider.SessionToken.class).toCompletableFuture().get();
+            Assertions.assertEquals("foo", resp.getToken());
+        }
+    }
+
+    @Test
+    public void pipeTest() throws Exception {
+        String testString = "foo|bar";
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/" + URLEncoder.encode(testString, StandardCharsets.UTF_8).toLowerCase(Locale.ROOT), request.uri().toLowerCase(Locale.ROOT));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .build()) {
+            HttpRequest request = client.createRequest(Method.GET)
+                .appendPathPart(testString);
+            Assertions.assertEquals("/" + testString, request.uri().getPath());
+            try (HttpResponse response = request
+                .execute().toCompletableFuture()
+                .get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("bar", s);
+            }
+        }
+    }
+
+    @Test
+    public void localBaseUriTest() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .baseUri("https://example.com")
+            .build()) {
+            client.updateEndpoint(endpoint());
+
+            HttpRequest request = client.createRequest(Method.GET);
+            try (HttpResponse response = request.execute().toCompletableFuture().get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("bar", s);
+            }
+        }
+    }
+
+    @Test
+    public void localBaseUriTestInvalid() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .baseUri("https://example.com[]") // invalid
+            .build()) {
+            client.updateEndpoint(endpoint());
+
+            HttpRequest request = client.createRequest(Method.GET);
+            try (HttpResponse response = request.execute().toCompletableFuture().get()) {
+                String s = response.textBody().toCompletableFuture().get();
+                Assertions.assertEquals("bar", s);
+            }
+        }
+    }
+
     @Serdeable
     public static class MyBean {
         private String s;
@@ -561,6 +795,43 @@ public class NettyTest {
 
         public void setS(String s) {
             this.s = s;
+        }
+    }
+
+    @Serdeable
+    public static class ExplicitlySetBean extends ExplicitlySetBmcModel {
+        private final String foo;
+        private final String bar;
+
+        public ExplicitlySetBean(String foo, String bar) {
+            this.foo = foo;
+            this.bar = bar;
+        }
+
+        @Override
+        public void markPropertyAsExplicitlySet(String propertyName) {
+            super.markPropertyAsExplicitlySet(propertyName);
+        }
+
+        public String getFoo() {
+            return foo;
+        }
+
+        public String getBar() {
+            return bar;
+        }
+    }
+
+    @Serdeable
+    public static class DateBean {
+        private final Date date;
+
+        public DateBean(Date date) {
+            this.date = date;
+        }
+
+        public Date getDate() {
+            return date;
         }
     }
 }

@@ -2,22 +2,15 @@ package io.micronaut.oraclecloud.serde
 
 
 import com.oracle.bmc.http.internal.ResponseHelper
-import io.micronaut.runtime.server.EmbeddedServer
 
 class ErrorResponseSerdeSpec extends SerdeSpecBase {
 
     void "ErrorCodeAndMessage deserialization test"() throws Exception {
-        given:
-        EmbeddedServer embeddedServer = initContext()
-
         when:
-        var response = echoTest(embeddedServer, body, ResponseHelper.ErrorCodeAndMessage)
+        var response = deserialize(body, ResponseHelper.ErrorCodeAndMessage)
 
         then:
         builder.build() == response
-
-        cleanup:
-        embeddedServer.close()
 
         where:
         body    | builder

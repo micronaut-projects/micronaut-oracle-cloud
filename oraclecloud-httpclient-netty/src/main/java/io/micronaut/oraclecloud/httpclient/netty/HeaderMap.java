@@ -26,6 +26,7 @@ import java.util.Set;
 /**
  * {@link java.util.Map} wrapper around netty {@link HttpHeaders}. Read-only.
  */
+@Deprecated
 final class HeaderMap extends AbstractMap<String, List<String>> {
     private final HttpHeaders headers;
 
