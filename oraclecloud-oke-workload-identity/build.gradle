@@ -9,7 +9,7 @@ dependencies {
     implementation mn.micronaut.http.client
     implementation libs.oci.common
 
-    testImplementation(mnTest.mockito)
+    testImplementation(mnTest.mockito.core)
     testImplementation mn.micronaut.context
 }
 

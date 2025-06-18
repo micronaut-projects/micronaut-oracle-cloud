@@ -21,7 +21,7 @@ dependencies {
     compileOnly("com.oracle.oci.sdk:oci-java-sdk-common:$gradle.ociVersion")
 
     runtimeOnly libs.slf4j.jcl
-    testImplementation(mnTest.mockito)
+    testImplementation(mnTest.mockito.core)
     testImplementation mn.micronaut.context
     testImplementation mn.micronaut.discovery.core
     testImplementation mnTest.micronaut.test.spock
