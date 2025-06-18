@@ -31,6 +31,7 @@ import com.oracle.bmc.http.signing.RequestSigner;
 import com.oracle.bmc.util.internal.StringUtils;
 import io.micronaut.core.io.ResourceResolver;
 import io.micronaut.http.client.netty.DefaultHttpClient;
+import io.micronaut.http.client.netty.DefaultHttpClientBuilder;
 import io.micronaut.oraclecloud.httpclient.netty.ManagedNettyHttpProvider;
 import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
 
@@ -130,8 +131,12 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
 
     DefaultHttpClient defaultHttpClient() {
         // Set ca cert when talking to proxymux using https.
-        return DefaultHttpClient.builder()
-            .configuration(getOkeHttpClientConfiguration())
+        DefaultHttpClientBuilder builder = DefaultHttpClient.builder();
+        OkeHttpClientConfiguration configuration = getOkeHttpClientConfiguration();
+        if (configuration != null) {
+            builder.configuration(configuration);
+        }
+        return builder
             .nettyClientSslBuilder(okeNettyClientSslBuilder(KUBERNETES_SERVICE_ACCOUNT_CERT_PATH))
             .build();
     }
