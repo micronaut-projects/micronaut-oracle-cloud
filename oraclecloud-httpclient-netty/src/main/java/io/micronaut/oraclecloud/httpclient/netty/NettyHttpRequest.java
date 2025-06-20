@@ -19,8 +19,10 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
+import io.micronaut.core.execution.ExecutionFlow;
 import io.micronaut.http.client.netty.BlockHint;
 import io.micronaut.http.client.netty.ConnectionManager;
+import io.micronaut.http.client.netty.ConnectionManager.PoolHandle;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
@@ -41,7 +43,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -283,8 +284,12 @@ final class NettyHttpRequest implements HttpRequest {
             last = runFilter(filter, last);
         }
 
-        Mono<ConnectionManager.PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
-        connect.subscribe(ph -> {
+        ExecutionFlow<PoolHandle> connect = client.connectionManager.connect(client.requestKey, blockHint);
+        connect.onComplete((ph, exception) -> {
+            if (exception != null) {
+                result.completeExceptionally(exception);
+                return;
+            }
             try {
                 io.netty.handler.codec.http.HttpRequest nettyRequest = buildNettyRequest(ph);
                 initializeChannel(ph, nettyRequest, result);
@@ -292,7 +297,7 @@ final class NettyHttpRequest implements HttpRequest {
                 result.completeExceptionally(e);
                 ph.release();
             }
-        }, result::completeExceptionally);
+        });
 
         return result;
     }
