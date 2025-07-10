@@ -60,22 +60,28 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     private RetryOptionsConfig retryOptions = new RetryOptionsConfig();
 
     @ConfigurationBuilder(value = "ssl.key-store")
-    private SslConfiguration.KeyStoreConfiguration keyStoreConfiguration = new SslConfiguration.KeyStoreConfiguration();
+    private SslConfiguration.KeyStoreConfiguration keyStoreConfiguration;
 
     @ConfigurationBuilder(value = "ssl.trust-store")
-    private SslConfiguration.TrustStoreConfiguration trustStoreConfiguration = new SslConfiguration.TrustStoreConfiguration();
+    private SslConfiguration.TrustStoreConfiguration trustStoreConfiguration;
 
     @ConfigurationBuilder(value = "ssl")
-    private ClientSslConfiguration clientSslConfiguration = new ClientSslConfiguration();
+    private ClientSslConfiguration clientSslConfiguration;
 
     @ConfigurationBuilder(value = "pool")
     private DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration connectionPoolConfiguration = new DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration();
 
-    public AbstractOracleCloudClientConfigurationProperties() {
+    public AbstractOracleCloudClientConfigurationProperties(DefaultHttpClientConfiguration httpClientConfiguration) {
+        super();
         configureOracleCloudClientRetry();
-        setSslConfiguration(clientSslConfiguration);
-        getSslConfiguration().setKeyStore(keyStoreConfiguration);
-        getSslConfiguration().setTrustStore(trustStoreConfiguration);
+        clientSslConfiguration = (ClientSslConfiguration) getSslConfiguration();
+        if (httpClientConfiguration.getSslConfiguration() != null) {
+            if (httpClientConfiguration.getSslConfiguration() instanceof ClientSslConfiguration defaultClientSslConfiguration) {
+                clientSslConfiguration.setInsecureTrustAllCertificates(defaultClientSslConfiguration.isInsecureTrustAllCertificates());
+            }
+        }
+        keyStoreConfiguration = getSslConfiguration().getKeyStore();
+        trustStoreConfiguration = getSslConfiguration().getTrustStore();
     }
 
     /**

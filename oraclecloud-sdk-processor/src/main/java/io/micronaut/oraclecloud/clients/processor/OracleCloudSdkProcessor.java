@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -438,7 +439,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private MethodSpec.Builder buildConstructor(String simpleName, TypeSpec.Builder builder) {
-        String serviceSimpleName = simpleName.replace("Async", "").replace("Client", "").toLowerCase();
+        String serviceSimpleName = simpleName.replace("Async", "").replace("Client", "").toLowerCase(Locale.ENGLISH);
 
         final MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)

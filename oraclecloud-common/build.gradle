@@ -25,6 +25,7 @@ dependencies {
     testImplementation(mnTest.mockito.core)
     testImplementation mn.micronaut.context
     testImplementation mn.micronaut.discovery.core
+    testImplementation mn.micronaut.http.client
     testImplementation mnTest.micronaut.test.spock
     testImplementation mn.micronaut.http.server.netty
     testImplementation projects.micronautOraclecloudHttpclientNetty

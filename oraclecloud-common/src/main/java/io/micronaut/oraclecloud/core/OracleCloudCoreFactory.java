@@ -202,7 +202,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Primary
     @BootstrapContextCompatible
-    @Named("oci")
+    @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
     protected ClientConfiguration.ClientConfigurationBuilder configurationBuilder(
             OracleCloudClientConfigurationProperties props) {
         return props.getClientBuilder();
@@ -276,7 +276,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingBeans = ClientConfiguration.class)
     @Primary
     @BootstrapContextCompatible
-    @Named("oci")
+    @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }

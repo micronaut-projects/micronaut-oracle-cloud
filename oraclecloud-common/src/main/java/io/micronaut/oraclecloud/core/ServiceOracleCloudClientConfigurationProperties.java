@@ -20,9 +20,10 @@ import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.naming.Named;
+import io.micronaut.http.client.DefaultHttpClientConfiguration;
 
 /**
- * Configuration for the {@link com.oracle.bmc.auth.AuthenticationDetailsProvider}.
+ * Configuration for each of the OCI SDK clients.
  *
  * @since 5.2.1
  */
@@ -31,19 +32,28 @@ import io.micronaut.core.naming.Named;
 public final class ServiceOracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties implements Named {
     private String serviceId;
 
-    public ServiceOracleCloudClientConfigurationProperties(@Parameter String serviceId) {
-        super();
+    public ServiceOracleCloudClientConfigurationProperties(@Parameter String serviceId, DefaultHttpClientConfiguration defaultHttpClientConfiguration) {
+        super(defaultHttpClientConfiguration);
         this.serviceId = serviceId;
     }
 
+    /**
+     * @return the service id.
+     */
     public String getServiceId() {
         return serviceId;
     }
 
+    /**
+     * @param serviceId the service id.
+     */
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
+    /**
+     * @return the serviceId for a {@link Named} used by {@link jakarta.inject.Named}.
+     */
     @Override
     public @NonNull String getName() {
         return serviceId;

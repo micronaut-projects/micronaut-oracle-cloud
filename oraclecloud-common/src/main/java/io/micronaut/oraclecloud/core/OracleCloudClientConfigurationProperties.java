@@ -17,16 +17,21 @@ package io.micronaut.oraclecloud.core;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import jakarta.inject.Named;
 
 /**
- * Configuration for the {@link com.oracle.bmc.auth.AuthenticationDetailsProvider}.
+ * Default configuration for the OCI SDK clients.
  *
  * @author graemerocher
  * @since 1.0.0
  */
 @ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD + ".client")
 @BootstrapContextCompatible
-@Named("oci")
+@Named(OracleCloudCoreFactory.ORACLE_CLOUD)
 public class OracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties {
+
+    public OracleCloudClientConfigurationProperties(DefaultHttpClientConfiguration httpClientConfiguration) {
+        super(httpClientConfiguration);
+    }
 }
