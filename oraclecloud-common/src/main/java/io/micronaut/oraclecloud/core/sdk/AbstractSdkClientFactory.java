@@ -19,13 +19,14 @@ import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
-import com.oracle.bmc.common.RegionalClientBuilder;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.oraclecloud.core.ServiceIdClientConfigurator;
+import io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties;
 import jakarta.inject.Inject;
 
 import java.util.Objects;
@@ -40,25 +41,60 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
     private final B builder;
 
     /**
-     * Default constructor.
+     * Old default constructor.
      * @param builder The builder
      * @param clientConfiguration The client config
      * @param clientConfigurator The client configurator (optional)
      * @param requestSignerFactory The request signer factory (optional)
      * @param regionProvider The region provider (optional)
      */
+    @Deprecated
+    protected AbstractSdkClientFactory(
+        B builder,
+        ClientConfiguration clientConfiguration,
+        @Nullable ClientConfigurator clientConfigurator,
+        @Nullable RequestSignerFactory requestSignerFactory,
+        @Nullable RegionProvider regionProvider
+    ) {
+        this(builder, clientConfiguration, null, null, clientConfigurator, requestSignerFactory, regionProvider, "oci");
+    }
+
+    /**
+     * Default constructor.
+     * @param builder The builder
+     * @param clientConfiguration The client config
+     * @param specificClientConfiguration the configuration specific to each client.
+     * @param serviceOracleCloudClientConfigurationProperties the service oracle cloud client configuration properties for each client.
+     * @param clientConfigurator The client configurator (optional)
+     * @param requestSignerFactory The request signer factory (optional)
+     * @param regionProvider The region provider (optional)
+     * @param defaultServiceId the serviceId which will be used if one from serviceOracleCloudClientConfigurationProperties not provided.
+     */
     protected AbstractSdkClientFactory(
             B builder,
             ClientConfiguration clientConfiguration,
+            @Nullable ClientConfiguration specificClientConfiguration,
+            @Nullable ServiceOracleCloudClientConfigurationProperties serviceOracleCloudClientConfigurationProperties,
             @Nullable ClientConfigurator clientConfigurator,
             @Nullable RequestSignerFactory requestSignerFactory,
-            @Nullable RegionProvider regionProvider
+            @Nullable RegionProvider regionProvider,
+            String defaultServiceId
     ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
-        builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+        if (specificClientConfiguration != null) {
+            builder.configuration(Objects.requireNonNull(specificClientConfiguration, "Client configuration cannot be null"));
+            if (serviceOracleCloudClientConfigurationProperties.getServiceId() != null && !serviceOracleCloudClientConfigurationProperties.getServiceId().isBlank()) {
+                builder.additionalClientConfigurator(new ServiceIdClientConfigurator(serviceOracleCloudClientConfigurationProperties.getServiceId()));
+            } else {
+                builder.additionalClientConfigurator(new ServiceIdClientConfigurator(defaultServiceId));
+            }
+        } else {
+            builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+        }
         if (clientConfigurator != null) {
             builder.clientConfigurator(clientConfigurator);
         }
+
         if (requestSignerFactory != null) {
             builder.requestSignerFactory(requestSignerFactory);
         }

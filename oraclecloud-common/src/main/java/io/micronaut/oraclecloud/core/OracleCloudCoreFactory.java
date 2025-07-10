@@ -29,6 +29,7 @@ import com.oracle.bmc.auth.URLBasedX509CertificateSupplier;
 import com.oracle.bmc.auth.internal.AuthUtils;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
+import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Property;
@@ -39,6 +40,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
 import java.io.IOException;
@@ -200,8 +202,21 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Primary
     @BootstrapContextCompatible
+    @Named("oci")
     protected ClientConfiguration.ClientConfigurationBuilder configurationBuilder(
             OracleCloudClientConfigurationProperties props) {
+        return props.getClientBuilder();
+    }
+
+    /**
+     * Produces a {@link com.oracle.bmc.ClientConfiguration.ClientConfigurationBuilder} bean for the given properties.
+     *
+     * @param props The props
+     * @return The builder
+     */
+    @BootstrapContextCompatible
+    @EachBean(ServiceOracleCloudClientConfigurationProperties.class)
+    protected ClientConfiguration.ClientConfigurationBuilder configurationPerClientBuilder(ServiceOracleCloudClientConfigurationProperties props) {
         return props.getClientBuilder();
     }
 
@@ -261,7 +276,17 @@ public class OracleCloudCoreFactory {
     @Requires(missingBeans = ClientConfiguration.class)
     @Primary
     @BootstrapContextCompatible
+    @Named("oci")
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
+        return builder.build();
+    }
+
+    /**
+     * @param builder the {@link ClientConfiguration.ClientConfigurationBuilder} for each client.
+     * @return client configuration for each client.
+     */
+    @EachBean(ClientConfiguration.ClientConfigurationBuilder.class)
+    protected ClientConfiguration clientConfigurationPerClient(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }
 

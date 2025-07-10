@@ -15,13 +15,9 @@
  */
 package io.micronaut.oraclecloud.core;
 
-import com.oracle.bmc.ClientConfiguration;
-import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
-import com.oracle.bmc.retrier.RetryConfiguration;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.core.annotation.Nullable;
+import jakarta.inject.Named;
 
 /**
  * Configuration for the {@link com.oracle.bmc.auth.AuthenticationDetailsProvider}.
@@ -31,50 +27,6 @@ import io.micronaut.core.annotation.Nullable;
  */
 @ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD + ".client")
 @BootstrapContextCompatible
-public class OracleCloudClientConfigurationProperties {
-
-    @ConfigurationBuilder(prefixes = "", excludes = {"retryConfiguration", "circuitBreakerConfiguration", "circuitBreaker"})
-    private final ClientConfiguration.ClientConfigurationBuilder clientBuilder = ClientConfiguration.builder();
-
-    @ConfigurationBuilder(prefixes = "", value = "retry")
-    @Nullable
-    private RetryConfiguration.Builder retryBuilder;
-
-    @ConfigurationBuilder(prefixes = "", value = "circuit-breaker")
-    @Nullable
-    private CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder circuitBreakerBuilder;
-
-    /**
-     * @return Obtains the configuration builder.
-     */
-    public ClientConfiguration.ClientConfigurationBuilder getClientBuilder() {
-        if (retryBuilder != null) {
-            clientBuilder.retryConfiguration(retryBuilder.build());
-        }
-        if (circuitBreakerBuilder != null) {
-            clientBuilder.circuitBreakerConfiguration(circuitBreakerBuilder.build());
-        }
-        return clientBuilder;
-    }
-
-    /**
-     * @return The retry config.
-     */
-    public RetryConfiguration.Builder getRetryBuilder() {
-        if (retryBuilder == null) {
-            retryBuilder = RetryConfiguration.builder();
-        }
-        return retryBuilder;
-    }
-
-    /**
-     * @return  The circuit breaker config
-     */
-    public CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder getCircuitBreakerBuilder() {
-        if (circuitBreakerBuilder == null) {
-            circuitBreakerBuilder = CircuitBreakerConfiguration.builder();
-        }
-        return circuitBreakerBuilder;
-    }
-
+@Named("oci")
+public class OracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties {
 }

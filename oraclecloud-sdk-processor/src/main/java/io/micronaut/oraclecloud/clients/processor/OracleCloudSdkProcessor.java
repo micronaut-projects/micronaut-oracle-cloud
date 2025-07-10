@@ -40,6 +40,7 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.Writer;
@@ -437,9 +438,17 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private MethodSpec.Builder buildConstructor(String simpleName, TypeSpec.Builder builder) {
+        String serviceSimpleName = simpleName.replace("Async", "").replace("Client", "").toLowerCase();
+
         final MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "specificClientConfiguration")
+                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember("value", CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
+
+                .addParameter(ParameterSpec.builder(ClassName.get("io.micronaut.oraclecloud.core", "ServiceOracleCloudClientConfigurationProperties"), "serviceOracleCloudClientConfigurationProperties")
+                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember("value", CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
+
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "clientConfigurator")
                                 .addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http.signing", "RequestSignerFactory"), "requestSignerFactory")
@@ -447,7 +456,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, clientConfigurator, requestSignerFactory, regionProvider)")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceOracleCloudClientConfigurationProperties, clientConfigurator, requestSignerFactory, regionProvider,\"" + serviceSimpleName + "\")")
                         .addStatement("builder = super.getBuilder()")
                 .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);

@@ -31,7 +31,7 @@ public class LargeTransferTest {
             "micronaut.server.ssl.port", -1,
             "micronaut.server.ssl.build-self-signed", true,
             "micronaut.server.max-request-size", count * 2,
-            "micronaut.http.client.ssl.insecure-trust-all-certificates", true
+            "oci.client.ssl.insecure-trust-all-certificates", true
         ));
              EmbeddedServer server = ctx.getBean(EmbeddedServer.class)) {
             server.start();

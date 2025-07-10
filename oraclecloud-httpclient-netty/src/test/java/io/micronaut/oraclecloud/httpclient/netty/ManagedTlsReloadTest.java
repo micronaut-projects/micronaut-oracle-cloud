@@ -70,8 +70,8 @@ public class ManagedTlsReloadTest {
             Map.entry("micronaut.ssl.enabled", "true"),
             Map.entry("micronaut.server.ssl.port", "-1"),
             Map.entry("micronaut.server.ssl.client-authentication", "NEED"),
-            Map.entry("micronaut.http.services.oci.ssl.enabled", "true"),
-            Map.entry("micronaut.http.services.oci.ssl.client-authentication", "NEED"),
+            Map.entry("oci.client.ssl.enabled", "true"),
+            Map.entry("oci.client.ssl.client-authentication", "NEED"),
 
             Map.entry("micronaut.server.ssl.trust-store.path", "file://" + trustStoreServer),
             Map.entry("micronaut.server.ssl.trust-store.type", "JKS"),
@@ -81,13 +81,13 @@ public class ManagedTlsReloadTest {
             Map.entry("micronaut.server.ssl.key-store.type", "PKCS12"),
             Map.entry("micronaut.server.ssl.key-store.password", ""),
 
-            Map.entry("micronaut.http.services.oci.ssl.trust-store.path", "file://" + trustStoreClient),
-            Map.entry("micronaut.http.services.oci.ssl.trust-store.type", "JKS"),
-            Map.entry("micronaut.http.services.oci.ssl.trust-store.password", ""),
+            Map.entry("oci.client.ssl.trust-store.path", "file://" + trustStoreClient),
+            Map.entry("oci.client.ssl.trust-store.type", "JKS"),
+            Map.entry("oci.client.ssl.trust-store.password", ""),
 
-            Map.entry("micronaut.http.services.oci.ssl.key-store.path", "file://" + keyStoreClient),
-            Map.entry("micronaut.http.services.oci.ssl.key-store.type", "PKCS12"),
-            Map.entry("micronaut.http.services.oci.ssl.key-store.password", "")
+            Map.entry("oci.client.ssl.key-store.path", "file://" + keyStoreClient),
+            Map.entry("oci.client.ssl.key-store.type", "PKCS12"),
+            Map.entry("oci.client.ssl.key-store.password", "")
         ));
              EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class)) {
             embeddedServer.start();
@@ -143,19 +143,19 @@ public class ManagedTlsReloadTest {
             Map.entry("micronaut.server.ssl.key-store.type", "PKCS12"),
             Map.entry("micronaut.server.ssl.key-store.password", ""),
 
-            Map.entry("micronaut.http.services.custom.ssl.enabled", "true"),
-            Map.entry("micronaut.http.services.custom.ssl.client-authentication", "NEED"),
-            Map.entry("micronaut.http.services.custom.ssl.insecure-trust-all-certificates", true),
-            Map.entry("micronaut.http.services.custom.ssl.key-store.path", "file://" + keyStoreClientCustom),
-            Map.entry("micronaut.http.services.custom.ssl.key-store.type", "PKCS12"),
-            Map.entry("micronaut.http.services.custom.ssl.key-store.password", ""),
+            Map.entry("oci.clients.custom.ssl.enabled", "true"),
+            Map.entry("oci.clients.custom.ssl.client-authentication", "NEED"),
+            Map.entry("oci.clients.custom.ssl.insecure-trust-all-certificates", true),
+            Map.entry("oci.clients.custom.ssl.key-store.path", "file://" + keyStoreClientCustom),
+            Map.entry("oci.clients.custom.ssl.key-store.type", "PKCS12"),
+            Map.entry("oci.clients.custom.ssl.key-store.password", ""),
 
-            Map.entry("micronaut.http.services.oci.ssl.enabled", "true"),
-            Map.entry("micronaut.http.services.oci.ssl.client-authentication", "NEED"),
-            Map.entry("micronaut.http.services.oci.ssl.insecure-trust-all-certificates", true),
-            Map.entry("micronaut.http.services.oci.ssl.key-store.path", "file://" + keyStoreClientDefault),
-            Map.entry("micronaut.http.services.oci.ssl.key-store.type", "PKCS12"),
-            Map.entry("micronaut.http.services.oci.ssl.key-store.password", "")
+            Map.entry("oci.client.ssl.enabled", "true"),
+            Map.entry("oci.client.ssl.client-authentication", "NEED"),
+            Map.entry("oci.client.ssl.insecure-trust-all-certificates", true),
+            Map.entry("oci.client.ssl.key-store.path", "file://" + keyStoreClientDefault),
+            Map.entry("oci.client.ssl.key-store.type", "PKCS12"),
+            Map.entry("oci.client.ssl.key-store.password", "")
         ));
              EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class)) {
             embeddedServer.start();
