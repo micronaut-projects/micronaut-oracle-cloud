@@ -143,15 +143,15 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     /**
      * @return {@link RetryOptionsConfig}.
      */
-    public RetryOptionsConfig getRetryOptions() {
+    public RetryOptionsConfig getRetryOptionsConfig() {
         return retryOptionsConfig;
     }
 
     /**
-     * @param retryOptions retryOptions
+     * @param retryOptionsConfig retryOptionsConfig
      */
-    public void setRetryOptions(RetryOptionsConfig retryOptions) {
-        this.retryOptionsConfig = retryOptions;
+    public void setRetryOptionsConfig(RetryOptionsConfig retryOptionsConfig) {
+        this.retryOptionsConfig = retryOptionsConfig;
     }
 
     /**
@@ -226,7 +226,7 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     private void configureOracleCloudClientRetry() {
         TerminationStrategy terminationStrategy = createTerminationStrategy(getRetryTerminationStrategy());
         DelayStrategy delayStrategy = createDelayStrategy(getRetryDelayStrategy());
-        RetryOptions retryOptions = createRetryOptions(getRetryOptions());
+        RetryOptions retryOptions = createRetryOptions(getRetryOptionsConfig());
 
         if (terminationStrategy != null) {
             retryBuilder.terminationStrategy(terminationStrategy);
