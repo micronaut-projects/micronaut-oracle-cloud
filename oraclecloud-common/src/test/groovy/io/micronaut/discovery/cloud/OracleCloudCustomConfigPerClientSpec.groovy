@@ -8,6 +8,7 @@ import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy
 import com.oracle.bmc.retrier.RetryOptions
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
+import io.micronaut.http.client.HttpClientConfiguration
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Specification
@@ -124,6 +125,45 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
         then:
         retryOptions.getClass() == RetryOptions.class
         retryOptions.markReadLimit == 100
+
+        cleanup:
+        ctx.close()
+        server.close()
+    }
+
+    void "test read timeout per client"() {
+        when:
+        EmbeddedServer server = ApplicationContext.run(EmbeddedServer,
+                [
+                        "spec.name": "OracleCloudCustomConfigPerClientSpec",
+                        "oci.clients.identity.read-timeout": "100ms",
+                ], Environment.ORACLE_CLOUD) as EmbeddedServer
+
+        def ctx = server.applicationContext
+        def config = ctx.getBean(ClientConfiguration, Qualifiers.byName("identity"))
+
+
+        then:
+        config.getReadTimeoutMillis() == 100
+
+        cleanup:
+        ctx.close()
+        server.close()
+    }
+
+    void "test read timeout in millis per client"() {
+        when:
+        EmbeddedServer server = ApplicationContext.run(EmbeddedServer,
+                [
+                        "spec.name": "OracleCloudCustomConfigPerClientSpec",
+                        "oci.clients.identity.read-timeout-millis": "100",
+                ], Environment.ORACLE_CLOUD) as EmbeddedServer
+
+        def ctx = server.applicationContext
+        def httpConfig = ctx.getBean(HttpClientConfiguration, Qualifiers.byName("identity"))
+
+        then:
+        httpConfig.getReadTimeout().get().toMillis() == 100
 
         cleanup:
         ctx.close()
