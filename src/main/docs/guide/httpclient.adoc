@@ -47,7 +47,19 @@ The jersey HTTP client can be configured through a `ClientConfigurator` and `Sta
 - `StandardClientProperties.CONNECT_TIMEOUT` supported only when the client is _not_ managed
 - `StandardClientProperties.ASYNC_POOL_SIZE` supported only when the client is _not_ managed
 
-All other properties, in particular those related to proxies or TLS configuration, are not supported. Instead, you can configure these settings through the normal Micronaut HTTP client configuration properties, with the special service name `oci`, for example the `micronaut.http.services.oci.read-timeout` property. For the managed netty client, this allows you to configure TLS, proxy settings, various timeouts and the pool size. The service name can be customized using the `NettyClientProperties.SERVICE_ID` property.
+All other properties, in particular those related to proxies or TLS configuration, are not supported.
+Other properties — particularly those related to proxies and TLS configuration — are not supported directly.
+Instead, these settings should be configured using the standard Micronaut HTTP client configuration properties, with a special service name prefix.
+For example, to configure the managed Netty client, you can use properties like `oci.client.read-timeout`. This allows you to configure TLS, proxy settings, timeouts, connection pool sizes, and other HTTP client options.
+
+Similarly, you can configure other Micronaut-provided clients by specifying the appropriate service ID. For example:
+
+- `oci.clients.objectstorage.read-timeout` for the Object Storage client
+
+- `oci.clients.identity.read-timeout`  for the Identity client
+
+The service ID can be customized using the `NettyClientProperties.SERVICE_ID` property to `my_new_id` for an example or by setting `oci.clients.identity.serviceId=my_new_id`. You can then configure this client further using `micronaut.http.services.my_new_id.*` properties.
+
 
 #### Logging
 
