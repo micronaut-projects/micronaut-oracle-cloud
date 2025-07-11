@@ -57,7 +57,7 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     private DelayStrategyConfig retryDelayStrategy = new DelayStrategyConfig();
 
     @ConfigurationBuilder(value = "retry-options")
-    private RetryOptionsConfig retryOptions = new RetryOptionsConfig();
+    private RetryOptionsConfig retryOptionsConfig = new RetryOptionsConfig();
 
     @ConfigurationBuilder(value = "ssl.key-store")
     private SslConfiguration.KeyStoreConfiguration keyStoreConfiguration;
@@ -144,14 +144,14 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
      * @return {@link RetryOptionsConfig}.
      */
     public RetryOptionsConfig getRetryOptions() {
-        return retryOptions;
+        return retryOptionsConfig;
     }
 
     /**
      * @param retryOptions retryOptions
      */
     public void setRetryOptions(RetryOptionsConfig retryOptions) {
-        this.retryOptions = retryOptions;
+        this.retryOptionsConfig = retryOptions;
     }
 
     /**
@@ -243,9 +243,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
 
     @Nullable
     private TerminationStrategy createTerminationStrategy(TerminationStrategyConfig cfg) {
-        if (cfg == null) {
-            return null;
-        }
         if (cfg.getMaxTimeMillis() != null) {
             return new MaxTimeTerminationStrategy(cfg.getMaxTimeMillis());
         }
@@ -257,9 +254,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
 
     @Nullable
     private DelayStrategy createDelayStrategy(DelayStrategyConfig cfg) {
-        if (cfg == null) {
-            return null;
-        }
         if (cfg.getTimeBetweenAttemptsInMillis() != null) {
             return new ExponentialBackoffDelayStrategy(cfg.getTimeBetweenAttemptsInMillis());
         }
@@ -272,9 +266,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
 
     @Nullable
     private RetryOptions createRetryOptions(RetryOptionsConfig cfg) {
-        if (cfg == null) {
-            return null;
-        }
         if (cfg.getMarkReadLimit() != null) {
             return new RetryOptions(cfg.getMarkReadLimit());
         }
