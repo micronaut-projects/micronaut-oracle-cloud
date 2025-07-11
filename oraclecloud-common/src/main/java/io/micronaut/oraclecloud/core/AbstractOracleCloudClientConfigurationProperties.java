@@ -73,7 +73,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
 
     public AbstractOracleCloudClientConfigurationProperties(DefaultHttpClientConfiguration httpClientConfiguration) {
         super();
-        configureOracleCloudClientRetry();
         clientSslConfiguration = (ClientSslConfiguration) getSslConfiguration();
         if (httpClientConfiguration.getSslConfiguration() != null) {
             if (httpClientConfiguration.getSslConfiguration() instanceof ClientSslConfiguration defaultClientSslConfiguration) {
@@ -197,13 +196,16 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     @Override
     public void setReadTimeout(@Nullable Duration readTimeout) {
         super.setReadTimeout(readTimeout);
-        clientBuilder.readTimeoutMillis(readTimeout.toMillisPart());
+        if (readTimeout != null) {
+            clientBuilder.readTimeoutMillis(readTimeout.toMillisPart());
+        }
     }
 
     /**
      * @return Obtains the configuration builder.
      */
     public ClientConfiguration.ClientConfigurationBuilder getClientBuilder() {
+        configureOracleCloudClientRetry();
         clientBuilder.retryConfiguration(retryBuilder.build());
         if (circuitBreakerBuilder != null) {
             clientBuilder.circuitBreakerConfiguration(circuitBreakerBuilder.build());
@@ -332,9 +334,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
      */
     public static final class RetryOptionsConfig {
         private Integer markReadLimit;
-
-        public RetryOptionsConfig() {
-        }
 
         public Integer getMarkReadLimit() {
             return markReadLimit;

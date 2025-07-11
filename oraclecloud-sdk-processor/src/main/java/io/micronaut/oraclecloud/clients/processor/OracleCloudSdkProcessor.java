@@ -93,6 +93,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     public static final String CLIENT_PACKAGE = "io.micronaut.oraclecloud.clients";
 
     /**
+     * Value field name in the annotations.
+     */
+    public static final String VALUE_FIELD = "value";
+
+    /**
      * Processing environment option used to specify the client classes to process.
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
@@ -445,10 +450,10 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration")
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "specificClientConfiguration")
-                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember("value", CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
+                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 
                 .addParameter(ParameterSpec.builder(ClassName.get("io.micronaut.oraclecloud.core", "ServiceOracleCloudClientConfigurationProperties"), "serviceOracleCloudClientConfigurationProperties")
-                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember("value", CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
+                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "clientConfigurator")
                                 .addAnnotation(Nullable.class).build())
@@ -489,7 +494,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             .flatMap(ann -> {
                 final Map<? extends ExecutableElement, ? extends AnnotationValue> values = ann.getElementValues();
                 for (Entry<? extends ExecutableElement, ? extends AnnotationValue> value: values.entrySet()) {
-                    if (value.getKey().getSimpleName().toString().equals("value")) {
+                    if (value.getKey().getSimpleName().toString().equals(VALUE_FIELD)) {
                         return Optional.ofNullable(value.getValue().getValue().toString());
                     }
                 }
