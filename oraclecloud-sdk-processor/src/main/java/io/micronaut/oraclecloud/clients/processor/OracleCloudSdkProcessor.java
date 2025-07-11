@@ -132,7 +132,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 final boolean isRxJava2 = t.equals("RXJAVA2");
                 final boolean isReactor = t.equals("REACTOR");
                 final boolean isAsync = t.equals("ASYNC");
-                List<String> factoryClassNames = new ArrayList<>();
                 for (String clientName : clientNames) {
                     final String packageName = NameUtils.getPackageName(clientName);
                     final String simpleName = NameUtils.getSimpleName(clientName);
@@ -142,7 +141,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                     } else if (isReactor) {
                         writeReactorClients(e, packageName, simpleName);
                     } else if (isAsync) {
-                        factoryClassNames.add(writeClientFactory(e, packageName, simpleName));
+                        writeClientFactory(e, packageName, simpleName);
                     }
                 }
 
@@ -462,7 +461,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceOracleCloudClientConfigurationProperties, clientConfigurator, requestSignerFactory, regionProvider,\"" + serviceSimpleName + "\")")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceOracleCloudClientConfigurationProperties, clientConfigurator, requestSignerFactory,\"" + serviceSimpleName + "\")")
                         .addStatement("builder = super.getBuilder()")
                 .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);

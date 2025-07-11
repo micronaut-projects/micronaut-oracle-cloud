@@ -42,13 +42,14 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
 
     /**
      * Old default constructor.
+     * @deprecated use the new constructor.
      * @param builder The builder
      * @param clientConfiguration The client config
      * @param clientConfigurator The client configurator (optional)
      * @param requestSignerFactory The request signer factory (optional)
      * @param regionProvider The region provider (optional)
      */
-    @Deprecated
+    @Deprecated(since = "5.2.1")
     protected AbstractSdkClientFactory(
         B builder,
         ClientConfiguration clientConfiguration,
@@ -56,7 +57,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
         @Nullable RequestSignerFactory requestSignerFactory,
         @Nullable RegionProvider regionProvider
     ) {
-        this(builder, clientConfiguration, null, null, clientConfigurator, requestSignerFactory, regionProvider, "oci");
+        this(builder, clientConfiguration, null, null, clientConfigurator, requestSignerFactory, "oci");
     }
 
     /**
@@ -67,7 +68,6 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      * @param serviceOracleCloudClientConfigurationProperties the service oracle cloud client configuration properties for each client.
      * @param clientConfigurator The client configurator (optional)
      * @param requestSignerFactory The request signer factory (optional)
-     * @param regionProvider The region provider (optional)
      * @param defaultServiceId the serviceId which will be used if one from serviceOracleCloudClientConfigurationProperties not provided.
      */
     protected AbstractSdkClientFactory(
@@ -77,7 +77,6 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
             @Nullable ServiceOracleCloudClientConfigurationProperties serviceOracleCloudClientConfigurationProperties,
             @Nullable ClientConfigurator clientConfigurator,
             @Nullable RequestSignerFactory requestSignerFactory,
-            @Nullable RegionProvider regionProvider,
             String defaultServiceId
     ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");

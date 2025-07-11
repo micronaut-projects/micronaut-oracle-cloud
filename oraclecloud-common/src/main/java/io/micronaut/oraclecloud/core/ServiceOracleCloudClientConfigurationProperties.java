@@ -56,6 +56,6 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
      */
     @Override
     public @NonNull String getName() {
-        return serviceId;
+        return getServiceId();
     }
 }

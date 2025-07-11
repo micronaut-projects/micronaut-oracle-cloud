@@ -71,13 +71,11 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     @ConfigurationBuilder(value = "pool")
     private DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration connectionPoolConfiguration = new DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration();
 
-    public AbstractOracleCloudClientConfigurationProperties(DefaultHttpClientConfiguration httpClientConfiguration) {
+    protected AbstractOracleCloudClientConfigurationProperties(DefaultHttpClientConfiguration httpClientConfiguration) {
         super();
         clientSslConfiguration = (ClientSslConfiguration) getSslConfiguration();
-        if (httpClientConfiguration.getSslConfiguration() != null) {
-            if (httpClientConfiguration.getSslConfiguration() instanceof ClientSslConfiguration defaultClientSslConfiguration) {
-                clientSslConfiguration.setInsecureTrustAllCertificates(defaultClientSslConfiguration.isInsecureTrustAllCertificates());
-            }
+        if (httpClientConfiguration.getSslConfiguration() != null && httpClientConfiguration.getSslConfiguration() instanceof ClientSslConfiguration defaultClientSslConfiguration) {
+            clientSslConfiguration.setInsecureTrustAllCertificates(defaultClientSslConfiguration.isInsecureTrustAllCertificates());
         }
         keyStoreConfiguration = getSslConfiguration().getKeyStore();
         trustStoreConfiguration = getSslConfiguration().getTrustStore();
