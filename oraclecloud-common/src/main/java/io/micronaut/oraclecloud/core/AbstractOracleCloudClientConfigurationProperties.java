@@ -51,22 +51,22 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     private CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder circuitBreakerBuilder;
 
     @ConfigurationBuilder(value = "retry-termination-strategy")
-    private TerminationStrategyConfig retryTerminationStrategy = new TerminationStrategyConfig();
+    private final TerminationStrategyConfig retryTerminationStrategy = new TerminationStrategyConfig();
 
     @ConfigurationBuilder(value = "retry-delay-strategy")
-    private DelayStrategyConfig retryDelayStrategy = new DelayStrategyConfig();
+    private final DelayStrategyConfig retryDelayStrategy = new DelayStrategyConfig();
 
     @ConfigurationBuilder(value = "retry-options")
-    private RetryOptionsConfig retryOptionsConfig = new RetryOptionsConfig();
+    private final RetryOptionsConfig retryOptionsConfig = new RetryOptionsConfig();
 
     @ConfigurationBuilder(value = "ssl.key-store")
-    private SslConfiguration.KeyStoreConfiguration keyStoreConfiguration;
+    private final SslConfiguration.KeyStoreConfiguration keyStoreConfiguration;
 
     @ConfigurationBuilder(value = "ssl.trust-store")
-    private SslConfiguration.TrustStoreConfiguration trustStoreConfiguration;
+    private final SslConfiguration.TrustStoreConfiguration trustStoreConfiguration;
 
     @ConfigurationBuilder(value = "ssl")
-    private ClientSslConfiguration clientSslConfiguration;
+    private final ClientSslConfiguration clientSslConfiguration;
 
     @ConfigurationBuilder(value = "pool")
     private DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration connectionPoolConfiguration = new DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration();
@@ -86,13 +86,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
      */
     public ClientSslConfiguration getClientSslConfiguration() {
         return clientSslConfiguration;
-    }
-
-    /**
-     * @param clientSslConfiguration the client ssl configuration.
-     */
-    public void setClientSslConfiguration(ClientSslConfiguration clientSslConfiguration) {
-        this.clientSslConfiguration = clientSslConfiguration;
     }
 
     /**
@@ -118,24 +111,10 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     }
 
     /**
-     * @param keyStoreConfiguration the key store configuration.
-     */
-    public void setKeyStoreConfiguration(SslConfiguration.KeyStoreConfiguration keyStoreConfiguration) {
-        this.keyStoreConfiguration = keyStoreConfiguration;
-    }
-
-    /**
      * @return {@link SslConfiguration.TrustStoreConfiguration}.
      */
     public SslConfiguration.TrustStoreConfiguration getTrustStoreConfiguration() {
         return trustStoreConfiguration;
-    }
-
-    /**
-     * @param trustStoreConfiguration the trust store configuration.
-     */
-    public void setTrustStoreConfiguration(SslConfiguration.TrustStoreConfiguration trustStoreConfiguration) {
-        this.trustStoreConfiguration = trustStoreConfiguration;
     }
 
     /**
@@ -146,13 +125,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     }
 
     /**
-     * @param retryOptionsConfig retryOptionsConfig
-     */
-    public void setRetryOptionsConfig(RetryOptionsConfig retryOptionsConfig) {
-        this.retryOptionsConfig = retryOptionsConfig;
-    }
-
-    /**
      * @return {@link TerminationStrategyConfig}
      */
     public TerminationStrategyConfig getRetryTerminationStrategy() {
@@ -160,24 +132,10 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     }
 
     /**
-     * @param retryTerminationStrategy the retry termination strategy.
-     */
-    public void setRetryTerminationStrategy(TerminationStrategyConfig retryTerminationStrategy) {
-        this.retryTerminationStrategy = retryTerminationStrategy;
-    }
-
-    /**
      * @return {@link DelayStrategyConfig}
      */
     public DelayStrategyConfig getRetryDelayStrategy() {
         return retryDelayStrategy;
-    }
-
-    /**
-     * @param retryDelayStrategy
-     */
-    public void setRetryDelayStrategy(DelayStrategyConfig retryDelayStrategy) {
-        this.retryDelayStrategy = retryDelayStrategy;
     }
 
     /**
