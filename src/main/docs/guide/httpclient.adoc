@@ -60,10 +60,11 @@ Similarly, you can configure other Micronaut-provided clients by specifying the 
 
 The service ID can be customized using the `NettyClientProperties.SERVICE_ID` property to `my_new_id` for an example or by setting `oci.clients.identity.serviceId=my_new_id`. You can then configure this client further using `micronaut.http.services.my_new_id.*` properties.
 
+NOTE: You should choose either `micronaut.http.services.oci` or `oci.client` to configure your oci client. If you supply both you will get `NonUniqueBeanException`.
 
 #### Logging
 
-To enable logging of all requests, set the `micronaut.http.services.oci.log-level` property to `INFO`. Log messages
+To enable logging of all requests, set the `micronaut.http.services.oci.log-level` or `oci.client.log-level` property to `INFO`. Log messages
 will appear at `INFO` level.
 
 WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging
