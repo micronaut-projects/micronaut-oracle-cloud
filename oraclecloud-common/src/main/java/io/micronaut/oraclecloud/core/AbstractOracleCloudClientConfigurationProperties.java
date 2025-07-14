@@ -27,10 +27,7 @@ import com.oracle.bmc.waiter.MaxTimeTerminationStrategy;
 import com.oracle.bmc.waiter.TerminationStrategy;
 import io.micronaut.context.annotation.ConfigurationBuilder;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpClientConfiguration;
-import io.micronaut.http.ssl.ClientSslConfiguration;
-import io.micronaut.http.ssl.SslConfiguration;
 
 import java.time.Duration;
 
@@ -59,62 +56,10 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     @ConfigurationBuilder(value = "retry-options")
     private final RetryOptionsConfig retryOptionsConfig = new RetryOptionsConfig();
 
-    @ConfigurationBuilder(value = "ssl.key-store")
-    private final SslConfiguration.KeyStoreConfiguration keyStoreConfiguration;
-
-    @ConfigurationBuilder(value = "ssl.trust-store")
-    private final SslConfiguration.TrustStoreConfiguration trustStoreConfiguration;
-
-    @ConfigurationBuilder(value = "ssl")
-    private final ClientSslConfiguration clientSslConfiguration;
-
-    @ConfigurationBuilder(value = "pool")
-    private DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration connectionPoolConfiguration = new DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration();
-
-    protected AbstractOracleCloudClientConfigurationProperties(DefaultHttpClientConfiguration httpClientConfiguration) {
-        super();
-        clientSslConfiguration = (ClientSslConfiguration) getSslConfiguration();
-        if (httpClientConfiguration.getSslConfiguration() != null && httpClientConfiguration.getSslConfiguration() instanceof ClientSslConfiguration defaultClientSslConfiguration) {
-            clientSslConfiguration.setInsecureTrustAllCertificates(defaultClientSslConfiguration.isInsecureTrustAllCertificates());
-        }
-        keyStoreConfiguration = getSslConfiguration().getKeyStore();
-        trustStoreConfiguration = getSslConfiguration().getTrustStore();
-    }
-
-    /**
-     * @return {@link ClientSslConfiguration}.
-     */
-    public ClientSslConfiguration getClientSslConfiguration() {
-        return clientSslConfiguration;
-    }
-
-    /**
-     * @return {@link ConnectionPoolConfiguration}.
-     */
-    @Override
-    public ConnectionPoolConfiguration getConnectionPoolConfiguration() {
-        return connectionPoolConfiguration;
-    }
-
-    /**
-     * @param connectionPoolConfiguration the connection pool configuration.
-     */
-    public void setConnectionPoolConfiguration(DefaultHttpClientConfiguration.DefaultConnectionPoolConfiguration connectionPoolConfiguration) {
-        this.connectionPoolConfiguration = connectionPoolConfiguration;
-    }
-
-    /**
-     * @return {@link SslConfiguration.KeyStoreConfiguration}.
-     */
-    public SslConfiguration.KeyStoreConfiguration getKeyStoreConfiguration() {
-        return keyStoreConfiguration;
-    }
-
-    /**
-     * @return {@link SslConfiguration.TrustStoreConfiguration}.
-     */
-    public SslConfiguration.TrustStoreConfiguration getTrustStoreConfiguration() {
-        return trustStoreConfiguration;
+    protected AbstractOracleCloudClientConfigurationProperties(
+        HttpClientConfiguration httpClientConfiguration
+    ) {
+        super(httpClientConfiguration);
     }
 
     /**
@@ -290,4 +235,6 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
             this.markReadLimit = markReadLimit;
         }
     }
+
+
 }

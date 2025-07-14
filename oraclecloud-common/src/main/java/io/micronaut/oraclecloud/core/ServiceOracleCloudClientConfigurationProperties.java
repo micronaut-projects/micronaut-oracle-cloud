@@ -16,11 +16,17 @@
 package io.micronaut.oraclecloud.core;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.naming.Named;
-import io.micronaut.http.client.DefaultHttpClientConfiguration;
+import io.micronaut.http.client.HttpClientConfiguration;
+import io.micronaut.http.ssl.AbstractClientSslConfiguration;
+import io.micronaut.http.ssl.SslConfiguration;
+
+import java.util.Objects;
 
 /**
  * Configuration for each of the OCI SDK clients.
@@ -30,11 +36,27 @@ import io.micronaut.http.client.DefaultHttpClientConfiguration;
 @EachProperty(OracleCloudCoreFactory.ORACLE_CLOUD + ".clients")
 @BootstrapContextCompatible
 public final class ServiceOracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties implements Named {
-    private String serviceId;
 
-    public ServiceOracleCloudClientConfigurationProperties(@Parameter String serviceId, DefaultHttpClientConfiguration defaultHttpClientConfiguration) {
+    private String serviceId;
+    private final ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration;
+    private final ServiceOracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration;
+    private final ServiceOracleCloudClientHttp2ClientConfiguration http2Configuration;
+
+    public ServiceOracleCloudClientConfigurationProperties(@Parameter String serviceId,
+                                                           @Nullable ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration,
+                                                           @Nullable ServiceOracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration,
+                                                           @Nullable ServiceOracleCloudClientHttp2ClientConfiguration http2Configuration,
+                                                           @Nullable ServiceOracleCloudClientSslClientConfiguration sslConfiguration,
+                                                           HttpClientConfiguration defaultHttpClientConfiguration
+    ) {
         super(defaultHttpClientConfiguration);
         this.serviceId = serviceId;
+        if (sslConfiguration != null) {
+            setSslConfiguration(sslConfiguration);
+        }
+        this.connectionPoolConfiguration = Objects.requireNonNullElseGet(connectionPoolConfiguration, ServiceOracleCloudClientConnectionPoolConfiguration::new);
+        this.webSocketCompressionConfiguration = Objects.requireNonNullElseGet(webSocketCompressionConfiguration, ServiceOracleCloudClientWebSocketCompressionConfiguration::new);
+        this.http2Configuration = Objects.requireNonNullElseGet(http2Configuration, ServiceOracleCloudClientHttp2ClientConfiguration::new);
     }
 
     /**
@@ -57,5 +79,105 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
     @Override
     public @NonNull String getName() {
         return getServiceId();
+    }
+
+    @Override
+    public ConnectionPoolConfiguration getConnectionPoolConfiguration() {
+        return connectionPoolConfiguration;
+    }
+
+    @Override
+    public WebSocketCompressionConfiguration getWebSocketCompressionConfiguration() {
+        return webSocketCompressionConfiguration;
+    }
+
+    @Override
+    public ServiceOracleCloudClientHttp2ClientConfiguration getHttp2Configuration() {
+        return http2Configuration;
+    }
+
+    /**
+     * The default connection pool configuration.
+     */
+    @ConfigurationProperties(ConnectionPoolConfiguration.PREFIX)
+    public static class ServiceOracleCloudClientConnectionPoolConfiguration extends ConnectionPoolConfiguration {
+    }
+
+    /**
+     * The default WebSocket compression configuration.
+     */
+    @ConfigurationProperties(WebSocketCompressionConfiguration.PREFIX)
+    public static class ServiceOracleCloudClientWebSocketCompressionConfiguration extends WebSocketCompressionConfiguration {
+    }
+
+    /**
+     * The service HTTP/2 configuration.
+     */
+    @ConfigurationProperties(WebSocketCompressionConfiguration.PREFIX)
+    public static class ServiceOracleCloudClientHttp2ClientConfiguration extends Http2ClientConfiguration {
+    }
+
+    /**
+     * The default connection pool configuration.
+     */
+    @ConfigurationProperties("ssl")
+    public static class ServiceOracleCloudClientSslClientConfiguration extends AbstractClientSslConfiguration {
+
+        /**
+         * Sets the key configuration.
+         *
+         * @param keyConfiguration The key configuration.
+         */
+        void setKey(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultKeyConfiguration keyConfiguration) {
+            if (keyConfiguration != null) {
+                super.setKey(keyConfiguration);
+            }
+        }
+
+        /**
+         * Sets the key store.
+         *
+         * @param keyStoreConfiguration The key store configuration
+         */
+        void setKeyStore(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration keyStoreConfiguration) {
+            if (keyStoreConfiguration != null) {
+                super.setKeyStore(keyStoreConfiguration);
+            }
+        }
+
+        /**
+         * Sets trust store configuration.
+         *
+         * @param trustStore The trust store configuration
+         */
+        void setTrustStore(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration trustStore) {
+            if (trustStore != null) {
+                super.setTrustStore(trustStore);
+            }
+        }
+
+        /**
+         * The default {@link io.micronaut.http.ssl.SslConfiguration.KeyConfiguration}.
+         */
+        @SuppressWarnings("WeakerAccess")
+        @ConfigurationProperties(SslConfiguration.KeyConfiguration.PREFIX)
+        public static class DefaultKeyConfiguration extends SslConfiguration.KeyConfiguration {
+        }
+
+        /**
+         * The default {@link io.micronaut.http.ssl.SslConfiguration.KeyStoreConfiguration}.
+         */
+        @SuppressWarnings("WeakerAccess")
+        @ConfigurationProperties(SslConfiguration.KeyStoreConfiguration.PREFIX)
+        public static class DefaultKeyStoreConfiguration extends SslConfiguration.KeyStoreConfiguration {
+        }
+
+        /**
+         * The default {@link io.micronaut.http.ssl.SslConfiguration.TrustStoreConfiguration}.
+         */
+        @SuppressWarnings("WeakerAccess")
+        @ConfigurationProperties(SslConfiguration.TrustStoreConfiguration.PREFIX)
+        public static class DefaultTrustStoreConfiguration extends SslConfiguration.TrustStoreConfiguration {
+        }
     }
 }
