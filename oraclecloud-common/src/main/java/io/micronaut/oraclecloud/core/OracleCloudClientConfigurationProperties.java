@@ -27,16 +27,20 @@ import jakarta.inject.Named;
 
 import java.util.Objects;
 
+import static io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties.PREFIX;
+
 /**
  * Default configuration for the OCI SDK clients.
  *
  * @author graemerocher
  * @since 1.0.0
  */
-@ConfigurationProperties(OracleCloudCoreFactory.ORACLE_CLOUD + ".client")
+@ConfigurationProperties(PREFIX)
 @BootstrapContextCompatible
 @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
 public class OracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties {
+
+    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".client";
 
     private final OracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration;
     private final OracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration;

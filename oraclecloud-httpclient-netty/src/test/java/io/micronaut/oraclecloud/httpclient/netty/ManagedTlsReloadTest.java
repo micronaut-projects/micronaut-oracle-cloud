@@ -101,7 +101,7 @@ public class ManagedTlsReloadTest {
                 storeKey(keyStoreClient, client2);
                 ctx
                     .getBean(Argument.of(ApplicationEventPublisher.class, RefreshEvent.class))
-                    .publishEvent(new RefreshEvent(Map.of("micronaut.http.services.oci.ssl", "")));
+                    .publishEvent(new RefreshEvent(Map.of("oci.client.ssl", "")));
                 try (HttpResponse response = client.createRequest(Method.GET).appendPathPart("/cert").execute().toCompletableFuture().get()) {
                     Assertions.assertEquals("CN=client2", response.textBody().toCompletableFuture().get());
                 }
