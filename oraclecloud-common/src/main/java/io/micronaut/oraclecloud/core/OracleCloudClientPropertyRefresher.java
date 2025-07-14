@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.core;
 
 import io.micronaut.context.event.ApplicationEventPublisher;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.runtime.context.scope.refresh.RefreshEvent;
 import io.micronaut.runtime.context.scope.refresh.RefreshEventListener;
@@ -28,7 +29,8 @@ import java.util.Set;
  * OracleCloudClientPropertyRefresher helps with refreshing the oracle cloud clients.
  */
 @Singleton
-public final class OracleCloudClientPropertyRefresher implements RefreshEventListener {
+@Internal
+final class OracleCloudClientPropertyRefresher implements RefreshEventListener {
 
     private final ApplicationEventPublisher<RefreshEvent> eventPublisher;
 
@@ -43,6 +45,11 @@ public final class OracleCloudClientPropertyRefresher implements RefreshEventLis
 
     @Override
     public void onApplicationEvent(RefreshEvent event) {
-        eventPublisher.publishEvent(new RefreshEvent(Map.of("micronaut.http.client", "*")));
+        boolean shouldFireNewEvent = event.getSource().keySet().stream()
+            .map(key -> key.startsWith(ServiceOracleCloudClientConfigurationProperties.PREFIX) || key.startsWith(OracleCloudClientConfigurationProperties.PREFIX))
+            .reduce(false, (a, b) -> a || b);
+        if (shouldFireNewEvent) {
+            eventPublisher.publishEvent(new RefreshEvent(Map.of("micronaut.http.client", "*")));
+        }
     }
 }
