@@ -28,14 +28,18 @@ import io.micronaut.http.ssl.SslConfiguration;
 
 import java.util.Objects;
 
+import static io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties.PREFIX;
+
 /**
  * Configuration for each of the OCI SDK clients.
  *
  * @since 5.2.1
  */
-@EachProperty(OracleCloudCoreFactory.ORACLE_CLOUD + ".clients")
+@EachProperty(PREFIX)
 @BootstrapContextCompatible
 public final class ServiceOracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties implements Named {
+
+    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".clients";
 
     private String serviceId;
     private final ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration;
