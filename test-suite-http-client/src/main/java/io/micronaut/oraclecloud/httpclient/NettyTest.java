@@ -531,31 +531,33 @@ public abstract class NettyTest {
             });
         }
 
-        ApplicationContext ctx = ApplicationContext.run(
+        try (ApplicationContext ctx = ApplicationContext.run(
             Map.of("oci.clients.monitoring.retry-termination-strategy.max-attempts", "3",
                 "oci.clients.monitoring.retry-delay-strategy.time-between-attempts-in-millis", "100"),
             Environment.ORACLE_CLOUD);
-        MonitoringClient.Builder builder = ctx.getBean(MonitoringClient.Builder.class);
-        customize(builder);
-        try (MonitoringClient monitoringClient = builder
-            .build(SimpleAuthenticationDetailsProvider.builder()
-                .tenantId("tenantId")
-                .userId("userId")
-                .fingerprint("fingerprint")
-                .passPhrase("")
-                .region(Region.US_PHOENIX_1)
-                .privateKeySupplier(() -> {
-                    try {
-                        return new FileInputStream(ssc.privateKey());
-                    } catch (FileNotFoundException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                })
-                .build())) {
+        ) {
+            MonitoringClient.Builder builder = ctx.getBean(MonitoringClient.Builder.class);
+            customize(builder);
+            try (MonitoringClient monitoringClient = builder
+                .build(SimpleAuthenticationDetailsProvider.builder()
+                    .tenantId("tenantId")
+                    .userId("userId")
+                    .fingerprint("fingerprint")
+                    .passPhrase("")
+                    .region(Region.US_PHOENIX_1)
+                    .privateKeySupplier(() -> {
+                        try {
+                            return new FileInputStream(ssc.privateKey());
+                        } catch (FileNotFoundException e) {
+                            throw new UncheckedIOException(e);
+                        }
+                    })
+                    .build())) {
 
-            monitoringClient.deleteAlarm(DeleteAlarmRequest.builder()
-                .alarmId("foo")
-                .build());
+                monitoringClient.deleteAlarm(DeleteAlarmRequest.builder()
+                    .alarmId("foo")
+                    .build());
+            }
         }
     }
 

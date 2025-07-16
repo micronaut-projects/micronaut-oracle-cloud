@@ -23,16 +23,19 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.SERVICE_ID;
+
 /**
- * Provides the {@link ServiceIdClientConfigurator} for each oci client.
+ * Provides the service id for each oci client.
  */
 @Factory
 @Requires(beans = NettyHttpProvider.class)
+@Requires(classes = ServiceOracleCloudClientConfigurationProperties.class)
 final class ServiceIdClientFactory {
 
     @BootstrapContextCompatible
     @EachBean(ServiceOracleCloudClientConfigurationProperties.class)
     ClientConfigurator configurationPerClientBuilder(ServiceOracleCloudClientConfigurationProperties props) {
-        return new ServiceIdClientConfigurator(props.getName());
+        return builder -> builder.property(SERVICE_ID, props.getName());
     }
 }
