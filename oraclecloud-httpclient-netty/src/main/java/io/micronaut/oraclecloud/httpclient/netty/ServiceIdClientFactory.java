@@ -27,6 +27,8 @@ import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.SE
 
 /**
  * Provides the service id for each oci client.
+ *
+ * @since 5.3.0
  */
 @Factory
 @Requires(beans = NettyHttpProvider.class)
