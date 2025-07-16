@@ -62,6 +62,7 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
         this.webSocketCompressionConfiguration = Objects.requireNonNullElseGet(webSocketCompressionConfiguration, ServiceOracleCloudClientWebSocketCompressionConfiguration::new);
         this.http2Configuration = Objects.requireNonNullElseGet(http2Configuration, ServiceOracleCloudClientHttp2ClientConfiguration::new);
     }
+
     /**
      * @return the serviceId for a {@link Named} used by {@link jakarta.inject.Named}.
      */

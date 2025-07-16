@@ -72,7 +72,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
             properties.put(key, value);
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {
             buffered = (Boolean) value;
-        } else if (NettyClientProperties.SERVICE_ID.getName().equals(key.getName())) {
+        } else if (key == NettyClientProperties.SERVICE_ID) {
             if (managedProvider == null) {
                 throw new IllegalArgumentException("Can only configure the service ID for the managed netty http client");
             } else if (managedProvider.mnHttpClientRegistry == null) {

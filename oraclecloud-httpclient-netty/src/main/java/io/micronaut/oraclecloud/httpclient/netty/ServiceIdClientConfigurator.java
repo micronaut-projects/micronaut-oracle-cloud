@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.oraclecloud.core;
+package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.ClientConfigurator;
-import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
+
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.SERVICE_ID;
 
 /**
  * Automatically Configures the serviceId for each oci client.
  * @since 5.2.1
  */
 public final class ServiceIdClientConfigurator implements ClientConfigurator {
-
-    public static final ClientProperty<String> SERVICE_ID = ClientProperty.create("serviceId");
 
     private final String serviceId;
 
@@ -37,4 +36,5 @@ public final class ServiceIdClientConfigurator implements ClientConfigurator {
     public void customizeClient(HttpClientBuilder builder) {
         builder.property(SERVICE_ID, serviceId);
     }
+
 }

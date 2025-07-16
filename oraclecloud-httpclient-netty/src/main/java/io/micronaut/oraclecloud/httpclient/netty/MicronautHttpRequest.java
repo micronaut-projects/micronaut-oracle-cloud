@@ -83,7 +83,8 @@ final class MicronautHttpRequest implements HttpRequest {
         StackWalker.StackFrame frame = findFrame().orElse(null);
         attributes.put(CLASS_AND_METHOD_KEY_NAME, frame == null ? "N/A" : Arrays.stream(frame.getClassName().split("\\.")).reduce((first, second) -> second).orElse("N/A") + "." + frame.getMethodName());
         query = new StringBuilder();
-        mnRequest = io.micronaut.http.HttpRequest.create(switch (method) {
+        mnRequest = io.micronaut.http.HttpRequest.create(
+            switch (method) {
             case GET -> HttpMethod.GET;
             case HEAD -> HttpMethod.HEAD;
             case DELETE -> HttpMethod.DELETE;

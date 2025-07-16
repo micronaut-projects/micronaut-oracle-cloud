@@ -450,7 +450,8 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "specificClientConfiguration")
                 .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 
-                .addParameter(ParameterSpec.builder(ClassName.get("io.micronaut.oraclecloud.core", "ServiceOracleCloudClientConfigurationProperties"), "serviceOracleCloudClientConfigurationProperties")
+
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "serviceIdClientConfigurator")
                 .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "clientConfigurator")
@@ -460,7 +461,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceOracleCloudClientConfigurationProperties, clientConfigurator, requestSignerFactory,\"" + serviceSimpleName + "\")")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, clientConfigurator, serviceIdClientConfigurator, requestSignerFactory)")
                         .addStatement("builder = super.getBuilder()")
                 .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);

@@ -15,6 +15,7 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
@@ -99,5 +100,12 @@ public class NettyUnmanagedTest extends NettyTest {
         Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
         Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
         Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() > secondTestNettyClientFilter.getEndTime());
+    }
+
+    @Override
+    @Disabled("Disabled in subclass")
+    @Test
+    public void fullSetupTestManagedCustomProperties() {
+        // Test is for only managed clients
     }
 }

@@ -18,6 +18,11 @@ import com.oracle.bmc.monitoring.requests.DeleteAlarmRequest;
 import com.oracle.bmc.streaming.model.PutMessagesDetails;
 import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
+import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.env.Environment;
+import io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration;
+import io.micronaut.oraclecloud.clients.monitoring.MonitoringClientFactory;
+import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.serde.annotation.Serdeable;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -55,6 +60,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
@@ -496,6 +502,63 @@ public abstract class NettyTest {
                 .build());
         }
     }
+
+    @Test
+    public void fullSetupTestManagedCustomProperties() throws CertificateException {
+        SelfSignedCertificate ssc = new SelfSignedCertificate();
+        for (int i = 0; i < 3; i++) {
+            int finalI = i;
+            netty.handleOneRequest((ctx, request) -> {
+                Assertions.assertEquals(HttpMethod.DELETE, request.method());
+                Assertions.assertEquals("/20180401/alarms/foo", request.uri());
+                DefaultFullHttpResponse response;
+
+                if (finalI < 2) {
+                    response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR,
+                        Unpooled.copiedBuffer("{}", StandardCharsets.UTF_8)
+
+                    );
+                } else {
+                    response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                        Unpooled.copiedBuffer("{}", StandardCharsets.UTF_8)
+                    );
+                }
+                response.headers().add("Content-Type", "application/json");
+                computeContentLength(response);
+                ctx.writeAndFlush(response);
+            });
+        }
+
+        ApplicationContext ctx = ApplicationContext.run(
+            Map.of("oci.clients.monitoring.retry-termination-strategy.max-attempts", "3",
+                "oci.clients.monitoring.retry-delay-strategy.time-between-attempts-in-millis", "100"),
+            Environment.ORACLE_CLOUD);
+        MonitoringClient.Builder builder = ctx.getBean(MonitoringClient.Builder.class);
+        customize(builder);
+        try (MonitoringClient monitoringClient = builder
+            .build(SimpleAuthenticationDetailsProvider.builder()
+                .tenantId("tenantId")
+                .userId("userId")
+                .fingerprint("fingerprint")
+                .passPhrase("")
+                .region(Region.US_PHOENIX_1)
+                .privateKeySupplier(() -> {
+                    try {
+                        return new FileInputStream(ssc.privateKey());
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .build())) {
+
+            monitoringClient.deleteAlarm(DeleteAlarmRequest.builder()
+                .alarmId("foo")
+                .build());
+        }
+    }
+
 
     @Test
     public void streamModelTest() throws Exception {
