@@ -33,7 +33,7 @@ import static io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfiguratio
 /**
  * Configuration for each of the OCI SDK clients.
  *
- * @since 5.2.1
+ * @since 5.3.0
  */
 @EachProperty(PREFIX)
 @BootstrapContextCompatible

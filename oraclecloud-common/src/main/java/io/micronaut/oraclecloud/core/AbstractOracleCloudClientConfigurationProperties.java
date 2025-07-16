@@ -34,7 +34,7 @@ import java.time.Duration;
 /**
  * Configuration for the {@link com.oracle.bmc.auth.AuthenticationDetailsProvider}.
  *
- * @since 5.2.1
+ * @since 5.3.0
  */
 public abstract class AbstractOracleCloudClientConfigurationProperties extends HttpClientConfiguration {
 

@@ -47,7 +47,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      * @param requestSignerFactory The request signer factory (optional)
      * @param regionProvider The region provider (optional)
      */
-    @Deprecated(since = "5.2.1")
+    @Deprecated(since = "5.3.0")
     protected AbstractSdkClientFactory(
         B builder,
         ClientConfiguration clientConfiguration,
