@@ -82,11 +82,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
         if (specificClientConfiguration != null) {
             builder.configuration(Objects.requireNonNull(specificClientConfiguration, "Client configuration cannot be null"));
-            if (serviceOracleCloudClientConfigurationProperties.getServiceId() != null && !serviceOracleCloudClientConfigurationProperties.getServiceId().isBlank()) {
-                builder.additionalClientConfigurator(new ServiceIdClientConfigurator(serviceOracleCloudClientConfigurationProperties.getServiceId()));
-            } else {
-                builder.additionalClientConfigurator(new ServiceIdClientConfigurator(defaultServiceId));
-            }
+            builder.additionalClientConfigurator(new ServiceIdClientConfigurator(defaultServiceId));
         } else {
             builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
         }

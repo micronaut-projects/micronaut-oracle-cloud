@@ -62,8 +62,6 @@ You can find a client’s service ID by checking the factory class that creates 
 - IdentityClientFactory produces IdentityClient → identity.
 - ObjectStorageClientFactory produces ObjectStorageClient → objectstorage.
 
-The service ID can be customized using the `NettyClientProperties.SERVICE_ID` property to `my_new_id` for an example or by setting `oci.clients.identity.serviceId=my_new_id`. You can then configure this client further using `micronaut.http.services.my_new_id.*` properties.
-
 NOTE: You should choose either `micronaut.http.services.oci` or `oci.client` to configure your oci client. If you supply both you will get `NonUniqueBeanException`.
 
 #### Logging

@@ -41,12 +41,12 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
 
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".clients";
 
-    private String serviceId;
+    private String name;
     private final ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration;
     private final ServiceOracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration;
     private final ServiceOracleCloudClientHttp2ClientConfiguration http2Configuration;
 
-    public ServiceOracleCloudClientConfigurationProperties(@Parameter String serviceId,
+    public ServiceOracleCloudClientConfigurationProperties(@Parameter String name,
                                                            @Nullable ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration,
                                                            @Nullable ServiceOracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration,
                                                            @Nullable ServiceOracleCloudClientHttp2ClientConfiguration http2Configuration,
@@ -54,7 +54,7 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
                                                            HttpClientConfiguration defaultHttpClientConfiguration
     ) {
         super(defaultHttpClientConfiguration);
-        this.serviceId = serviceId;
+        this.name = name;
         if (sslConfiguration != null) {
             setSslConfiguration(sslConfiguration);
         }
@@ -62,27 +62,12 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
         this.webSocketCompressionConfiguration = Objects.requireNonNullElseGet(webSocketCompressionConfiguration, ServiceOracleCloudClientWebSocketCompressionConfiguration::new);
         this.http2Configuration = Objects.requireNonNullElseGet(http2Configuration, ServiceOracleCloudClientHttp2ClientConfiguration::new);
     }
-
-    /**
-     * @return the service id.
-     */
-    public String getServiceId() {
-        return serviceId;
-    }
-
-    /**
-     * @param serviceId the service id.
-     */
-    public void setServiceId(String serviceId) {
-        this.serviceId = serviceId;
-    }
-
     /**
      * @return the serviceId for a {@link Named} used by {@link jakarta.inject.Named}.
      */
     @Override
     public @NonNull String getName() {
-        return getServiceId();
+        return name;
     }
 
     @Override
