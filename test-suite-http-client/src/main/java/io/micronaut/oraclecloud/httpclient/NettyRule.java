@@ -22,6 +22,7 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
@@ -128,7 +129,8 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                     @Override
                                     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
                                         if (cause instanceof ReadTimeoutException ||
-                                                (cause instanceof IOException && cause.getMessage().equals("Connection reset by peer"))) {
+                                                (cause instanceof IOException && cause.getMessage().equals("Connection reset by peer")) ||
+                                                (cause instanceof SocketException && cause.getMessage().equals("Connection reset"))) {
                                             // not fatal
                                             ctx.close();
                                             return;
