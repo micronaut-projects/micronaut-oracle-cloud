@@ -2,7 +2,6 @@ package io.micronaut.oraclecloud.core;
 
 import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.retrier.RetryConfiguration;
-import io.micronaut.context.annotation.Property;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest
-public class RetryDefaultConfigTest {
+class RetryDefaultConfigTest {
 
     @Test
     void testRetryDefaultConfig(
