@@ -60,6 +60,10 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
         HttpClientConfiguration httpClientConfiguration
     ) {
         super(httpClientConfiguration);
+        retryBuilder.delayStrategy(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getDelayStrategy());
+        retryBuilder.retryCondition(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getRetryCondition());
+        retryBuilder.terminationStrategy(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getTerminationStrategy());
+        retryBuilder.retryOptions(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getRetryOptions());
     }
 
     /**
