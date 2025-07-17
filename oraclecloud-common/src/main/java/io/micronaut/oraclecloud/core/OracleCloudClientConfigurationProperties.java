@@ -37,20 +37,24 @@ public class OracleCloudClientConfigurationProperties {
     private final ClientConfiguration.ClientConfigurationBuilder clientBuilder = ClientConfiguration.builder();
 
     @ConfigurationBuilder(prefixes = "", value = "retry")
-    @Nullable
-    private RetryConfiguration.Builder retryBuilder;
+    private RetryConfiguration.Builder retryBuilder = new RetryConfiguration.Builder();
 
     @ConfigurationBuilder(prefixes = "", value = "circuit-breaker")
     @Nullable
     private CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder circuitBreakerBuilder;
 
+    OracleCloudClientConfigurationProperties() {
+        retryBuilder.delayStrategy(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getDelayStrategy());
+        retryBuilder.retryCondition(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getRetryCondition());
+        retryBuilder.terminationStrategy(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getTerminationStrategy());
+        retryBuilder.retryOptions(RetryConfiguration.SDK_DEFAULT_RETRY_CONFIGURATION.getRetryOptions());
+    }
+
     /**
      * @return Obtains the configuration builder.
      */
     public ClientConfiguration.ClientConfigurationBuilder getClientBuilder() {
-        if (retryBuilder != null) {
-            clientBuilder.retryConfiguration(retryBuilder.build());
-        }
+        clientBuilder.retryConfiguration(retryBuilder.build());
         if (circuitBreakerBuilder != null) {
             clientBuilder.circuitBreakerConfiguration(circuitBreakerBuilder.build());
         }
