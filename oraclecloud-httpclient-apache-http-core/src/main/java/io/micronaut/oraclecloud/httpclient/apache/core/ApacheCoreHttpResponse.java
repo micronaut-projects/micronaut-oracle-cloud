@@ -38,9 +38,11 @@ import java.util.stream.Stream;
 
 @Internal
 final class ApacheCoreHttpResponse implements HttpResponse {
+
     private final ApacheCoreHttpClient client;
     private final Closeable channel;
     private final ClassicHttpResponse response;
+    private boolean closed = false;
 
     ApacheCoreHttpResponse(ApacheCoreHttpClient client, Closeable channel, ClassicHttpResponse response) {
         this.client = client;
@@ -92,6 +94,8 @@ final class ApacheCoreHttpResponse implements HttpResponse {
             return CompletableFuture.completedFuture(client.provider.getSerializer().readValue(stream(), type));
         } catch (IOException e) {
             return CompletableFuture.failedFuture(e);
+        } finally {
+            close();
         }
     }
 
@@ -101,6 +105,8 @@ final class ApacheCoreHttpResponse implements HttpResponse {
             return CompletableFuture.completedFuture(client.provider.getSerializer().readList(stream(), type));
         } catch (IOException e) {
             return CompletableFuture.failedFuture(e);
+        } finally {
+            close();
         }
     }
 
@@ -110,11 +116,17 @@ final class ApacheCoreHttpResponse implements HttpResponse {
             return CompletableFuture.completedFuture(new String(stream().readAllBytes(), StandardCharsets.UTF_8));
         } catch (IOException e) {
             return CompletableFuture.failedFuture(e);
+        } finally {
+            close();
         }
     }
 
     @Override
     public void close() {
+        if (closed) {
+            return;
+        }
+        closed = true;
         try {
             response.close();
             channel.close();
