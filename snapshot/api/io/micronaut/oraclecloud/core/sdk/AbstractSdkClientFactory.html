@@ -98,13 +98,25 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>protected </code></div>
-<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider)" class="member-name-link">AbstractSdkClientFactory</a><wbr>(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
+<div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory)" class="member-name-link">AbstractSdkClientFactory</a><wbr>(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
+ com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
+ @Nullable com.oracle.bmc.ClientConfiguration&nbsp;specificClientConfiguration,
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;serviceIdClientConfigurator,
+ @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory)</code></div>
+<div class="col-last even-row-color">
+<div class="block">Default constructor.</div>
+</div>
+<div class="col-first odd-row-color"><code>protected </code></div>
+<div class="col-constructor-name odd-row-color"><code><a href="#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider)" class="member-name-link">AbstractSdkClientFactory</a><wbr>(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
  com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
  @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
  @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory,
  @Nullable com.oracle.bmc.auth.RegionProvider&nbsp;regionProvider)</code></div>
-<div class="col-last even-row-color">
-<div class="block">Default constructor.</div>
+<div class="col-last odd-row-color">
+<div class="block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use the new constructor.</div>
+</div>
 </div>
 </div>
 </section>
@@ -155,7 +167,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="&lt;init&gt;(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider)">
 <h3 id="&lt;init&gt;(com.oracle.bmc.common.ClientBuilderBase,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory,com.oracle.bmc.auth.RegionProvider)">AbstractSdkClientFactory</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractSdkClientFactory</span><wbr><span class="parameters">(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="5.3.0")
+</span><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractSdkClientFactory</span><wbr><span class="parameters">(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
  com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
  @Nullable
  @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
@@ -163,7 +176,10 @@ loadScripts(document, 'script');</script>
  @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory,
  @Nullable
  @Nullable com.oracle.bmc.auth.RegionProvider&nbsp;regionProvider)</span></div>
-<div class="block">Default constructor.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span>
+<div class="deprecation-comment">use the new constructor.</div>
+</div>
+<div class="block">Old default constructor.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>builder</code> - The builder</dd>
@@ -171,6 +187,31 @@ loadScripts(document, 'script');</script>
 <dd><code>clientConfigurator</code> - The client configurator (optional)</dd>
 <dd><code>requestSignerFactory</code> - The request signer factory (optional)</dd>
 <dd><code>regionProvider</code> - The region provider (optional)</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="&lt;init&gt;(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory)">
+<h3 id="&lt;init&gt;(com.oracle.bmc.common.ClientBuilderBase,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory)">AbstractSdkClientFactory</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="element-name">AbstractSdkClientFactory</span><wbr><span class="parameters">(<a href="AbstractSdkClientFactory.html" title="type parameter in AbstractSdkClientFactory">B</a>&nbsp;builder,
+ com.oracle.bmc.ClientConfiguration&nbsp;clientConfiguration,
+ @Nullable
+ @Nullable com.oracle.bmc.ClientConfiguration&nbsp;specificClientConfiguration,
+ @Nullable
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;clientConfigurator,
+ @Nullable
+ @Nullable com.oracle.bmc.http.ClientConfigurator&nbsp;serviceIdClientConfigurator,
+ @Nullable
+ @Nullable com.oracle.bmc.http.signing.RequestSignerFactory&nbsp;requestSignerFactory)</span></div>
+<div class="block">Default constructor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>builder</code> - The builder</dd>
+<dd><code>clientConfiguration</code> - The client config</dd>
+<dd><code>specificClientConfiguration</code> - the configuration specific to each client.</dd>
+<dd><code>clientConfigurator</code> - The client configurator (optional)</dd>
+<dd><code>serviceIdClientConfigurator</code> - The client configurator that will configure service id (optional)</dd>
+<dd><code>requestSignerFactory</code> - The request signer factory (optional)</dd>
 </dl>
 </section>
 </li>
