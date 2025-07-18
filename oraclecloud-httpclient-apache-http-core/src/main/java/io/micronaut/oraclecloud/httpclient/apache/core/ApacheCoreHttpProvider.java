@@ -19,6 +19,7 @@ import com.oracle.bmc.http.client.ClientProperty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Primary;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
@@ -37,6 +38,7 @@ import java.nio.file.Path;
 @Internal
 @Singleton
 @BootstrapContextCompatible
+@Primary
 public final class ApacheCoreHttpProvider implements HttpProvider {
     public static final ClientProperty<Path> SOCKET_PATH = ClientProperty.create("socketPath");
 

@@ -17,51 +17,58 @@ package io.micronaut.oraclecloud.core;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.context.annotation.Secondary;
+import io.micronaut.context.annotation.EachProperty;
+import io.micronaut.context.annotation.Parameter;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
-import io.micronaut.http.client.DefaultHttpClientConfiguration;
+import io.micronaut.core.naming.Named;
+import io.micronaut.http.client.HttpClientConfiguration;
 import io.micronaut.http.ssl.AbstractClientSslConfiguration;
-import io.micronaut.http.ssl.ClientSslConfiguration;
 import io.micronaut.http.ssl.SslConfiguration;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 import java.util.Objects;
 
-import static io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties.PREFIX;
+import static io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties.PREFIX;
 
 /**
- * Default configuration for the OCI SDK clients.
+ * Configuration for each of the OCI SDK clients.
  *
- * @author graemerocher
- * @since 1.0.0
+ * @since 5.3.0
  */
-@ConfigurationProperties(PREFIX)
+@EachProperty(PREFIX)
 @BootstrapContextCompatible
-@Named(OracleCloudCoreFactory.ORACLE_CLOUD)
-@Secondary
-public class OracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties {
+public final class ServiceOracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties implements Named {
 
-    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".client";
+    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".clients";
 
-    private final OracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration;
-    private final OracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration;
-    private final OracleCloudClientHttp2ClientConfiguration http2Configuration;
+    private String name;
+    private final ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration;
+    private final ServiceOracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration;
+    private final ServiceOracleCloudClientHttp2ClientConfiguration http2Configuration;
 
-    public OracleCloudClientConfigurationProperties(
-        @Nullable OracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration,
-        @Nullable OracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration,
-        @Nullable OracleCloudClientHttp2ClientConfiguration http2Configuration,
-        @Nullable OracleCloudClientSslClientConfiguration sslConfiguration,
-        DefaultHttpClientConfiguration defaultHttpClientConfiguration
+    public ServiceOracleCloudClientConfigurationProperties(@Parameter String name,
+                                                           @Nullable ServiceOracleCloudClientConnectionPoolConfiguration connectionPoolConfiguration,
+                                                           @Nullable ServiceOracleCloudClientWebSocketCompressionConfiguration webSocketCompressionConfiguration,
+                                                           @Nullable ServiceOracleCloudClientHttp2ClientConfiguration http2Configuration,
+                                                           @Nullable ServiceOracleCloudClientSslClientConfiguration sslConfiguration,
+                                                           HttpClientConfiguration defaultHttpClientConfiguration
     ) {
         super(defaultHttpClientConfiguration);
+        this.name = name;
         if (sslConfiguration != null) {
             setSslConfiguration(sslConfiguration);
         }
-        this.connectionPoolConfiguration = Objects.requireNonNullElseGet(connectionPoolConfiguration, OracleCloudClientConnectionPoolConfiguration::new);
-        this.webSocketCompressionConfiguration = Objects.requireNonNullElseGet(webSocketCompressionConfiguration, OracleCloudClientWebSocketCompressionConfiguration::new);
-        this.http2Configuration = Objects.requireNonNullElseGet(http2Configuration, OracleCloudClientHttp2ClientConfiguration::new);
+        this.connectionPoolConfiguration = Objects.requireNonNullElseGet(connectionPoolConfiguration, ServiceOracleCloudClientConnectionPoolConfiguration::new);
+        this.webSocketCompressionConfiguration = Objects.requireNonNullElseGet(webSocketCompressionConfiguration, ServiceOracleCloudClientWebSocketCompressionConfiguration::new);
+        this.http2Configuration = Objects.requireNonNullElseGet(http2Configuration, ServiceOracleCloudClientHttp2ClientConfiguration::new);
+    }
+
+    /**
+     * @return the serviceId for a {@link Named} used by {@link jakarta.inject.Named}.
+     */
+    @Override
+    public @NonNull String getName() {
+        return name;
     }
 
     @Override
@@ -75,7 +82,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
     }
 
     @Override
-    public OracleCloudClientHttp2ClientConfiguration getHttp2Configuration() {
+    public ServiceOracleCloudClientHttp2ClientConfiguration getHttp2Configuration() {
         return http2Configuration;
     }
 
@@ -83,46 +90,35 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
      * The default connection pool configuration.
      */
     @ConfigurationProperties(ConnectionPoolConfiguration.PREFIX)
-    public static class OracleCloudClientConnectionPoolConfiguration extends ConnectionPoolConfiguration {
+    public static class ServiceOracleCloudClientConnectionPoolConfiguration extends ConnectionPoolConfiguration {
     }
 
     /**
      * The default WebSocket compression configuration.
      */
     @ConfigurationProperties(WebSocketCompressionConfiguration.PREFIX)
-    public static class OracleCloudClientWebSocketCompressionConfiguration extends WebSocketCompressionConfiguration {
+    public static class ServiceOracleCloudClientWebSocketCompressionConfiguration extends WebSocketCompressionConfiguration {
     }
 
     /**
      * The service HTTP/2 configuration.
      */
     @ConfigurationProperties(WebSocketCompressionConfiguration.PREFIX)
-    public static class OracleCloudClientHttp2ClientConfiguration extends Http2ClientConfiguration {
+    public static class ServiceOracleCloudClientHttp2ClientConfiguration extends Http2ClientConfiguration {
     }
 
     /**
      * The default connection pool configuration.
      */
     @ConfigurationProperties("ssl")
-    public static class OracleCloudClientSslClientConfiguration extends AbstractClientSslConfiguration {
-
-        @Inject
-        public OracleCloudClientSslClientConfiguration(ClientSslConfiguration clientSslConfiguration) {
-            this.setEnabled(true);
-            this.readExisting(clientSslConfiguration, clientSslConfiguration.getKey(), clientSslConfiguration.getKeyStore(), clientSslConfiguration.getTrustStore());
-            this.setInsecureTrustAllCertificates(clientSslConfiguration.isEnabled());
-        }
-
-        public OracleCloudClientSslClientConfiguration() {
-            this.setEnabled(true);
-        }
+    public static class ServiceOracleCloudClientSslClientConfiguration extends AbstractClientSslConfiguration {
 
         /**
          * Sets the key configuration.
          *
          * @param keyConfiguration The key configuration.
          */
-        void setKey(@Nullable OracleCloudClientSslClientConfiguration.DefaultKeyConfiguration keyConfiguration) {
+        void setKey(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultKeyConfiguration keyConfiguration) {
             if (keyConfiguration != null) {
                 super.setKey(keyConfiguration);
             }
@@ -133,7 +129,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
          *
          * @param keyStoreConfiguration The key store configuration
          */
-        void setKeyStore(@Nullable OracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration keyStoreConfiguration) {
+        void setKeyStore(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration keyStoreConfiguration) {
             if (keyStoreConfiguration != null) {
                 super.setKeyStore(keyStoreConfiguration);
             }
@@ -144,7 +140,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
          *
          * @param trustStore The trust store configuration
          */
-        void setTrustStore(@Nullable OracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration trustStore) {
+        void setTrustStore(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration trustStore) {
             if (trustStore != null) {
                 super.setTrustStore(trustStore);
             }
@@ -174,5 +170,4 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
         public static class DefaultTrustStoreConfiguration extends SslConfiguration.TrustStoreConfiguration {
         }
     }
-
 }

@@ -40,13 +40,14 @@ import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.naming.NameUtils;
 import io.micronaut.inject.visitor.TypeElementVisitor;
+import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
@@ -91,6 +92,11 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     public static final String CLIENT_PACKAGE = "io.micronaut.oraclecloud.clients";
 
     /**
+     * Value field name in the annotations.
+     */
+    public static final String VALUE_FIELD = "value";
+
+    /**
      * Processing environment option used to specify the client classes to process.
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
@@ -125,7 +131,6 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 final boolean isRxJava2 = t.equals("RXJAVA2");
                 final boolean isReactor = t.equals("REACTOR");
                 final boolean isAsync = t.equals("ASYNC");
-                List<String> factoryClassNames = new ArrayList<>();
                 for (String clientName : clientNames) {
                     final String packageName = NameUtils.getPackageName(clientName);
                     final String simpleName = NameUtils.getSimpleName(clientName);
@@ -135,7 +140,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                     } else if (isReactor) {
                         writeReactorClients(e, packageName, simpleName);
                     } else if (isAsync) {
-                        factoryClassNames.add(writeClientFactory(e, packageName, simpleName));
+                        writeClientFactory(e, packageName, simpleName);
                     }
                 }
 
@@ -437,9 +442,18 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
     }
 
     private MethodSpec.Builder buildConstructor(String simpleName, TypeSpec.Builder builder) {
+        String serviceSimpleName = simpleName.replace("Async", "").replace("Client", "").toLowerCase(Locale.ENGLISH);
+
         final MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)
                 .addParameter(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "specificClientConfiguration")
+                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
+
+
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "serviceIdClientConfigurator")
+                .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
+
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "clientConfigurator")
                                 .addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http.signing", "RequestSignerFactory"), "requestSignerFactory")
@@ -447,7 +461,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, clientConfigurator, requestSignerFactory, regionProvider)")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, clientConfigurator, serviceIdClientConfigurator, requestSignerFactory)")
                         .addStatement("builder = super.getBuilder()")
                 .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
@@ -479,7 +493,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
             .flatMap(ann -> {
                 final Map<? extends ExecutableElement, ? extends AnnotationValue> values = ann.getElementValues();
                 for (Entry<? extends ExecutableElement, ? extends AnnotationValue> value: values.entrySet()) {
-                    if (value.getKey().getSimpleName().toString().equals("value")) {
+                    if (value.getKey().getSimpleName().toString().equals(VALUE_FIELD)) {
                         return Optional.ofNullable(value.getValue().getValue().toString());
                     }
                 }

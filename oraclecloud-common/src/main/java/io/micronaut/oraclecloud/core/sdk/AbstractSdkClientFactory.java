@@ -19,7 +19,6 @@ import com.oracle.bmc.ClientConfiguration;
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.RegionProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
-import com.oracle.bmc.common.RegionalClientBuilder;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
@@ -40,25 +39,57 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
     private final B builder;
 
     /**
-     * Default constructor.
+     * Old default constructor.
+     * @deprecated use the new constructor.
      * @param builder The builder
      * @param clientConfiguration The client config
      * @param clientConfigurator The client configurator (optional)
      * @param requestSignerFactory The request signer factory (optional)
      * @param regionProvider The region provider (optional)
      */
+    @Deprecated(since = "5.3.0")
+    protected AbstractSdkClientFactory(
+        B builder,
+        ClientConfiguration clientConfiguration,
+        @Nullable ClientConfigurator clientConfigurator,
+        @Nullable RequestSignerFactory requestSignerFactory,
+        @Nullable RegionProvider regionProvider
+    ) {
+        this(builder, clientConfiguration, null, clientConfigurator, null, requestSignerFactory);
+    }
+
+    /**
+     * Default constructor.
+     * @param builder The builder
+     * @param clientConfiguration The client config
+     * @param specificClientConfiguration the configuration specific to each client.
+     * @param clientConfigurator The client configurator (optional)
+     * @param serviceIdClientConfigurator The client configurator that will configure service id (optional)
+     * @param requestSignerFactory The request signer factory (optional)
+     */
     protected AbstractSdkClientFactory(
             B builder,
             ClientConfiguration clientConfiguration,
+            @Nullable ClientConfiguration specificClientConfiguration,
             @Nullable ClientConfigurator clientConfigurator,
-            @Nullable RequestSignerFactory requestSignerFactory,
-            @Nullable RegionProvider regionProvider
+            @Nullable ClientConfigurator serviceIdClientConfigurator,
+            @Nullable RequestSignerFactory requestSignerFactory
     ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
-        builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+        if (specificClientConfiguration != null) {
+            builder.configuration(Objects.requireNonNull(specificClientConfiguration, "Client configuration cannot be null"));
+        } else {
+            builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+        }
+
+        if (serviceIdClientConfigurator != null) {
+            builder.additionalClientConfigurator(serviceIdClientConfigurator);
+        }
+
         if (clientConfigurator != null) {
             builder.clientConfigurator(clientConfigurator);
         }
+
         if (requestSignerFactory != null) {
             builder.requestSignerFactory(requestSignerFactory);
         }

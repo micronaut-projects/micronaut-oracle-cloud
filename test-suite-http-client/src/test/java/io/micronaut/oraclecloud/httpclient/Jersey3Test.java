@@ -8,6 +8,7 @@ import com.oracle.bmc.http.client.jersey3.Jersey3HttpProvider;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
 import java.security.cert.CertificateException;

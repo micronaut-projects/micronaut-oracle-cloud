@@ -47,11 +47,26 @@ The jersey HTTP client can be configured through a `ClientConfigurator` and `Sta
 - `StandardClientProperties.CONNECT_TIMEOUT` supported only when the client is _not_ managed
 - `StandardClientProperties.ASYNC_POOL_SIZE` supported only when the client is _not_ managed
 
-All other properties, in particular those related to proxies or TLS configuration, are not supported. Instead, you can configure these settings through the normal Micronaut HTTP client configuration properties, with the special service name `oci`, for example the `micronaut.http.services.oci.read-timeout` property. For the managed netty client, this allows you to configure TLS, proxy settings, various timeouts and the pool size. The service name can be customized using the `NettyClientProperties.SERVICE_ID` property.
+Other properties — particularly those related to proxies and TLS configuration — are not supported directly.
+Instead, these settings should be configured using the standard Micronaut HTTP client configuration properties, with a special service name prefix.
+For example, to configure the managed Netty client, you can use properties like `oci.client.read-timeout`. This allows you to configure TLS, proxy settings, timeouts, connection pool sizes, and other HTTP client options.
+
+Similarly, you can configure other Micronaut-provided clients by specifying the appropriate service ID. For example:
+
+- `oci.clients.objectstorage.read-timeout` for the Object Storage client
+
+- `oci.clients.identity.read-timeout` for the Identity client
+
+You can find a client’s service ID by checking the factory class that creates it or directly by client name. For example:
+
+- IdentityClientFactory produces IdentityClient → identity.
+- ObjectStorageClientFactory produces ObjectStorageClient → objectstorage.
+
+NOTE: You should choose either `micronaut.http.services.oci` or `oci.client` to configure your oci client. If you supply both you will get `NonUniqueBeanException`.
 
 #### Logging
 
-To enable logging of all requests, set the `micronaut.http.services.oci.log-level` property to `INFO`. Log messages
+To enable logging of all requests, set the `micronaut.http.services.oci.log-level` or `oci.client.log-level` property to `INFO`. Log messages
 will appear at `INFO` level.
 
 WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging
