@@ -8,7 +8,6 @@ javapoet = '1.13.0'
 kotlin = '1.9.25'
 logback-json-classic = '0.1.5'
 slf4j-jcl = '2.0.17'
-commons-lang3 = '3.17.0'
 shadow = '8.0.0'
 groovy = "4.0.28"
 spock = "2.3-groovy-4.0"
@@ -34,6 +33,12 @@ micronaut-logging = "1.7.0"
 micronaut-validation = "4.10.0"
 micronaut-discovery-client = "4.7.1"
 sonatype-scan = "3.0.0"
+
+#TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
+#https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
+commons-lang3 = "3.18.0"
+#https://ossindex.sonatype.org/vulnerability/CVE-2025-53864?component-type=maven&component-name=com.google.code.gson%2Fgson
+gson = "2.12.0"
 
 [libraries]
 # Core
@@ -67,6 +72,7 @@ kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.re
 logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-json-classic' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
 oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version.ref = "oci" }
 oci-common-httpclient = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient', version.ref = "oci" }

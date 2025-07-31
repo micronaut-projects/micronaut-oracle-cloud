@@ -1,5 +1,6 @@
 plugins {
     id("io.micronaut.build.internal.bom")
+
     id("io.micronaut.build.internal.oraclecloud-bom")
 }
 

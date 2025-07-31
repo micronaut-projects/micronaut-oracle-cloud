@@ -10,6 +10,11 @@ dependencies {
     compileOnly projects.micronautOraclecloudSdkBase
     implementation mnReactor.micronaut.reactor
 
+    //https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
+    implementation(libs.commons.lang3)
+    //https://ossindex.sonatype.org/vulnerability/CVE-2025-53864?component-type=maven&component-name=com.google.code.gson%2Fgson
+    implementation(libs.gson)
+
     // optional modules
     for (name in gradle.ociArtifacts) {
         compileOnly "com.oracle.oci.sdk:$name:$gradle.ociVersion"
