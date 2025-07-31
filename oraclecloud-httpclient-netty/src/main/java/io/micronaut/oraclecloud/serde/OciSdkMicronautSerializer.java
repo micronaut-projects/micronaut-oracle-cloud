@@ -49,7 +49,7 @@ import java.util.Map;
 @SerdeImport(X509FederationClient.X509FederationRequest.class)
 @SerdeImport(GetOkeResourcePrincipalSessionTokenDetails.class)
 @SerdeImport(OkeResourcePrincipalSessionToken.class)
-@SerdeImport(EncryptionHeader.class)
+@SerdeImport(value = EncryptionHeader.class, deserializable = false)
 @SerdeImport(EncryptionKey.class)
 public final class OciSdkMicronautSerializer implements Serializer {
 
