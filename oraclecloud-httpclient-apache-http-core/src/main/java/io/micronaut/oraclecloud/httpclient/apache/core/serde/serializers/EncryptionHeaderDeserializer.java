@@ -19,6 +19,7 @@ import com.oracle.bmc.encryption.internal.EncryptionHeader;
 import com.oracle.bmc.encryption.internal.EncryptionKey;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.Secondary;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.type.Argument;
@@ -34,6 +35,7 @@ import java.util.List;
 @Singleton
 @BootstrapContextCompatible
 @Requires(classes = EncryptionHeader.class)
+@Secondary
 final class EncryptionHeaderDeserializer implements CustomizableDeserializer<EncryptionHeader> {
 
     @Override
