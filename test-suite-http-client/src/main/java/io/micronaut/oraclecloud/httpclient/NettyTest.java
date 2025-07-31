@@ -4,11 +4,14 @@ import com.oracle.bmc.Region;
 import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
+import com.oracle.bmc.encryption.internal.EncryptionHeader;
+import com.oracle.bmc.encryption.internal.EncryptionKey;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
+import com.oracle.bmc.http.client.Serializer;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import com.oracle.bmc.http.client.io.DuplicatableInputStream;
@@ -65,6 +68,8 @@ public abstract class NettyTest {
     public static void computeContentLength(FullHttpResponse response) {
         response.headers().add(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
     }
+
+    protected abstract Serializer serializer();
 
     protected abstract HttpClientBuilder newBuilder();
 
@@ -783,6 +788,22 @@ public abstract class NettyTest {
                 Assertions.assertEquals("bar", s);
             }
         }
+    }
+
+    @Test
+    public void encryptionSdk() throws IOException {
+        EncryptionHeader h = new EncryptionHeader();
+        h.setEncryptionHeader(
+            new EncryptionKey("region", "vaultId", "masterKeyId", "encryptedDataKey"),
+            "iv",
+            "additionalAuthenticatedData"
+        );
+        String json = serializer().writeValueAsString(h);
+
+        EncryptionHeader deserialized = serializer().readValue(json, EncryptionHeader.class);
+        Assertions.assertEquals(h.getEncryptionKey(), deserialized.getEncryptionKey());
+        Assertions.assertEquals(h.getIV(), deserialized.getIV());
+        Assertions.assertEquals(h.getAdditionalAuthenticatedData(), deserialized.getAdditionalAuthenticatedData());
     }
 
     @Serdeable
