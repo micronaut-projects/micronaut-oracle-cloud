@@ -6,6 +6,7 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
+import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.oraclecloud.httpclient.NettyTest;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -29,6 +30,11 @@ public class NettyUnmanagedTest extends NettyTest {
 
     HttpProvider provider() {
         return PROVIDER;
+    }
+
+    @Override
+    protected Serializer serializer() {
+        return provider().getSerializer();
     }
 
     @Override

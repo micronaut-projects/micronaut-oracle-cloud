@@ -3,6 +3,7 @@ package io.micronaut.oraclecloud.httpclient;
 import com.oracle.bmc.common.ClientBuilderBase;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
+import com.oracle.bmc.http.client.Serializer;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.jersey3.Jersey3HttpProvider;
 import io.netty.bootstrap.ServerBootstrap;
@@ -24,6 +25,11 @@ public class Jersey3Test extends NettyTest {
     public String endpoint() {
         InetSocketAddress addr = (InetSocketAddress) getServerChannel().localAddress();
         return "http://" + addr.getHostString() + ":" + addr.getPort();
+    }
+
+    @Override
+    protected Serializer serializer() {
+        return provider().getSerializer();
     }
 
     @Override
