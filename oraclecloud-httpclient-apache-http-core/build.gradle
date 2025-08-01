@@ -22,6 +22,7 @@ dependencies {
     // serde serializer
     compileOnly(mnSerde.micronaut.serde.api)
     compileOnly(libs.oci.oke.workload.identity)
+    compileOnly(libs.oci.encryption)
     testImplementation(mnSerde.micronaut.serde.api)
     testImplementation(libs.oci.oke.workload.identity)
 

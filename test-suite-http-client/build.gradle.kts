@@ -22,7 +22,8 @@ dependencies {
         projects.micronautOraclecloudBmcLogging,
         projects.micronautOraclecloudBmcLoggingingestion,
         projects.micronautOraclecloudBmcLoggingsearch,
-        projects.micronautOraclecloudBmcStreaming
+        projects.micronautOraclecloudBmcStreaming,
+        projects.micronautOraclecloudBmcEncryption
     ).forEach { implementation(it) }
 
     testImplementation(libs.oci.common.httpclient.jersey3)

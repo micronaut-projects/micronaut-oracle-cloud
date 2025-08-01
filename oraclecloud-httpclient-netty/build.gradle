@@ -16,6 +16,7 @@ dependencies {
     implementation mnSerde.micronaut.serde.support
     implementation mnSerde.micronaut.serde.jackson // Includes ObjectMapper implementation
     compileOnly libs.oci.oke.workload.identity
+    compileOnly(libs.oci.encryption)
 
     testImplementation(mn.micronaut.http.server.netty)
     // for self-signed certs
@@ -43,7 +44,8 @@ dependencies {
      projects.micronautOraclecloudBmcLogging,
      projects.micronautOraclecloudBmcLoggingingestion,
      projects.micronautOraclecloudBmcLoggingsearch,
-     projects.micronautOraclecloudBmcStreaming
+     projects.micronautOraclecloudBmcStreaming,
+     projects.micronautOraclecloudBmcEncryption
     ].forEach(module -> testImplementation(module))
 }
 tasks.withType(Test).configureEach {

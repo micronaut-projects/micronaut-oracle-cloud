@@ -20,6 +20,8 @@ import com.oracle.bmc.auth.internal.JWK;
 import com.oracle.bmc.auth.internal.X509FederationClient;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.GetOkeResourcePrincipalSessionTokenDetails;
 import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeResourcePrincipalSessionToken;
+import com.oracle.bmc.encryption.internal.EncryptionHeader;
+import com.oracle.bmc.encryption.internal.EncryptionKey;
 import com.oracle.bmc.http.client.Serializer;
 import com.oracle.bmc.http.internal.ResponseHelper;
 import com.oracle.bmc.model.RegionSchema;
@@ -47,6 +49,8 @@ import java.util.Map;
 @SerdeImport(X509FederationClient.X509FederationRequest.class)
 @SerdeImport(GetOkeResourcePrincipalSessionTokenDetails.class)
 @SerdeImport(OkeResourcePrincipalSessionToken.class)
+@SerdeImport(value = EncryptionHeader.class, deserializable = false)
+@SerdeImport(EncryptionKey.class)
 public final class OciSdkMicronautSerializer implements Serializer {
 
     private final JsonMapper objectMapper;
