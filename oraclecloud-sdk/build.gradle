@@ -9,6 +9,12 @@ dependencies {
         exclude group:'commons-logging', module:'commons-logging'
     }
     api projects.micronautOraclecloudHttpclientNetty
+
+    //https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
+    implementation(libs.commons.lang3)
+    //https://ossindex.sonatype.org/vulnerability/CVE-2025-53864?component-type=maven&component-name=com.google.code.gson%2Fgson
+    implementation(libs.gson)
+
     compileOnly projects.micronautOraclecloudSdkBase
     compileOnly libs.graal.svm
     compileOnly mnRxjava2.rxjava2

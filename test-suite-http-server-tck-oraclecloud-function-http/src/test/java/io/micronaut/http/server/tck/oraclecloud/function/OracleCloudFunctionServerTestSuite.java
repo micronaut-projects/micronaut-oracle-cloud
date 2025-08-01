@@ -34,6 +34,7 @@ import org.junit.platform.suite.api.*;
     "io.micronaut.http.server.tck.tests.filter.RequestFilterTest", // See https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/926
     "io.micronaut.http.server.tck.tests.constraintshandler.ControllerConstraintHandlerTest", // See https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/925
     "io.micronaut.http.server.tck.tests.filter.CacheControlTest",
+    "io.micronaut.http.server.tck.tests.forms.UploadTest",
     "io.micronaut.http.server.tck.tests.cors.CorsSimpleRequestTest"
 })
 public class OracleCloudFunctionServerTestSuite {
