@@ -47,21 +47,20 @@ jobs:
           echo $GPG_FILE | base64 -d > secring.gpg
           # Read the current version from gradle.properties.
           VERSION=$(./gradlew properties | grep 'version:' | awk '{print $2}')
-          TITLE=$(./gradlew properties | awk -F'title: ' '/title:/ {print $2}' | sed '/^$/d')
-          # Publish both locally and to Sonatype.
-          # The artifacts stored locally will be used to generate the SLSA provenance.
-          #./gradlew publishAllPublicationsToBuildRepository publishToSonatype closeAndReleaseSonatypeStagingRepository
-          # Don't publish to Sonatype, as it currenlty fails to publish every artifact. We will upload the artifacts manually.
-          ./gradlew publishAllPublicationsToBuildRepository
-          cd build
-          zip -r ../artifacts.zip repo
-          cd ..
-          export SONATYPE_BEARER=$(printf "%s:%s" "$SONATYPE_USERNAME" "$SONATYPE_PASSWORD" | base64 | tr -d '\n')
-          #curl -X POST https://central.sonatype.com/api/v1/publisher/upload -H "Authorization: Bearer $SONATYPE_BEARER" -F name="$TITLE $VERSION" -F publishType="RELEASE" -F bundle=@artifacts.zip
           # Read the project group from gradle.properties.
           GROUP_PATH=$(./gradlew properties| grep "projectGroup" | awk '{print $2}' | sed 's/\./\//g')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "group=$GROUP_PATH" >> "$GITHUB_OUTPUT"
+          # Publish both locally and to Sonatype.
+          # Don't publish to Sonatype, as it currently fails to publish every artifact. We will upload the artifacts manually.
+          ./gradlew publishAllPublicationsToBuildRepository
+          cd build/repo
+          zip -r ../../artifacts.zip io
+          cd ../..
+          export SONATYPE_BEARER=$(printf "%s:%s" "$SONATYPE_USERNAME" "$SONATYPE_PASSWORD" | base64 | tr -d '\n')
+          echo "Publishing via the Portal API"
+          # https://central.sonatype.org/publish/publish-portal-api/#uploading-a-deployment-bundle
+          curl -X POST https://central.sonatype.com/api/v1/publisher/upload -H "Authorization: Bearer $SONATYPE_BEARER" -F name="$GROUP_PATH $VERSION" -F publishingType="AUTOMATIC" -F bundle=@artifacts.zip
       - name: Generate subject
         id: hash
         run: |
@@ -163,9 +162,8 @@ jobs:
       - name: Create artifacts archive
         shell: bash
         run: |
-          cd build
-          zip -r ../artifacts.zip repo
-          cd ..
+          find build/repo -type f \( \( -iname "*.jar" -not -iname "*-javadoc.jar" -not \
+              -iname "*-sources.jar" \) -or -iname "*.pom" \) | xargs zip artifacts.zip
       - name: Upload assets
         # Upload the artifacts to the existing release. Note that the SLSA provenance will
         # attest to each artifact file and not the aggregated ZIP file.
