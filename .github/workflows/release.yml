@@ -57,7 +57,7 @@ jobs:
           zip -r ../../artifacts.zip .
           cd ../../
           export SONATYPE_BEARER=$(printf "%s:%s" "$SONATYPE_USERNAME" "$SONATYPE_PASSWORD" | base64 | tr -d '\n')
-          #curl -X POST https://central.sonatype.com/api/v1/publisher/upload -H "Authorization: Basic $SONATYPE_BEARER" -F name="$TITLE $VERSION" -F publishType="RELEASE" -F bundle=@artifacts.zip
+          #curl -X POST https://central.sonatype.com/api/v1/publisher/upload -H "Authorization: Bearer $SONATYPE_BEARER" -F name="$TITLE $VERSION" -F publishType="RELEASE" -F bundle=@artifacts.zip
           # Read the project group from gradle.properties.
           GROUP_PATH=$(./gradlew properties| grep "projectGroup" | awk '{print $2}' | sed 's/\./\//g')
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
