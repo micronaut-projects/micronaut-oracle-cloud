@@ -160,13 +160,12 @@ jobs:
         with:
           name: gradle-build-outputs
           path: build/repo
-#      - name: Create artifacts archive
-#        shell: bash
-#        run: |
-#          cd build/repo
-#          zip -r ../../artifacts.zip .
-#          find build/repo -type f \( \( -iname "*.jar" -not -iname "*-javadoc.jar" -not \
-#              -iname "*-sources.jar" \) -or -iname "*.pom" \) | xargs zip artifacts.zip
+      - name: Create artifacts archive
+        shell: bash
+        run: |
+          cd build/repo
+          zip -r ../../artifacts.zip .
+          cd ../../
       - name: Upload assets
         # Upload the artifacts to the existing release. Note that the SLSA provenance will
         # attest to each artifact file and not the aggregated ZIP file.
