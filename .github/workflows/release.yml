@@ -55,6 +55,7 @@ jobs:
           ./gradlew publishAllPublicationsToBuildRepository
           cd build/repo
           zip -r ../../artifacts.zip .
+          cd ../../
           export SONATYPE_BEARER=$(printf "%s:%s" "$SONATYPE_USERNAME" "$SONATYPE_PASSWORD" | base64 | tr -d '\n')
           #curl -X POST https://central.sonatype.com/api/v1/publisher/upload -H "Authorization: Basic $SONATYPE_BEARER" -F name="$TITLE $VERSION" -F publishType="RELEASE" -F bundle=@artifacts.zip
           # Read the project group from gradle.properties.
