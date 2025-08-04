@@ -53,9 +53,9 @@ jobs:
           #./gradlew publishAllPublicationsToBuildRepository publishToSonatype closeAndReleaseSonatypeStagingRepository
           # Don't publish to Sonatype, as it currenlty fails to publish every artifact. We will upload the artifacts manually.
           ./gradlew publishAllPublicationsToBuildRepository
-          cd build/repo
-          zip -r ../../artifacts.zip .
-          cd ../../
+          cd build
+          zip -r ../artifacts.zip repo
+          cd ..
           export SONATYPE_BEARER=$(printf "%s:%s" "$SONATYPE_USERNAME" "$SONATYPE_PASSWORD" | base64 | tr -d '\n')
           #curl -X POST https://central.sonatype.com/api/v1/publisher/upload -H "Authorization: Bearer $SONATYPE_BEARER" -F name="$TITLE $VERSION" -F publishType="RELEASE" -F bundle=@artifacts.zip
           # Read the project group from gradle.properties.
@@ -163,9 +163,9 @@ jobs:
       - name: Create artifacts archive
         shell: bash
         run: |
-          cd build/repo
-          zip -r ../../artifacts.zip .
-          cd ../../
+          cd build
+          zip -r ../artifacts.zip repo
+          cd ..
       - name: Upload assets
         # Upload the artifacts to the existing release. Note that the SLSA provenance will
         # attest to each artifact file and not the aggregated ZIP file.
