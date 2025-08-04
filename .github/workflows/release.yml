@@ -47,7 +47,9 @@ jobs:
           echo $GPG_FILE | base64 -d > secring.gpg
           # Publish both locally and to Sonatype.
           # The artifacts stored locally will be used to generate the SLSA provenance.
-          ./gradlew publishAllPublicationsToBuildRepository publishToSonatype closeAndReleaseSonatypeStagingRepository
+          #./gradlew publishAllPublicationsToBuildRepository publishToSonatype closeAndReleaseSonatypeStagingRepository
+          # Don't publish to Sonatype, as it currenlty fails to publish every artifact. We will upload the artifacts manually.
+          ./gradlew publishAllPublicationsToBuildRepository
           # Read the current version from gradle.properties.
           VERSION=$(./gradlew properties | grep 'version:' | awk '{print $2}')
           # Read the project group from gradle.properties.
