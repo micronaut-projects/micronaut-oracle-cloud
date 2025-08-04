@@ -53,6 +53,7 @@ jobs:
           echo "group=$GROUP_PATH" >> "$GITHUB_OUTPUT"
           # Publish locally
           ./gradlew publishAllPublicationsToBuildRepository
+          # ZIP Artifacts
           cd build/repo
           zip -r ../../artifacts.zip io
           cd ../..
