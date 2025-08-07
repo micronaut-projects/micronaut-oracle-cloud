@@ -23,9 +23,6 @@ import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
-import io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration;
-import io.micronaut.oraclecloud.clients.monitoring.MonitoringClientFactory;
-import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.serde.annotation.Serdeable;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -109,6 +106,31 @@ public abstract class NettyTest {
                 .get()) {
                 String s = response.textBody().toCompletableFuture().get();
                 Assertions.assertEquals("bar", s);
+            }
+        }
+    }
+
+    @Test
+    public void textBodyTwice() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/foo", request.uri());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .build()) {
+            try (HttpResponse response = client.createRequest(Method.GET)
+                .appendPathPart("foo")
+                .execute().toCompletableFuture()
+                .get()) {
+
+                Assertions.assertEquals("bar", response.textBody().toCompletableFuture().get());
+                Assertions.assertEquals("bar", response.textBody().toCompletableFuture().get());
             }
         }
     }

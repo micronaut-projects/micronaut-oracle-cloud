@@ -9,7 +9,6 @@ import com.oracle.bmc.http.client.jersey3.Jersey3HttpProvider;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
 
 import java.net.InetSocketAddress;
 import java.security.cert.CertificateException;
@@ -62,5 +61,11 @@ public class Jersey3Test extends NettyTest {
     @Disabled // breaks the next test for some reason
     public void fullSetupTest() throws CertificateException {
         super.fullSetupTest();
+    }
+
+    @Override
+    @Disabled // not supported by jersey client
+    public void textBodyTwice() throws Exception {
+        super.textBodyTwice();
     }
 }
