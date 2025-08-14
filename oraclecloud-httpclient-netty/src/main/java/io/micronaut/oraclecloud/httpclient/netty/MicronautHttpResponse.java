@@ -80,7 +80,10 @@ final class MicronautHttpResponse implements HttpResponse {
         if (limitedBufferingSubscriber != null) {
             return limitedBufferingSubscriber.future;
         } else {
-            return byteBody().buffer().thenApply(AvailableByteBody::toByteArray);
+            ByteBody byteBody = byteBody();
+            limitedBufferingSubscriber = new LimitedBufferingSubscriber(4096);
+            byteBody.split(ByteBody.SplitBackpressureMode.SLOWEST).toByteBufferPublisher().subscribe(limitedBufferingSubscriber);
+            return byteBody.buffer().thenApply(AvailableByteBody::toByteArray);
         }
     }
 
