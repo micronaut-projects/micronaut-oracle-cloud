@@ -94,6 +94,18 @@ public class ApacheNettyTest extends NettyTest {
         super.fullSetupTest();
     }
 
+    @Override
+    @Disabled // body not available
+    public void fullSetupErrorParseFailure() throws CertificateException {
+        super.fullSetupErrorParseFailure();
+    }
+
+    @Override
+    @Disabled // different error
+    public void fullSetupConnectionDiesMidError() throws CertificateException {
+        super.fullSetupConnectionDiesMidError();
+    }
+
     @Test
     public void location() throws Exception {
         netty.handleOneRequest((ctx, request) -> {
