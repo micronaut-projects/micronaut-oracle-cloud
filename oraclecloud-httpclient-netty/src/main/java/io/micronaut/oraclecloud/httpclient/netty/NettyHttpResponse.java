@@ -39,6 +39,7 @@ final class NettyHttpResponse implements HttpResponse {
     private final LimitedBufferingBodyHandler limitedBufferingBodyHandler;
     private final UndecidedBodyHandler undecidedBodyHandler;
     private final Executor offloadExecutor;
+    private CompletionStage<String> textBody;
 
     NettyHttpResponse(JsonMapper jsonMapper, io.netty.handler.codec.http.HttpResponse nettyResponse, LimitedBufferingBodyHandler limitedBufferingBodyHandler, UndecidedBodyHandler undecidedBodyHandler, Executor offloadExecutor) {
         this.jsonMapper = jsonMapper;
@@ -126,13 +127,16 @@ final class NettyHttpResponse implements HttpResponse {
 
     @Override
     public CompletionStage<String> textBody() {
-        return thenApply(bodyAsBuffer(), buf -> {
-            try {
-                return buf.toString(StandardCharsets.UTF_8);
-            } finally {
-                buf.release();
-            }
-        });
+        if (textBody == null) {
+            textBody = thenApply(bodyAsBuffer(), buf -> {
+                try {
+                    return buf.toString(StandardCharsets.UTF_8);
+                } finally {
+                    buf.release();
+                }
+            });
+        }
+        return textBody;
     }
 
     private <T, U> CompletionStage<U> thenApply(CompletionStage<T> stage, Function<? super T, ? extends U> fn) {
