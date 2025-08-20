@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.security.cert.CertificateException;
 import java.util.Map;
 
 @Deprecated
@@ -20,5 +21,11 @@ public class LegacyNettyManagedTest extends NettyManagedTest {
     @Disabled // response filter order was fixed in the new client impl
     void simpleRequestTestFilters() throws Exception {
         super.simpleRequestTestFilters();
+    }
+
+    @Override
+    @Disabled // not supported
+    public void fullSetupErrorParseFailure() throws CertificateException {
+        super.fullSetupErrorParseFailure();
     }
 }

@@ -16,13 +16,17 @@ import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import com.oracle.bmc.http.client.io.DuplicatableInputStream;
 import com.oracle.bmc.http.internal.ResponseHelper;
+import com.oracle.bmc.model.BmcException;
 import com.oracle.bmc.monitoring.MonitoringClient;
+import com.oracle.bmc.monitoring.model.CreateAlarmDetails;
+import com.oracle.bmc.monitoring.requests.CreateAlarmRequest;
 import com.oracle.bmc.monitoring.requests.DeleteAlarmRequest;
 import com.oracle.bmc.streaming.model.PutMessagesDetails;
 import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
+import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.serde.annotation.Serdeable;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;
@@ -64,7 +68,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @ExtendWith(NettyRule.class)
+@SerdeImport(CreateAlarmDetails.class)
 public abstract class NettyTest {
     protected NettyRule netty;
 
@@ -489,10 +497,26 @@ public abstract class NettyTest {
         }
     }
 
+    private SimpleAuthenticationDetailsProvider mockAuthenticationDetailsProvider() throws CertificateException {
+        SelfSignedCertificate ssc = new SelfSignedCertificate();
+        return SimpleAuthenticationDetailsProvider.builder()
+            .tenantId("tenantId")
+            .userId("userId")
+            .fingerprint("fingerprint")
+            .passPhrase("")
+            .region(Region.US_PHOENIX_1)
+            .privateKeySupplier(() -> {
+                try {
+                    return new FileInputStream(ssc.privateKey());
+                } catch (FileNotFoundException e) {
+                    throw new UncheckedIOException(e);
+                }
+            })
+            .build();
+    }
+
     @Test
     public void fullSetupTest() throws CertificateException {
-        SelfSignedCertificate ssc = new SelfSignedCertificate();
-
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(HttpMethod.DELETE, request.method());
             Assertions.assertEquals("/20180401/alarms/foo", request.uri());
@@ -509,20 +533,7 @@ public abstract class NettyTest {
         MonitoringClient.Builder builder = MonitoringClient.builder();
         customize(builder);
         try (MonitoringClient monitoringClient = builder
-            .build(SimpleAuthenticationDetailsProvider.builder()
-                .tenantId("tenantId")
-                .userId("userId")
-                .fingerprint("fingerprint")
-                .passPhrase("")
-                .region(Region.US_PHOENIX_1)
-                .privateKeySupplier(() -> {
-                    try {
-                        return new FileInputStream(ssc.privateKey());
-                    } catch (FileNotFoundException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                })
-                .build())) {
+            .build(mockAuthenticationDetailsProvider())) {
 
             monitoringClient.deleteAlarm(DeleteAlarmRequest.builder()
                 .alarmId("foo")
@@ -531,8 +542,70 @@ public abstract class NettyTest {
     }
 
     @Test
+    public void fullSetupConnectionDiesMidError() throws CertificateException {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/20180401/alarms", request.uri());
+
+            DefaultHttpResponse response = new DefaultHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
+            response.headers().add("Content-Type", "application/json");
+            response.headers().add("Content-Length", "2");
+            ctx.write(response, ctx.voidPromise());
+            ctx.writeAndFlush(new DefaultHttpContent(Unpooled.copiedBuffer("{", StandardCharsets.UTF_8)))
+                .addListener(ChannelFutureListener.CLOSE);
+        });
+
+        MonitoringClient.Builder builder = MonitoringClient.builder();
+        customize(builder);
+        try (MonitoringClient monitoringClient = builder
+            .build(mockAuthenticationDetailsProvider())) {
+
+            BmcException exc = assertThrows(BmcException.class, () -> monitoringClient.createAlarm(CreateAlarmRequest.builder()
+                .createAlarmDetails(CreateAlarmDetails.builder().build())
+                .build()));
+            try {
+                assertTrue(exc.getMessage().contains("Unable to parse error response."));
+            } catch (Throwable e) {
+                e.addSuppressed(exc);
+                throw e;
+            }
+        }
+    }
+
+    @Test
+    public void fullSetupErrorParseFailure() throws CertificateException {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/20180401/alarms", request.uri());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST,
+                Unpooled.copiedBuffer("{", StandardCharsets.UTF_8)
+            );
+            response.headers().add("Content-Type", "application/json");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        MonitoringClient.Builder builder = MonitoringClient.builder();
+        customize(builder);
+        try (MonitoringClient monitoringClient = builder
+            .build(mockAuthenticationDetailsProvider())) {
+
+            BmcException exc = assertThrows(BmcException.class, () -> monitoringClient.createAlarm(CreateAlarmRequest.builder()
+                .createAlarmDetails(CreateAlarmDetails.builder().build())
+                .build()));
+            try {
+                assertTrue(exc.getMessage().contains("Unable to parse error response: {"));
+            } catch (Throwable e) {
+                e.addSuppressed(exc);
+                throw e;
+            }
+        }
+    }
+
+    @Test
     public void fullSetupTestManagedCustomProperties() throws CertificateException {
-        SelfSignedCertificate ssc = new SelfSignedCertificate();
         for (int i = 0; i < 3; i++) {
             int finalI = i;
             netty.handleOneRequest((ctx, request) -> {
@@ -566,20 +639,7 @@ public abstract class NettyTest {
             MonitoringClient.Builder builder = ctx.getBean(MonitoringClient.Builder.class);
             customize(builder);
             try (MonitoringClient monitoringClient = builder
-                .build(SimpleAuthenticationDetailsProvider.builder()
-                    .tenantId("tenantId")
-                    .userId("userId")
-                    .fingerprint("fingerprint")
-                    .passPhrase("")
-                    .region(Region.US_PHOENIX_1)
-                    .privateKeySupplier(() -> {
-                        try {
-                            return new FileInputStream(ssc.privateKey());
-                        } catch (FileNotFoundException e) {
-                            throw new UncheckedIOException(e);
-                        }
-                    })
-                    .build())) {
+                .build(mockAuthenticationDetailsProvider())) {
 
                 monitoringClient.deleteAlarm(DeleteAlarmRequest.builder()
                     .alarmId("foo")

@@ -22,6 +22,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.LastHttpContent;
 
+import java.nio.channels.ClosedChannelException;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -49,6 +50,9 @@ final class LimitedBufferingBodyHandler extends ChannelInboundHandlerAdapter {
         if (buffer != null) {
             buffer.release();
             buffer = null;
+        }
+        if (!future.isDone()) {
+            future.completeExceptionally(new ClosedChannelException());
         }
     }
 
