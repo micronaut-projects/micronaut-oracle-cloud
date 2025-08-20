@@ -1,18 +1,17 @@
 package io.micronaut.discovery.cloud
 
 import com.oracle.bmc.ClientConfiguration
+import com.oracle.bmc.retrier.RetryOptions
 import com.oracle.bmc.waiter.ExponentialBackoffDelayStrategy
 import com.oracle.bmc.waiter.FixedTimeDelayStrategy
-import com.oracle.bmc.waiter.MaxTimeTerminationStrategy
 import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy
-import com.oracle.bmc.retrier.RetryOptions
+import com.oracle.bmc.waiter.MaxTimeTerminationStrategy
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
 import io.micronaut.http.client.HttpClientConfiguration
 import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.runtime.server.EmbeddedServer
 import spock.lang.Specification
-
 
 class OracleCloudCustomConfigPerClientSpec extends Specification {
 
@@ -22,6 +21,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.retry-delay-strategy.max-delay-millis": "100",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
@@ -45,6 +45,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.retry-delay-strategy.time-between-attempts-in-millis": "100",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
@@ -68,6 +69,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.retry-termination-strategy.max-attempts": "100",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
@@ -91,6 +93,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.retry-termination-strategy.max-time-millis": "100",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
@@ -114,6 +117,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.retry-options.mark-read-limit": "100",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
@@ -137,6 +141,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.read-timeout": "100ms",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
@@ -157,6 +162,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.read-timeout-millis": "100",
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
         def ctx = server.applicationContext
