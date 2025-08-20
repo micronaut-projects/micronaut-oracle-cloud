@@ -8,7 +8,12 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.MediaType
 import io.micronaut.http.MutableHttpResponse
-import io.micronaut.http.annotation.*
+import io.micronaut.http.annotation.Consumes
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Produces
+import io.micronaut.http.annotation.RequestFilter
+import io.micronaut.http.annotation.ServerFilter
 import io.micronaut.http.filter.FilterContinuation
 import io.micronaut.oraclecloud.core.InstancePrincipalConfiguration
 import io.micronaut.oraclecloud.core.TenancyIdProvider
@@ -27,6 +32,7 @@ class OracleCloudV2MetadataCertSpec extends Specification {
                 [
                         "spec.name": "OracleCloudV2MetadataCertSpec",
                         (OracleCloudMetadataConfiguration.PREFIX + ".v2-enabled"): true,
+                        'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
         def url = server.URL.toString()
 
