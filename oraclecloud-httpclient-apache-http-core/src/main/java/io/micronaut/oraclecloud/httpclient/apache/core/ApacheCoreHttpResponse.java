@@ -43,6 +43,7 @@ final class ApacheCoreHttpResponse implements HttpResponse {
     private final Closeable channel;
     private final ClassicHttpResponse response;
     private boolean closed = false;
+    private CompletionStage<String> textBody;
 
     ApacheCoreHttpResponse(ApacheCoreHttpClient client, Closeable channel, ClassicHttpResponse response) {
         this.client = client;
@@ -112,13 +113,16 @@ final class ApacheCoreHttpResponse implements HttpResponse {
 
     @Override
     public CompletionStage<String> textBody() {
-        try {
-            return CompletableFuture.completedFuture(new String(stream().readAllBytes(), StandardCharsets.UTF_8));
-        } catch (IOException e) {
-            return CompletableFuture.failedFuture(e);
-        } finally {
-            close();
+        if (textBody == null) {
+            try {
+                textBody = CompletableFuture.completedFuture(new String(stream().readAllBytes(), StandardCharsets.UTF_8));
+            } catch (IOException e) {
+                textBody = CompletableFuture.failedFuture(e);
+            } finally {
+                close();
+            }
         }
+        return textBody;
     }
 
     @Override

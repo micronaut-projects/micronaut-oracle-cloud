@@ -119,6 +119,31 @@ public abstract class NettyTest {
     }
 
     @Test
+    public void textBodyTwice() throws Exception {
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.GET, request.method());
+            Assertions.assertEquals("/foo", request.uri());
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
+            response.headers().add("Content-Type", "text/plain");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        try (HttpClient client = newBuilder()
+            .build()) {
+            try (HttpResponse response = client.createRequest(Method.GET)
+                .appendPathPart("foo")
+                .execute().toCompletableFuture()
+                .get()) {
+
+                Assertions.assertEquals("bar", response.textBody().toCompletableFuture().get());
+                Assertions.assertEquals("bar", response.textBody().toCompletableFuture().get());
+            }
+        }
+    }
+
+    @Test
     public void streamingRequestBuffered() throws Exception {
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(HttpMethod.POST, request.method());

@@ -68,4 +68,10 @@ public class Jersey3Test extends NettyTest {
     public void fullSetupConnectionDiesMidError() throws CertificateException {
         super.fullSetupConnectionDiesMidError();
     }
+
+    @Override
+    @Disabled // not supported by jersey client
+    public void textBodyTwice() throws Exception {
+        super.textBodyTwice();
+    }
 }

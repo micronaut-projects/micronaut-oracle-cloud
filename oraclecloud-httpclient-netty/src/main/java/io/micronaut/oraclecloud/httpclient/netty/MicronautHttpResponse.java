@@ -40,6 +40,7 @@ final class MicronautHttpResponse implements HttpResponse {
     private final io.micronaut.http.HttpResponse<?> mnResponse;
     private final Executor offloadExecutor;
     private LimitedBufferingSubscriber limitedBufferingSubscriber;
+    private CompletionStage<String> textBody;
 
     MicronautHttpResponse(JsonMapper jsonMapper, io.micronaut.http.HttpResponse<?> mnResponse, Executor offloadExecutor) {
         this.jsonMapper = jsonMapper;
@@ -132,7 +133,10 @@ final class MicronautHttpResponse implements HttpResponse {
 
     @Override
     public CompletionStage<String> textBody() {
-        return thenApply(bodyAsBuffer(), buf -> new String(buf, StandardCharsets.UTF_8));
+        if (textBody == null) {
+            textBody = thenApply(bodyAsBuffer(), buf -> new String(buf, StandardCharsets.UTF_8));
+        }
+        return textBody;
     }
 
     private <T, U> CompletionStage<U> thenApply(CompletionStage<T> stage, Function<? super T, ? extends U> fn) {
