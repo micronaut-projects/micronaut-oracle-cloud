@@ -66,6 +66,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-rxjava2")
     importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-servlet")
+    importMicronautCatalog("micronaut-sourcegen")
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-validation")
     importMicronautCatalog("micronaut-discovery-client")

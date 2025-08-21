@@ -25,6 +25,7 @@ dependencies {
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
+    testAnnotationProcessor(mnSourcegen.micronaut.sourcegen.generator.java)
     testCompileOnly mn.micronaut.jackson.databind
     testRuntimeOnly mn.micronaut.runtime
 
@@ -35,7 +36,7 @@ dependencies {
     testImplementation mn.micronaut.context
     testImplementation projects.micronautOraclecloudCommon
     testImplementation projects.testSuiteHttpClient
-
+    testImplementation(libs.oci.disasterrecovery)
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,
      projects.micronautOraclecloudBmcObjectstorage,
@@ -52,3 +53,5 @@ dependencies {
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
 }
+//compileTestJava.options.fork = true
+//compileTestJava.options.forkOptions.jvmArgs = ['-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005']

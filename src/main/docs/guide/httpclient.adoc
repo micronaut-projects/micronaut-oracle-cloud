@@ -1,4 +1,4 @@
-This module provides a netty client implementation for the Java OCI SDK. The client uses link:https://micronaut-projects.github.io/micronaut-serialization/latest/guide/[Micronaut Serialization].
+This module provides a Netty client implementation for the Java OCI SDK. The client uses link:https://micronaut-projects.github.io/micronaut-serialization/latest/guide/[Micronaut Serialization].
 
 Add a dependency to the `micronaut-oraclecloud-httpclient-netty` module:
 
@@ -7,6 +7,22 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[]
 For serialization to work correctly, use one of the micronaut OCI SDK modules instead of the OCI SDK modules. For example, for Object Store define the dependency:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-objectstorage[]
+
+### Importing SDK's not compiled with Micronaut
+
+If an OCI SDK client exists that is built with OCI SDK v3 or above but not compiled with Micronaut and therefore missing the the required Micronaut Serialization types you can import the sdk use the `@SdkImport` annotation.
+
+First you should add an annotation processor dependency:
+
+dependency:io.micronaut.oraclecloud:oraclecloud-serde-processor[scope="annotationProcessor"]
+
+Then declare `@SdkImport` on any class passing the type of the client you wish to import. For example:
+
+.Declaring `@SdkImport`
+[source,java]
+----
+@SdkImport(DisasterRecoveryClient.class)
+----
 
 ### Migrate
 
