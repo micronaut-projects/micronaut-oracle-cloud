@@ -16,13 +16,17 @@
 package io.micronaut.oraclecloud.certificates.ssl;
 
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.http.server.netty.ssl.CertificateProvidedSslBuilder;
 import io.micronaut.http.server.netty.ssl.ServerSslBuilder;
 import io.micronaut.http.ssl.ServerSslConfiguration;
+import io.micronaut.oraclecloud.certificates.config.DefaultServerOracleCloudCertificateConfiguration;
+import io.micronaut.oraclecloud.certificates.config.ServerOracleCloudCertificateConfiguration;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,18 +43,32 @@ import java.util.Optional;
  */
 @Singleton
 @Replaces(CertificateProvidedSslBuilder.class)
+@Requires(beans = DefaultServerOracleCloudCertificateConfiguration.class)
 public final class OracleCloudSSLContextBuilder implements ServerSslBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudSSLContextBuilder.class);
 
-    private DelegatedSslContext delegatedSslContext = new DelegatedSslContext(null);
+    private final DelegatedSslContext delegatedSslContext = new DelegatedSslContext(null);
     private final ServerSslConfiguration ssl;
+    private final ServerOracleCloudCertificateConfiguration configuration;
 
     /**
      * @param ssl The SSL configuration
      */
+    @Deprecated
     public OracleCloudSSLContextBuilder(ServerSslConfiguration ssl) {
         this.ssl = ssl;
+        this.configuration = null;
+    }
+
+    /**
+     * @param configuration The server configuration
+     * @param ssl           The SSL configuration
+     */
+    @Inject
+    public OracleCloudSSLContextBuilder(ServerOracleCloudCertificateConfiguration configuration, ServerSslConfiguration ssl) {
+        this.ssl = ssl;
+        this.configuration = configuration;
     }
 
     /**
@@ -60,23 +78,27 @@ public final class OracleCloudSSLContextBuilder implements ServerSslBuilder {
      */
     @EventListener
     void onNewCertificate(CertificateEvent certificateEvent) {
-        try {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("New certificate received and replaced the proxied SSL context");
-            }
-            List<X509Certificate> chain = new ArrayList<>();
-            chain.add(certificateEvent.certificate());
-            chain.addAll(certificateEvent.intermediate());
+        if (configuration != null && configuration.certificateId().equals(certificateEvent.bundle().getCertificateId())) {
+            try {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("New certificate {} received and replaced the proxied HTTP server SSL context", certificateEvent.bundle().getCertificateId());
+                }
+                List<X509Certificate> chain = new ArrayList<>();
+                chain.add(certificateEvent.certificate());
+                chain.addAll(certificateEvent.intermediate());
 
-            SslContext sslContext = SslContextBuilder
-                .forServer(certificateEvent.privateKey(), chain.toArray(new X509Certificate[]{}))
-                .build();
-            delegatedSslContext.setNewSslContext(sslContext);
-        } catch (SSLException e) {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Failed to build the SSL context", e);
+                SslContext sslContext = SslContextBuilder
+                    .forServer(certificateEvent.privateKey(), chain.toArray(new X509Certificate[]{}))
+                    .build();
+
+                delegatedSslContext.setNewSslContext(sslContext);
+            } catch (SSLException e) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error("Failed to build the SSL context: " + e.getMessage(), e);
+                }
             }
         }
+
     }
 
     @Override

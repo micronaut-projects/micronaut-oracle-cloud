@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.certificates.services;
 
 import com.oracle.bmc.certificates.Certificates;
+import com.oracle.bmc.certificates.model.CertificateBundle;
 import com.oracle.bmc.certificates.model.CertificateBundleWithPrivateKey;
 import com.oracle.bmc.certificates.requests.GetCertificateBundleRequest;
 import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse;
@@ -23,8 +24,11 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
+import io.micronaut.oraclecloud.certificates.config.DefaultServerOracleCloudCertificateConfiguration;
+import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import io.micronaut.retry.annotation.Retryable;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMException;
@@ -45,6 +49,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Service to contact an Oracle Cloud Certificate service and setup a certificate on a given basis.
@@ -52,13 +57,13 @@ import java.util.stream.Collectors;
 @Singleton
 @Requires(classes = {Certificates.class})
 @Requires(beans = {Certificates.class})
-@Requires(property = OracleCloudCertificationsConfiguration.PREFIX + ".enabled", value = "true")
+@Requires(property = OracleCloudCertificateProperties.PREFIX + ".enabled", value = "true")
 public class OracleCloudCertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateService.class);
     private static final String X509_CERT = "X.509";
 
-    private final OracleCloudCertificationsConfiguration oracleCloudCertificationsConfiguration;
+    private final List<OracleCloudCertificateProperties> oracleCloudCertificationsConfigurations;
     private final Certificates certificates;
     private final ApplicationEventPublisher<CertificateEvent> eventPublisher;
 
@@ -69,10 +74,25 @@ public class OracleCloudCertificateService {
      * @param certificates                           Oracle Cloud Certificate client
      * @param eventPublisher                         Application Event Publisher
      */
+    @Deprecated(forRemoval = true)
     public OracleCloudCertificateService(OracleCloudCertificationsConfiguration oracleCloudCertificationsConfiguration,
                                          Certificates certificates,
                                          ApplicationEventPublisher<CertificateEvent> eventPublisher) {
-        this.oracleCloudCertificationsConfiguration = oracleCloudCertificationsConfiguration;
+       this(List.of(handleDeprecation(oracleCloudCertificationsConfiguration)), certificates, eventPublisher);
+    }
+
+    /**
+     * Constructs a new Oracle Cloud Certificate service.
+     *
+     * @param oracleCloudCertificationsConfigurations Oracle Cloud Certificate configurations
+     * @param certificates                           Oracle Cloud Certificate client
+     * @param eventPublisher                         Application Event Publisher
+     */
+    @Inject
+    public OracleCloudCertificateService(List<OracleCloudCertificateProperties> oracleCloudCertificationsConfigurations,
+                                         Certificates certificates,
+                                         ApplicationEventPublisher<CertificateEvent> eventPublisher) {
+        this.oracleCloudCertificationsConfigurations = oracleCloudCertificationsConfigurations;
         this.certificates = certificates;
         this.eventPublisher = eventPublisher;
     }
@@ -84,43 +104,61 @@ public class OracleCloudCertificateService {
      * @return certificate event
      */
     @NonNull
+    @Deprecated(forRemoval = true)
     protected Optional<CertificateEvent> getCertificateEvent() {
-        try {
-            CertificateFactory cf = CertificateFactory.getInstance(X509_CERT);
-
-            GetCertificateBundleResponse certificateBundle = certificates.getCertificateBundle(GetCertificateBundleRequest.builder()
-                .certificateId(oracleCloudCertificationsConfiguration.certificateId())
-                .versionNumber(oracleCloudCertificationsConfiguration.versionNumber())
-                .certificateVersionName(oracleCloudCertificationsConfiguration.certificateVersionName())
-                .certificateBundleType(GetCertificateBundleRequest.CertificateBundleType.CertificateContentWithPrivateKey)
-                .build());
-
-            List<X509Certificate> intermediate = Collections.emptyList();
-
-            if (certificateBundle.getCertificateBundle().getCertChainPem() != null) {
-                intermediate = cf.generateCertificates(
-                        new ByteArrayInputStream(
-                            certificateBundle
-                                .getCertificateBundle()
-                                .getCertChainPem()
-                                .getBytes())).stream().map(cert -> ((X509Certificate) cert))
-                    .collect(Collectors.toList());
-            }
-
-            CertificateEvent certificateEvent = new CertificateEvent(
-                getPrivateKey(certificateBundle),
-                (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateBundle.getCertificateBundle().getCertificatePem().getBytes())),
-                intermediate
-            );
-
-            return Optional.of(certificateEvent);
-
-        } catch (CertificateException e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn("Could not create certificate from file", e);
-            }
-        }
         return Optional.empty();
+    }
+
+    protected List<CertificateEvent> getCertificateEvents() {
+        return this.oracleCloudCertificationsConfigurations.stream()
+            .flatMap(config -> {
+                try {
+
+                    String certificateId = config.certificateId();
+                    Long versionNumber = config.versionNumber();
+                    String certificateVersionName = config.certificateVersionName();
+
+                    CertificateEvent certificateEvent = retrieveCertificate(certificateId, versionNumber, certificateVersionName).orElse(null);
+                    return Stream.ofNullable(certificateEvent);
+
+                } catch (CertificateException e) {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn("Could not create certificate from file: " + e.getMessage(), e);
+                    }
+                    return Stream.empty();
+                }
+            }).toList();
+    }
+
+    private Optional<CertificateEvent> retrieveCertificate(String certificateId, Long versionNumber, String certificateVersionName) throws CertificateException {
+        GetCertificateBundleResponse certificateBundle = certificates.getCertificateBundle(GetCertificateBundleRequest.builder()
+            .certificateId(certificateId)
+            .versionNumber(versionNumber)
+            .certificateVersionName(certificateVersionName)
+            .certificateBundleType(GetCertificateBundleRequest.CertificateBundleType.CertificateContentWithPrivateKey)
+            .build());
+
+        CertificateFactory cf = CertificateFactory.getInstance(X509_CERT);
+        List<X509Certificate> intermediate = Collections.emptyList();
+
+        CertificateBundle cb = certificateBundle.getCertificateBundle();
+        if (cb.getCertChainPem() != null) {
+            intermediate = cf.generateCertificates(
+                    new ByteArrayInputStream(
+                        cb
+                            .getCertChainPem()
+                            .getBytes())).stream().map(cert -> ((X509Certificate) cert))
+                .collect(Collectors.toList());
+        }
+
+        CertificateEvent certificateEvent = new CertificateEvent(
+            getPrivateKey(certificateBundle),
+            (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(cb.getCertificatePem().getBytes())),
+            intermediate,
+            cb
+        );
+
+        return Optional.of(certificateEvent);
     }
 
     /**
@@ -130,7 +168,8 @@ public class OracleCloudCertificateService {
      */
     private PrivateKey getPrivateKey(GetCertificateBundleResponse getCertificateBundleResponse) {
         try {
-            CertificateBundleWithPrivateKey certificateBundleWithPrivateKey = (CertificateBundleWithPrivateKey) getCertificateBundleResponse.getCertificateBundle();
+            CertificateBundleWithPrivateKey certificateBundleWithPrivateKey =
+                (CertificateBundleWithPrivateKey) getCertificateBundleResponse.getCertificateBundle();
             return parsePrivateKey(certificateBundleWithPrivateKey.getPrivateKeyPem());
         } catch (IOException ioException) {
             return null;
@@ -145,13 +184,9 @@ public class OracleCloudCertificateService {
         delay = "${oci.certificates.refresh.retry.delay:1s}"
     )
     public void refreshCertificate() {
-        Optional<CertificateEvent> certificateEvent = getCertificateEvent();
-        if (certificateEvent.isPresent()) {
-            eventPublisher.publishEvent(certificateEvent.get());
-        } else {
-            if (LOG.isErrorEnabled()) {
-                LOG.error("Oracle Cloud certificate could not be loaded from service.");
-            }
+        List<CertificateEvent> certificateEvents = getCertificateEvents();
+        for (CertificateEvent certificateEvent : certificateEvents) {
+            eventPublisher.publishEvent(certificateEvent);
         }
     }
 
@@ -175,5 +210,10 @@ public class OracleCloudCertificateService {
         } catch (PEMException ex) {
             throw new IOException("Invalid PEM file", ex);
         }
+    }
+
+    private static DefaultServerOracleCloudCertificateConfiguration handleDeprecation(OracleCloudCertificationsConfiguration oracleCloudCertificationsConfiguration) {
+        LOG.warn("Deprecated OracleCloudCertificateService constructor used");
+        return new DefaultServerOracleCloudCertificateConfiguration(oracleCloudCertificationsConfiguration.certificateId(), oracleCloudCertificationsConfiguration.versionNumber(), oracleCloudCertificationsConfiguration.certificateVersionName(), oracleCloudCertificationsConfiguration.enabled());
     }
 }

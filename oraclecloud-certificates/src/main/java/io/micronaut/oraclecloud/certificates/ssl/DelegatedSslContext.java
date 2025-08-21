@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.certificates.ssl;
 
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.Internal;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.ssl.ApplicationProtocolNegotiator;
@@ -52,41 +53,55 @@ public final class DelegatedSslContext extends SslContext {
 
     @Override
     public boolean isClient() {
+        assertConfigured();
         return ctx.isClient();
+    }
+
+    private void assertConfigured() {
+        if (ctx == null) {
+            throw new ConfigurationException("SSL not yet configured yet, waiting on certificate from certificate service");
+        }
     }
 
     @Override
     public List<String> cipherSuites() {
+        assertConfigured();
         return ctx.cipherSuites();
     }
 
     @Override
     public long sessionCacheSize() {
+        assertConfigured();
         return ctx.sessionCacheSize();
     }
 
     @Override
     public long sessionTimeout() {
+        assertConfigured();
         return ctx.sessionTimeout();
     }
 
     @Override
     public ApplicationProtocolNegotiator applicationProtocolNegotiator() {
+        assertConfigured();
         return ctx.applicationProtocolNegotiator();
     }
 
     @Override
     public SSLEngine newEngine(ByteBufAllocator alloc) {
+        assertConfigured();
         return ctx.newEngine(alloc);
     }
 
     @Override
     public SSLEngine newEngine(ByteBufAllocator alloc, String peerHost, int peerPort) {
+        assertConfigured();
         return ctx.newEngine(alloc, peerHost, peerPort);
     }
 
     @Override
     public SSLSessionContext sessionContext() {
+        assertConfigured();
         return ctx.sessionContext();
     }
 
