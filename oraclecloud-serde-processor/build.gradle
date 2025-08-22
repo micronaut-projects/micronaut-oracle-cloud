@@ -15,4 +15,5 @@ dependencies {
     testImplementation(libs.oci.objectstorage)
     testImplementation mn.micronaut.inject.java.test
     testImplementation(mnSourcegen.micronaut.sourcegen.generator.java)
+    testImplementation(projects.micronautOraclecloudCommon)
 }
