@@ -15,15 +15,6 @@
  */
 package io.micronaut.oraclecloud.httpclient.netty.visitor;
 
-import com.oracle.bmc.ClientConfiguration;
-import com.oracle.bmc.Region;
-import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
-import com.oracle.bmc.auth.RegionProvider;
-import com.oracle.bmc.common.InternalBuilderAccess;
-import com.oracle.bmc.http.ClientConfigurator;
-import com.oracle.bmc.http.internal.BaseAsyncClient;
-import com.oracle.bmc.http.internal.BaseSyncClient;
-import com.oracle.bmc.http.signing.RequestSignerFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
@@ -36,8 +27,6 @@ import io.micronaut.inject.ast.ClassElement;
 import io.micronaut.inject.visitor.TypeElementQuery;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import io.micronaut.inject.visitor.VisitorContext;
-import io.micronaut.oraclecloud.core.sdk.AbstractSdkClientFactory;
-import io.micronaut.oraclecloud.core.sdk.SdkImport;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.sourcegen.generator.SourceGenerator;
 import io.micronaut.sourcegen.generator.SourceGenerators;
@@ -60,9 +49,24 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Visitor that handles the {@link SdkImport} annotation.
+ * Visitor that handles the {@code io.micronaut.oraclecloud.core.sdk.SdkImport} annotation.
+ *
+ * @since 5.3.0
  */
-public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
+public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
+
+    public static final String ANN_SDK_IMPORT = "io.micronaut.oraclecloud.core.sdk.SdkImport";
+    public static final ClassTypeDef FACTORY_TYPE = ClassTypeDef.of("io.micronaut.oraclecloud.core.sdk.AbstractSdkClientFactory");
+    public static final ClassTypeDef TYPE_AUTH_DETAILS_PROVIDER = ClassTypeDef.of("com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider");
+    public static final TypeDef TYPE_REGION_PROVIDER = TypeDef.of("com.oracle.bmc.auth.RegionProvider");
+    public static final ClassTypeDef TYPE_CLIENT_CONFIGURATION = ClassTypeDef.of("com.oracle.bmc.ClientConfiguration");
+    public static final ClassTypeDef TYPE_CLIENT_CONFIGURATOR = ClassTypeDef.of("com.oracle.bmc.http.ClientConfigurator");
+    public static final ClassTypeDef TYPE_REQUEST_SIGNER_FACTORY = ClassTypeDef.of("com.oracle.bmc.http.signing.RequestSignerFactory");
+    public static final ClassTypeDef TYPE_REGION = ClassTypeDef.of("com.oracle.bmc.Region");
+    public static final ClassTypeDef TYPE_INTERNAL_BUILDER_ACCESS = ClassTypeDef.of("com.oracle.bmc.common.InternalBuilderAccess");
+    private ClassElement asyncClientType;
+    private ClassElement syncClientType;
+
     @Override
     public @NonNull VisitorKind getVisitorKind() {
         return VisitorKind.ISOLATING;
@@ -75,17 +79,23 @@ public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
 
     @Override
     public Set<String> getSupportedAnnotationNames() {
-        return Set.of(SdkImport.class.getName());
+        return Set.of(ANN_SDK_IMPORT);
+    }
+
+    @Override
+    public void start(VisitorContext visitorContext) {
+        this.asyncClientType = visitorContext.getClassElement("com.oracle.bmc.http.internal.BaseAsyncClient").orElse(null);
+        this.syncClientType = visitorContext.getClassElement("com.oracle.bmc.http.internal.BaseSyncClient").orElse(null);
     }
 
     @Override
     public void visitClass(ClassElement element, VisitorContext context) {
-        AnnotationValue<SdkImport> importAnn = element.getAnnotation(SdkImport.class);
-        if (importAnn != null) {
+        AnnotationValue<?> importAnn = element.getAnnotation(ANN_SDK_IMPORT);
+        if (importAnn != null && asyncClientType != null && syncClientType != null) {
             AnnotationClassValue<?> acv = importAnn.annotationClassValue(AnnotationMetadata.VALUE_MEMBER).orElse(null);
             if (acv != null) {
                 context.getClassElement(acv.getName()).ifPresent(classElement -> {
-                    if (classElement.isAssignable(BaseAsyncClient.class) || classElement.isAssignable(BaseSyncClient.class)) {
+                    if (classElement.isAssignable(asyncClientType) || classElement.isAssignable(syncClientType)) {
                         generateClientFactory(element, classElement, context);
                     }
                 });
@@ -99,14 +109,16 @@ public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
         VisitorContext context) {
 
         ClassElement clientBuilder = context.getClassElement(clientElement.getName() + ".Builder").orElse(null);
-        if (clientBuilder != null) {
+        if (clientBuilder == null) {
+            context.fail("Unable to import SDK, client has no Builder: " + clientElement.getName(), originatingElement);
+        } else {
             ClassTypeDef clientBuilderDef = ClassTypeDef.of(clientBuilder);
             ClassTypeDef clientDef = ClassTypeDef.of(clientElement);
 
             // generate factory type for client that extends from AbstractSdkClientFactory
             AnnotationDef requiresAnn = AnnotationDef.builder(Requires.class)
                 .addMember("classes", clientDef)
-                .addMember("beans", ClassTypeDef.of(AbstractAuthenticationDetailsProvider.class))
+                .addMember("beans", TYPE_AUTH_DETAILS_PROVIDER)
                 .build();
             String simpleName = clientElement.getSimpleName();
             String serviceId = resolveServiceId(simpleName);
@@ -119,10 +131,10 @@ public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
                 .addAnnotation(AnnotationDef.builder(SerdeImport.class)
                     .addMember("packageName", clientElement.getPackageName() + ".model")
                     .build())
-                .superclass(TypeDef.parameterized(ClassTypeDef.of(AbstractSdkClientFactory.class), clientBuilderDef, clientDef));
+                .superclass(TypeDef.parameterized(FACTORY_TYPE, clientBuilderDef, clientDef));
 
             // RegionProvider field
-            FieldDef regionProviderField = FieldDef.builder("regionProvider", TypeDef.of(RegionProvider.class))
+            FieldDef regionProviderField = FieldDef.builder("regionProvider", TYPE_REGION_PROVIDER)
                 .addModifiers(Modifier.PRIVATE, Modifier.FINAL)
                 .build();
             builder.addField(regionProviderField);
@@ -131,26 +143,26 @@ public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
             builder.addMethod(MethodDef.constructor()
                 .addModifiers(Modifier.PROTECTED)
                     .addParameters(List.of(
-                        ParameterDef.builder("clientConfiguration", TypeDef.of(ClientConfiguration.class)).build(),
-                        ParameterDef.builder("specificClientConfiguration", TypeDef.of(ClientConfiguration.class))
+                        ParameterDef.builder("clientConfiguration", TYPE_CLIENT_CONFIGURATION).build(),
+                        ParameterDef.builder("specificClientConfiguration", TYPE_CLIENT_CONFIGURATION)
                             .addAnnotation(Nullable.class)
                             .addAnnotation(AnnotationDef.builder(Named.class)
                                 .addMember(AnnotationMetadata.VALUE_MEMBER, serviceId)
                                 .build())
                             .build(),
-                        ParameterDef.builder("serviceIdClientConfigurator", TypeDef.of(ClientConfigurator.class))
+                        ParameterDef.builder("serviceIdClientConfigurator", TYPE_CLIENT_CONFIGURATOR)
                             .addAnnotation(Nullable.class)
                             .addAnnotation(AnnotationDef.builder(Named.class)
                                 .addMember(AnnotationMetadata.VALUE_MEMBER, serviceId)
                                 .build())
                             .build(),
-                        ParameterDef.builder("clientConfigurator", TypeDef.of(ClientConfigurator.class))
+                        ParameterDef.builder("clientConfigurator", TYPE_CLIENT_CONFIGURATOR)
                             .addAnnotation(Nullable.class)
                             .build(),
-                        ParameterDef.builder("requestSignerFactory", TypeDef.of(RequestSignerFactory.class))
+                        ParameterDef.builder("requestSignerFactory", TYPE_REQUEST_SIGNER_FACTORY)
                             .addAnnotation(Nullable.class)
                             .build(),
-                        ParameterDef.builder("regionProvider", TypeDef.of(RegionProvider.class))
+                        ParameterDef.builder("regionProvider", TYPE_REGION_PROVIDER)
                             .addAnnotation(Nullable.class)
                             .build())
                     )
@@ -188,7 +200,7 @@ public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
                     .returns(clientDef)
                     .addParameters(
                         clientBuilderDef,
-                        TypeDef.of(AbstractAuthenticationDetailsProvider.class)
+                        TYPE_AUTH_DETAILS_PROVIDER
                     )
                     .addModifiers(Modifier.PROTECTED)
                     .addAnnotation(Singleton.class)
@@ -201,16 +213,16 @@ public class SdkImportVisitor implements TypeElementVisitor<SdkImport, Object> {
                         VariableDef.MethodParameter authDetails = params.get(1);
                         VariableDef.Field field = aThis.field(regionProviderField);
                         ExpressionDef.ConditionExpressionDef condition = field.isNonNull().and(
-                            field.invoke("getRegion", TypeDef.of(Region.class)).isNonNull()
+                            field.invoke("getRegion", TYPE_REGION).isNonNull()
                         ).and(
-                            ClassTypeDef.of(InternalBuilderAccess.class)
+                            TYPE_INTERNAL_BUILDER_ACCESS
                                 .invokeStatic("getEndpoint", ClassTypeDef.STRING, clientBuilderParam)
                                 .isNull()
                         );
 
 
                         return condition.ifTrue(
-                            clientBuilderParam.invoke("region", clientBuilderDef, field.invoke("getRegion", TypeDef.of(Region.class)))
+                            clientBuilderParam.invoke("region", clientBuilderDef, field.invoke("getRegion", TYPE_REGION))
                                 .invoke("build", clientDef, authDetails).returning(),
                             clientBuilderParam.invoke("build", clientDef, authDetails).returning()
                         );
