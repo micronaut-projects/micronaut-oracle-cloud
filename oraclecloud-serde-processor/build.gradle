@@ -17,3 +17,7 @@ dependencies {
     testImplementation(mnSourcegen.micronaut.sourcegen.generator.java)
     testImplementation(projects.micronautOraclecloudCommon)
 }
+
+micronautBuild {
+    binaryCompatibility.enabled = false
+}
