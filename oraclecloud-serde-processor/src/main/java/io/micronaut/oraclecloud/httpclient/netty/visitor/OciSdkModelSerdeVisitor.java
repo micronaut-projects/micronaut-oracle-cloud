@@ -20,7 +20,6 @@ import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Introspected;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.ast.ClassElement;
 import io.micronaut.inject.ast.ConstructorElement;
 import io.micronaut.inject.ast.Element;
@@ -32,11 +31,8 @@ import io.micronaut.inject.visitor.VisitorContext;
 import io.micronaut.serde.annotation.Serdeable;
 import io.micronaut.serde.config.annotation.SerdeConfig;
 
-import javax.annotation.processing.SupportedOptions;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 /**
  * Type element visitor vising oci sdk models and enums.
@@ -50,17 +46,14 @@ import java.util.Set;
  * @since 2.3.2
  */
 @Internal
-@SupportedOptions(OciSdkModelSerdeVisitor.ENABLED)
 public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Object> {
     private static final String OCI_SDK_MODEL_CLASS_NAME = "com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel";
     private static final String OCI_SDK_ENUM_CLASS_NAME = "com.oracle.bmc.http.internal.BmcEnum";
     private static final String OCI_SDK_ENUM_CREATOR_NAME = "create";
     private static final String INTROSPECTION_PACKAGE = ".introspection";
-    public static final String ENABLED = "oci.sdk.visitor.enabled";
 
     private boolean visitingOciSdkModel;
     private boolean visitingOciSdkEnum;
-    private boolean enabled = false;
 
     @Override
     public int getOrder() {
@@ -74,22 +67,7 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
     }
 
     @Override
-    public Set<String> getSupportedOptions() {
-        return Set.of(ENABLED);
-    }
-
-    @Override
-    public void start(VisitorContext visitorContext) {
-        Map<String, String> options = visitorContext.getOptions();
-        String sysProp = System.getProperty(ENABLED);
-        this.enabled = options.containsKey(ENABLED) || sysProp != null;
-    }
-
-    @Override
     public void visitClass(ClassElement element, VisitorContext context) {
-        if (!enabled) {
-            return;
-        }
         visitingOciSdkModel = isOciSdkModel(element);
         visitingOciSdkEnum = isOciSdkEnum(element);
 
@@ -108,9 +86,6 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
 
     @Override
     public void visitField(FieldElement element, VisitorContext context) {
-        if (!enabled) {
-            return;
-        }
         if (visitingOciSdkModel) {
             makeElementNullable(element);
         }
@@ -118,9 +93,6 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
 
     @Override
     public void visitConstructor(ConstructorElement element, VisitorContext context) {
-        if (!enabled) {
-            return;
-        }
         if (visitingOciSdkModel) {
             makeParametersNullable(element);
         }
@@ -128,9 +100,6 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
 
     @Override
     public void visitMethod(MethodElement element, VisitorContext context) {
-        if (!enabled) {
-            return;
-        }
         if (visitingOciSdkEnum && element.getName().equals(OCI_SDK_ENUM_CREATOR_NAME)) {
             makeParametersNullable(element);
         }
