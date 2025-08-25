@@ -33,6 +33,7 @@ dependencies {
     testImplementation mn.micronaut.inject.java.test
     testImplementation mnSerde.micronaut.serde.processor
     testImplementation projects.micronautOraclecloudSerdeProcessor
+    testImplementation projects.micronautOraclecloudSerdeInternalProcessor
     testImplementation mn.micronaut.management
     testImplementation mn.micronaut.context
     testImplementation projects.micronautOraclecloudCommon
