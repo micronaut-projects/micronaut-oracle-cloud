@@ -25,7 +25,7 @@ import spock.lang.Specification
 @Property(name="oci.certificates.enabled", value = "true")
 @Property(name="micronaut.server.dual-protocol", value = "true")
 @Property(name="micronaut.server.ssl.enabled", value = "true")
-@Property(name="oci.certificates.certificate-id", value = "testCertId")
+@Property(name="oci.certificates.server.certificate-id", value = "testCertId")
 @Property(name="micronaut.server.ssl.port", value = "8443")
 @Property(name="micronaut.http.client.ssl.insecure-trust-all-certificates", value = "true")
 class OracleCloudCertificateIntegrationSpec extends Specification {
@@ -67,7 +67,7 @@ class OracleCloudCertificateIntegrationSpec extends Specification {
                 .certificateBundle(
                         CertificateBundleWithPrivateKey.builder()
                                 .privateKeyPem(OracleCloudServiceSpec.PRIVATE_KEY)
-                                .certificateId("testId")
+                                .certificateId("testCertId")
                                 .serialNumber("test")
                                 .timeCreated(new Date())
                                 .validity(Validity.builder().timeOfValidityNotBefore(new Date()).timeOfValidityNotAfter(new Date()).build())
