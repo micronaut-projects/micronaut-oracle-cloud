@@ -25,6 +25,7 @@ dependencies {
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
+    testAnnotationProcessor projects.micronautOraclecloudSerdeInternalProcessor
     testAnnotationProcessor(mnSourcegen.micronaut.sourcegen.generator.java)
     testCompileOnly mn.micronaut.jackson.databind
     testRuntimeOnly mn.micronaut.runtime
