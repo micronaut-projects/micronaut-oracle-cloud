@@ -161,7 +161,7 @@
         <h1>Micronaut Oracle Cloud</h1>
         <p></p>
         <p>Provides integration between Micronaut and Oracle Cloud</p>
-        <p><strong>Version:</strong> 5.3.1 </p>
+        <p><strong>Version:</strong> 5.3.2 </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
@@ -1146,7 +1146,7 @@ The module generates the OracleWallet on startup.
 
 
 <div class="paragraph">
-<p>This module provides a netty client implementation for the Java OCI SDK. The client uses <a href="https://micronaut-projects.github.io/micronaut-serialization/latest/guide/">Micronaut Serialization</a>.</p>
+<p>This module provides a Netty client implementation for the Java OCI SDK. The client uses <a href="https://micronaut-projects.github.io/micronaut-serialization/latest/guide/">Micronaut Serialization</a>.</p>
 </div>
 <div class="paragraph">
 <p>Add a dependency to the <code>micronaut-oraclecloud-httpclient-netty</code> module:</p>
@@ -1185,6 +1185,43 @@ The module generates the OracleWallet on startup.
 &lt;/dependency&gt;</code></pre>
 </div>
 </div></p>
+</div>
+<div class="sect2">
+<h3 id="_importing_sdks_not_compiled_with_micronaut">Importing SDK&#8217;s not compiled with Micronaut</h3>
+<div class="paragraph">
+<p>If an OCI SDK client exists that is built with OCI SDK v3 or above but not compiled with Micronaut and therefore missing the the required Micronaut Serialization types you can import the sdk use the <code>@SdkImport</code> annotation.</p>
+</div>
+<div class="paragraph">
+<p>First you should add an annotation processor dependency:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">annotationProcessor(<span class="hljs-string">"io.micronaut.oraclecloud:oraclecloud-serde-processor")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;annotationProcessorPaths&gt;
+    &lt;path&gt;
+        &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
+        &lt;artifactId&gt;oraclecloud-serde-processor&lt;/artifactId&gt;
+    &lt;/path&gt;
+&lt;/annotationProcessorPaths&gt;</code></pre>
+</div>
+</div></p>
+</div>
+<div class="paragraph">
+<p>Then declare <code>@SdkImport</code> on any class passing the type of the client you wish to import. For example:</p>
+</div>
+<div class="listingblock">
+<div class="title">Declaring <code>@SdkImport</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@SdkImport(DisasterRecoveryClient.class)</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_migrate">Migrate</h3>
