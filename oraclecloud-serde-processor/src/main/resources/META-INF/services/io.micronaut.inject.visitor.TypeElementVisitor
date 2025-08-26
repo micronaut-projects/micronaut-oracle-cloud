@@ -1,2 +1,1 @@
-io.micronaut.oraclecloud.httpclient.netty.visitor.OciSdkModelSerdeVisitor
-io.micronaut.oraclecloud.httpclient.netty.visitor.SdkImportVisitor
+io.micronaut.oraclecloud.sdk.processor.SdkImportVisitor
