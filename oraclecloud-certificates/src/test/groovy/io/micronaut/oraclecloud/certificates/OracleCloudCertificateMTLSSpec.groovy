@@ -16,7 +16,6 @@ import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.oraclecloud.certificates.ssl.OracleCloudClientSSLContextBuilder
 import io.micronaut.runtime.server.EmbeddedServer
-import io.micronaut.security.x509.X509AuthenticationFetcher
 import io.micronaut.test.annotation.MockBean
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject

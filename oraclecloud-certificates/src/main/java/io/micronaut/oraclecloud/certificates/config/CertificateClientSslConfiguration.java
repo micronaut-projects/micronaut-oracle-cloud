@@ -58,7 +58,7 @@ public class CertificateClientSslConfiguration extends ClientSslConfiguration im
 
     @Override
     public Optional<ClientAuthentication> getClientAuthentication() {
-        return provider.get().getClientAuthentication();
+        return Optional.of(ClientAuthentication.NEED);
     }
 
     /**
