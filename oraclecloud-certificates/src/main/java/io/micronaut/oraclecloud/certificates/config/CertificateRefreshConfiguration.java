@@ -48,5 +48,5 @@ public record CertificateRefreshConfiguration(
         int attempts,
         @Bindable(defaultValue = "1s")
         Duration delay
-    ) {}
+    ) { }
 }

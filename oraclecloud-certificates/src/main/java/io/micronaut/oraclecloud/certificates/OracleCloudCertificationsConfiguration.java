@@ -42,8 +42,8 @@ public record OracleCloudCertificationsConfiguration(
     @Nullable Long versionNumber,
     @Nullable String certificateVersionName,
     @Nullable Boolean enabled) implements Toggleable, ServerOracleCloudCertificateConfiguration {
-    private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationsConfiguration.class);
     public static final String CERTIFICATE_ID = OracleCloudCertificateProperties.PREFIX + ".certificate-id";
+    private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationsConfiguration.class);
 
     public OracleCloudCertificationsConfiguration {
         LOG.warn("Configuring server certificate via " + CERTIFICATE_ID + " is deprecated. Use " + ServerOracleCloudCertificateConfiguration.PREFIX + " namespace instead");

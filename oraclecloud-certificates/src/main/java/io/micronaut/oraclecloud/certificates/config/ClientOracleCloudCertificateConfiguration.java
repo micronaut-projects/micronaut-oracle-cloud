@@ -34,6 +34,13 @@ public record ClientOracleCloudCertificateConfiguration(
     @Nullable String certificateVersionName,
     @Nullable Boolean enabled) implements OracleCloudCertificateProperties {
 
+    public ClientOracleCloudCertificateConfiguration {
+        // default enabled to true if null
+        if (enabled == null) {
+            enabled = Boolean.TRUE;
+        }
+    }
+
     @Override
     public boolean isEnabled() {
         return enabled != null && enabled;

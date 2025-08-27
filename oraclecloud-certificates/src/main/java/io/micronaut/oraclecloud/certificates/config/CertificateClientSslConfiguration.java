@@ -19,7 +19,12 @@ import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.annotation.Parameter;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.naming.Named;
+import io.micronaut.http.ssl.ClientAuthentication;
 import io.micronaut.http.ssl.ClientSslConfiguration;
+import io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties;
+import jakarta.inject.Provider;
+
+import java.util.Optional;
 
 /**
  * Implementation of {@link ClientSslConfiguration} for a specific certificate.
@@ -28,15 +33,32 @@ import io.micronaut.http.ssl.ClientSslConfiguration;
 public class CertificateClientSslConfiguration extends ClientSslConfiguration implements Named {
     private final ClientOracleCloudCertificateConfiguration certificateConfiguration;
     private final String name;
+    private Provider<OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration> provider;
 
-    public CertificateClientSslConfiguration(@Parameter String name, ClientOracleCloudCertificateConfiguration certificateConfiguration) {
+    public CertificateClientSslConfiguration(
+        @Parameter String name,
+        ClientOracleCloudCertificateConfiguration certificateConfiguration,
+        Provider<OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration> sslConfig
+
+    ) {
         this.name = name;
         this.certificateConfiguration = certificateConfiguration;
+        this.provider = sslConfig;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return certificateConfiguration.isEnabled();
+    }
+
+    @Override
+    public boolean isInsecureTrustAllCertificates() {
+        return provider.get().isInsecureTrustAllCertificates();
+    }
+
+    @Override
+    public Optional<ClientAuthentication> getClientAuthentication() {
+        return provider.get().getClientAuthentication();
     }
 
     /**

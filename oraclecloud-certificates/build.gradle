@@ -9,9 +9,21 @@ dependencies {
     implementation mn.micronaut.retry
     implementation(libs.bcpkixjdk15to18)
     compileOnly(mn.micronaut.http.client)
-    compileOnly libs.netty.incubator.codec.http3
 
+    api(libs.netty.codec.classes.quic)
+    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("linux-x86_64") })
+    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("linux-aarch_64") })
+    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("osx-x86_64") })
+    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("osx-aarch_64") })
+    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("windows-x86_64") })
+
+    testImplementation(mnSecurity.micronaut.security)
+    testImplementation(mn.micronaut.http.client)
     testImplementation mnTest.micronaut.test.spock
-    testImplementation mn.micronaut.http.client
     testImplementation mn.micronaut.inject.groovy
+}
+
+
+test {
+    jvmArgs '-Djavax.net.debug=ssl,handshake,key'
 }

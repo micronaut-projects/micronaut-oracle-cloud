@@ -17,13 +17,16 @@ package io.micronaut.oraclecloud.certificates.ssl;
 
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.http.netty.NettyTlsUtils;
 import io.micronaut.http.server.netty.ssl.CertificateProvidedSslBuilder;
 import io.micronaut.http.server.netty.ssl.ServerSslBuilder;
+import io.micronaut.http.ssl.ClientAuthentication;
 import io.micronaut.http.ssl.ServerSslConfiguration;
 import io.micronaut.oraclecloud.certificates.config.DefaultServerOracleCloudCertificateConfiguration;
 import io.micronaut.oraclecloud.certificates.config.ServerOracleCloudCertificateConfiguration;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import io.micronaut.runtime.event.annotation.EventListener;
+import io.netty.handler.ssl.ClientAuth;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import jakarta.inject.Inject;
@@ -34,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,12 +90,28 @@ public final class OracleCloudSSLContextBuilder implements ServerSslBuilder {
                 List<X509Certificate> chain = new ArrayList<>();
                 chain.add(certificateEvent.certificate());
                 chain.addAll(certificateEvent.intermediate());
-
-                SslContext sslContext = SslContextBuilder
+                SslContextBuilder sslContextBuilder = SslContextBuilder
                     .forServer(certificateEvent.privateKey(), chain.toArray(new X509Certificate[]{}))
-                    .build();
+                    .sslProvider(NettyTlsUtils.sslProvider(ssl));
 
-                delegatedSslContext.setNewSslContext(sslContext);
+                Optional<String[]> protocols = ssl.getProtocols();
+                protocols.ifPresent(sslContextBuilder::protocols);
+
+                Optional<String[]> ciphers = ssl.getCiphers();
+
+                ciphers.ifPresent(strings -> sslContextBuilder.ciphers(Arrays.asList(strings)));
+
+                Optional<ClientAuthentication> clientAuthentication = ssl.getClientAuthentication();
+                if (clientAuthentication.isPresent()) {
+                    ClientAuthentication clientAuth = clientAuthentication.get();
+                    if (clientAuth == ClientAuthentication.NEED) {
+                        sslContextBuilder.clientAuth(ClientAuth.REQUIRE);
+                    } else if (clientAuth == ClientAuthentication.WANT) {
+                        sslContextBuilder.clientAuth(ClientAuth.OPTIONAL);
+                    }
+                }
+
+                delegatedSslContext.setNewSslContext(sslContextBuilder.build());
             } catch (SSLException e) {
                 if (LOG.isErrorEnabled()) {
                     LOG.error("Failed to build the SSL context: " + e.getMessage(), e);

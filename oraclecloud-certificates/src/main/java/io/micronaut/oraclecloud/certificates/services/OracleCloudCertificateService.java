@@ -22,6 +22,7 @@ import com.oracle.bmc.certificates.requests.GetCertificateBundleRequest;
 import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventPublisher;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import io.micronaut.oraclecloud.certificates.config.DefaultServerOracleCloudCertificateConfiguration;
@@ -58,6 +59,7 @@ import java.util.stream.Stream;
 @Requires(classes = {Certificates.class})
 @Requires(beans = {Certificates.class})
 @Requires(property = OracleCloudCertificateProperties.PREFIX + ".enabled", value = "true")
+@Internal
 public class OracleCloudCertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateService.class);
@@ -109,6 +111,17 @@ public class OracleCloudCertificateService {
         return Optional.empty();
     }
 
+    /**
+     * Retrieves a list of CertificateEvents for the configured Oracle Cloud certificates.
+     *
+     * This method iterates over the available Oracle Cloud certificate configurations,
+     * retrieves the corresponding certificates, and constructs CertificateEvents.
+     *
+     * If a CertificateException occurs during the retrieval of a certificate,
+     * it is logged as a warning and the certificate is skipped.
+     *
+     * @return a list of CertificateEvents for the configured Oracle Cloud certificates
+     */
     protected List<CertificateEvent> getCertificateEvents() {
         return this.oracleCloudCertificationsConfigurations.stream()
             .flatMap(config -> {
