@@ -67,9 +67,9 @@ jobs:
       - name: Build with Gradle
         id: gradle
         run: |
-          if ./gradlew tasks --no-daemon --all | grep -w "nativeTest"
+          if ./gradlew tasks --max-parallel-forks=1 --no-daemon --all | grep -w "nativeTest"
           then
-            ./gradlew check nativeTest --continue --no-daemon
+            ./gradlew check nativeTest --continue --no-daemon --max-parallel-forks=1
           fi
         env:
            MICRONAUT_ENV_DEDUCTION: false
