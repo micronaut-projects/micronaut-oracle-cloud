@@ -18,6 +18,7 @@ package io.micronaut.oraclecloud.monitoring.micrometer;
 import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import com.oracle.bmc.monitoring.model.PostMetricDataDetails;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
+import com.oracle.bmc.monitoring.responses.PostMetricDataResponse;
 import com.oracle.bmc.util.internal.StringUtils;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
@@ -109,9 +110,14 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
                     monitoringIngestionClient = monitoringIngestionClientProvider.get();
                 }
 
-                monitoringIngestionClient.postMetricData(PostMetricDataRequest.builder()
+                PostMetricDataResponse postMetricDataResponse = monitoringIngestionClient.postMetricData(PostMetricDataRequest.builder()
                     .postMetricDataDetails(builder.build())
                     .build());
+
+                if (logger.isDebugEnabled() && !postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().isEmpty()) {
+                    postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().forEach( metrics -> logger.debug("Metric refused: {}", metrics.getMetricData()));
+                }
+
             } catch (Exception e) {
                 logger.error("failed to post metrics to oracle cloud infrastructure monitoring: {}", e.getMessage(), e);
             }
