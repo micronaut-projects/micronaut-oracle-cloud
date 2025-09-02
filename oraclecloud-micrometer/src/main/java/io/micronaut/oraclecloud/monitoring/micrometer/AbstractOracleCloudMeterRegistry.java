@@ -114,7 +114,9 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
                     .postMetricDataDetails(builder.build())
                     .build());
 
-                postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().forEach( metrics -> logger.debug("Metric refused: {}", metrics.getMetricData()));
+                if (logger.isDebugEnabled() && !postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().isEmpty()) {
+                    postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().forEach( metrics -> logger.debug("Metric refused: {}", metrics.getMetricData()));
+                }
 
             } catch (Exception e) {
                 logger.error("failed to post metrics to oracle cloud infrastructure monitoring: {}", e.getMessage(), e);
