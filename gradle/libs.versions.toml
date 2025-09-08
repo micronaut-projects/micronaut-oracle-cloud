@@ -15,7 +15,7 @@ oci = "3.70.0"
 oracle-database-security = "21.17.0.0"
 bcpkixjdk15to18 = "1.80"
 protobuf = '0.9.5'
-netty-http3 = "0.0.29.Final"
+netty-http3 = "0.0.30.Final"
 
 managed-apache-http-core5 = "5.3.4"
 micronaut-gradle-plugin = "4.5.4"
