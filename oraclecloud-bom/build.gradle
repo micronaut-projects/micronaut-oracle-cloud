@@ -22,5 +22,9 @@ micronautBom {
         acceptedLibraryRegressions.add("boms-oracle-jdbc")
         acceptedLibraryRegressions.add("oracle-jdbc")
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-applicationmigration")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-osmanagement")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-aianomalydetection")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-servicemesh")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-dts")
     }
 }
