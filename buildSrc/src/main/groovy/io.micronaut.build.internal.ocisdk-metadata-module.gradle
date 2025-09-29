@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor(projects.micronautOraclecloudSerdeProcessor)
+    annotationProcessor(projects.micronautOraclecloudSerdeInternalProcessor)
     // The dependency is required for annotations and their metadata
     implementation(mnSerde.micronaut.serde.api)
 }
@@ -20,6 +20,7 @@ sourceSets {
         java {}
     }
 }
+
 
 if (!project.name.contains("circuitbreaker")) {
     var generateClientFactories = tasks.register("generateClientFactories", GenerateClientFactories) {
@@ -38,6 +39,16 @@ if (!project.name.contains("circuitbreaker")) {
         generatedCompileOnly(mnRxjava2.rxjava2)
         generatedCompileOnly(mn.reactor)
         generatedCompileOnly(mnReactor.micronaut.reactor)
+    }
+
+    tasks.named("compileGeneratedJava") {
+        options.fork = true
+        options.forkOptions.jvmArgs.add("-Doci.sdk.visitor.enabled")
+    }
+
+    tasks.named("compileJava") {
+        options.fork = true
+        options.forkOptions.jvmArgs.add("-Doci.sdk.visitor.enabled")
     }
 }
 
@@ -93,6 +104,11 @@ tasks.named("sourcesJar", Jar) {
 
 tasks.named("compileTestJava") {
     enabled = false
+}
+
+tasks.named("compileJava") {
+    options.fork = true
+    options.forkOptions.jvmArgs.add("-Doci.sdk.visitor.enabled")
 }
 
 tasks.configureEach {

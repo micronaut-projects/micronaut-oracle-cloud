@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "7.5.0"
+    id("io.micronaut.build.shared.settings") version "7.6.4"
     id("me.champeau.includegit") version "0.2.0"
     id("io.micronaut.build.internal.ocisdk")
 }
@@ -30,6 +30,7 @@ include("oraclecloud-function-http-test")
 include("oraclecloud-httpclient-apache-http-core")
 include("oraclecloud-httpclient-netty")
 include("oraclecloud-serde-processor")
+include("oraclecloud-serde-internal-processor")
 include("oraclecloud-logging")
 include("oraclecloud-micrometer")
 include("oraclecloud-oke-kubernetes-client")
@@ -67,6 +68,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-rxjava2")
     importMicronautCatalog("micronaut-serde")
     importMicronautCatalog("micronaut-servlet")
+    importMicronautCatalog("micronaut-sourcegen")
     importMicronautCatalog("micronaut-sql")
     importMicronautCatalog("micronaut-validation")
     importMicronautCatalog("micronaut-discovery-client")

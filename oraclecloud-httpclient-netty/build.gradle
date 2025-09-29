@@ -25,17 +25,22 @@ dependencies {
 
     testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
+    testAnnotationProcessor projects.micronautOraclecloudSerdeInternalProcessor
+    testAnnotationProcessor(mnSourcegen.micronaut.sourcegen.generator.java)
     testCompileOnly mn.micronaut.jackson.databind
     testRuntimeOnly mn.micronaut.runtime
 
     testImplementation mn.micronaut.inject.java.test
     testImplementation mnSerde.micronaut.serde.processor
     testImplementation projects.micronautOraclecloudSerdeProcessor
+    testImplementation projects.micronautOraclecloudSerdeInternalProcessor
     testImplementation mn.micronaut.management
     testImplementation mn.micronaut.context
     testImplementation projects.micronautOraclecloudCommon
     testImplementation projects.testSuiteHttpClient
-
+    testImplementation(libs.oci.disasterrecovery) {
+        exclude(group: "com.oracle.oci.sdk", module: "oci-java-sdk-common")
+    }
     [projects.micronautOraclecloudBmcMonitoring,
      projects.micronautOraclecloudBmcIdentity,
      projects.micronautOraclecloudBmcObjectstorage,

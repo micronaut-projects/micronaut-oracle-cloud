@@ -28,6 +28,7 @@ micronaut-reactor = "3.8.0"
 micronaut-rxjava2 = "2.8.0"
 micronaut-serde = "2.15.1"
 micronaut-servlet = "5.4.0"
+micronaut-sourcegen = "1.8.2"
 micronaut-sql = "6.2.1"
 micronaut-test = "4.8.1"
 micronaut-logging = "1.7.0"
@@ -56,6 +57,7 @@ micronaut-rxjava2 = { module = "io.micronaut.rxjava2:micronaut-rxjava2-bom", ver
 micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-bom", version.ref = "micronaut-serde" }
 micronaut-servlet = { module = "io.micronaut.servlet:micronaut-servlet-bom", version.ref = "micronaut-servlet" }
 micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "micronaut-sql" }
+micronaut-sourcegen = { module = "io.micronaut.sourcegen:micronaut-sourcegen-bom", version.ref = "micronaut-sourcegen" }
 micronaut-docs = { module = "io.micronaut.docs:micronaut-docs-asciidoc-config-props", version.ref = "micronaut-docs" }
 micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-bom", version.ref = "micronaut-validation" }
 micronaut-discovery-client = { module = "io.micronaut.discovery:micronaut-discovery-client-bom", version.ref = "micronaut-discovery-client" }
@@ -80,6 +82,7 @@ oci-common = { module = 'com.oracle.oci.sdk:oci-java-sdk-common', version.ref = 
 oci-common-httpclient = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient', version.ref = "oci" }
 oci-common-httpclient-jersey3 = { module = 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey3', version.ref = "oci" }
 oci-objectstorage = { module = 'com.oracle.oci.sdk:oci-java-sdk-objectstorage', version.ref = "oci" }
+oci-disasterrecovery = { module = 'com.oracle.oci.sdk:oci-java-sdk-disasterrecovery', version.ref = "oci" }
 oci-encryption = { module = 'com.oracle.oci.sdk:oci-java-sdk-encryption', version.ref = "oci" }
 oci-oke-workload-identity = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-oke-workload-identity', version.ref = "oci" }
 oci-graalvm = { module = 'com.oracle.oci.sdk:oci-java-sdk-addons-graalvm', version.ref = "oci" }

@@ -232,7 +232,8 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
             .name(getMetricName(id, suffix))
             .namespace(oracleCloudConfig.namespace())
             .resourceGroup(oracleCloudConfig.resourceGroup())
-            .metadata(oracleCloudConfig.description() && id.getDescription() != null
+            .metadata(oracleCloudConfig.description() &&
+                id.getDescription() != null && !id.getDescription().isBlank()
                 ? Map.of("description", id.getDescription()) : null)
             .datapoints(datapoints)
             .dimensions(toDimensions(id.getConventionTags(config().namingConvention())))
