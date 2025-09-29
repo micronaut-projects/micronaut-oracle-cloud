@@ -45,7 +45,6 @@ public final class OracleCloudCertificationRefresherTask {
      */
     public OracleCloudCertificationRefresherTask(OracleCloudCertificateService oracleCloudCertificateService) {
         this.oracleCloudCertificateService = oracleCloudCertificateService;
-        oracleCloudCertificateService.refreshCertificate();
     }
 
     /**
@@ -62,7 +61,7 @@ public final class OracleCloudCertificationRefresherTask {
         try {
             oracleCloudCertificateService.refreshCertificate();
         } catch (Exception e) {
-            LOG.error("There was error during refreshing certificate process: " + e.getMessage(), e);
+            LOG.error("There was error during refreshing certificate process: {}", e.getMessage(), e);
         }
     }
 }

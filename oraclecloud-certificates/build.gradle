@@ -7,7 +7,7 @@ dependencies {
     implementation mn.micronaut.http.server.netty
     implementation mn.micronaut.inject.java
     implementation mn.micronaut.retry
-    implementation(libs.bcpkixjdk15to18)
+    implementation mnReactor.micronaut.reactor
     compileOnly(mn.micronaut.http.client)
 
     api(libs.netty.codec.classes.quic)
@@ -23,7 +23,3 @@ dependencies {
     testImplementation mn.micronaut.inject.groovy
 }
 
-
-test {
-    jvmArgs '-Djavax.net.debug=ssl,handshake,key'
-}

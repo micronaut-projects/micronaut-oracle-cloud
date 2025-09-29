@@ -15,13 +15,14 @@
  */
 package io.micronaut.oraclecloud.certificates;
 
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
-import io.micronaut.oraclecloud.certificates.config.ServerOracleCloudCertificateConfiguration;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,16 +38,18 @@ import static io.micronaut.oraclecloud.certificates.config.OracleCloudCertificat
 @ConfigurationProperties(PREFIX)
 @Deprecated(forRemoval = true)
 @Requires(property = OracleCloudCertificationsConfiguration.CERTIFICATE_ID)
+@Named("deprecated")
+@BootstrapContextCompatible
 public record OracleCloudCertificationsConfiguration(
     @NonNull String certificateId,
     @Nullable Long versionNumber,
     @Nullable String certificateVersionName,
-    @Nullable Boolean enabled) implements Toggleable, ServerOracleCloudCertificateConfiguration {
-    public static final String CERTIFICATE_ID = OracleCloudCertificateProperties.PREFIX + ".certificate-id";
+    @Nullable Boolean enabled) implements Toggleable, OracleCloudCertificateProperties {
+    public static final String CERTIFICATE_ID = PREFIX + ".certificate-id";
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationsConfiguration.class);
 
     public OracleCloudCertificationsConfiguration {
-        LOG.warn("Configuring server certificate via " + CERTIFICATE_ID + " is deprecated. Use " + ServerOracleCloudCertificateConfiguration.PREFIX + " namespace instead");
+        LOG.warn("Configuring server certificate via " + CERTIFICATE_ID + " is deprecated. Use " + OracleCloudCertificateProperties.PREFIX + " namespace instead");
     }
 
     /**

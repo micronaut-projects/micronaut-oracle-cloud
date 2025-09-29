@@ -4,6 +4,7 @@ plugins {
 
 repositories {
     repositories {
+        maven { url = uri("https://central.sonatype.com/repository/maven-snapshots/") }
         mavenCentral()
     }
 }
@@ -13,7 +14,7 @@ dependencies {
     testRuntimeOnly libs.junit.jupiter
     testAnnotationProcessor mn.micronaut.inject.java
     testRuntimeOnly mnSerde.micronaut.serde.jackson
-    testImplementation(mnTest.junit.platform.launcher)  
+    testImplementation(mnTest.junit.platform.launcher)
 }
 
 tasks.withType(JavaCompile).configureEach {
