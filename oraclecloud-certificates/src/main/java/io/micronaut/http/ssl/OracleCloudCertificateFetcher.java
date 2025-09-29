@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 @Internal
 @Singleton
 @BootstrapContextCompatible
-public final class OracleCloudCertificateFetcher {
+public class OracleCloudCertificateFetcher {
 
     private static final String X509_CERT = "X.509";
     private final Certificates certificates;

@@ -13,9 +13,7 @@ groovy = "4.0.28"
 spock = "2.3-groovy-4.0"
 oci = "3.70.0"
 oracle-database-security = "21.17.0.0"
-bcpkixjdk15to18 = "1.80"
 protobuf = '0.9.5'
-netty = '4.2.4.Final'
 
 managed-apache-http-core5 = "5.3.4"
 micronaut-gradle-plugin = "4.5.4"
@@ -69,7 +67,7 @@ fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
 fn-testing-junit4 = { module = 'com.fnproject.fn:testing-junit4', version.ref = 'fn' }
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm"}
 javapoet = { module = 'com.squareup:javapoet', version.ref = 'javapoet' }
-junit-jupiter = { module = 'org.junit.jupiter:junit-jupiter-engine', version = '5.13.4' }
+junit-jupiter = { module = 'org.junit.jupiter:junit-jupiter-engine', version = '' }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-suite-engine" }
 kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
 kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
@@ -92,9 +90,6 @@ oracle-security-cert = { module = "com.oracle.database.security:osdt_cert", vers
 oracle-security-core = { module = "com.oracle.database.security:osdt_core", version.ref = "oracle-database-security" }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
-bcpkixjdk15to18 = { module = "org.bouncycastle:bcpkix-jdk15to18", version.ref = "bcpkixjdk15to18"}
-netty-codec-classes-quic = { module = "io.netty:netty-codec-classes-quic", version.ref = "netty" }
-netty-codec-native-quic = { module = "io.netty:netty-codec-native-quic", version.ref = "netty" }
 
 #plugins
 kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }

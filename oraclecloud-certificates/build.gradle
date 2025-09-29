@@ -10,13 +10,6 @@ dependencies {
     implementation mnReactor.micronaut.reactor
     compileOnly(mn.micronaut.http.client)
 
-    api(libs.netty.codec.classes.quic)
-    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("linux-x86_64") })
-    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("linux-aarch_64") })
-    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("osx-x86_64") })
-    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("osx-aarch_64") })
-    runtimeOnly(variantOf(libs.netty.codec.native.quic) { classifier("windows-x86_64") })
-
     testImplementation(mnSecurity.micronaut.security)
     testImplementation(mn.micronaut.http.client)
     testImplementation mnTest.micronaut.test.spock
