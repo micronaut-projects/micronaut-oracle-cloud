@@ -103,7 +103,7 @@ public class OracleCloudCertificateFetcher {
             intermediate = cf.generateCertificates(
                     new ByteArrayInputStream(
                         cb.getCertChainPem().getBytes())).stream().map(cert -> ((X509Certificate) cert))
-                .collect(Collectors.toList());
+                .toList();
         }
 
         CertificateEvent certificateEvent = new CertificateEvent(
