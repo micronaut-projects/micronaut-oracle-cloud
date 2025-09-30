@@ -120,6 +120,7 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                         }
 
                                         if (msg instanceof DefaultLastHttpContent) {
+                                            ((DefaultLastHttpContent) msg).release();
                                             return;
                                         }
 
