@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
  * Background task to automatically refresh the certificates from an Oracle Cloud Certificate server on a configurable interval.
  */
 @Singleton
-@Requires(property = OracleCloudCertificateProperties.PREFIX + ".enabled", value = "true")
 @Context
 @Internal
+@Requires(bean = OracleCloudCertificateProperties.class)
 public final class OracleCloudCertificationRefresherTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationRefresherTask.class);

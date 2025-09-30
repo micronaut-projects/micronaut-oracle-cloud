@@ -17,9 +17,11 @@ package io.micronaut.oraclecloud.certificates.config;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.EachProperty;
+import io.micronaut.context.annotation.Parameter;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 
 /**
@@ -34,26 +36,19 @@ import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfigurat
  * @param certificateVersionName The named certificate version to use, or null.
  * @param enabled Whether this certificate entry is enabled. Defaults to true when unspecified.
  */
-@EachProperty(value = OracleCloudCertificateProperties.PREFIX, primary = "default")
+@EachProperty(value = OracleCloudCertificateProperties.PREFIX)
 @Requires(missingProperty = OracleCloudCertificationsConfiguration.CERTIFICATE_ID)
 @BootstrapContextCompatible
 public record OracleCloudCertificateConfiguration(
+    @Parameter String name,
     @NonNull String certificateId,
     @Nullable Long versionNumber,
     @Nullable String certificateVersionName,
-    @Nullable Boolean enabled
+    @Bindable(defaultValue = "true") Boolean enabled
 ) implements OracleCloudCertificateProperties {
 
-    /**
-     * Whether this certificate entry is enabled.
-     *
-     * If {@code enabled} is null, this entry defaults to enabled.
-     *
-     * @return true if this entry is enabled
-     */
     @Override
-    public boolean isEnabled() {
-        // Default to enabled when the global feature flag is on and per-item flag is not set
-        return enabled != null ? enabled : true;
+    public @NonNull String getName() {
+        return name;
     }
 }

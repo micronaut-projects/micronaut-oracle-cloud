@@ -20,9 +20,7 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.http.ssl.OracleCloudCertificateFetcher;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
-import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateConfiguration;
 import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import io.micronaut.retry.annotation.Retryable;
@@ -43,6 +41,7 @@ import java.util.stream.Stream;
 @Requires(classes = {Certificates.class})
 @Requires(beans = {Certificates.class})
 @Internal
+@Requires(bean = OracleCloudCertificateProperties.class)
 public class OracleCloudCertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateService.class);
@@ -94,14 +93,15 @@ public class OracleCloudCertificateService {
         return this.oracleCloudCertificationsConfigurations.stream()
             .flatMap(config -> {
                 try {
+                    if (config.enabled()) {
+                        String certificateId = config.certificateId();
+                        Long versionNumber = config.versionNumber();
+                        String certificateVersionName = config.certificateVersionName();
 
-                    String certificateId = config.certificateId();
-                    Long versionNumber = config.versionNumber();
-                    String certificateVersionName = config.certificateVersionName();
-
-                    CertificateEvent certificateEvent = oracleCloudCertificateFetcher.retrieveCertificate(certificateId, versionNumber, certificateVersionName).orElse(null);
-                    return Stream.ofNullable(certificateEvent);
-
+                        CertificateEvent certificateEvent = oracleCloudCertificateFetcher.retrieveCertificate(certificateId, versionNumber, certificateVersionName);
+                        return Stream.ofNullable(certificateEvent);
+                    }
+                    return Stream.empty();
                 } catch (CertificateException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn("Could not create certificate from file: " + e.getMessage(), e);
@@ -126,17 +126,5 @@ public class OracleCloudCertificateService {
         for (CertificateEvent certificateEvent : certificateEvents) {
             eventPublisher.publishEvent(certificateEvent);
         }
-    }
-
-    /**
-     * Maps the deprecated {@link io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration}
-     * into the current {@link io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateConfiguration}.
-     *
-     * @param oracleCloudCertificationsConfiguration The deprecated configuration.
-     * @return An equivalent {@link OracleCloudCertificateProperties} instance in the new format.
-     */
-    private static OracleCloudCertificateProperties handleDeprecation(OracleCloudCertificationsConfiguration oracleCloudCertificationsConfiguration) {
-        LOG.warn("Deprecated OracleCloudCertificateService constructor used");
-        return new OracleCloudCertificateConfiguration(oracleCloudCertificationsConfiguration.certificateId(), oracleCloudCertificationsConfiguration.versionNumber(), oracleCloudCertificationsConfiguration.certificateVersionName(), oracleCloudCertificationsConfiguration.enabled());
     }
 }

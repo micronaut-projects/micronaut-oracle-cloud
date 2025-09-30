@@ -46,15 +46,6 @@ oci:
       certificate-id: ocid1.certificate.oc1.....
 ----
 
-Equivalent properties form:
-
-[configuration]
-----
-micronaut.server.ssl.enabled=true
-micronaut.server.ssl.key-name=server
-oci.certificates.server.certificate-id=ocid1.certificate.oc1.....
-----
-
 IMPORTANT: The previously supported top-level properties (oci.certificates.certificate-id, etc.) are deprecated. They remain functional for backward compatibility, but you should migrate to the named configuration format oci.certificates.<name>.*. If you continue using the legacy top-level keys, a deprecation warning is logged at startup.
 
 Legacy configuration (deprecated):

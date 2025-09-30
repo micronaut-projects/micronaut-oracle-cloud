@@ -61,4 +61,9 @@ public record OracleCloudCertificationsConfiguration(
     public boolean isEnabled() {
         return enabled != null && enabled;
     }
+
+    @Override
+    public @NonNull String getName() {
+        return "deprecated";
+    }
 }

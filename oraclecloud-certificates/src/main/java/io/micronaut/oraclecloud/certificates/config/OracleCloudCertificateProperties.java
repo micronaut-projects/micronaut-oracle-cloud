@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.certificates.config;
 
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.naming.Named;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
 import jakarta.annotation.Nullable;
@@ -23,13 +24,12 @@ import jakarta.annotation.Nullable;
 /**
  * Interface for configuration properties for certificates.
  */
-public interface OracleCloudCertificateProperties extends Toggleable {
+public interface OracleCloudCertificateProperties extends Toggleable, Named {
     String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".certificates";
 
     /**
      * @return Is the certificate enabled.
      */
-    @Nullable
     Boolean enabled();
 
     /**

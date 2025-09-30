@@ -6,6 +6,7 @@ import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse
 import io.micronaut.context.event.ApplicationEventPublisher
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent
+import io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateFetcher
 import io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateService
 import spock.lang.Specification
 

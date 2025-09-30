@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.micronaut.http.ssl;
+package io.micronaut.oraclecloud.certificates.services;
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.certificates.Certificates;
@@ -23,14 +23,14 @@ import com.oracle.bmc.certificates.model.CertificateBundleWithPrivateKey;
 import com.oracle.bmc.certificates.requests.GetCertificateBundleRequest;
 import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse;
 import com.oracle.bmc.http.client.HttpProvider;
+import com.oracle.bmc.http.client.pki.Pem;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import jakarta.inject.Singleton;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -76,7 +76,7 @@ public class OracleCloudCertificateFetcher {
      * @return An {@link Optional} containing the resulting {@link CertificateEvent} if retrieval succeeds; otherwise empty.
      * @throws CertificateException If the certificate content cannot be parsed.
      */
-    public Optional<CertificateEvent> retrieveCertificate(String certificateId, Long versionNumber, String certificateVersionName) throws CertificateException {
+    public CertificateEvent retrieveCertificate(String certificateId, Long versionNumber, String certificateVersionName) throws CertificateException {
         GetCertificateBundleResponse certificateBundle = certificates.getCertificateBundle(GetCertificateBundleRequest.builder()
             .certificateId(certificateId)
             .versionNumber(versionNumber)
@@ -94,7 +94,7 @@ public class OracleCloudCertificateFetcher {
      * @return An {@link Optional} containing the constructed {@link CertificateEvent}.
      * @throws CertificateException If the certificate chain cannot be parsed.
      */
-    static Optional<CertificateEvent> getEventFromGetCertificateBundleResponse(GetCertificateBundleResponse certificateBundle) throws CertificateException {
+    static CertificateEvent getEventFromGetCertificateBundleResponse(GetCertificateBundleResponse certificateBundle) throws CertificateException {
         CertificateFactory cf = CertificateFactory.getInstance(X509_CERT);
         List<X509Certificate> intermediate = Collections.emptyList();
 
@@ -112,7 +112,7 @@ public class OracleCloudCertificateFetcher {
             intermediate,
             cb
         );
-        return Optional.of(certificateEvent);
+        return certificateEvent;
     }
 
     /**
@@ -121,13 +121,9 @@ public class OracleCloudCertificateFetcher {
      * @return private key
      */
     private static PrivateKey getPrivateKey(GetCertificateBundleResponse getCertificateBundleResponse) {
-        try {
             CertificateBundleWithPrivateKey certificateBundleWithPrivateKey =
                 (CertificateBundleWithPrivateKey) getCertificateBundleResponse.getCertificateBundle();
             return parsePrivateKey(certificateBundleWithPrivateKey.getPrivateKeyPem(), certificateBundleWithPrivateKey.getPrivateKeyPemPassphrase());
-        } catch (IOException | PemParser.NotPemException | GeneralSecurityException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -136,17 +132,10 @@ public class OracleCloudCertificateFetcher {
      * @param privateKeyPem The private key in PEM format.
      * @param password The passphrase used to decrypt the private key, or {@code null} if unencrypted.
      * @return The parsed {@link PrivateKey} instance.
-     * @throws IOException If the PEM content cannot be read.
-     * @throws PemParser.NotPemException If the content is not valid PEM.
-     * @throws GeneralSecurityException If the key cannot be parsed or decrypted.
      */
-     static PrivateKey parsePrivateKey(String privateKeyPem, String password) throws IOException, PemParser.NotPemException, GeneralSecurityException {
-        PemParser pemParser = new PemParser(null, password);
-         List<Object> mainObjects = pemParser.loadPem(privateKeyPem);
-         if (mainObjects.get(0) instanceof PrivateKey pk) {
-             return pk;
-         } else {
-             throw new IllegalArgumentException("Unexpected PrivateKey: " + mainObjects.get(0));
-         }
+     static PrivateKey parsePrivateKey(String privateKeyPem, String password) {
+        return Pem.decoder()
+            .with(password != null ? Pem.Passphrase.of(password.toCharArray()) : null).
+            decodePrivateKey(privateKeyPem.getBytes(StandardCharsets.UTF_8));
     }
 }

@@ -15,20 +15,24 @@
  */
 package io.micronaut.oraclecloud.certificates.ssl;
 
+import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.EachBean;
+import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.naming.Named;
 import io.micronaut.http.server.netty.ssl.ServerSslBuilder;
 import io.micronaut.http.ssl.CertificateProvider;
 import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
-import io.micronaut.http.ssl.OracleCloudCertificateFetcher;
+import io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateFetcher;
 import io.micronaut.context.event.ApplicationEventListener;
 import io.netty.handler.ssl.SslContext;
+import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -41,13 +45,19 @@ import java.util.List;
  * with to SSL support via a temporary self signed certificate that will be replaced by an Oracle Cloud certificate once acquired.
  */
 @Internal
-final class OracleCloudCertificateProvider implements CertificateProvider, Named, ApplicationEventListener<CertificateEvent> {
+@EachBean(OracleCloudCertificateProperties.class)
+@BootstrapContextCompatible
+@Singleton
+final class OracleCloudCertificateProvider implements CertificateProvider, ApplicationEventListener<CertificateEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateProvider.class);
 
     private final OracleCloudCertificateProperties configuration;
-    private volatile KeyStore keyStore;
-    private volatile KeyStore trustStore;
+
+    private final Flux<KeyStore> bundleKeystore;
+    private final Flux<KeyStore> bundleTruststore;
+    private final Sinks.Many<KeyStore> sinkKeystore;
+    private final Sinks.Many<KeyStore> sinkTruststore;
 
     /**
      * Creates a provider that supplies KeyStore and TrustStore material from OCI Certificates.
@@ -61,12 +71,15 @@ final class OracleCloudCertificateProvider implements CertificateProvider, Named
     OracleCloudCertificateProvider(OracleCloudCertificateProperties configuration,
                                    OracleCloudCertificateFetcher oracleCloudCertificateFetcher) throws CertificateException {
         this.configuration = configuration;
-
+        sinkKeystore = Sinks.many().replay().latest();
+        sinkTruststore = Sinks.many().replay().latest();
         // Preload any already-fetched certificates
-        CertificateEvent certificateEvent = oracleCloudCertificateFetcher.retrieveCertificate(configuration.certificateId(), configuration.versionNumber(), configuration.certificateVersionName()).orElse(null);
+        CertificateEvent certificateEvent = oracleCloudCertificateFetcher.retrieveCertificate(configuration.certificateId(), configuration.versionNumber(), configuration.certificateVersionName());
         if (certificateEvent != null) {
             onApplicationEvent(certificateEvent);
         }
+        bundleKeystore = sinkKeystore.asFlux();
+        bundleTruststore = sinkTruststore.asFlux();
     }
 
     /**
@@ -104,7 +117,8 @@ final class OracleCloudCertificateProvider implements CertificateProvider, Named
                     certificateEvent.privateKey(),
                     new char[0],
                     chain.toArray(new X509Certificate[0]));
-                keyStore = ks;
+
+                sinkKeystore.tryEmitNext(ks);
 
                 KeyStore trustStore = KeyStore.getInstance("PKCS12");
                 trustStore.load(null, null);
@@ -121,10 +135,10 @@ final class OracleCloudCertificateProvider implements CertificateProvider, Named
                         cert
                     );
                 }
-                this.trustStore = trustStore;
+                sinkTruststore.tryEmitNext(trustStore);
             }
         } catch (Exception e) {
-            throw new RuntimeException("Failed to populate PKCS12 KeyStore", e);
+            throw new ConfigurationException("Failed to populate PKCS12 KeyStore", e);
         }
     }
 
@@ -137,8 +151,7 @@ final class OracleCloudCertificateProvider implements CertificateProvider, Named
      */
     @Override
     public @NonNull Publisher<@NonNull KeyStore> getKeyStore() {
-        KeyStore ks = this.keyStore;
-        return ks != null ? Flux.just(ks) : Flux.empty();
+        return bundleKeystore;
     }
 
     /**
@@ -150,17 +163,11 @@ final class OracleCloudCertificateProvider implements CertificateProvider, Named
      */
     @Override
     public @NonNull Publisher<@NonNull KeyStore> getTrustStore() {
-        KeyStore ks = this.trustStore;
-        return ks != null ? Flux.just(ks) : Flux.empty();
+        return bundleTruststore;
     }
 
-    /**
-     * The logical name of this provider, which is the certificate OCID.
-     *
-     * @return The certificate OCID from the configuration.
-     */
     @Override
     public @NonNull String getName() {
-        return configuration.certificateId();
+        return configuration.getName();
     }
 }
