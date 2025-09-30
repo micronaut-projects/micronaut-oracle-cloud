@@ -47,6 +47,8 @@ class OracleCloudCertificateMTLSSpec extends Specification {
                 "micronaut.security.x509.enabled": "true",
                 "micronaut.server.ssl.key-name": "server",
                 "micronaut.server.ssl.trust-name": "server",
+                "oci.client.ssl.trust-name": "client",
+                "oci.client.ssl.key-name": "client",
                 "micronaut.http.client.ssl.trust-name": "client",
                 "micronaut.http.client.ssl.key-name": "client",
                 "test.client.url": embeddedServer.URI.toString()

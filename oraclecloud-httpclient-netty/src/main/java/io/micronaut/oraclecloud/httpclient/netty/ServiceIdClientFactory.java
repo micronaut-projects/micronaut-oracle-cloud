@@ -31,8 +31,8 @@ import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.SE
  * @since 5.3.0
  */
 @Factory
-@Requires(beans = NettyHttpProvider.class)
 @Requires(classes = ServiceOracleCloudClientConfigurationProperties.class)
+@BootstrapContextCompatible
 final class ServiceIdClientFactory {
 
     @BootstrapContextCompatible
