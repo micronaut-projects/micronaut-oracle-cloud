@@ -20,7 +20,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import io.micronaut.retry.annotation.Retryable;

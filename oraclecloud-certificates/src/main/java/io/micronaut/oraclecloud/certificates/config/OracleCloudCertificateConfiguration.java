@@ -31,6 +31,7 @@ import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfigurat
  * to Micronaut's SSL infrastructure.
  * </p>
  *
+ * @param name The name of the config.
  * @param certificateId The OCID of the certificate.
  * @param versionNumber The specific certificate version number to use, or null to resolve by name/latest.
  * @param certificateVersionName The named certificate version to use, or null.

@@ -318,7 +318,7 @@ FWuOh/0T9jf8y6FsbWf6VDwdMbTYBNpkb7XJrEaRPy+EXZX/jQpCMHz56jKW
 
         then:
         final RuntimeException exception = thrown()
-        exception.message == 'io.micronaut.http.ssl.PemParser$NotPemException: Missing start tag'
+        exception.message == 'Private key must be in PEM format'
     }
 
     def "refresh certificate with invalid certificate"() {

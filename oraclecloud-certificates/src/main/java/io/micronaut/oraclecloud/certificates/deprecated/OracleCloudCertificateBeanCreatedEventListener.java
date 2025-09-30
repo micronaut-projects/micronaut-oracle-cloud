@@ -23,9 +23,6 @@ import io.micronaut.http.ssl.ServerSslConfiguration;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import jakarta.inject.Singleton;
 
-@Singleton
-@Requires(beans = OracleCloudCertificationsConfiguration.class)
-@Requires(property = OracleCloudCertificationsConfiguration.CERTIFICATE_ID)
 /**
  * Deprecated listener that amends the ServerSslConfiguration when the legacy
  * oraclecloud.certificates.certificate-id property is used.
@@ -34,6 +31,9 @@ import jakarta.inject.Singleton;
  * so Micronaut selects the deprecated certificate configuration bean.
  * </p>
  */
+@Singleton
+@Requires(beans = OracleCloudCertificationsConfiguration.class)
+@Requires(property = OracleCloudCertificationsConfiguration.CERTIFICATE_ID)
 @Deprecated(forRemoval = true)
 public class OracleCloudCertificateBeanCreatedEventListener implements BeanCreatedEventListener<ServerSslConfiguration> {
     /**

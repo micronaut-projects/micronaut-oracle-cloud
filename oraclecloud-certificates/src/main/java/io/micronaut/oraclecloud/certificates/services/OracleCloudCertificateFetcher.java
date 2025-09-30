@@ -38,7 +38,6 @@ import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Fetches certificates and private keys from Oracle Cloud Infrastructure (OCI) Certificates service
