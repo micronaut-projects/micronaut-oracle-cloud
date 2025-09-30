@@ -61,6 +61,10 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
     public static final TypeDef TYPE_REGION_PROVIDER = TypeDef.of("com.oracle.bmc.auth.RegionProvider");
     public static final ClassTypeDef TYPE_CLIENT_CONFIGURATION = ClassTypeDef.of("com.oracle.bmc.ClientConfiguration");
     public static final ClassTypeDef TYPE_CLIENT_CONFIGURATOR = ClassTypeDef.of("com.oracle.bmc.http.ClientConfigurator");
+    public static final TypeDef TYPE_LIST_OF_CLIENT_CONFIGURATOR = TypeDef.parameterized(
+        ClassTypeDef.of("java.util.List"),
+        TYPE_CLIENT_CONFIGURATOR
+    );
     public static final ClassTypeDef TYPE_REQUEST_SIGNER_FACTORY = ClassTypeDef.of("com.oracle.bmc.http.signing.RequestSignerFactory");
     public static final ClassTypeDef TYPE_REGION = ClassTypeDef.of("com.oracle.bmc.Region");
     public static final ClassTypeDef TYPE_INTERNAL_BUILDER_ACCESS = ClassTypeDef.of("com.oracle.bmc.common.InternalBuilderAccess");
@@ -156,7 +160,7 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
                                 .addMember(AnnotationMetadata.VALUE_MEMBER, serviceId)
                                 .build())
                             .build(),
-                        ParameterDef.builder("clientConfigurator", TYPE_CLIENT_CONFIGURATOR)
+                        ParameterDef.builder("clientConfiguratorList", TYPE_LIST_OF_CLIENT_CONFIGURATOR)
                             .addAnnotation(Nullable.class)
                             .build(),
                         ParameterDef.builder("requestSignerFactory", TYPE_REQUEST_SIGNER_FACTORY)

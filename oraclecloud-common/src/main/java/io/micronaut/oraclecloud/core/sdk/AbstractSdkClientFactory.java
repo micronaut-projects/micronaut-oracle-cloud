@@ -27,6 +27,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import jakarta.inject.Inject;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -63,7 +64,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      * @param builder The builder
      * @param clientConfiguration The client config
      * @param specificClientConfiguration the configuration specific to each client.
-     * @param clientConfigurator The client configurator (optional)
+     * @param clientConfiguratorList The client configurator list (optional)
      * @param serviceIdClientConfigurator The client configurator that will configure service id (optional)
      * @param requestSignerFactory The request signer factory (optional)
      */
@@ -71,8 +72,8 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
             B builder,
             ClientConfiguration clientConfiguration,
             @Nullable ClientConfiguration specificClientConfiguration,
-            @Nullable ClientConfigurator clientConfigurator,
             @Nullable ClientConfigurator serviceIdClientConfigurator,
+            @Nullable List<ClientConfigurator> clientConfiguratorList,
             @Nullable RequestSignerFactory requestSignerFactory
     ) {
         this.builder = Objects.requireNonNull(builder, "Builder cannot be null");
@@ -83,11 +84,16 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
         }
 
         if (serviceIdClientConfigurator != null) {
-            builder.additionalClientConfigurator(serviceIdClientConfigurator);
+            builder.clientConfigurator(serviceIdClientConfigurator);
         }
 
-        if (clientConfigurator != null) {
-            builder.clientConfigurator(clientConfigurator);
+        if (clientConfiguratorList != null) {
+            clientConfiguratorList.forEach(clientConfigurator -> {
+                if (!"io.micronaut.oraclecloud.httpclient.netty.ServiceIdClientConfigurator"
+                    .equals(clientConfigurator.getClass().getName())) {
+                    builder.clientConfigurator(clientConfigurator);
+                }
+            });
         }
 
         if (requestSignerFactory != null) {

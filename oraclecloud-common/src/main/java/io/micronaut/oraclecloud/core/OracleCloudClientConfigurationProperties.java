@@ -110,7 +110,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
         public OracleCloudClientSslClientConfiguration(ClientSslConfiguration clientSslConfiguration) {
             this.setEnabled(true);
             this.readExisting(clientSslConfiguration, clientSslConfiguration.getKey(), clientSslConfiguration.getKeyStore(), clientSslConfiguration.getTrustStore());
-            this.setInsecureTrustAllCertificates(clientSslConfiguration.isEnabled());
+            this.setInsecureTrustAllCertificates(clientSslConfiguration.isInsecureTrustAllCertificates());
         }
 
         public OracleCloudClientSslClientConfiguration() {

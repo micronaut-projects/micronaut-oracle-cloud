@@ -12,6 +12,7 @@ dependencies {
 
     testImplementation(mnSecurity.micronaut.security)
     testImplementation(mn.micronaut.http.client)
+    testImplementation projects.micronautOraclecloudBmcObjectstorage
     testImplementation mnTest.micronaut.test.spock
     testImplementation mn.micronaut.inject.groovy
 }

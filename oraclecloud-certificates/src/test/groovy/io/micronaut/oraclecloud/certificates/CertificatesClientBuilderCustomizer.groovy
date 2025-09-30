@@ -10,12 +10,9 @@ import jakarta.inject.Singleton
 @Singleton
 class CertificatesClientBuilderCustomizer implements BeanCreatedEventListener<CertificatesClient.Builder> {
 
-    private final EmbeddedServer certificatesServer
     private final String url
 
-
-    CertificatesClientBuilderCustomizer(EmbeddedServer certificatesServer, @Value('${test.client.url}')  String url) {
-        this.certificatesServer = certificatesServer
+    CertificatesClientBuilderCustomizer(@Value('${test.client.url}')  String url) {
         this.url = url
     }
 
