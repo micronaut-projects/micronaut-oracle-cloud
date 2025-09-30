@@ -15,16 +15,14 @@
  */
 package io.micronaut.oraclecloud.certificates.services;
 
-import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.certificates.Certificates;
-import com.oracle.bmc.certificates.CertificatesClient;
 import com.oracle.bmc.certificates.model.CertificateBundle;
 import com.oracle.bmc.certificates.model.CertificateBundleWithPrivateKey;
 import com.oracle.bmc.certificates.requests.GetCertificateBundleRequest;
 import com.oracle.bmc.certificates.responses.GetCertificateBundleResponse;
-import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.pki.Pem;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.oraclecloud.certificates.events.CertificateEvent;
 import jakarta.inject.Singleton;
@@ -50,20 +48,20 @@ import java.util.Optional;
 @Internal
 @Singleton
 @BootstrapContextCompatible
+@Requires(classes = {Certificates.class})
+@Requires(beans = {Certificates.class})
 public class OracleCloudCertificateFetcher {
 
     private static final String X509_CERT = "X.509";
     private final Certificates certificates;
 
     /**
-     * Creates a new fetcher that uses the provided OCI Certificates client builder and authentication provider.
+     * Creates a new fetcher that uses the provided OCI Certificates client.
      *
-     * @param certificatesClientBuilder The OCI Certificates client builder.
-     * @param authenticationDetailsProvider The OCI authentication provider used to authorize requests.
+     * @param  certificates OCI Certificates client builder.
      */
-    public OracleCloudCertificateFetcher(CertificatesClient.Builder certificatesClientBuilder, AbstractAuthenticationDetailsProvider authenticationDetailsProvider) {
-        certificatesClientBuilder.httpProvider(HttpProvider.getDefault());
-        this.certificates = certificatesClientBuilder.build(authenticationDetailsProvider);
+    public OracleCloudCertificateFetcher(Certificates certificates) {
+        this.certificates = certificates;
     }
 
     /**

@@ -15,7 +15,6 @@
  */
 package io.micronaut.oraclecloud.certificates.services;
 
-import com.oracle.bmc.certificates.Certificates;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.ApplicationEventPublisher;
 import io.micronaut.core.annotation.Internal;
@@ -37,10 +36,9 @@ import java.util.stream.Stream;
  * Service to contact an Oracle Cloud Certificate service and setup a certificate on a given basis.
  */
 @Singleton
-@Requires(classes = {Certificates.class})
-@Requires(beans = {Certificates.class})
 @Internal
 @Requires(bean = OracleCloudCertificateProperties.class)
+@Requires(bean = OracleCloudCertificateFetcher.class)
 public class OracleCloudCertificateService {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateService.class);
