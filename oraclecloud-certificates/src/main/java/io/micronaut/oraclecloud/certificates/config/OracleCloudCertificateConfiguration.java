@@ -46,7 +46,7 @@ public record OracleCloudCertificateConfiguration(
     @NonNull String certificateId,
     @Nullable Long versionNumber,
     @Nullable String certificateVersionName,
-    @Bindable(defaultValue = "true") Boolean enabled
+    @Bindable(defaultValue = "true") boolean enabled
 ) implements OracleCloudCertificateProperties {
 
     @Override

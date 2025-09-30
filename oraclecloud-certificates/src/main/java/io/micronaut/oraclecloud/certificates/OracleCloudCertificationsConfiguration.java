@@ -44,23 +44,13 @@ public record OracleCloudCertificationsConfiguration(
     @NonNull String certificateId,
     @Nullable Long versionNumber,
     @Nullable String certificateVersionName,
-    @Nullable Boolean enabled) implements Toggleable, OracleCloudCertificateProperties {
+    boolean enabled) implements Toggleable, OracleCloudCertificateProperties {
     public static final String CERTIFICATE_ID = PREFIX + ".certificate-id";
     public static final String ENABLED = PREFIX + ".enabled";
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationsConfiguration.class);
 
     public OracleCloudCertificationsConfiguration {
         LOG.warn("Configuring server certificate via " + CERTIFICATE_ID + " is deprecated. Use " + OracleCloudCertificateProperties.PREFIX + " namespace instead");
-    }
-
-    /**
-     * If Oracle Cloud certificate background and setup process should be enabled.
-     *
-     * @return True if Oracle Cloud certificate process is enabled.
-     */
-    @Override
-    public boolean isEnabled() {
-        return enabled != null && enabled;
     }
 
     @Override

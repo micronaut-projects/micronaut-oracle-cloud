@@ -30,7 +30,7 @@ public interface OracleCloudCertificateProperties extends Toggleable, Named {
     /**
      * @return Is the certificate enabled.
      */
-    Boolean enabled();
+    boolean enabled();
 
     /**
      * @return The ID of the certificate
@@ -51,7 +51,6 @@ public interface OracleCloudCertificateProperties extends Toggleable, Named {
 
     @Override
     default boolean isEnabled() {
-        Boolean e = enabled();
-        return e != null && e;
+        return enabled();
     }
 }

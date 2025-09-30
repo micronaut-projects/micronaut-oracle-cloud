@@ -30,6 +30,8 @@ import static io.micronaut.security.rules.SecurityRule.IS_ANONYMOUS
 @Property(name="micronaut.server.ssl.enabled", value = "false")
 @Property(name="test.certificates.server", value = "OracleCloudCertificateMTLSSpec")
 @Property(name="micronaut.security.enabled", value = "false")
+@Property(name="micronaut.server.ssl.enabled", value = "true")
+@Property(name="micronaut.server.ssl.build-self-signed", value = "true")
 class OracleCloudCertificateMTLSSpec extends Specification {
 
     @Inject
@@ -51,6 +53,7 @@ class OracleCloudCertificateMTLSSpec extends Specification {
                 "oci.client.ssl.key-name": "client",
                 "micronaut.http.client.ssl.trust-name": "client",
                 "micronaut.http.client.ssl.key-name": "client",
+                "oci.clients.certificates.ssl.insecure-trust-all-certificates": "true",
                 "test.client.url": embeddedServer.URI.toString()
         ]
         def ctx = ApplicationContext.builder().properties(props).start()
