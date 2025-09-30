@@ -89,9 +89,13 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
 
         if (clientConfiguratorList != null) {
             clientConfiguratorList.forEach(clientConfigurator -> {
-                if (!"io.micronaut.oraclecloud.httpclient.netty.ServiceIdClientConfigurator"
-                    .equals(clientConfigurator.getClass().getName())) {
-                    builder.clientConfigurator(clientConfigurator);
+                try {
+                    Class<?> serviceIdClientConfiguratorClass = Class.forName("io.micronaut.oraclecloud.httpclient.netty.ServiceIdClientConfigurator");
+                    if (!clientConfigurator.getClass().isAssignableFrom(serviceIdClientConfiguratorClass)) {
+                        builder.clientConfigurator(clientConfigurator);
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
             });
         }

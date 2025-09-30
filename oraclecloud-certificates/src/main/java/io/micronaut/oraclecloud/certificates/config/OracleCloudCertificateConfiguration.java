@@ -39,7 +39,7 @@ import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfigurat
  */
 @EachProperty(value = OracleCloudCertificateProperties.PREFIX)
 @Requires(missingProperty = OracleCloudCertificationsConfiguration.CERTIFICATE_ID)
-@Requires(missingProperty = OracleCloudCertificationsConfiguration.ENABLED)
+@Requires(missingProperty = OracleCloudCertificationsConfiguration.ENABLED_PROPERTY)
 @BootstrapContextCompatible
 public record OracleCloudCertificateConfiguration(
     @Parameter String name,

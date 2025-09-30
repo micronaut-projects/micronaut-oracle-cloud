@@ -46,7 +46,7 @@ public record OracleCloudCertificationsConfiguration(
     @Nullable String certificateVersionName,
     boolean enabled) implements Toggleable, OracleCloudCertificateProperties {
     public static final String CERTIFICATE_ID = PREFIX + ".certificate-id";
-    public static final String ENABLED = PREFIX + ".enabled";
+    public static final String ENABLED_PROPERTY = PREFIX + ".enabled";
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationsConfiguration.class);
 
     public OracleCloudCertificationsConfiguration {
