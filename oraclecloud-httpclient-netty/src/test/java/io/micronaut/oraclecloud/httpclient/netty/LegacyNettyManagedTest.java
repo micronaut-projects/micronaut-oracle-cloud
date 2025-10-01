@@ -28,4 +28,10 @@ public class LegacyNettyManagedTest extends NettyManagedTest {
     public void fullSetupErrorParseFailure() throws CertificateException {
         super.fullSetupErrorParseFailure();
     }
+
+    @Override
+    @Disabled // behavior change not done in legacy client
+    public void functionsClientTest() throws CertificateException {
+        super.functionsClientTest();
+    }
 }
