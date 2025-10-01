@@ -46,7 +46,7 @@
         <div class="docs-content">
             <div class="project">
                 <h1>Configuration Reference</h1>
-                <p><strong>Version:</strong>5.3.3-SNAPSHOT</p>
+                <p><strong>Version:</strong>5.4.0-SNAPSHOT</p>
                 <p></p>
             </div>
 <div class="sect2">
@@ -135,9 +135,9 @@
 </div>
 <div class="sect2">
 <h3 id="_micronaut_oraclecloud_common_config_properties">Micronaut Oraclecloud Common Config Properties</h3>
-<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyConfiguration">&#128279;</a>
+<a id="io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration" href="#io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.DefaultKeyConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyConfiguration</a></caption>
+<caption class="title">Table 3. Configuration Properties for <a href="../api/io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html">OracleCloudMetadataConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -152,21 +152,46 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.url</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key.alias</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.metadata-url</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.instance-document-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.vnic-url</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default value: "http://169.254.169.254/opc/v1/vnics/" or "http://169.254.169.254/opc/v2/vnics/", depending on the value of {@link #v2Enabled}.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.v1-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.v2-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties">&#128279;</a>
+<a id="io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties" href="#io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.html">ServiceOracleCloudClientConfigurationProperties</a></caption>
+<caption class="title">Table 4. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html">OracleCloudConfigFileConfigurationProperties</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -181,266 +206,31 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.http-version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/HttpVersion.html">HttpVersion</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.log-level</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/logging/LogLevel.html">LogLevel</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.event-loop-group</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.profile</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The profile to use.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.follow-redirects</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.exception-on-error-status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.logger-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.path</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A custom path for the OCI configuration file.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.default-charset</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.nio.charset.Charset</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.channel-options</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.read-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">set the readTimeout both in client builder and to micronaut client config.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.request-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.read-idle-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connection-pool-idle-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connect-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connect-ttl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.shutdown-quiet-period</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.shutdown-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.num-of-threads</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.thread-factory</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Class</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.max-content-length</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.Proxy$Type</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-address</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.SocketAddress</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-username</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-selector</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.ProxySelector</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.plaintext-mode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpVersionSelection.PlaintextMode.html">HttpVersionSelection$PlaintextMode</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.alpn-modes</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.allow-block-event-loop</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.dns-resolution-mode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.DnsResolutionMode.html">HttpClientConfiguration$DnsResolutionMode</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.address-resolver-group-name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pcap-logging-path-pattern</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-options.mark-read-limit</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-termination-strategy.max-attempts</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-termination-strategy.max-time-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-delay-strategy.time-between-attempts-in-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-delay-strategy.max-delay-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.read-timeout-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">set the readTimeoutMillis both in client builder and to micronaut client config.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connection-timeout-millis</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.max-async-threads</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.disable-data-buffering-on-upload</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable or disable using the OCI configuration file.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.failure-rate-threshold</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.slow-call-rate-threshold</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.wait-duration-in-open-state</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.permitted-number-of-calls-in-half-open-state</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.minimum-number-of-calls</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.sliding-window-size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.slow-call-duration-threshold</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.writable-stack-trace-enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.record-http-statuses</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.record-exceptions</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.record-processing-failures</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.number-of-recorded-history-responses</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.session-token</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the configuration of a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.</p></td>
 </tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientHttp2ClientConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientHttp2ClientConfiguration">&#128279;</a>
+<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientConnectionPoolConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientConnectionPoolConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientHttp2ClientConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientHttp2ClientConfiguration</a></caption>
+<caption class="title">Table 5. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientConnectionPoolConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientConnectionPoolConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -455,23 +245,161 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.ping-interval-read</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-pending-acquires</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.acquire-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.ping-interval-write</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-pending-connections</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-concurrent-requests-per-http2-connection</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-concurrent-http1-connections</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-concurrent-http2-connections</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.connection-locality</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.ConnectionLocality.html">HttpClientConfiguration$ConnectionPoolConfiguration$ConnectionLocality</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.version</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.PoolVersion.html">HttpClientConfiguration$ConnectionPoolConfiguration$PoolVersion</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl-configuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/ssl/SslConfiguration.html">SslConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.port</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.client-authentication</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/ssl/ClientAuthentication.html">ClientAuthentication</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.ciphers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.protocols</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.protocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.handshake-timeout</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.ping-interval-idle</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.build-self-signed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.prefer-openssl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.insecure-trust-all-certificates</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -479,7 +407,7 @@
 <div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.core.InstancePrincipalConfiguration" href="#io.micronaut.oraclecloud.core.InstancePrincipalConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html">InstancePrincipalConfiguration</a></caption>
+<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html">InstancePrincipalConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -556,9 +484,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties" href="#io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties">&#128279;</a>
+<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html">OracleCloudConfigFileConfigurationProperties</a></caption>
+<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -573,161 +501,23 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.profile</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The profile to use.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A custom path for the OCI configuration file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable or disable using the OCI configuration file.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.config.session-token</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the configuration of a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientConnectionPoolConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientConnectionPoolConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientConnectionPoolConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientConnectionPoolConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-pending-acquires</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.acquire-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-pending-connections</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-concurrent-requests-per-http2-connection</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-concurrent-http1-connections</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-concurrent-http2-connections</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.connection-locality</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.ConnectionLocality.html">HttpClientConfiguration$ConnectionPoolConfiguration$ConnectionLocality</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.PoolVersion.html">HttpClientConfiguration$ConnectionPoolConfiguration$PoolVersion</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl-configuration</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/ssl/SslConfiguration.html">SslConfiguration</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.port</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.client-authentication</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/ssl/ClientAuthentication.html">ClientAuthentication</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.ciphers</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.path</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.protocols</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.password</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.protocol</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.handshake-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.build-self-signed</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.prefer-openssl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.insecure-trust-all-certificates</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -1036,9 +826,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration">&#128279;</a>
+<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration</a></caption>
+<caption class="title">Table 12. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.DefaultKeyConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1053,10 +843,450 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl-configuration</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/ssl/SslConfiguration.html">SslConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key.alias</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.html">ServiceOracleCloudClientConfigurationProperties</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.http-version</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/HttpVersion.html">HttpVersion</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.log-level</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/logging/LogLevel.html">LogLevel</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.event-loop-group</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.follow-redirects</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.exception-on-error-status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.logger-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.default-charset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.nio.charset.Charset</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.channel-options</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Map</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.read-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">set the readTimeout both in client builder and to micronaut client config.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.request-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.read-idle-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connection-pool-idle-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connect-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connect-ttl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.shutdown-quiet-period</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.shutdown-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.num-of-threads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.thread-factory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Class</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.max-content-length</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.Proxy$Type</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-address</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.SocketAddress</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-username</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.proxy-selector</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.net.ProxySelector</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.plaintext-mode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpVersionSelection.PlaintextMode.html">HttpVersionSelection$PlaintextMode</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.alpn-modes</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.allow-block-event-loop</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.dns-resolution-mode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.DnsResolutionMode.html">HttpClientConfiguration$DnsResolutionMode</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.address-resolver-group-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pcap-logging-path-pattern</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-options.mark-read-limit</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-termination-strategy.max-attempts</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-termination-strategy.max-time-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-delay-strategy.time-between-attempts-in-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.retry-delay-strategy.max-delay-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Long</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.read-timeout-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">set the readTimeoutMillis both in client builder and to micronaut client config.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.connection-timeout-millis</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.max-async-threads</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Integer</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.disable-data-buffering-on-upload</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.Boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.failure-rate-threshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.slow-call-rate-threshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.wait-duration-in-open-state</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.permitted-number-of-calls-in-half-open-state</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.minimum-number-of-calls</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.sliding-window-size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.slow-call-duration-threshold</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.writable-stack-trace-enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.record-http-statuses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.Set</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.record-exceptions</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.util.List</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.record-processing-failures</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.circuit-breaker.number-of-recorded-history-responses</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientHttp2ClientConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientHttp2ClientConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 14. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientHttp2ClientConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientHttp2ClientConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.ping-interval-read</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.ping-interval-write</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.ping-interval-idle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientConnectionPoolConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientConnectionPoolConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 15. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientConnectionPoolConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientConnectionPoolConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-pending-acquires</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.acquire-timeout</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-pending-connections</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-concurrent-requests-per-http2-connection</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-concurrent-http1-connections</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.max-concurrent-http2-connections</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.connection-locality</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.ConnectionLocality.html">HttpClientConfiguration$ConnectionPoolConfiguration$ConnectionLocality</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.pool.version</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.PoolVersion.html">HttpClientConfiguration$ConnectionPoolConfiguration$PoolVersion</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 16. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 17. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.enabled</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
@@ -1107,12 +1337,17 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl-configuration</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/ssl/SslConfiguration.html">SslConfiguration</a></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientConnectionPoolConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientConnectionPoolConfiguration">&#128279;</a>
+<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientConnectionPoolConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientConnectionPoolConfiguration</a></caption>
+<caption class="title">Table 18. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1127,257 +1362,22 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-pending-acquires</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.acquire-timeout</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-pending-connections</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-concurrent-requests-per-http2-connection</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-concurrent-http1-connections</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.max-concurrent-http2-connections</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.connection-locality</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.ConnectionLocality.html">HttpClientConfiguration$ConnectionPoolConfiguration$ConnectionLocality</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.pool.version</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="../api/io/micronaut/http/client/HttpClientConfiguration.ConnectionPoolConfiguration.PoolVersion.html">HttpClientConfiguration$ConnectionPoolConfiguration$PoolVersion</a></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.path</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.path</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.password</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.type</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.trust-store.provider</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientHttp2ClientConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientHttp2ClientConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientHttp2ClientConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientHttp2ClientConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.ping-interval-read</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.ping-interval-write</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ws.compression.ping-interval-idle</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration" href="#io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Configuration Properties for <a href="../api/io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html">OracleCloudMetadataConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.metadata-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.instance-document-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.vnic-url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Default value: "http://169.254.169.254/opc/v1/vnics/" or "http://169.254.169.254/opc/v2/vnics/", depending on the value of {@link #v2Enabled}.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.v1-enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>micronaut.application.oraclecloud.metadata.v2-enabled</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultTrustStoreConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.trust-store.provider</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ssl.key-store.provider</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.provider</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
@@ -1448,9 +1448,9 @@
 </tbody>
 </table>
 <div style="page-break-after: always;"></div>
-<a id="io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration" href="#io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration">&#128279;</a>
+<a id="io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientHttp2ClientConfiguration" href="#io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientHttp2ClientConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.OracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration.html">OracleCloudClientConfigurationProperties$OracleCloudClientSslClientConfiguration$DefaultKeyStoreConfiguration</a></caption>
+<caption class="title">Table 20. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientHttp2ClientConfiguration.html">ServiceOracleCloudClientConfigurationProperties$ServiceOracleCloudClientHttp2ClientConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1465,23 +1465,23 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.path</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.password</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.ping-interval-read</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.ping-interval-write</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.client.ssl.key-store.provider</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">java.lang.String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.clients.*.ws.compression.ping-interval-idle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">java.time.Duration</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -1490,33 +1490,9 @@
 </div>
 <div class="sect2">
 <h3 id="_micronaut_oraclecloud_httpclient_netty_config_properties">Micronaut Oraclecloud Httpclient Netty Config Properties</h3>
-<a id="io.micronaut.oraclecloud.httpclient.netty.OciNettyConfiguration" href="#io.micronaut.oraclecloud.httpclient.netty.OciNettyConfiguration">&#128279;</a>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/httpclient/netty/OciNettyConfiguration.html">OciNettyConfiguration</a></caption>
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Property</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.netty.legacy-netty-client</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Use the legacy implementation of the netty client.</p></td>
-</tr>
-</tbody>
-</table>
-<div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.serde.OciSerializationConfiguration" href="#io.micronaut.oraclecloud.serde.OciSerializationConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html">OciSerializationConfiguration</a></caption>
+<caption class="title">Table 21. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerializationConfiguration.html">OciSerializationConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1545,7 +1521,7 @@
 <div style="page-break-after: always;"></div>
 <a id="io.micronaut.oraclecloud.serde.OciSerdeConfiguration" href="#io.micronaut.oraclecloud.serde.OciSerdeConfiguration">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html">OciSerdeConfiguration</a></caption>
+<caption class="title">Table 22. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/serde/OciSerdeConfiguration.html">OciSerdeConfiguration</a></caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1598,6 +1574,30 @@
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.serde.write-binary-as-array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div style="page-break-after: always;"></div>
+<a id="io.micronaut.oraclecloud.httpclient.netty.OciNettyConfiguration" href="#io.micronaut.oraclecloud.httpclient.netty.OciNettyConfiguration">&#128279;</a>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 23. Configuration Properties for <a href="../api/io/micronaut/oraclecloud/httpclient/netty/OciNettyConfiguration.html">OciNettyConfiguration</a></caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.netty.legacy-netty-client</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use the legacy implementation of the netty client.</p></td>
 </tr>
 </tbody>
 </table>
