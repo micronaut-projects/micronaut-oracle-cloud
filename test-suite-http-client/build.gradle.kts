@@ -23,6 +23,7 @@ dependencies {
         projects.micronautOraclecloudBmcLoggingingestion,
         projects.micronautOraclecloudBmcLoggingsearch,
         projects.micronautOraclecloudBmcStreaming,
+        projects.micronautOraclecloudBmcFunctions,
         projects.micronautOraclecloudBmcEncryption
     ).forEach { implementation(it) }
 
