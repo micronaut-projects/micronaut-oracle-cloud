@@ -278,6 +278,13 @@ final class MicronautHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        for (RequestInterceptor interceptor : client.requestInterceptors) {
+            interceptor.intercept(this);
+        }
+        return execute0();
+    }
+
+    private CompletionStage<HttpResponse> execute0() {
         // jersey client buffers even when BUFFER_REQUEST is off, if the content length is not explicitly set.
         if (byteBody != null && !(byteBody instanceof AvailableByteBody) && (client.buffered || byteBody.expectedLength().isEmpty()) && !expectContinue) {
 
@@ -285,12 +292,8 @@ final class MicronautHttpRequest implements HttpRequest {
             return byteBody.buffer()
                 .thenCompose(v -> {
                     this.byteBody = v;
-                    return execute();
+                    return execute0();
                 });
-        }
-
-        for (RequestInterceptor interceptor : client.requestInterceptors) {
-            interceptor.intercept(this);
         }
 
         finalizeRequest();

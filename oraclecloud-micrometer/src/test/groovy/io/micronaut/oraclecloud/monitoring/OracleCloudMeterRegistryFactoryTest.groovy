@@ -5,6 +5,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.context.env.Environment
+import io.micronaut.context.event.ShutdownEvent
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistry
@@ -107,6 +108,45 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         OracleCloudConfig oracleCloudConfig = context.getBean(OracleCloudConfig)
         oracleCloudConfig.enabled()
 
+        cleanup:
+        context.close()
+    }
+
+    def "test shutdown oracle cloud metrics registry"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.enabled"        : "true",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        context.containsBean(OracleCloudMeterRegistry)
+        OracleCloudMeterRegistryFactory oracleCloudMeterRegistryFactory = context.getBean(OracleCloudMeterRegistryFactory)
+        OracleCloudMeterRegistry oracleCloudMeterRegistry = context.getBean(OracleCloudMeterRegistry)
+        !oracleCloudMeterRegistry.isClosed()
+        oracleCloudMeterRegistryFactory.onShutdown(new ShutdownEvent(context))
+        oracleCloudMeterRegistry.isClosed()
+        cleanup:
+        context.close()
+    }
+
+    def "test shutdown oracle cloud raw metrics registry"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.enabled"        : "false",
+                "micronaut.metrics.export.oraclecloud.raw.enabled"    : "true",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        context.containsBean(OracleCloudRawMeterRegistry)
+        OracleCloudMeterRegistryFactory oracleCloudMeterRegistryFactory = context.getBean(OracleCloudMeterRegistryFactory)
+        OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry = context.getBean(OracleCloudRawMeterRegistry)
+        !oracleCloudRawMeterRegistry.isClosed()
+        oracleCloudMeterRegistryFactory.onShutdown(new ShutdownEvent(context))
+        oracleCloudRawMeterRegistry.isClosed()
         cleanup:
         context.close()
     }

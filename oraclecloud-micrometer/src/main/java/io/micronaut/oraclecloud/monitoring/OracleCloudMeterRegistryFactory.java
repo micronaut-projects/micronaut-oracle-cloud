@@ -16,17 +16,21 @@
 package io.micronaut.oraclecloud.monitoring;
 
 import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micronaut.configuration.metrics.micrometer.ExportConfigurationProperties;
 import io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.event.ShutdownEvent;
+import io.micronaut.core.annotation.Order;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudConfig;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudRawMeterRegistry;
 import io.micronaut.runtime.ApplicationConfiguration;
+import io.micronaut.runtime.event.annotation.EventListener;
 import jakarta.inject.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +54,8 @@ public class OracleCloudMeterRegistryFactory {
     public static final String ORACLECLOUD_METRICS_ENABLED = ORACLECLOUD_METRICS_CONFIG + ".enabled";
     public static final String ORACLECLOUD_RAW_METRICS_ENABLED = ORACLECLOUD_METRICS_CONFIG + ".raw.enabled";
 
+    public static final int SHUTDOWN_ORDER = -100;
+    private MeterRegistry meterRegistry;
     private final TenancyIdProvider tenancyIdProvider;
     private final ApplicationConfiguration applicationConfiguration;
 
@@ -105,7 +111,8 @@ public class OracleCloudMeterRegistryFactory {
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.TRUE, defaultValue = StringUtils.FALSE)
     OracleCloudMeterRegistry oracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig,
                                                       Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        return new OracleCloudMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+        meterRegistry =  new OracleCloudMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+        return (OracleCloudMeterRegistry) meterRegistry;
     }
 
     /**
@@ -113,7 +120,6 @@ public class OracleCloudMeterRegistryFactory {
      * the oraclecloudmonitoring is enabled and raw metrics enabled.
      * Will be false by default when this configuration is included in project.
      *
-     * @param httpClientRegistry the http client registry
      * @param oracleCloudConfig the OracleCloudConfig configuration
      * @param monitoringIngestionClientProvider  the monitoring ingestion client provider
      * @return the registry
@@ -123,6 +129,23 @@ public class OracleCloudMeterRegistryFactory {
     @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_RAW_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
     OracleCloudRawMeterRegistry oracleCloudRawMeterRegistry(OracleCloudConfig oracleCloudConfig, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider) {
-        return new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+        meterRegistry = new OracleCloudRawMeterRegistry(oracleCloudConfig, Clock.SYSTEM, monitoringIngestionClientProvider);
+        return (OracleCloudRawMeterRegistry) meterRegistry;
     }
+
+    /**
+     * Shutdown the meter registry if it wasn't already shutdown.
+     * @param event The shutdown event.
+     */
+    @EventListener
+    @Order(SHUTDOWN_ORDER)
+    void onShutdown(ShutdownEvent event) {
+        if (meterRegistry != null && !meterRegistry.isClosed()) {
+            LOG.info("Shutting down micrometer meter registry and flushing metrics buffer.");
+            meterRegistry.close();
+            meterRegistry = null;
+            LOG.info("Micrometer meter registry shutdown complete.");
+        }
+    }
+
 }

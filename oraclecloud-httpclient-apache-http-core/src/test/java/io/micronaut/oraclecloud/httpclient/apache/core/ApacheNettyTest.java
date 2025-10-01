@@ -106,6 +106,12 @@ public class ApacheNettyTest extends NettyTest {
         super.fullSetupConnectionDiesMidError();
     }
 
+    @Override
+    @Disabled // not implemented
+    public void functionsClientTest() throws CertificateException {
+        super.functionsClientTest();
+    }
+
     @Test
     public void location() throws Exception {
         netty.handleOneRequest((ctx, request) -> {

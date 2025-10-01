@@ -215,7 +215,8 @@ public class OracleCloudMeterRegistry extends AbstractOracleCloudMeterRegistry {
                 .name(getMetricName(id, suffix))
                 .namespace(oracleCloudConfig.namespace())
                 .resourceGroup(oracleCloudConfig.resourceGroup())
-                .metadata(oracleCloudConfig.description() && id.getDescription() != null
+                .metadata(oracleCloudConfig.description()
+                    && id.getDescription() != null  && !id.getDescription().isBlank()
                         ? Collections.singletonMap("description", id.getDescription()) : null)
                 .datapoints(Collections.singletonList(
                         Datapoint.builder()
