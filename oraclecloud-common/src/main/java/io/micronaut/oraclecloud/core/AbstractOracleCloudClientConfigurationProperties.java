@@ -102,7 +102,7 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     public void setReadTimeout(@Nullable Duration readTimeout) {
         super.setReadTimeout(readTimeout);
         if (readTimeout != null) {
-            clientBuilder.readTimeoutMillis(readTimeout.toMillisPart());
+            clientBuilder.readTimeoutMillis((int) readTimeout.toMillis());
         }
     }
 
