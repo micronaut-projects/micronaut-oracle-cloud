@@ -458,7 +458,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                         ParameterizedTypeName.get(
                             ClassName.get("java.util", "List"),
                             ClassName.get("com.oracle.bmc.http", "ClientConfigurator")
-                        ), "clientConfigurator"
+                        ), "clientConfiguratorList"
                     )
                                 .addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http.signing", "RequestSignerFactory"), "requestSignerFactory")
@@ -466,7 +466,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceIdClientConfigurator, clientConfigurator, requestSignerFactory)")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceIdClientConfigurator, clientConfiguratorList, requestSignerFactory)")
                         .addStatement("builder = super.getBuilder()")
                 .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
