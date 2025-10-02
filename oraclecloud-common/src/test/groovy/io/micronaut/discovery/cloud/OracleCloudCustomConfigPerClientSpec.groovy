@@ -45,6 +45,7 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
                 [
                         "spec.name": "OracleCloudCustomConfigPerClientSpec",
                         "oci.clients.identity.retry-delay-strategy.time-between-attempts-in-millis": "100",
+                        "oci.clients.account.read-timeout": "PT2M",
                         'micronaut.server.port': -1
                 ], Environment.ORACLE_CLOUD) as EmbeddedServer
 
@@ -57,6 +58,13 @@ class OracleCloudCustomConfigPerClientSpec extends Specification {
         then:
         delayStrategy.getClass() == ExponentialBackoffDelayStrategy.class
         delayStrategy.properties.get("maxDelayInMillis") == 100
+
+        when:
+        def accountConfig = ctx.getBean(ClientConfiguration, Qualifiers.byName("account"))
+
+        then:
+        accountConfig
+        accountConfig.readTimeoutMillis == 120000
 
         cleanup:
         ctx.close()
