@@ -19,18 +19,22 @@ import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
-import io.micronaut.buffer.netty.NettyByteBufferFactory;
+import io.micronaut.buffer.netty.NettyReadBufferFactory;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.NextMajorVersion;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.io.buffer.ByteArrayBufferFactory;
+import io.micronaut.core.io.buffer.ReadBufferFactory;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.body.AvailableByteBody;
 import io.micronaut.http.body.ByteBody;
+import io.micronaut.http.body.ByteBodyFactory;
 import io.micronaut.http.body.CloseableByteBody;
+import io.micronaut.http.body.stream.AvailableByteArrayBody;
 import io.micronaut.http.body.stream.InputStreamByteBody;
-import io.micronaut.http.netty.body.AvailableNettyByteBody;
-import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
 import reactor.core.publisher.Mono;
@@ -38,7 +42,6 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.CharBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,9 +58,12 @@ import java.util.concurrent.Executor;
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
 @Internal
+@NextMajorVersion("Get rid of micronaut-http-client dependency and replace it with micronaut-http-client-core")
 final class MicronautHttpRequest implements HttpRequest {
 
     private static final long UNKNOWN_CONTENT_LENGTH = -1;
+
+    private static final ReadBufferFactory READ_BUFFER_FACTORY;
 
     private final NettyHttpClient client;
 
@@ -75,6 +81,16 @@ final class MicronautHttpRequest implements HttpRequest {
     private Object returningBody;
     @Nullable
     private CloseableByteBody byteBody;
+
+    static {
+        ReadBufferFactory rbf;
+        try {
+            rbf = NettyReadBufferFactory.of(ByteBufAllocator.DEFAULT);
+        } catch (LinkageError e) {
+            rbf = ReadBufferFactory.getJdkFactory();
+        }
+        READ_BUFFER_FACTORY = rbf;
+    }
 
     public MicronautHttpRequest(NettyHttpClient nettyHttpClient, Method method) {
         client = nettyHttpClient;
@@ -137,13 +153,13 @@ final class MicronautHttpRequest implements HttpRequest {
             byteBody.close();
         }
 
-        if (body instanceof String) {
-            byteBody = new AvailableNettyByteBody(ByteBufUtil.encodeString(client.alloc(), CharBuffer.wrap((CharSequence) body), StandardCharsets.UTF_8));
+        if (body instanceof String s) {
+            byteBody = AvailableByteArrayBody.create(READ_BUFFER_FACTORY.copyOf(s, StandardCharsets.UTF_8));
             returningBody = body;
         } else if (body instanceof InputStream) {
             body((InputStream) body, UNKNOWN_CONTENT_LENGTH);
         } else if (body == null) {
-            byteBody = AvailableNettyByteBody.empty();
+            byteBody = AvailableByteArrayBody.create(READ_BUFFER_FACTORY.createEmpty());
             returningBody = "";
         } else {
             // todo: would be better to write directly to ByteBuf here, but RequestSignerImpl does not yet support
@@ -154,7 +170,7 @@ final class MicronautHttpRequest implements HttpRequest {
             } catch (IOException e) {
                 throw new IllegalArgumentException("Unable to process JSON body", e);
             }
-            byteBody = new AvailableNettyByteBody(ByteBufUtil.encodeString(client.alloc(), CharBuffer.wrap(json), StandardCharsets.UTF_8));
+            byteBody = AvailableByteArrayBody.create(READ_BUFFER_FACTORY.copyOf(json, StandardCharsets.UTF_8));
             returningBody = json;
         }
         return this;
@@ -166,7 +182,7 @@ final class MicronautHttpRequest implements HttpRequest {
             body,
             contentLength == UNKNOWN_CONTENT_LENGTH ? OptionalLong.empty() : OptionalLong.of(contentLength),
             client.blockingIoExecutor,
-            NettyByteBufferFactory.DEFAULT
+            ByteBodyFactory.createDefault(ByteArrayBufferFactory.INSTANCE)
         );
         returningBody = body;
         return this;
