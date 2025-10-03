@@ -18,7 +18,7 @@ package io.micronaut.oraclecloud.certificates.background;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
+import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
 import io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateService;
 import io.micronaut.scheduling.annotation.Scheduled;
 import jakarta.inject.Singleton;
@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
  * Background task to automatically refresh the certificates from an Oracle Cloud Certificate server on a configurable interval.
  */
 @Singleton
-@Requires(property = OracleCloudCertificationsConfiguration.PREFIX + ".enabled", value = "true")
 @Context
 @Internal
+@Requires(bean = OracleCloudCertificateProperties.class)
 public final class OracleCloudCertificationRefresherTask {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationRefresherTask.class);
@@ -45,7 +45,6 @@ public final class OracleCloudCertificationRefresherTask {
      */
     public OracleCloudCertificationRefresherTask(OracleCloudCertificateService oracleCloudCertificateService) {
         this.oracleCloudCertificateService = oracleCloudCertificateService;
-        oracleCloudCertificateService.refreshCertificate();
     }
 
     /**
@@ -57,12 +56,12 @@ public final class OracleCloudCertificationRefresherTask {
             initialDelay = "${oci.certificates.refresh.delay:24h}")
     public void backgroundRenewal() {
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Running background/scheduled renewal process");
+            LOG.debug("Running background/scheduled certificate renewal process");
         }
         try {
             oracleCloudCertificateService.refreshCertificate();
         } catch (Exception e) {
-            LOG.error("There was error during refreshing certificate process", e);
+            LOG.error("There was error during refreshing certificate process: {}", e.getMessage(), e);
         }
     }
 }

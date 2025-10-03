@@ -7,10 +7,13 @@ dependencies {
     implementation mn.micronaut.http.server.netty
     implementation mn.micronaut.inject.java
     implementation mn.micronaut.retry
-    implementation(libs.bcpkixjdk15to18)
-    compileOnly libs.netty.incubator.codec.http3
+    implementation mnReactor.micronaut.reactor
+    compileOnly(mn.micronaut.http.client)
 
+    testImplementation(mnSecurity.micronaut.security)
+    testImplementation(mn.micronaut.http.client)
+    testImplementation projects.micronautOraclecloudBmcObjectstorage
     testImplementation mnTest.micronaut.test.spock
-    testImplementation mn.micronaut.http.client
     testImplementation mn.micronaut.inject.groovy
 }
+

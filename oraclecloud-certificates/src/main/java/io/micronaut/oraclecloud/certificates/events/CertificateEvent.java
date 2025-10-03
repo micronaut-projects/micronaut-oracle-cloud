@@ -15,6 +15,7 @@
  */
 package io.micronaut.oraclecloud.certificates.events;
 
+import com.oracle.bmc.certificates.model.CertificateBundle;
 import io.micronaut.core.annotation.NonNull;
 
 import java.security.PrivateKey;
@@ -24,10 +25,15 @@ import java.util.List;
 /**
  * Event used to alert when a new Oracle Cloud certificate is ready for use.
  *
- * @param privateKey           private key
- * @param certificate          X509 certificate file
- * @param intermediate         X509 certificate intermediate files
+ * @param privateKey   private key
+ * @param certificate  X509 certificate file
+ * @param intermediate X509 certificate intermediate files
+ * @param bundle       The bundle where the certificate originates from
  */
-public record CertificateEvent(@NonNull PrivateKey privateKey, @NonNull X509Certificate certificate, @NonNull List<X509Certificate> intermediate) {
-
+public record CertificateEvent(
+    @NonNull PrivateKey privateKey,
+    @NonNull X509Certificate certificate,
+    @NonNull List<X509Certificate> intermediate,
+    @NonNull
+    CertificateBundle bundle) {
 }

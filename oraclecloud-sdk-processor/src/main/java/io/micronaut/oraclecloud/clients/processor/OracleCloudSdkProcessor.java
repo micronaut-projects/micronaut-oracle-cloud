@@ -454,14 +454,19 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "serviceIdClientConfigurator")
                 .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 
-                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http", "ClientConfigurator"), "clientConfigurator")
+                .addParameter(ParameterSpec.builder(
+                        ParameterizedTypeName.get(
+                            ClassName.get("java.util", "List"),
+                            ClassName.get("com.oracle.bmc.http", "ClientConfigurator")
+                        ), "clientConfiguratorList"
+                    )
                                 .addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.http.signing", "RequestSignerFactory"), "requestSignerFactory")
                                 .addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc.auth", "RegionProvider"), "regionProvider")
                                 .addAnnotation(Nullable.class).build())
                 .addCode(CodeBlock.builder()
-                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, clientConfigurator, serviceIdClientConfigurator, requestSignerFactory)")
+                        .addStatement("super(" + simpleName + ".builder(), clientConfiguration, specificClientConfiguration, serviceIdClientConfigurator, clientConfiguratorList, requestSignerFactory)")
                         .addStatement("builder = super.getBuilder()")
                 .addStatement("this.regionProvider = regionProvider").build());
         builder.addModifiers(Modifier.PUBLIC, Modifier.FINAL);
