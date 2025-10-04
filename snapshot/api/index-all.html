@@ -75,7 +75,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Abstract base factory for SDK objects.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.ClientConfigurator,com.oracle.bmc.http.signing.RequestSignerFactory)" class="member-name-link">AbstractSdkClientFactory(B, ClientConfiguration, ClientConfiguration, ClientConfigurator, ClientConfigurator, RequestSignerFactory)</a> - Constructor for class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
+<dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#%3Cinit%3E(B,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.ClientConfiguration,com.oracle.bmc.http.ClientConfigurator,java.util.List,com.oracle.bmc.http.signing.RequestSignerFactory)" class="member-name-link">AbstractSdkClientFactory(B, ClientConfiguration, ClientConfiguration, ClientConfigurator, List&lt;ClientConfigurator&gt;, RequestSignerFactory)</a> - Constructor for class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
@@ -120,8 +120,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Application name used as a default dimension for <code>MetricDataDetails</code>.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#applicationProtocolNegotiator()" class="member-name-link">applicationProtocolNegotiator()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html#archives()" class="member-name-link">archives()</a> - Method in class io.micronaut.oraclecloud.atp.wallet.<a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html" title="class in io.micronaut.oraclecloud.atp.wallet">Wallets</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/clients/SdkClients.Kind.html#ASYNC" class="member-name-link">ASYNC</a> - Enum constant in enum class io.micronaut.oraclecloud.clients.<a href="io/micronaut/oraclecloud/clients/SdkClients.Kind.html" title="enum class in io.micronaut.oraclecloud.clients">SdkClients.Kind</a></dt>
@@ -163,10 +161,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html#beforeRequest(com.oracle.bmc.http.client.HttpRequest)" class="member-name-link">beforeRequest(HttpRequest)</a> - Method in class io.micronaut.oraclecloud.monitoring.sdk.<a href="io/micronaut/oraclecloud/monitoring/sdk/SdkMetricsNettyClientFilter.html" title="class in io.micronaut.oraclecloud.monitoring.sdk">SdkMetricsNettyClientFilter</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html#build()" class="member-name-link">build()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html" title="class in io.micronaut.oraclecloud.certificates.ssl">OracleCloudSSLContextBuilder</a></dt>
-<dd>
-<div class="block">Generates an SslContext that has an already expired self signed cert that should be replaced almost immediately by the Oracle Cloud Certificate server once it is downloaded.</div>
-</dd>
 <dt><a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html#build(B,com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider)" class="member-name-link">build(B, AbstractAuthenticationDetailsProvider)</a> - Method in class io.micronaut.oraclecloud.core.sdk.<a href="io/micronaut/oraclecloud/core/sdk/AbstractSdkClientFactory.html" title="class in io.micronaut.oraclecloud.core.sdk">AbstractSdkClientFactory</a></dt>
 <dd>
 <div class="block">Builds the client based on its builder to make sure user can configure
@@ -175,6 +169,10 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html#builder()" class="member-name-link">builder()</a> - Method in class io.micronaut.oraclecloud.atp.wallet.<a href="io/micronaut/oraclecloud/atp/wallet/Wallets.html" title="class in io.micronaut.oraclecloud.atp.wallet">Wallets</a></dt>
 <dd>
 <div class="block">Create an auto login io.micronaut.oraclecloud.adb.wallet <code>Wallet.Builder</code></div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#bundle()" class="member-name-link">bundle()</a> - Method in record class io.micronaut.oraclecloud.certificates.events.<a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#param-bundle"><code>bundle</code></a> record component.</div>
 </dd>
 </dl>
 <h2 class="title" id="I:C">C</h2>
@@ -189,24 +187,54 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#param-certificate"><code>certificate</code></a> record component.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#CERTIFICATE_ID" class="member-name-link">CERTIFICATE_ID</a> - Static variable in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateClientContextConfigurer.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.config">CertificateClientContextConfigurer</a> - Class in <a href="io/micronaut/oraclecloud/certificates/config/package-summary.html">io.micronaut.oraclecloud.certificates.config</a></dt>
+<dd>
+<div class="block">ApplicationContext configurer for the OCI Certificates client.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateClientContextConfigurer.html#%3Cinit%3E()" class="member-name-link">CertificateClientContextConfigurer()</a> - Constructor for class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateClientContextConfigurer.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateClientContextConfigurer</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a> - Record Class in <a href="io/micronaut/oraclecloud/certificates/events/package-summary.html">io.micronaut.oraclecloud.certificates.events</a></dt>
 <dd>
 <div class="block">Event used to alert when a new Oracle Cloud certificate is ready for use.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#%3Cinit%3E(java.security.PrivateKey,java.security.cert.X509Certificate,java.util.List)" class="member-name-link">CertificateEvent(PrivateKey, X509Certificate, List&lt;X509Certificate&gt;)</a> - Constructor for record class io.micronaut.oraclecloud.certificates.events.<a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a></dt>
+<dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#%3Cinit%3E(java.security.PrivateKey,java.security.cert.X509Certificate,java.util.List,com.oracle.bmc.certificates.model.CertificateBundle)" class="member-name-link">CertificateEvent(PrivateKey, X509Certificate, List&lt;X509Certificate&gt;, CertificateBundle)</a> - Constructor for record class io.micronaut.oraclecloud.certificates.events.<a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a></dt>
 <dd>
 <div class="block">Creates an instance of a <code>CertificateEvent</code> record class.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#certificateId()" class="member-name-link">certificateId()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#param-certificateId"><code>certificateId</code></a> record component.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html#certificateId()" class="member-name-link">certificateId()</a> - Method in interface io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#certificateId()" class="member-name-link">certificateId()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#param-certificateId"><code>certificateId</code></a> record component.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a> - Record Class in <a href="io/micronaut/oraclecloud/certificates/config/package-summary.html">io.micronaut.oraclecloud.certificates.config</a></dt>
+<dd>
+<div class="block">Configuration for certificate refresh frequency.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#%3Cinit%3E(java.time.Duration,java.time.Duration,io.micronaut.oraclecloud.certificates.config.CertificateRefreshConfiguration.RetryConfiguration)" class="member-name-link">CertificateRefreshConfiguration(Duration, Duration, CertificateRefreshConfiguration.RetryConfiguration)</a> - Constructor for record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Creates an instance of a <code>CertificateRefreshConfiguration</code> record class.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#certificateVersionName()" class="member-name-link">certificateVersionName()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#param-certificateVersionName"><code>certificateVersionName</code></a> record component.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html#certificateVersionName()" class="member-name-link">certificateVersionName()</a> - Method in interface io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#certificateVersionName()" class="member-name-link">certificateVersionName()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#param-certificateVersionName"><code>certificateVersionName</code></a> record component.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#cipherSuites()" class="member-name-link">cipherSuites()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html#CLASS_AND_METHOD_KEY_NAME" class="member-name-link">CLASS_AND_METHOD_KEY_NAME</a> - Static variable in class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/NettyClientProperties.html" title="class in io.micronaut.oraclecloud.httpclient.netty">NettyClientProperties</a></dt>
 <dd>
 <div class="block">The Client attribute that stores class name with method of the client that invoked request.</div>
@@ -248,6 +276,11 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Produces a <code>ClientConfiguration.ClientConfigurationBuilder</code> bean for the given properties.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateClientContextConfigurer.html#configure(io.micronaut.context.ApplicationContextBuilder)" class="member-name-link">configure(ApplicationContextBuilder)</a> - Method in class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateClientContextConfigurer.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateClientContextConfigurer</a></dt>
+<dd>
+<div class="block">Configure the context for the OCI Certificates client by enabling the
+ per-service client configuration for the <code>certificates</code> service.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/atp/wallet/datasource/CanConfigureOracleDataSource.html#configure(oracle.jdbc.datasource.OracleCommonDataSource)" class="member-name-link">configure(OracleCommonDataSource)</a> - Method in interface io.micronaut.oraclecloud.atp.wallet.datasource.<a href="io/micronaut/oraclecloud/atp/wallet/datasource/CanConfigureOracleDataSource.html" title="interface in io.micronaut.oraclecloud.atp.wallet.datasource">CanConfigureOracleDataSource</a></dt>
 <dd>
 <div class="block">Convenience method to configure an <code>OracleCommonDataSource</code> sub-type.</div>
@@ -262,6 +295,10 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/function/http/FnMultiValueMap.html#conversionService" class="member-name-link">conversionService</a> - Variable in class io.micronaut.oraclecloud.function.http.<a href="io/micronaut/oraclecloud/function/http/FnMultiValueMap.html" title="class in io.micronaut.oraclecloud.function.http">FnMultiValueMap</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ServiceIdClientConfigurator.html#customizeClient(com.oracle.bmc.http.client.HttpClientBuilder)" class="member-name-link">customizeClient(HttpClientBuilder)</a> - Method in class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ServiceIdClientConfigurator.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ServiceIdClientConfigurator</a></dt>
+<dd>
+<div class="block">Sets the service identifier property on the OCI <code>HttpClientBuilder</code>.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:D">D</h2>
 <dl class="index">
@@ -295,12 +332,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration.html#%3Cinit%3E()" class="member-name-link">DefaultTrustStoreConfiguration()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration.html" title="class in io.micronaut.oraclecloud.core">ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#delay()" class="member-name-link">delay()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#param-delay"><code>delay</code></a> record component.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/core/AbstractOracleCloudClientConfigurationProperties.DelayStrategyConfig.html#%3Cinit%3E()" class="member-name-link">DelayStrategyConfig()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/AbstractOracleCloudClientConfigurationProperties.DelayStrategyConfig.html" title="class in io.micronaut.oraclecloud.core">AbstractOracleCloudClientConfigurationProperties.DelayStrategyConfig</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a> - Class in <a href="io/micronaut/oraclecloud/certificates/ssl/package-summary.html">io.micronaut.oraclecloud.certificates.ssl</a></dt>
-<dd>
-<div class="block">Allows for netty SslContext to be delegated to another as well as switched out at runtime.</div>
-</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudConfig.html#description()" class="member-name-link">description()</a> - Method in interface io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudConfig.html" title="interface in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudConfig</a></dt>
 <dd>
 <div class="block">Flag whether meter description should be sent to monitoring service.</div>
@@ -322,8 +359,15 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/function/http/test/EmbeddedServerFactory.html#%3Cinit%3E()" class="member-name-link">EmbeddedServerFactory()</a> - Constructor for class io.micronaut.oraclecloud.function.http.test.<a href="io/micronaut/oraclecloud/function/http/test/EmbeddedServerFactory.html" title="class in io.micronaut.oraclecloud.function.http.test">EmbeddedServerFactory</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#enabled()" class="member-name-link">enabled()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#param-enabled"><code>enabled</code></a> record component.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html#enabled()" class="member-name-link">enabled()</a> - Method in interface io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#enabled()" class="member-name-link">enabled()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#param-enabled"><code>enabled</code></a> record component.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#enabled()" class="member-name-link">enabled()</a> - Method in record class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a></dt>
@@ -336,11 +380,23 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/oke/kubernetes/client/OkeKubernetesClientConfig.html#ENABLED" class="member-name-link">ENABLED</a> - Static variable in record class io.micronaut.oraclecloud.oke.kubernetes.client.<a href="io/micronaut/oraclecloud/oke/kubernetes/client/OkeKubernetesClientConfig.html" title="class in io.micronaut.oraclecloud.oke.kubernetes.client">OkeKubernetesClientConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#ENABLED_PROPERTY" class="member-name-link">ENABLED_PROPERTY</a> - Static variable in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/function/OciFunction.html#enableSharedJackson()" class="member-name-link">enableSharedJackson()</a> - Method in class io.micronaut.oraclecloud.function.<a href="io/micronaut/oraclecloud/function/OciFunction.html" title="class in io.micronaut.oraclecloud.function">OciFunction</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/oke/kubernetes/client/OkeKubernetesClientConfig.html#endpointType()" class="member-name-link">endpointType()</a> - Method in record class io.micronaut.oraclecloud.oke.kubernetes.client.<a href="io/micronaut/oraclecloud/oke/kubernetes/client/OkeKubernetesClientConfig.html" title="class in io.micronaut.oraclecloud.oke.kubernetes.client">OkeKubernetesClientConfig</a></dt>
 <dd>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/oke/kubernetes/client/OkeKubernetesClientConfig.html#param-endpointType"><code>endpointType</code></a> record component.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Indicates whether some other object is "equal to" this one.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.micronaut.oraclecloud.certificates.events.<a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a></dt>
 <dd>
@@ -348,6 +404,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Indicates whether some other object is "equal to" this one.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#equals(java.lang.Object)" class="member-name-link">equals(Object)</a> - Method in record class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a></dt>
@@ -383,6 +440,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Default constructor.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#frequency()" class="member-name-link">frequency()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#param-frequency"><code>frequency</code></a> record component.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:G">G</h2>
 <dl class="index">
@@ -412,7 +473,11 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html#getCertificateEvent()" class="member-name-link">getCertificateEvent()</a> - Method in class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateService</a></dt>
 <dd>
-<div class="block">Returns the certificate event.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html#getCertificateEvents()" class="member-name-link">getCertificateEvents()</a> - Method in class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateService</a></dt>
+<dd>
+<div class="block">Retrieves a list of CertificateEvents for the configured Oracle Cloud certificates.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/AbstractOracleCloudClientConfigurationProperties.html#getCircuitBreakerBuilder()" class="member-name-link">getCircuitBreakerBuilder()</a> - Method in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/AbstractOracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">AbstractOracleCloudClientConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
@@ -512,6 +577,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataKeys.html#getName()" class="member-name-link">getName()</a> - Method in enum class io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataKeys.html" title="enum class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataKeys</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#getName()" class="member-name-link">getName()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#getName()" class="member-name-link">getName()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.html#getName()" class="member-name-link">getName()</a> - Method in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">ServiceOracleCloudClientConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/atp/jdbc/AutonomousDatabaseConfiguration.html#getOcid()" class="member-name-link">getOcid()</a> - Method in class io.micronaut.oraclecloud.atp.jdbc.<a href="io/micronaut/oraclecloud/atp/jdbc/AutonomousDatabaseConfiguration.html" title="class in io.micronaut.oraclecloud.atp.jdbc">AutonomousDatabaseConfiguration</a></dt>
@@ -571,8 +642,6 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#getSource()" class="member-name-link">getSource()</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html#getSslConfiguration()" class="member-name-link">getSslConfiguration()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html" title="class in io.micronaut.oraclecloud.certificates.ssl">OracleCloudSSLContextBuilder</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#getSubject()" class="member-name-link">getSubject()</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html#getSupportedAnnotationNames()" class="member-name-link">getSupportedAnnotationNames()</a> - Method in class io.micronaut.oraclecloud.sdk.processor.<a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html" title="class in io.micronaut.oraclecloud.sdk.processor">SdkImportVisitor</a></dt>
@@ -614,12 +683,21 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Main entry point for Gateway functions for Project.fn.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Returns a hash code value for this object.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns a hash code value for this object.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.micronaut.oraclecloud.certificates.events.<a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a></dt>
 <dd>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a hash code value for this object.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#hashCode()" class="member-name-link">hashCode()</a> - Method in record class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a></dt>
@@ -734,12 +812,16 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/package-summary.html">io.micronaut.oraclecloud.certificates</a> - package io.micronaut.oraclecloud.certificates</dt>
 <dd>
-<div class="block">Logging classes for integration with Oracle Cloud.</div>
+<div class="block">Integration with Oracle Cloud Certificates service.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/background/package-summary.html">io.micronaut.oraclecloud.certificates.background</a> - package io.micronaut.oraclecloud.certificates.background</dt>
 <dd>
 <div class="block">Background jobs used to integrate with Oracle Cloud Certificates.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/package-summary.html">io.micronaut.oraclecloud.certificates.config</a> - package io.micronaut.oraclecloud.certificates.config</dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/deprecated/package-summary.html">io.micronaut.oraclecloud.certificates.deprecated</a> - package io.micronaut.oraclecloud.certificates.deprecated</dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/events/package-summary.html">io.micronaut.oraclecloud.certificates.events</a> - package io.micronaut.oraclecloud.certificates.events</dt>
 <dd>
 <div class="block">Events used by Oracle Cloud Certificate tasks.</div>
@@ -747,10 +829,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/certificates/services/package-summary.html">io.micronaut.oraclecloud.certificates.services</a> - package io.micronaut.oraclecloud.certificates.services</dt>
 <dd>
 <div class="block">Service classes used to integrate with Oracle Cloud Certificates.</div>
-</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/package-summary.html">io.micronaut.oraclecloud.certificates.ssl</a> - package io.micronaut.oraclecloud.certificates.ssl</dt>
-<dd>
-<div class="block">Events used by Oracle Cloud Certificate tasks.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/clients/package-summary.html">io.micronaut.oraclecloud.clients</a> - package io.micronaut.oraclecloud.clients</dt>
 <dd>&nbsp;</dd>
@@ -804,14 +882,10 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html#isAttached(ch.qos.logback.core.Appender)" class="member-name-link">isAttached(Appender&lt;ILoggingEvent&gt;)</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudAppender.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudAppender</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#isClient()" class="member-name-link">isClient()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in class io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataConfiguration.html" title="class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataConfiguration</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
-<dd>
-<div class="block">If Oracle Cloud certificate background and setup process should be enabled.</div>
-</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in interface io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oraclecloud.core">InstancePrincipalConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#isEnabled()" class="member-name-link">isEnabled()</a> - Method in record class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a></dt>
@@ -888,6 +962,10 @@ loadScripts(document, 'script');</script>
 </dl>
 <h2 class="title" id="I:N">N</h2>
 <dl class="index">
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#name()" class="member-name-link">name()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#param-name"><code>name</code></a> record component.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMetricsNamingConvention.html#name(java.lang.String,io.micrometer.core.instrument.Meter.Type,java.lang.String)" class="member-name-link">name(String, Meter.Type, String)</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudMetricsNamingConvention.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudMetricsNamingConvention</a></dt>
 <dd>
 <div class="block">A valid name value starts with an alphabetical character and includes only alphanumeric characters, dots,
@@ -927,10 +1005,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#newCounter(io.micrometer.core.instrument.Meter.Id)" class="member-name-link">newCounter(Meter.Id)</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#newDistributionSummary(io.micrometer.core.instrument.Meter.Id,io.micrometer.core.instrument.distribution.DistributionStatisticConfig,double)" class="member-name-link">newDistributionSummary(Meter.Id, DistributionStatisticConfig, double)</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#newEngine(io.netty.buffer.ByteBufAllocator)" class="member-name-link">newEngine(ByteBufAllocator)</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#newEngine(io.netty.buffer.ByteBufAllocator,java.lang.String,int)" class="member-name-link">newEngine(ByteBufAllocator, String, int)</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html#newTimer(io.micrometer.core.instrument.Meter.Id,io.micrometer.core.instrument.distribution.DistributionStatisticConfig,io.micrometer.core.instrument.distribution.pause.PauseDetector)" class="member-name-link">newTimer(Meter.Id, DistributionStatisticConfig, PauseDetector)</a> - Method in class io.micronaut.oraclecloud.monitoring.micrometer.<a href="io/micronaut/oraclecloud/monitoring/micrometer/OracleCloudRawMeterRegistry.html" title="class in io.micronaut.oraclecloud.monitoring.micrometer">OracleCloudRawMeterRegistry</a></dt>
 <dd>&nbsp;</dd>
@@ -1028,6 +1102,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityFactory.html#%3Cinit%3E()" class="member-name-link">OkeWorkloadIdentityFactory()</a> - Constructor for class io.micronaut.oraclecloud.oke.workload.identity.<a href="io/micronaut/oraclecloud/oke/workload/identity/OkeWorkloadIdentityFactory.html" title="class in io.micronaut.oraclecloud.oke.workload.identity">OkeWorkloadIdentityFactory</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/deprecated/OracleCloudCertificateBeanCreatedEventListener.html#onCreated(io.micronaut.context.event.BeanCreatedEvent)" class="member-name-link">onCreated(BeanCreatedEvent&lt;ServerSslConfiguration&gt;)</a> - Method in class io.micronaut.oraclecloud.certificates.deprecated.<a href="io/micronaut/oraclecloud/certificates/deprecated/OracleCloudCertificateBeanCreatedEventListener.html" title="class in io.micronaut.oraclecloud.certificates.deprecated">OracleCloudCertificateBeanCreatedEventListener</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+<div class="block">Ensures a keyName is present on the created ServerSslConfiguration when using deprecated configuration.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/clients/reactor/AsyncHandlerSink.html#onError(Req,java.lang.Throwable)" class="member-name-link">onError(Req, Throwable)</a> - Method in class io.micronaut.oraclecloud.clients.reactor.<a href="io/micronaut/oraclecloud/clients/reactor/AsyncHandlerSink.html" title="class in io.micronaut.oraclecloud.clients.reactor">AsyncHandlerSink</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/clients/rxjava2/AsyncHandlerEmitter.html#onError(Req,java.lang.Throwable)" class="member-name-link">onError(Req, Throwable)</a> - Method in class io.micronaut.oraclecloud.clients.rxjava2.<a href="io/micronaut/oraclecloud/clients/rxjava2/AsyncHandlerEmitter.html" title="class in io.micronaut.oraclecloud.clients.rxjava2">AsyncHandlerEmitter</a></dt>
@@ -1064,11 +1143,41 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudAuthConfigurationProperties.html#%3Cinit%3E()" class="member-name-link">OracleCloudAuthConfigurationProperties()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudAuthConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudAuthConfigurationProperties</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/deprecated/OracleCloudCertificateBeanCreatedEventListener.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.deprecated">OracleCloudCertificateBeanCreatedEventListener</a> - Class in <a href="io/micronaut/oraclecloud/certificates/deprecated/package-summary.html">io.micronaut.oraclecloud.certificates.deprecated</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/deprecated/OracleCloudCertificateBeanCreatedEventListener.html#%3Cinit%3E()" class="member-name-link">OracleCloudCertificateBeanCreatedEventListener()</a> - Constructor for class io.micronaut.oraclecloud.certificates.deprecated.<a href="io/micronaut/oraclecloud/certificates/deprecated/OracleCloudCertificateBeanCreatedEventListener.html" title="class in io.micronaut.oraclecloud.certificates.deprecated">OracleCloudCertificateBeanCreatedEventListener</a></dt>
+<dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
+&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a> - Record Class in <a href="io/micronaut/oraclecloud/certificates/config/package-summary.html">io.micronaut.oraclecloud.certificates.config</a></dt>
+<dd>
+<div class="block">Configuration entry for an Oracle Cloud Infrastructure (OCI) certificate.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.Long,java.lang.String,boolean)" class="member-name-link">OracleCloudCertificateConfiguration(String, String, Long, String, boolean)</a> - Constructor for record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Creates an instance of a <code>OracleCloudCertificateConfiguration</code> record class.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateFetcher.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateFetcher</a> - Class in <a href="io/micronaut/oraclecloud/certificates/services/package-summary.html">io.micronaut.oraclecloud.certificates.services</a></dt>
+<dd>
+<div class="block">Fetches certificates and private keys from Oracle Cloud Infrastructure (OCI) Certificates service
+ and converts them into <a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events"><code>CertificateEvent</code></a> instances
+ consumable by Micronaut SSL infrastructure.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateFetcher.html#%3Cinit%3E(com.oracle.bmc.certificates.Certificates)" class="member-name-link">OracleCloudCertificateFetcher(Certificates)</a> - Constructor for class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateFetcher.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateFetcher</a></dt>
+<dd>
+<div class="block">Creates a new fetcher that uses the provided OCI Certificates client.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" class="type-name-link" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a> - Interface in <a href="io/micronaut/oraclecloud/certificates/config/package-summary.html">io.micronaut.oraclecloud.certificates.config</a></dt>
+<dd>
+<div class="block">Interface for configuration properties for certificates.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateService</a> - Class in <a href="io/micronaut/oraclecloud/certificates/services/package-summary.html">io.micronaut.oraclecloud.certificates.services</a></dt>
 <dd>
 <div class="block">Service to contact an Oracle Cloud Certificate service and setup a certificate on a given basis.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html#%3Cinit%3E(io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration,com.oracle.bmc.certificates.Certificates,io.micronaut.context.event.ApplicationEventPublisher)" class="member-name-link">OracleCloudCertificateService(OracleCloudCertificationsConfiguration, Certificates, ApplicationEventPublisher&lt;CertificateEvent&gt;)</a> - Constructor for class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateService</a></dt>
+<dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html#%3Cinit%3E(java.util.List,io.micronaut.context.event.ApplicationEventPublisher,io.micronaut.oraclecloud.certificates.services.OracleCloudCertificateFetcher)" class="member-name-link">OracleCloudCertificateService(List&lt;OracleCloudCertificateProperties&gt;, ApplicationEventPublisher&lt;CertificateEvent&gt;, OracleCloudCertificateFetcher)</a> - Constructor for class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateService</a></dt>
 <dd>
 <div class="block">Constructs a new Oracle Cloud Certificate service.</div>
 </dd>
@@ -1082,10 +1191,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a> - Record Class in <a href="io/micronaut/oraclecloud/certificates/package-summary.html">io.micronaut.oraclecloud.certificates</a></dt>
 <dd>
-<div class="block">Allows the configuration of the Oracle Cloud certificate process.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span></div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#%3Cinit%3E(java.lang.String,java.lang.Long,java.lang.String,java.lang.Boolean)" class="member-name-link">OracleCloudCertificationsConfiguration(String, Long, String, Boolean)</a> - Constructor for record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
+<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#%3Cinit%3E(java.lang.String,java.lang.Long,java.lang.String,boolean)" class="member-name-link">OracleCloudCertificationsConfiguration(String, Long, String, boolean)</a> - Constructor for record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Creates an instance of a <code>OracleCloudCertificationsConfiguration</code> record class.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudClientConfigurationProperties.html" class="type-name-link" title="class in io.micronaut.oraclecloud.core">OracleCloudClientConfigurationProperties</a> - Class in <a href="io/micronaut/oraclecloud/core/package-summary.html">io.micronaut.oraclecloud.core</a></dt>
@@ -1246,13 +1356,6 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html#%3Cinit%3E()" class="member-name-link">OracleCloudSdkProcessor()</a> - Constructor for class io.micronaut.oraclecloud.clients.processor.<a href="io/micronaut/oraclecloud/clients/processor/OracleCloudSdkProcessor.html" title="class in io.micronaut.oraclecloud.clients.processor">OracleCloudSdkProcessor</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html" class="type-name-link" title="class in io.micronaut.oraclecloud.certificates.ssl">OracleCloudSSLContextBuilder</a> - Class in <a href="io/micronaut/oraclecloud/certificates/ssl/package-summary.html">io.micronaut.oraclecloud.certificates.ssl</a></dt>
-<dd>
-<div class="block">The Netty implementation of <code>ServerSslBuilder</code> that generates an <code>SslContext</code> to create a server handler
- with to SSL support via a temporary self signed certificate that will be replaced by an Oracle Cloud certificate once acquired.</div>
-</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html#%3Cinit%3E(io.micronaut.http.ssl.ServerSslConfiguration)" class="member-name-link">OracleCloudSSLContextBuilder(ServerSslConfiguration)</a> - Constructor for class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/OracleCloudSSLContextBuilder.html" title="class in io.micronaut.oraclecloud.certificates.ssl">OracleCloudSSLContextBuilder</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/monitoring/primitives/OracleCloudTimer.html" class="type-name-link" title="class in io.micronaut.oraclecloud.monitoring.primitives">OracleCloudTimer</a> - Class in <a href="io/micronaut/oraclecloud/monitoring/primitives/package-summary.html">io.micronaut.oraclecloud.monitoring.primitives</a></dt>
 <dd>
 <div class="block">A <code>StepTimer</code> that tracks list of raw <code>Datapoint</code>.</div>
@@ -1330,7 +1433,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Prefix for Oracle Cloud configuration metadata.</div>
 </dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#PREFIX" class="member-name-link">PREFIX</a> - Static variable in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html#PREFIX" class="member-name-link">PREFIX</a> - Static variable in interface io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html#PREFIX" class="member-name-link">PREFIX</a> - Static variable in class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/InstancePrincipalConfiguration.html" title="class in io.micronaut.oraclecloud.core">InstancePrincipalConfiguration</a></dt>
 <dd>&nbsp;</dd>
@@ -1426,7 +1529,7 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html#refreshCertificate()" class="member-name-link">refreshCertificate()</a> - Method in class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateService.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateService</a></dt>
 <dd>
-<div class="block">Setup the certificate for HTTPS.</div>
+<div class="block">Refreshes the configured OCI certificates and publishes <a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events"><code>CertificateEvent</code></a>s.</div>
 </dd>
 <dt><a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataKeys.html#REGION" class="member-name-link">REGION</a> - Enum constant in enum class io.micronaut.discovery.cloud.oraclecloud.<a href="io/micronaut/discovery/cloud/oraclecloud/OracleCloudMetadataKeys.html" title="enum class in io.micronaut.discovery.cloud.oraclecloud">OracleCloudMetadataKeys</a></dt>
 <dd>&nbsp;</dd>
@@ -1440,6 +1543,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Configures a <code>ResourcePrincipalAuthenticationDetailsProvider</code> if no other <code>AuthenticationDetailsProvider</code> is present and
  the <code>OCI_RESOURCE_PRINCIPAL_VERSION</code> variable is available in the environment.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateFetcher.html#retrieveCertificate(java.lang.String,java.lang.Long,java.lang.String)" class="member-name-link">retrieveCertificate(String, Long, String)</a> - Method in class io.micronaut.oraclecloud.certificates.services.<a href="io/micronaut/oraclecloud/certificates/services/OracleCloudCertificateFetcher.html" title="class in io.micronaut.oraclecloud.certificates.services">OracleCloudCertificateFetcher</a></dt>
+<dd>
+<div class="block">Retrieves a certificate bundle (including private key) from OCI and converts it into a <a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events"><code>CertificateEvent</code></a>.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#retry()" class="member-name-link">retry()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#param-retry"><code>retry</code></a> record component.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/AbstractOracleCloudClientConfigurationProperties.RetryOptionsConfig.html#%3Cinit%3E()" class="member-name-link">RetryOptionsConfig()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/AbstractOracleCloudClientConfigurationProperties.RetryOptionsConfig.html" title="class in io.micronaut.oraclecloud.core">AbstractOracleCloudClientConfigurationProperties.RetryOptionsConfig</a></dt>
 <dd>&nbsp;</dd>
@@ -1482,6 +1593,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Indicates the database service alias (AKA TNS Alias) associated with this io.micronaut.oraclecloud.adb.wallet archive.</div>
 </dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ServiceIdClientConfigurator.html" class="type-name-link" title="class in io.micronaut.oraclecloud.httpclient.netty">ServiceIdClientConfigurator</a> - Class in <a href="io/micronaut/oraclecloud/httpclient/netty/package-summary.html">io.micronaut.oraclecloud.httpclient.netty</a></dt>
+<dd>
+<div class="block">ClientConfigurator that writes the Oracle Cloud service identifier into the OCI HTTP client builder.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/httpclient/netty/ServiceIdClientConfigurator.html#%3Cinit%3E(io.micronaut.oraclecloud.core.ServiceOracleCloudClientConfigurationProperties)" class="member-name-link">ServiceIdClientConfigurator(ServiceOracleCloudClientConfigurationProperties)</a> - Constructor for class io.micronaut.oraclecloud.httpclient.netty.<a href="io/micronaut/oraclecloud/httpclient/netty/ServiceIdClientConfigurator.html" title="class in io.micronaut.oraclecloud.httpclient.netty">ServiceIdClientConfigurator</a></dt>
+<dd>
+<div class="block">Creates a configurator for a specific Oracle Cloud service.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.html" class="type-name-link" title="class in io.micronaut.oraclecloud.core">ServiceOracleCloudClientConfigurationProperties</a> - Class in <a href="io/micronaut/oraclecloud/core/package-summary.html">io.micronaut.oraclecloud.core</a></dt>
 <dd>
 <div class="block">Configuration for each of the OCI SDK clients.</div>
@@ -1523,12 +1642,6 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.html#%3Cinit%3E()" class="member-name-link">ServiceOracleCloudClientSslClientConfiguration()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration.html" title="class in io.micronaut.oraclecloud.core">ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientSslClientConfiguration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientWebSocketCompressionConfiguration.html#%3Cinit%3E()" class="member-name-link">ServiceOracleCloudClientWebSocketCompressionConfiguration()</a> - Constructor for class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientWebSocketCompressionConfiguration.html" title="class in io.micronaut.oraclecloud.core">ServiceOracleCloudClientConfigurationProperties.ServiceOracleCloudClientWebSocketCompressionConfiguration</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#sessionCacheSize()" class="member-name-link">sessionCacheSize()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#sessionContext()" class="member-name-link">sessionContext()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html#sessionTimeout()" class="member-name-link">sessionTimeout()</a> - Method in class io.micronaut.oraclecloud.certificates.ssl.<a href="io/micronaut/oraclecloud/certificates/ssl/DelegatedSslContext.html" title="class in io.micronaut.oraclecloud.certificates.ssl">DelegatedSslContext</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#sessionToken()" class="member-name-link">sessionToken()</a> - Method in record class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a></dt>
 <dd>
@@ -1727,12 +1840,21 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/logging/OracleCloudJsonFormatter.html#toJsonString(java.util.Map)" class="member-name-link">toJsonString(Map)</a> - Method in class io.micronaut.oraclecloud.logging.<a href="io/micronaut/oraclecloud/logging/OracleCloudJsonFormatter.html" title="class in io.micronaut.oraclecloud.logging">OracleCloudJsonFormatter</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html#toString()" class="member-name-link">toString()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/CertificateRefreshConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">CertificateRefreshConfiguration</a></dt>
+<dd>
+<div class="block">Returns a string representation of this record class.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#toString()" class="member-name-link">toString()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns a string representation of this record class.</div>
+</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html#toString()" class="member-name-link">toString()</a> - Method in record class io.micronaut.oraclecloud.certificates.events.<a href="io/micronaut/oraclecloud/certificates/events/CertificateEvent.html" title="class in io.micronaut.oraclecloud.certificates.events">CertificateEvent</a></dt>
 <dd>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#toString()" class="member-name-link">toString()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns a string representation of this record class.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html#toString()" class="member-name-link">toString()</a> - Method in record class io.micronaut.oraclecloud.core.<a href="io/micronaut/oraclecloud/core/OracleCloudConfigFileConfigurationProperties.html" title="class in io.micronaut.oraclecloud.core">OracleCloudConfigFileConfigurationProperties</a></dt>
@@ -1756,6 +1878,8 @@ loadScripts(document, 'script');</script>
 <dt><a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html#TYPE_CLIENT_CONFIGURATOR" class="member-name-link">TYPE_CLIENT_CONFIGURATOR</a> - Static variable in class io.micronaut.oraclecloud.sdk.processor.<a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html" title="class in io.micronaut.oraclecloud.sdk.processor">SdkImportVisitor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html#TYPE_INTERNAL_BUILDER_ACCESS" class="member-name-link">TYPE_INTERNAL_BUILDER_ACCESS</a> - Static variable in class io.micronaut.oraclecloud.sdk.processor.<a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html" title="class in io.micronaut.oraclecloud.sdk.processor">SdkImportVisitor</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html#TYPE_LIST_OF_CLIENT_CONFIGURATOR" class="member-name-link">TYPE_LIST_OF_CLIENT_CONFIGURATOR</a> - Static variable in class io.micronaut.oraclecloud.sdk.processor.<a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html" title="class in io.micronaut.oraclecloud.sdk.processor">SdkImportVisitor</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html#TYPE_REGION" class="member-name-link">TYPE_REGION</a> - Static variable in class io.micronaut.oraclecloud.sdk.processor.<a href="io/micronaut/oraclecloud/sdk/processor/SdkImportVisitor.html" title="class in io.micronaut.oraclecloud.sdk.processor">SdkImportVisitor</a></dt>
 <dd>&nbsp;</dd>
@@ -1827,8 +1951,15 @@ the order they are declared.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/function/http/FnMultiValueMap.html#values()" class="member-name-link">values()</a> - Method in class io.micronaut.oraclecloud.function.http.<a href="io/micronaut/oraclecloud/function/http/FnMultiValueMap.html" title="class in io.micronaut.oraclecloud.function.http">FnMultiValueMap</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#versionNumber()" class="member-name-link">versionNumber()</a> - Method in record class io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html" title="class in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateConfiguration</a></dt>
+<dd>
+<div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateConfiguration.html#param-versionNumber"><code>versionNumber</code></a> record component.</div>
+</dd>
+<dt><a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html#versionNumber()" class="member-name-link">versionNumber()</a> - Method in interface io.micronaut.oraclecloud.certificates.config.<a href="io/micronaut/oraclecloud/certificates/config/OracleCloudCertificateProperties.html" title="interface in io.micronaut.oraclecloud.certificates.config">OracleCloudCertificateProperties</a></dt>
+<dd>&nbsp;</dd>
 <dt><a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#versionNumber()" class="member-name-link">versionNumber()</a> - Method in record class io.micronaut.oraclecloud.certificates.<a href="io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html" title="class in io.micronaut.oraclecloud.certificates">OracleCloudCertificationsConfiguration</a></dt>
 <dd>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated.</span></div>
 <div class="block">Returns the value of the <a href="./io/micronaut/oraclecloud/certificates/OracleCloudCertificationsConfiguration.html#param-versionNumber"><code>versionNumber</code></a> record component.</div>
 </dd>
 <dt><a href="io/micronaut/oraclecloud/httpclient/netty/visitor/OciSdkModelSerdeVisitor.html#visitClass(io.micronaut.inject.ast.ClassElement,io.micronaut.inject.visitor.VisitorContext)" class="member-name-link">visitClass(ClassElement, VisitorContext)</a> - Method in class io.micronaut.oraclecloud.httpclient.netty.visitor.<a href="io/micronaut/oraclecloud/httpclient/netty/visitor/OciSdkModelSerdeVisitor.html" title="class in io.micronaut.oraclecloud.httpclient.netty.visitor">OciSdkModelSerdeVisitor</a></dt>

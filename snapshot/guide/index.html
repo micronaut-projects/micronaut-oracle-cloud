@@ -3836,6 +3836,228 @@ Before you create Certificate make sure that you have created <a href="https://d
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.server.ssl.enabled=true
+oci.certificates.default.enabled=true
+oci.certificates.default.certificate-id=ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  server:
+    ssl:
+      enabled: true
+
+oci:
+  certificates:
+    # Define one or more named certificate configurations (primary name is "default")
+    default:
+      enabled: true
+      certificate-id: ocid1.certificate.oc1.....
+      # version-number: 1
+      # certificate-version-name: my-version</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.server]
+    [micronaut.server.ssl]
+      enabled=true
+[oci]
+  [oci.certificates]
+    [oci.certificates.default]
+      enabled=true
+      certificate-id="ocid1.certificate.oc1....."</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  server {
+    ssl {
+      enabled = true
+    }
+  }
+}
+oci {
+  certificates {
+    'default' {
+      enabled = true
+      certificateId = "ocid1.certificate.oc1....."
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    server {
+      ssl {
+        enabled = true
+      }
+    }
+  }
+  oci {
+    certificates {
+      default {
+        enabled = true
+        certificate-id = "ocid1.certificate.oc1....."
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "server": {
+      "ssl": {
+        "enabled": true
+      }
+    }
+  },
+  "oci": {
+    "certificates": {
+      "default": {
+        "enabled": true,
+        "certificate-id": "ocid1.certificate.oc1....."
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>To use a specific named certificate for server SSL, set <code>micronaut.server.ssl.key-name</code> to the same name you configure under <code>oci.certificates.&lt;name&gt;.*</code> and provide the <code>certificate-id</code>.</p>
+</div>
+<div class="paragraph">
+<p>For example, to use a certificate named <code>server</code>:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.server.ssl.enabled=true
+micronaut.server.ssl.key-name=server
+oci.certificates.server.certificate-id=ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  server:
+    ssl:
+      enabled: true
+      key-name: server
+
+oci:
+  certificates:
+    server:
+      certificate-id: ocid1.certificate.oc1.....</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.server]
+    [micronaut.server.ssl]
+      enabled=true
+      key-name="server"
+[oci]
+  [oci.certificates]
+    [oci.certificates.server]
+      certificate-id="ocid1.certificate.oc1....."</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  server {
+    ssl {
+      enabled = true
+      keyName = "server"
+    }
+  }
+}
+oci {
+  certificates {
+    server {
+      certificateId = "ocid1.certificate.oc1....."
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    server {
+      ssl {
+        enabled = true
+        key-name = "server"
+      }
+    }
+  }
+  oci {
+    certificates {
+      server {
+        certificate-id = "ocid1.certificate.oc1....."
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "server": {
+      "ssl": {
+        "enabled": true,
+        "key-name": "server"
+      }
+    }
+  },
+  "oci": {
+    "certificates": {
+      "server": {
+        "certificate-id": "ocid1.certificate.oc1....."
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The previously supported top-level properties (oci.certificates.certificate-id, etc.) are deprecated. They remain functional for backward compatibility, but you should migrate to the named configuration format oci.certificates.&lt;name&gt;.*. If you continue using the legacy top-level keys, a deprecation warning is logged at startup.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Legacy configuration (deprecated):</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.server.ssl.enabled=true
 oci.certificates.enabled=true
 oci.certificates.certificate-id=ocid1.certificate.oc1.....</code></pre>
 </div>
@@ -4008,11 +4230,72 @@ If you only want this configuration to be active in the Oracle Cloud environment
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.retry.delay</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1s</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">How much to delay attempts in between retry if refresh certificate process fails</p></td>
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. New named certificate properties (oci.certificates.&lt;name&gt;.*)</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Required</th>
+<th class="tableblock halign-left valign-top">Default value</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.&lt;name&gt;.enabled</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Enable/Disable this named certificate entry. Defaults to true when defined.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.&lt;name&gt;.certificate-id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The OCID of the certificate to load and refresh.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.&lt;name&gt;.version-number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specific version number to use.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.&lt;name&gt;.certificate-version-name</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specific version name to use.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Global refresh settings continue to be configured under <code>oci.certificates.refresh.*</code> and apply to all configured certificates.
+</td>
+</tr>
+</table>
+</div>
 
 <h1 id="okeKubernetesClient"><a class="anchor" href="#okeKubernetesClient"></a>18 OCI OKE Kubernetes Client</h1>
 
