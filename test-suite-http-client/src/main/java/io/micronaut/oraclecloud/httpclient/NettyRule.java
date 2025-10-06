@@ -8,6 +8,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDomainSocketChannel;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.codec.http.HttpMessage;
@@ -117,6 +118,12 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                     ((HttpContent) msg).release();
                                     return;
                                 }
+
+                                if (msg instanceof DefaultLastHttpContent) {
+                                    ((DefaultLastHttpContent) msg).release();
+                                    return;
+                                }
+
                                 if (((HttpMessage) msg).decoderResult().isFailure()) {
                                     ((HttpMessage) msg).decoderResult().cause().printStackTrace();
                                 }
