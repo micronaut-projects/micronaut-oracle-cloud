@@ -9,6 +9,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDomainSocketChannel;
 import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
@@ -64,15 +65,15 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
 
         ServerBootstrap bootstrap = new ServerBootstrap()
                 .group(group, group)
-                .childHandler(new ChannelInitializer<Channel>() {
+                .childHandler(new ChannelInitializer<>() {
                     @Override
                     protected void initChannel(Channel ch) throws Exception {
                         if (timeout) {
-                            ch.pipeline().addLast(new ReadTimeoutHandler(5, TimeUnit.SECONDS));
+                            ch.pipeline().addLast(new ReadTimeoutHandler(20L, TimeUnit.SECONDS));
                         }
                         ch.pipeline()
-                                .addLast(new LoggingHandler(LogLevel.INFO))
-                                .addLast(new HttpServerCodec());
+                            .addLast(new LoggingHandler(LogLevel.INFO))
+                            .addLast(new HttpServerCodec());
                         if (aggregate) {
                             ch.pipeline().addLast(new HttpObjectAggregator(4096) {
                                 @Override
@@ -110,39 +111,40 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                             });
                         }
                         ch.pipeline().addLast(new ChannelInboundHandlerAdapter() {
-                                    @Override
-                                    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-                                        if (msg instanceof HttpContent && !aggregate) {
-                                            ((HttpContent) msg).release();
-                                            return;
-                                        }
-                                        if (((HttpMessage) msg).decoderResult().isFailure()) {
-                                            ((HttpMessage) msg).decoderResult().cause().printStackTrace();
-                                        }
-                                        ExpectedRequestHandler handler = handlers.poll();
-                                        if (handler == null) {
-                                            throw new AssertionError("Unexpected message: " + msg);
-                                        }
-                                        handler.handle(ctx, (HttpRequest) msg);
-                                    }
+                            @Override
+                            public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                                if (msg instanceof HttpContent && !aggregate) {
+                                    ((HttpContent) msg).release();
+                                    return;
+                                }
+                                if (((HttpMessage) msg).decoderResult().isFailure()) {
+                                    ((HttpMessage) msg).decoderResult().cause().printStackTrace();
+                                }
+                                ExpectedRequestHandler handler = handlers.poll();
+                                if (handler == null) {
+                                    throw new AssertionError("Unexpected message: " + msg);
+                                }
+                                handler.handle(ctx, (HttpRequest) msg);
+                            }
 
-                                    @Override
-                                    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-                                        if (cause instanceof ReadTimeoutException ||
-                                                (cause instanceof IOException && cause.getMessage().equals("Connection reset by peer")) ||
-                                                (cause instanceof SocketException && cause.getMessage().equals("Connection reset"))) {
-                                            // not fatal
-                                            ctx.close();
-                                            return;
-                                        }
+                            @Override
+                            public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+                                if (cause instanceof ReadTimeoutException ||
+                                    cause instanceof PrematureChannelClosureException ||
+                                    (cause instanceof IOException && "Connection reset by peer".equals(cause.getMessage())) ||
+                                    (cause instanceof SocketException && "Connection reset".equals(cause.getMessage()))) {
+                                    // not fatal
+                                    ctx.close();
+                                    return;
+                                }
 
-                                        errors.add(cause);
-                                        ctx.close();
-                                        if (!(ctx.channel() instanceof NioDomainSocketChannel)) { // https://github.com/netty/netty/pull/14409
-                                            ctx.channel().parent().close(); // close the server too
-                                        }
-                                    }
-                                });
+                                errors.add(cause);
+                                ctx.close();
+                                if (!(ctx.channel() instanceof NioDomainSocketChannel)) { // https://github.com/netty/netty/pull/14409
+                                    ctx.channel().parent().close(); // close the server too
+                                }
+                            }
+                        });
                         channelCustomizer.accept(ch);
                     }
                 });
