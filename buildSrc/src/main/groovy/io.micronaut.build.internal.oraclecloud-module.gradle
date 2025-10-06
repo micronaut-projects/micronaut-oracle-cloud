@@ -11,7 +11,7 @@ ossIndexAudit {
         username = ossIndexUsername
         password = ossIndexPassword
     }
-    excludeCoordinates = ["org.eclipse.jetty:jetty-http:9.4.57.v20241219"]
+    excludeCoordinates = ["org.eclipse.jetty:jetty-http@9.4.58.v20250814"]
 }
 dependencies {
     api platform(libs.oci.bom)
