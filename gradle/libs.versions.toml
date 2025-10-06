@@ -12,10 +12,10 @@ shadow = '8.0.0'
 groovy = "4.0.28"
 spock = "2.3-groovy-4.0"
 oci = "3.74.1"
-oracle-database-security = "21.17.0.0"
+oracle-database-security = "21.19.0.0"
 protobuf = '0.9.5'
 
-managed-apache-http-core5 = "5.3.4"
+managed-apache-http-core5 = "5.3.6"
 micronaut-gradle-plugin = "4.5.4"
 micronaut-groovy = "4.7.0"
 micronaut-kotlin = "4.7.0"
@@ -36,9 +36,9 @@ sonatype-scan = "3.0.0"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
-commons-lang3 = "3.18.0"
+commons-lang3 = "3.19.0"
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-53864?component-type=maven&component-name=com.google.code.gson%2Fgson
-gson = "2.12.0"
+gson = "2.13.2"
 
 [libraries]
 # Core
