@@ -8,11 +8,13 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioDomainSocketChannel;
+import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.timeout.ReadTimeoutException;
@@ -116,6 +118,12 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                             ((HttpContent) msg).release();
                                             return;
                                         }
+
+                                        if (msg instanceof DefaultLastHttpContent) {
+                                            ((DefaultLastHttpContent) msg).release();
+                                            return;
+                                        }
+
                                         if (((HttpMessage) msg).decoderResult().isFailure()) {
                                             ((HttpMessage) msg).decoderResult().cause().printStackTrace();
                                         }

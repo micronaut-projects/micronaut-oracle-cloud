@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "7.5.0"
+    id("io.micronaut.build.shared.settings") version "7.6.4"
     id("me.champeau.includegit") version "0.2.0"
     id("io.micronaut.build.internal.ocisdk")
 }
@@ -63,6 +63,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-groovy")
     importMicronautCatalog("micronaut-kotlin")
     importMicronautCatalog("micronaut-micrometer")
+    importMicronautCatalog("micronaut-security")
     importMicronautCatalog("micronaut-reactor")
     importMicronautCatalog("micronaut-rxjava2")
     importMicronautCatalog("micronaut-serde")
@@ -87,5 +88,11 @@ gitRepositories {
         codeReady {
             importProjectsAsGradle(checkoutDirectory)
         }
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
     }
 }

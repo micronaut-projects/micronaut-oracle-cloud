@@ -15,32 +15,46 @@
  */
 package io.micronaut.oraclecloud.certificates;
 
+import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.Toggleable;
-import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;
+import io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties;
 import jakarta.annotation.Nullable;
+import jakarta.inject.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration.PREFIX;
+import static io.micronaut.oraclecloud.certificates.config.OracleCloudCertificateProperties.PREFIX;
 
 /**
- * Allows the configuration of the Oracle Cloud certificate process.
+ * Allows the configuration of the default Oracle Cloud certificate to use.
  * @param certificateId ocid of certificate
  * @param versionNumber version number of certificate
  * @param certificateVersionName certificate name
  * @param enabled flag for enabling feature
  */
 @ConfigurationProperties(PREFIX)
-public record OracleCloudCertificationsConfiguration(String certificateId, @Nullable Long versionNumber, @Nullable String certificateVersionName, @Nullable Boolean enabled)  implements Toggleable  {
+@Deprecated(forRemoval = true)
+@Requires(property = OracleCloudCertificationsConfiguration.CERTIFICATE_ID)
+@Named("deprecated")
+@BootstrapContextCompatible
+public record OracleCloudCertificationsConfiguration(
+    @NonNull String certificateId,
+    @Nullable Long versionNumber,
+    @Nullable String certificateVersionName,
+    boolean enabled) implements Toggleable, OracleCloudCertificateProperties {
+    public static final String CERTIFICATE_ID = PREFIX + ".certificate-id";
+    public static final String ENABLED_PROPERTY = PREFIX + ".enabled";
+    private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificationsConfiguration.class);
 
-    public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".certificates";
+    public OracleCloudCertificationsConfiguration {
+        LOG.warn("Configuring server certificate via " + CERTIFICATE_ID + " is deprecated. Use " + OracleCloudCertificateProperties.PREFIX + " namespace instead");
+    }
 
-    /**
-     * If Oracle Cloud certificate background and setup process should be enabled.
-     *
-     * @return True if Oracle Cloud certificate process is enabled.
-     */
     @Override
-    public boolean isEnabled() {
-        return enabled != null && enabled;
+    public @NonNull String getName() {
+        return "deprecated";
     }
 }

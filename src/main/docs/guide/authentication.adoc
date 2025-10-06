@@ -10,7 +10,34 @@ The following authentication providers are supported in this module:
 
 {ocidocs}/com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html[ConfigFileAuthenticationDetailsProvider] uses a config file located at `$USER_HOME/.oci/config`. Specify a profile or config file path within the config file via your `application` configuration file:
 
-include::{includedir}configurationProperties/io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties.adoc[]
+++++
+<a id="io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties" href="#io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties">&#128279;</a>
+++++
+.Configuration Properties for api:io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties[]
+|===
+|Property |Type |Description
+
+| `+oci.config.profile+`
+|java.lang.String
+|The profile to use.
+
+
+| `+oci.config.path+`
+|java.lang.String
+|A custom path for the OCI configuration file.
+
+
+| `+oci.config.enabled+`
+|java.lang.Boolean
+|Whether to enable or disable using the OCI configuration file.
+
+
+| `+oci.config.session-token+`
+|java.lang.Boolean
+|Whether to enable the configuration of a {@link com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider}.
+
+
+|===
 
 NOTE: In the Oracle Java SDK the environment variable `OCI_CONFIG_FILE` doesn't take precedence over the `~/.oci/config` if the file exists. Assign the `OCI_CONFIG_FILE` to `oci.config.path`. To change the order: `oci.config.path: ${OCI_CONFIG_FILE}`
 

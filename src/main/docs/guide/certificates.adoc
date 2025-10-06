@@ -16,6 +16,45 @@ Add the following to the `application` configuration file to enable ssl and Orac
 micronaut:
   server:
     ssl:
+      enabled: true
+
+oci:
+  certificates:
+    # Define one or more named certificate configurations (primary name is "default")
+    default:
+      enabled: true
+      certificate-id: ocid1.certificate.oc1.....
+      # version-number: 1
+      # certificate-version-name: my-version
+----
+
+To use a specific named certificate for server SSL, set `micronaut.server.ssl.key-name` to the same name you configure under `oci.certificates.<name>.*` and provide the `certificate-id`.
+
+For example, to use a certificate named `server`:
+
+[configuration]
+----
+micronaut:
+  server:
+    ssl:
+      enabled: true
+      key-name: server
+
+oci:
+  certificates:
+    server:
+      certificate-id: ocid1.certificate.oc1.....
+----
+
+IMPORTANT: The previously supported top-level properties (oci.certificates.certificate-id, etc.) are deprecated. They remain functional for backward compatibility, but you should migrate to the named configuration format oci.certificates.<name>.*. If you continue using the legacy top-level keys, a deprecation warning is logged at startup.
+
+Legacy configuration (deprecated):
+
+[configuration]
+----
+micronaut:
+  server:
+    ssl:
       enabled : true
 oci:
   certificates:
@@ -76,7 +115,38 @@ In next table you can find useful parameters to further customize integration wi
 |`oci.certificates.refresh.retry.delay`
 |`java.time.Duration`
 |false
-|3
+|1s
 |How much to delay attempts in between retry if refresh certificate process fails
 
 |===
+
+.New named certificate properties (oci.certificates.<name>.*)
+|===
+|Property|Type|Required|Default value|Description
+
+|`oci.certificates.<name>.enabled`
+|`boolean`
+|false
+|true
+|Enable/Disable this named certificate entry. Defaults to true when defined.
+
+|`oci.certificates.<name>.certificate-id`
+|`java.lang.String`
+|true
+|/
+|The OCID of the certificate to load and refresh.
+
+|`oci.certificates.<name>.version-number`
+|`long`
+|false
+|/
+|Specific version number to use.
+
+|`oci.certificates.<name>.certificate-version-name`
+|`java.lang.String`
+|false
+|/
+|Specific version name to use.
+|===
+
+NOTE: Global refresh settings continue to be configured under `oci.certificates.refresh.*` and apply to all configured certificates.

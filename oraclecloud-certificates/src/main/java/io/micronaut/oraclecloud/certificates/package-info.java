@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /**
- * Logging classes for integration with Oracle Cloud.
+ * Integration with Oracle Cloud Certificates service.
  * @author Nemanja Mikic
  * @since 3.0.0
  */
