@@ -137,7 +137,6 @@ public class NettyRule implements BeforeEachCallback, AfterEachCallback {
                                         }
 
                                         errors.add(cause);
-                                        testThread.interrupt();
                                         ctx.close();
                                         if (!(ctx.channel() instanceof NioDomainSocketChannel)) { // https://github.com/netty/netty/pull/14409
                                             ctx.channel().parent().close(); // close the server too
