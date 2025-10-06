@@ -12,7 +12,7 @@ pluginManagement {
 
 plugins {
     id("io.micronaut.build.shared.settings") version "7.6.4"
-    id("me.champeau.includegit") version "0.2.0"
+    id("me.champeau.includegit") version "0.3.1"
     id("io.micronaut.build.internal.ocisdk")
 }
 
