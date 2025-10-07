@@ -61,6 +61,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -654,8 +655,15 @@ public abstract class NettyTest {
     }
 
     @Test
-    public void functionsClientTest() throws CertificateException {
-        SelfSignedCertificate ssc = new SelfSignedCertificate();
+    public void functionsClientTest() throws CertificateException, NoSuchAlgorithmException {
+        java.security.KeyPairGenerator kpg = java.security.KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(2048);
+        java.security.KeyPair kp = kpg.generateKeyPair();
+        java.security.PrivateKey priv = kp.getPrivate();
+        java.security.PublicKey pub = kp.getPublic();
+        String pem = "-----BEGIN PRIVATE KEY-----\n"
+            + java.util.Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(priv.getEncoded())
+            + "\n-----END PRIVATE KEY-----\n";
         byte[] body = new byte[10];
         ThreadLocalRandom.current().nextBytes(body);
 
@@ -664,7 +672,7 @@ public abstract class NettyTest {
             Assertions.assertEquals("/20181201/functions/function-id/actions/invoke", request.uri());
             Assertions.assertTrue(request.headers().get(HttpHeaderNames.AUTHORIZATION).contains("content-length"));
 
-            SignatureV1.verify((FullHttpRequest) request, ssc.cert().getPublicKey());
+            SignatureV1.verify((FullHttpRequest) request, pub);
 
             Assertions.assertArrayEquals(body, ByteBufUtil.getBytes(((FullHttpRequest) request).content()));
 
@@ -686,13 +694,7 @@ public abstract class NettyTest {
                 .fingerprint("fingerprint")
                 .passPhrase("")
                 .region(Region.US_PHOENIX_1)
-                .privateKeySupplier(() -> {
-                    try {
-                        return new FileInputStream(ssc.privateKey());
-                    } catch (FileNotFoundException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                })
+                .privateKeySupplier(() -> new ByteArrayInputStream(pem.getBytes(StandardCharsets.US_ASCII)))
                 .build())) {
 
             invokeClient.invokeFunction(InvokeFunctionRequest.builder()
