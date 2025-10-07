@@ -1,5 +1,5 @@
 [versions]
-micronaut = "4.9.10"
+micronaut = "4.9.12"
 micronaut-platform = "4.9.1"
 micronaut-docs = "2.0.0"
 fn = '1.0.209'
@@ -30,7 +30,7 @@ micronaut-servlet = "5.4.0"
 micronaut-sourcegen = "1.8.2"
 micronaut-sql = "6.2.1"
 micronaut-test = "4.8.1"
-micronaut-logging = "1.7.0"
+micronaut-logging = "1.7.1"
 micronaut-validation = "4.10.0"
 micronaut-discovery-client = "4.7.1"
 sonatype-scan = "3.0.0"

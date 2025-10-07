@@ -6,6 +6,8 @@ import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.common.ClientBuilderBase;
 import com.oracle.bmc.encryption.internal.EncryptionHeader;
 import com.oracle.bmc.encryption.internal.EncryptionKey;
+import com.oracle.bmc.functions.FunctionsInvokeClient;
+import com.oracle.bmc.functions.requests.InvokeFunctionRequest;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpRequest;
@@ -16,6 +18,7 @@ import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import com.oracle.bmc.http.client.io.DuplicatableInputStream;
 import com.oracle.bmc.http.internal.ResponseHelper;
+import com.oracle.bmc.io.internal.KeepOpenInputStream;
 import com.oracle.bmc.model.BmcException;
 import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.CreateAlarmDetails;
@@ -29,6 +32,7 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.serde.annotation.Serdeable;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -57,6 +61,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -67,6 +72,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -645,6 +651,58 @@ public abstract class NettyTest {
                     .alarmId("foo")
                     .build());
             }
+        }
+    }
+
+    @Test
+    public void functionsClientTest() throws CertificateException, NoSuchAlgorithmException {
+        java.security.KeyPairGenerator kpg = java.security.KeyPairGenerator.getInstance("RSA");
+        kpg.initialize(2048);
+        java.security.KeyPair kp = kpg.generateKeyPair();
+        java.security.PrivateKey priv = kp.getPrivate();
+        java.security.PublicKey pub = kp.getPublic();
+        String pem = "-----BEGIN PRIVATE KEY-----\n"
+            + java.util.Base64.getMimeEncoder(64, new byte[]{'\n'}).encodeToString(priv.getEncoded())
+            + "\n-----END PRIVATE KEY-----\n";
+        byte[] body = new byte[10];
+        ThreadLocalRandom.current().nextBytes(body);
+
+        netty.handleOneRequest((ctx, request) -> {
+            Assertions.assertEquals(HttpMethod.POST, request.method());
+            Assertions.assertEquals("/20181201/functions/function-id/actions/invoke", request.uri());
+            Assertions.assertTrue(request.headers().get(HttpHeaderNames.AUTHORIZATION).contains("content-length"));
+
+            SignatureV1.verify((FullHttpRequest) request, pub);
+
+            Assertions.assertArrayEquals(body, ByteBufUtil.getBytes(((FullHttpRequest) request).content()));
+
+            DefaultFullHttpResponse response = new DefaultFullHttpResponse(
+                HttpVersion.HTTP_1_1, HttpResponseStatus.OK,
+                Unpooled.copiedBuffer("{}", StandardCharsets.UTF_8)
+            );
+            response.headers().add("Content-Type", "application/json");
+            computeContentLength(response);
+            ctx.writeAndFlush(response);
+        });
+
+        FunctionsInvokeClient.Builder builder = FunctionsInvokeClient.builder();
+        customize(builder);
+        try (FunctionsInvokeClient invokeClient = builder
+            .build(SimpleAuthenticationDetailsProvider.builder()
+                .tenantId("tenantId")
+                .userId("userId")
+                .fingerprint("fingerprint")
+                .passPhrase("")
+                .region(Region.US_PHOENIX_1)
+                .privateKeySupplier(() -> new ByteArrayInputStream(pem.getBytes(StandardCharsets.US_ASCII)))
+                .build())) {
+
+            invokeClient.invokeFunction(InvokeFunctionRequest.builder()
+                .functionId("function-id")
+                .fnIntent(InvokeFunctionRequest.FnIntent.Httprequest)
+                .fnInvokeType(InvokeFunctionRequest.FnInvokeType.Sync)
+                .invokeFunctionBody(new KeepOpenInputStream(new ByteArrayInputStream(body)))
+                .build());
         }
     }
 

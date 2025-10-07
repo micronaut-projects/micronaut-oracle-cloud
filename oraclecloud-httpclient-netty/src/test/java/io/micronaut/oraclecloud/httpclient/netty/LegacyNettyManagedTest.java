@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Map;
 
@@ -27,5 +28,11 @@ public class LegacyNettyManagedTest extends NettyManagedTest {
     @Disabled // not supported
     public void fullSetupErrorParseFailure() throws CertificateException {
         super.fullSetupErrorParseFailure();
+    }
+
+    @Override
+    @Disabled // behavior change not done in legacy client
+    public void functionsClientTest() throws CertificateException, NoSuchAlgorithmException {
+        super.functionsClientTest();
     }
 }

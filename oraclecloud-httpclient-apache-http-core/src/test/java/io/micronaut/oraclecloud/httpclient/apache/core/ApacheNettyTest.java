@@ -27,6 +27,7 @@ import java.net.UnixDomainSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 public class ApacheNettyTest extends NettyTest {
@@ -104,6 +105,12 @@ public class ApacheNettyTest extends NettyTest {
     @Disabled // different error
     public void fullSetupConnectionDiesMidError() throws CertificateException {
         super.fullSetupConnectionDiesMidError();
+    }
+
+    @Override
+    @Disabled // not implemented
+    public void functionsClientTest() throws CertificateException, NoSuchAlgorithmException {
+        super.functionsClientTest();
     }
 
     @Test
