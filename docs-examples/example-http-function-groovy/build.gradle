@@ -1,7 +1,7 @@
 plugins {
     id 'io.micronaut.build.internal.oraclecloud-example'
     id 'groovy'
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
 }
 
 dependencies {
@@ -15,7 +15,9 @@ dependencies {
     testImplementation projects.micronautOraclecloudFunctionHttpTest
 }
 
-mainClassName = 'com.fnproject.fn.runtime.EntryPoint'
+application {
+    mainClass = 'com.fnproject.fn.runtime.EntryPoint'
+}
 
 run {
     args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')

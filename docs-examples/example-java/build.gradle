@@ -23,8 +23,10 @@ test {
     exclude '**/*Test$Intercepted*'
 }
 
-mainClassName = 'example.Application'
 
+application {
+    mainClass = 'example.Application'
+}
 
 micronaut {
     enableNativeImage false
