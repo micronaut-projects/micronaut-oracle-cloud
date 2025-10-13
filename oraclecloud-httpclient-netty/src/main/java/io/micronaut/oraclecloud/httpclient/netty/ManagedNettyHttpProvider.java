@@ -90,7 +90,9 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         setManagedHttpProvider(this);
     }
 
-    // for OKE
+    // For OKE: this constructor is used only with the Kubernetes client in OKE and must not
+    // call setManagedHttpProvider(this), since it should not be registered globally.
+    @Internal
     public ManagedNettyHttpProvider(
         HttpClient mnHttpClient,
         ExecutorService ioExecutor,
