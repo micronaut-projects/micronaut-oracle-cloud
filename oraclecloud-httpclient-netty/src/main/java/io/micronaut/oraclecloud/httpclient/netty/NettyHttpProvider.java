@@ -21,6 +21,7 @@ import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Netty-based implementation of {@link HttpProvider}. This is only used for SPI
@@ -28,7 +29,7 @@ import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
  */
 public final class NettyHttpProvider implements HttpProvider {
 
-    private static volatile ManagedNettyHttpProvider managedHttpProvider;
+    private static final AtomicReference<ManagedNettyHttpProvider> managedHttpProvider = new AtomicReference<>();
 
     /**
      * Construct a netty-based {@link HttpProvider}.
@@ -38,7 +39,7 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Override
     public HttpClientBuilder newBuilder() {
-        ManagedNettyHttpProvider p = managedHttpProvider;
+        ManagedNettyHttpProvider p = managedHttpProvider.get();
         if (p != null) {
             return new NettyHttpClientBuilder(p);
         }
@@ -47,7 +48,7 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Override
     public Serializer getSerializer() {
-        ManagedNettyHttpProvider p = managedHttpProvider;
+        ManagedNettyHttpProvider p = managedHttpProvider.get();
         if (p != null) {
             return p.getSerializer();
         }
@@ -56,6 +57,6 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Internal
     static void setManagedHttpProvider(@Nullable ManagedNettyHttpProvider managedHttpProvider) {
-        NettyHttpProvider.managedHttpProvider = managedHttpProvider;
+        NettyHttpProvider.managedHttpProvider.set(managedHttpProvider);
     }
 }
