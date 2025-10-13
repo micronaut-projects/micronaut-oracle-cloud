@@ -22,6 +22,8 @@ import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.annotation.Order;
+import io.micronaut.core.order.Ordered;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RawHttpClient;
 import io.micronaut.http.client.RawHttpClientRegistry;
@@ -31,6 +33,7 @@ import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
 import io.micronaut.oraclecloud.serde.OciSerializationConfiguration;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.serde.ObjectMapper;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -52,6 +55,7 @@ import static io.micronaut.oraclecloud.httpclient.netty.NettyHttpProvider.setMan
 @Context
 @Internal
 @BootstrapContextCompatible
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
@@ -109,5 +113,10 @@ public class ManagedNettyHttpProvider implements HttpProvider {
     @Override
     public Serializer getSerializer() {
         return new OciSdkMicronautSerializer(jsonMapper);
+    }
+
+    @PreDestroy
+    public void close() throws Exception {
+        setManagedHttpProvider(null);
     }
 }

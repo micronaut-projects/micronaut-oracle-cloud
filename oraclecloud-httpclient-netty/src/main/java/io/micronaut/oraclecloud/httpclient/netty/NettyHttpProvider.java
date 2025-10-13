@@ -18,6 +18,7 @@ package io.micronaut.oraclecloud.httpclient.netty;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 
@@ -53,7 +54,8 @@ public final class NettyHttpProvider implements HttpProvider {
         return OciSdkMicronautSerializer.getDefaultSerializer();
     }
 
-    public static void setManagedHttpProvider(@Nullable ManagedNettyHttpProvider managedHttpProvider) {
+    @Internal
+    static void setManagedHttpProvider(@Nullable ManagedNettyHttpProvider managedHttpProvider) {
         NettyHttpProvider.managedHttpProvider = managedHttpProvider;
     }
 }
