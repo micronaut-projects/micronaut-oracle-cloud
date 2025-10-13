@@ -19,6 +19,7 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Context;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.client.HttpClient;
@@ -38,6 +39,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyHttpProvider.setManagedHttpProvider;
+
 /**
  * {@link HttpProvider} implementation similar to {@link NettyHttpProvider}, but managed by an
  * {@link io.micronaut.context.ApplicationContext}.
@@ -46,6 +49,7 @@ import java.util.concurrent.ExecutorService;
  * @author Jonas Konrad
  */
 @Singleton
+@Context
 @Internal
 @BootstrapContextCompatible
 public class ManagedNettyHttpProvider implements HttpProvider {
@@ -79,6 +83,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
+        setManagedHttpProvider(this);
     }
 
     // for OKE
@@ -93,6 +98,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
         this.configuration = new OciNettyConfiguration(false);
+        setManagedHttpProvider(this);
     }
 
     @Override
