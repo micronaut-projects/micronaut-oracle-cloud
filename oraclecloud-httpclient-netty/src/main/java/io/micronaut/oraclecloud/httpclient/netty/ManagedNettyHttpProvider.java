@@ -102,7 +102,6 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
         this.configuration = new OciNettyConfiguration(false);
-        setManagedHttpProvider(this);
     }
 
     @Override
@@ -115,8 +114,12 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         return new OciSdkMicronautSerializer(jsonMapper);
     }
 
+    /**
+     * Lifecycle hook invoked on context shutdown to deregister this instance as the
+     * globally managed HTTP provider.
+     */
     @PreDestroy
-    public void close() throws Exception {
+    public void close() {
         setManagedHttpProvider(null);
     }
 }

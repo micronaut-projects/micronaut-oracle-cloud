@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public final class NettyHttpProvider implements HttpProvider {
 
-    private static final AtomicReference<ManagedNettyHttpProvider> managedHttpProvider = new AtomicReference<>();
+    private static final AtomicReference<ManagedNettyHttpProvider> MANAGED_NETTY_HTTP_PROVIDER_ATOMIC_REFERENCE = new AtomicReference<>();
 
     /**
      * Construct a netty-based {@link HttpProvider}.
@@ -39,7 +39,7 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Override
     public HttpClientBuilder newBuilder() {
-        ManagedNettyHttpProvider p = managedHttpProvider.get();
+        ManagedNettyHttpProvider p = MANAGED_NETTY_HTTP_PROVIDER_ATOMIC_REFERENCE.get();
         if (p != null) {
             return new NettyHttpClientBuilder(p);
         }
@@ -48,7 +48,7 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Override
     public Serializer getSerializer() {
-        ManagedNettyHttpProvider p = managedHttpProvider.get();
+        ManagedNettyHttpProvider p = MANAGED_NETTY_HTTP_PROVIDER_ATOMIC_REFERENCE.get();
         if (p != null) {
             return p.getSerializer();
         }
@@ -57,6 +57,6 @@ public final class NettyHttpProvider implements HttpProvider {
 
     @Internal
     static void setManagedHttpProvider(@Nullable ManagedNettyHttpProvider managedHttpProvider) {
-        NettyHttpProvider.managedHttpProvider.set(managedHttpProvider);
+        NettyHttpProvider.MANAGED_NETTY_HTTP_PROVIDER_ATOMIC_REFERENCE.set(managedHttpProvider);
     }
 }
