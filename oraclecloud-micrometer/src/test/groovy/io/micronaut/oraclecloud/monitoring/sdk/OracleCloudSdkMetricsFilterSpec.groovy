@@ -21,7 +21,6 @@ class OracleCloudSdkMetricsFilterSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.namespace": "test",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
@@ -52,7 +51,6 @@ class OracleCloudSdkMetricsFilterSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.namespace": "test",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "micronaut.metrics.oci.sdk.client.enabled": "false",
                 "spec.name": "OracleCloudSdkMetricsFilterSpec"
@@ -79,7 +77,6 @@ class OracleCloudSdkMetricsFilterSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.namespace": "test",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
@@ -116,7 +113,6 @@ class OracleCloudSdkMetricsFilterSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "micronaut.metrics.enabled": "true",
-                "micronaut.metrics.export.oraclecloud.namespace": "test",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
                 "spec.name": "OracleCloudSdkMetricsFilterSpec"
         ])
