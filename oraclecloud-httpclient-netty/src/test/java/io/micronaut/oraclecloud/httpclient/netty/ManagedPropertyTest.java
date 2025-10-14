@@ -47,6 +47,7 @@ public class ManagedPropertyTest {
     public void unmanagedClientUsesManagedProviderProperty() {
         MockHttpClientRegistry registry = ctx.getBean(MockHttpClientRegistry.class);
         Assertions.assertFalse(registry.clientRegistered);
+        NettyHttpProvider.setManagedHttpProvider(null);
         UnmanagedClientBuilder unmanagedClientBuilder = new UnmanagedClientBuilder(SERVICE);
         unmanagedClientBuilder.clientConfigurator(builder -> builder.property(NettyClientProperties.MANAGED_PROVIDER, managedNettyHttpProvider));
         UnmanagedClient unmanagedClient = unmanagedClientBuilder.build(authenticationDetailsProvider);
