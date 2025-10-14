@@ -81,7 +81,9 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <div class="type-signature"><span class="annotations">@Singleton
+@Context
 @Internal
+@Order(-2147483648)
 </span><span class="modifiers">public class </span><span class="element-name type-name-label">ManagedNettyHttpProvider</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>
 implements com.oracle.bmc.http.client.HttpProvider</span></div>
@@ -139,12 +141,18 @@ implements com.oracle.bmc.http.client.HttpProvider</span></div>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.oracle.bmc.http.client.Serializer</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSerializer()" class="member-name-link">getSerializer</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.oracle.bmc.http.client.HttpClientBuilder</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#close()" class="member-name-link">close</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Lifecycle hook invoked on context shutdown to deregister this instance as the
+ globally managed HTTP provider.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.oracle.bmc.http.client.Serializer</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSerializer()" class="member-name-link">getSerializer</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.oracle.bmc.http.client.HttpClientBuilder</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#newBuilder()" class="member-name-link">newBuilder</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 </div>
 </div>
 </div>
@@ -181,7 +189,8 @@ implements com.oracle.bmc.http.client.HttpProvider</span></div>
 <li>
 <section class="detail" id="&lt;init&gt;(io.micronaut.http.client.HttpClient,java.util.concurrent.ExecutorService,java.util.List)">
 <h3>ManagedNettyHttpProvider</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">ManagedNettyHttpProvider</span><wbr><span class="parameters">(io.micronaut.http.client.HttpClient&nbsp;mnHttpClient,
+<div class="member-signature"><span class="annotations">@Internal
+</span><span class="modifiers">public</span>&nbsp;<span class="element-name">ManagedNettyHttpProvider</span><wbr><span class="parameters">(io.micronaut.http.client.HttpClient&nbsp;mnHttpClient,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html" title="class or interface in java.util.concurrent" class="external-link">ExecutorService</a>&nbsp;ioExecutor,
  @Nullable
  @Nullable <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="OciNettyClientFilter.html" title="interface in io.micronaut.oraclecloud.httpclient.netty">OciNettyClientFilter</a>&lt;?&gt;&gt;&nbsp;nettyClientFilters)</span></div>
@@ -213,6 +222,15 @@ implements com.oracle.bmc.http.client.HttpProvider</span></div>
 <dt>Specified by:</dt>
 <dd><code>getSerializer</code>&nbsp;in interface&nbsp;<code>com.oracle.bmc.http.client.HttpProvider</code></dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="close()">
+<h3>close</h3>
+<div class="member-signature"><span class="annotations">@PreDestroy
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">close</span>()</div>
+<div class="block">Lifecycle hook invoked on context shutdown to deregister this instance as the
+ globally managed HTTP provider.</div>
 </section>
 </li>
 </ul>
