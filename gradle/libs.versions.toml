@@ -30,7 +30,7 @@ micronaut-sourcegen = "1.8.2"
 micronaut-sql = "6.2.1"
 micronaut-test = "4.8.1"
 micronaut-logging = "1.7.1"
-micronaut-validation = "4.10.0"
+micronaut-validation = "4.11.0"
 micronaut-discovery-client = "4.7.1"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
