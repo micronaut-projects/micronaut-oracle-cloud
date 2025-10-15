@@ -19,6 +19,7 @@ import java.util.Map;
 @Requires(property = "vault.secrets.compartment.ocid")
 @Requires(property = "vault.secret.name")
 @Requires(property = "vault.secret.value")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 class VaultTest {
 
     @Property(name = "vault.ocid")

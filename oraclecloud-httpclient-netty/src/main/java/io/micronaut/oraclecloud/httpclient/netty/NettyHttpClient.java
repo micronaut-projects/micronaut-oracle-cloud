@@ -36,6 +36,8 @@ import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.handler.codec.PrematureChannelClosureException;
 import io.netty.handler.timeout.ReadTimeoutException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -61,6 +63,8 @@ final class NettyHttpClient implements HttpClient {
     private static final Map<ClientProperty<?>, Object> EXPECTED_PROPERTIES;
 
     private static final boolean LEGACY_NETTY_CLIENT = Boolean.getBoolean("io.micronaut.oraclecloud.httpclient.netty.legacy-netty-client");
+
+    private static final Logger LOG = LoggerFactory.getLogger(NettyHttpClient.class);
 
     final boolean legacyNettyClient;
     final boolean hasContext;
@@ -104,7 +108,7 @@ final class NettyHttpClient implements HttpClient {
             hasContext = true;
             for (Map.Entry<ClientProperty<?>, Object> entry : builder.properties.entrySet()) {
                 if (!entry.getValue().equals(EXPECTED_PROPERTIES.get(entry.getKey())) && !entry.getKey().equals(OCI_NETTY_CLIENT_FILTERS_KEY)) {
-                    throw new IllegalArgumentException("Cannot change property " + entry.getKey() + " in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is '" + ManagedNettyHttpProvider.SERVICE_ID + "'.");
+                    LOG.debug("Ignoring invalid property {}:{} in the managed netty HTTP client. Please configure this setting through the micronaut HTTP client configuration instead. The service ID for the netty client is {}", entry.getKey(), entry.getValue(), ManagedNettyHttpProvider.SERVICE_ID);
                 }
             }
             if (builder.managedProvider.mnHttpClient != null) {

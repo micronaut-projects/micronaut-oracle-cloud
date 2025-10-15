@@ -1,7 +1,7 @@
 [versions]
-micronaut = "4.10.0"
+micronaut = "4.10.4"
 micronaut-platform = "4.9.1"
-micronaut-docs = "2.0.0"
+micronaut-docs = "3.0.0"
 fn = '1.0.212'
 graal-svm = "23.1.8"
 javapoet = '1.13.0'
@@ -11,7 +11,7 @@ slf4j-jcl = '2.0.17'
 shadow = '8.3.9'
 groovy = "4.0.28"
 spock = "2.3-groovy-4.0"
-oci = "3.74.1"
+oci = "3.74.2"
 oracle-database-security = "21.19.0.0"
 protobuf = '0.9.5'
 
@@ -20,19 +20,18 @@ micronaut-gradle-plugin = "4.5.4"
 micronaut-groovy = "4.7.0"
 micronaut-kotlin = "4.7.0"
 micronaut-kubernetes = "7.1.1"
-micronaut-micrometer = "5.12.0"
-micronaut-security = "4.13.1"
-micronaut-reactor = "3.8.0"
-micronaut-rxjava2 = "2.8.0"
-micronaut-serde = "2.15.1"
-micronaut-servlet = "5.4.0"
+micronaut-micrometer = "5.13.0"
+micronaut-security = "4.15.0"
+micronaut-reactor = "3.9.0"
+micronaut-rxjava2 = "2.9.0"
+micronaut-serde = "2.15.5"
+micronaut-servlet = "5.5.1"
 micronaut-sourcegen = "1.8.2"
-micronaut-sql = "6.2.1"
-micronaut-test = "4.8.1"
+micronaut-sql = "6.3.1"
+micronaut-test = "4.9.0"
 micronaut-logging = "1.7.1"
-micronaut-validation = "4.10.0"
+micronaut-validation = "4.11.0"
 micronaut-discovery-client = "4.7.1"
-sonatype-scan = "3.0.0"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
@@ -97,7 +96,6 @@ kotlin-gradle-allopen = { module = 'org.jetbrains.kotlin:kotlin-allopen', versio
 shadow-plugin = { module = "com.gradleup.shadow:shadow-gradle-plugin", version.ref = "shadow" }
 micronaut-gradle-plugin = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref="micronaut-gradle-plugin" }
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobuf" }
-sonatype-scan = { module = "org.sonatype.gradle.plugins:scan-gradle-plugin", version.ref = "sonatype-scan" }
 
 #dummy dependencies for renovate
 groovy = { module = "org.apache.groovy:groovy-bom", version.ref = "groovy" }

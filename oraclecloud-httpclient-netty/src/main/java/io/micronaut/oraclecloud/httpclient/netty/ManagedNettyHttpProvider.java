@@ -19,8 +19,11 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Context;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.core.annotation.Order;
+import io.micronaut.core.order.Ordered;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.RawHttpClient;
 import io.micronaut.http.client.RawHttpClientRegistry;
@@ -30,6 +33,7 @@ import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
 import io.micronaut.oraclecloud.serde.OciSerializationConfiguration;
 import io.micronaut.scheduling.TaskExecutors;
 import io.micronaut.serde.ObjectMapper;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -37,6 +41,8 @@ import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+
+import static io.micronaut.oraclecloud.httpclient.netty.NettyHttpProvider.setManagedHttpProvider;
 
 /**
  * {@link HttpProvider} implementation similar to {@link NettyHttpProvider}, but managed by an
@@ -46,8 +52,10 @@ import java.util.concurrent.ExecutorService;
  * @author Jonas Konrad
  */
 @Singleton
+@Context
 @Internal
 @BootstrapContextCompatible
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class ManagedNettyHttpProvider implements HttpProvider {
     static final String SERVICE_ID = "oci";
 
@@ -79,9 +87,12 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
+        setManagedHttpProvider(this);
     }
 
-    // for OKE
+    // For OKE: this constructor is used only with the Kubernetes client in OKE and must not
+    // call setManagedHttpProvider(this), since it should not be registered globally.
+    @Internal
     public ManagedNettyHttpProvider(
         HttpClient mnHttpClient,
         ExecutorService ioExecutor,
@@ -103,5 +114,14 @@ public class ManagedNettyHttpProvider implements HttpProvider {
     @Override
     public Serializer getSerializer() {
         return new OciSdkMicronautSerializer(jsonMapper);
+    }
+
+    /**
+     * Lifecycle hook invoked on context shutdown to deregister this instance as the
+     * globally managed HTTP provider.
+     */
+    @PreDestroy
+    public void close() {
+        setManagedHttpProvider(null);
     }
 }

@@ -5,6 +5,7 @@ import com.oracle.bmc.monitoring.Monitoring
 import com.oracle.bmc.monitoring.requests.GetAlarmRequest
 import io.micrometer.core.instrument.MeterRegistry
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Requires
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
@@ -12,8 +13,8 @@ import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import spock.lang.Specification
 
-
 @MicronautTest(startApplication = false)
+@Property(name = "micronaut.metrics.enabled", value = "false")
 class OracleCloudSdkMetricsFilterSpec extends Specification {
 
     def "test oci sdk metrics client filter request returns 200"() {
