@@ -87,3 +87,63 @@ will appear at `INFO` level.
 
 WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging
 purposes.
+
+### Proxy configuration via system properties (unmanaged Netty client)
+
+WARNING: This feature is experimental and subject to change.
+
+When the Netty HTTP client is created in an unmanaged context (i.e. not obtained from a Micronaut `ApplicationContext`), this module will map the following system properties to the Micronaut HTTP client's proxy configuration:
+
+- `io.micronaut.oci.proxy` URI form: `http://user:pass@host:port`, `https://host:443` or `socks5://host:1080`
+- `io.micronaut.oci.proxy.host` Host name of the proxy
+- `io.micronaut.oci.proxy.port` Port number of the proxy
+- `io.micronaut.oci.proxy.username` Proxy username (optional)
+- `io.micronaut.oci.proxy.password` Proxy password (optional)
+- `io.micronaut.oci.proxy.type` One of `http`, `socks`, `socks5` (defaults to `http` unless the scheme of `io.micronaut.oci.proxy` is `socks*`)
+- `io.micronaut.oci.proxy.nonProxyHosts` Comma-separated host patterns that must bypass the proxy (supports `*` wildcard), for example: `*.internal,localhost,127.0.0.1`
+
+Property precedence:
+- If `io.micronaut.oci.proxy` is set, it is parsed and takes precedence.
+- Otherwise, discrete properties (`host`, `port`, `username`, `password`, `type`) are used if present.
+
+Examples:
+
+.Configure via single URI
+[source,shell]
+----
+java -Dio.micronaut.oci.proxy=http://user:pass@proxy.example:8080 -jar app.jar
+----
+
+.Configure via discrete properties
+[source,shell]
+----
+java \
+ -Dio.micronaut.oci.proxy.host=proxy.acme.local \
+ -Dio.micronaut.oci.proxy.port=3128 \
+ -Dio.micronaut.oci.proxy.username=alice \
+ -Dio.micronaut.oci.proxy.password=secret \
+ -Dio.micronaut.oci.proxy.type=http \
+ -Dio.micronaut.oci.proxy.nonProxyHosts="*.internal,localhost,127.0.0.1" \
+ -jar app.jar
+----
+
+NOTE: For managed clients (obtained from Micronaut DI), configure proxy using standard Micronaut HTTP client configuration (for example `micronaut.http.services.*` or `oci.client.*`), not system properties.
+
+### Managed Netty client configuration (oci.netty.*)
+
+WARNING: This feature is experimental and subject to change.
+
+The managed Netty client reads `oci.netty.*` settings:
+
+- `oci.netty.legacy-netty-client` (boolean, default `false`) — Use the legacy Netty client implementation. This is experimental and intended for migration scenarios.
+- `oci.netty.use-managed-provider-globally` (boolean, default `false`) — Enable usage of the managed Netty HTTP provider globally for SDK clients, centralizing configuration via Micronaut.
+
+Example (application.yml):
+
+[source,yaml]
+----
+oci:
+  netty:
+    legacy-netty-client: false
+    use-managed-provider-globally: true
+----
