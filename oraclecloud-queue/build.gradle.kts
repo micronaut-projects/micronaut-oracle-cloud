@@ -9,3 +9,10 @@ dependencies {
     api(mn.micronaut.messaging)
     api(mnValidation.micronaut.validation)
 }
+
+micronautBuild {
+    // new module
+    binaryCompatibility {
+        enabled.set(false)
+    }
+}
