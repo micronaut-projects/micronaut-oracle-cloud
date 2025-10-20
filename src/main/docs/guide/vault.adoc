@@ -2,9 +2,9 @@ To get started with https://docs.micronaut.io/latest/guide/#cloudConfiguration[D
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-vault[]
 
-Then create a `bootstrap` configuration file in `src/main/resources/` and ensure your <<authentication, Authentication>> configuration is present in this file so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).
+Then create a `bootstrap` configuration file in `src/main/resources/` and ensure your <<authentication, Authentication>> configuration is present in this file to enable authenticating with one of the supported mechanisms (config, instance principal, resource principal, etc.)
 
-Then add the following to the `bootstrap` configuration file to specify Vault support:
+Then, add the following to the `bootstrap` configuration file to specify Vault support:
 
 [configuration]
 ----
@@ -22,11 +22,13 @@ oci:
         compartment-ocid: ocid1.compartment.oc1...
 ----
 
-One or many Vaults can be configured and each should include a `ocid` and `compartment-ocid` configuration entry. Note that the `compartment-ocid` is not the vault compartment but a compartment from where the secrets will be fetched.
+One or more Vaults can be configured, and each must include `ocid` and `compartment-ocid` configuration values.
+Note that the `compartment-ocid` is not the vault compartment, but the compartment from where the secrets will be fetched.
 
-NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file `bootstrap-oraclecloud` (with the appropriate extension, such as .yml).
+NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally, name the configuration file `bootstrap-oraclecloud` (with the appropriate extension, such as .properties).
 
-You're now ready to go! You can access the config variables in a few different ways. If you create a secret with the name of `SECRET_ONE` in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:
+You're now ready to go! You can access the config variables in a few different ways.
+If you create a secret with the name of `SECRET_ONE` in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:
 
 [source,java]
 ----
@@ -40,7 +42,7 @@ You can also use `@Property`:
 @Property(name = "SECRET_ONE") String secretOne;
 ----
 
-Vault retrieved values are always `String`, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.
+Values from Vault are always `String`, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.
 
 So if you were to create secrets in your Oracle Cloud Vault like so:
 
@@ -69,24 +71,21 @@ You could add a config bean, like so:
 [source,java]
 ----
 @ConfigurationProperties("my-secrets")
-public class Config {
-    private String one;
-    private String two;
-    private boolean three;
-    private int four;
-    private Double five;
-
-    /* getters/setters removed for brevity */
+public record Config(String one,
+                     String two,
+                     boolean three,
+                     int four,
+                     Double five) {
 }
 ----
 
-Another option is to inject your variables into your configuration files which gives you the ability to store things like database passwords and API keys in your vault:
+Another option is to inject your variables into your configuration files. Then allows you to store things like database passwords and API keys in your vault:
 
 [configuration]
 ----
 datasources:
-    default:
-        password: ${DB_PASSWORD}
+  default:
+    password: ${DB_PASSWORD}
 ----
 
 TIP: See the guide for https://guides.micronaut.io/latest/micronaut-cloud-secrets-oracle.html[Securely Store Micronaut Application Secrets in Oracle Cloud Vault] to learn more.

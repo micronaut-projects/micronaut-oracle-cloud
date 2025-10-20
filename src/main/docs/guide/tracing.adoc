@@ -1,8 +1,8 @@
-You can use OCI Application Performance Monitoring (APM) as a drop-in replacement for Tracing in your Micronaut Applications.
+You can use OCI Application Performance Monitoring (APM) to add Tracing in your Micronaut Applications.
 
 OCI APM is a suite of services that give you insight into your applications and servers running in OCI via a small agent that runs on the machine and aggregates and reports metric data.
 It's a nice service to monitor and diagnose performance issues.
-It also includes a Trace Explorer that is Zipkin (and Jaeger) compatible which we can use from our Micronaut applications (even without taking full advantage of APM via the Java Agent).
+It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) which you can use in Micronaut applications (even without taking full advantage of APM via the Java Agent).
 
 === Add Dependencies
 
@@ -23,8 +23,9 @@ dependency:io.opentracing.brave:brave-opentracing[scope="compile"]
 
 === Create APM Domain
 
-Now, create an APM domain in the OCI console. We'll share a single domain to group and trace all of our services.
-That may seem a bit confusing given the name "domain", but think of it more like a "project group" or an "environment" (you may want to create separate domains for QA, Test, Prod, etc.).
+Create an APM domain in the OCI console if you haven't already.
+We'll share a single domain to group and trace all of our services.
+That may seem a bit confusing given the name "domain", but think of it more like a "project group" or an "environment" (you may want to create separate domains for QA, Test, Prod, etc.)
 Search for `Application Performance Monitoring` and click `Administration`.
 
 image::oci_console_apm_admin.png[APM Adinistration]
@@ -46,10 +47,10 @@ Here you'll need to grab a few values, so copy the data upload endpoint (#1), pr
 
 image::oci_console_apm_domain_details.png[Create APM Domain]
 
-Now we have what we need to construct a URL to plug in to our application configuration files.
+Now we have what we need to construct a URL to use in application configuration files.
 The `Collector URL` format requires us to construct a URL by using the `data upload endpoint` as our base URL and generate the path based on some choices including values from our private or public key.
 The format is https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html#APMGN-GUID-B5EDE254-C854-436D-B844-B986A4E077AA[documented here].
-Once we've constructed the URL path, we can add it to our `application-oraclecloud` configuration file.
+Once we've constructed the URL path, add it to your `application-oraclecloud` configuration file.
 
 .Example Oracle Cloud Config
 [configuration]
@@ -68,12 +69,13 @@ tracing:
     supportsJoin: false
 ----
 
-If you want to keep these values out of the config file, you could set them as environment variables on the server like so:
+To avoid hard-coding these values in config files, you can set them as environment variables, e.g.:
 
 .Set ENV vars
 [source,bash]
 ----
-export TRACING_ZIPKIN_HTTP_URL="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com" export TRACING_ZIPKIN_HTTP_PATH="/20200101/observations/public-span?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]"
+export TRACING_ZIPKIN_HTTP_URL="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com"
+export TRACING_ZIPKIN_HTTP_PATH="/20200101/observations/public-span?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]"
 ----
 
 Your application will now send trace information to APM.
@@ -104,7 +106,7 @@ Click a span inside a trace to view detailed info and tagged values.
 
 image::oci_console_span_details.png[APM Trace Explorer Span Details]
 
-For more info, please see https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices[Adding Tracing to Your Distributed Cloud Native Microservices].
+For more info, see https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices[Adding Tracing to Your Distributed Cloud Native Microservices].
 
 Read more about the Trace Explorer in the https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html[documentation].
 

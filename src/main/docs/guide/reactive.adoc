@@ -1,13 +1,12 @@
 In addition to the blocking clients, this module provides clients that use RxJava or Reactor to allow reactive programming with Micronaut for each SDK.
 
-For RxJava 2 add the following module along with a `micronaut-oraclecloud-sdk-[OCI SDK client]` module:
+For RxJava 2, add the following module along with a `micronaut-oraclecloud-sdk-[OCI SDK client]` module:
 
 dependency:io.micronaut.rxjava2:micronaut-rxjava2[]
 
-For Reactor add the following module along with `micronaut-oraclecloud-sdk-[OCI SDK client]` module:
+For Reactor, add the following module along with `micronaut-oraclecloud-sdk-[OCI SDK client]` module:
 
 dependency:micronaut-reactor[groupId="io.micronaut.reactor"]
-
 
 For example, instead of `ObjectStorageClient`, you can inject `ObjectStorageRxClient` for RxJava 2 or `ObjectStorageReactorClient` for Reactor to use the Object Storage API:
 
@@ -15,10 +14,11 @@ snippet::example.BucketController[project-base="docs-examples/example", source="
 
 <1> The `ObjectStorageRxClient` is injected into the constructor.
 
-Once you have a reference to the relevant reactive client, it is easier to compose non-blocking operations. The following example creates a bucket:
+Once you have a reference to the relevant reactive client, it is easier to compose non-blocking operations.
+The following example creates a bucket:
 
 snippet::example.BucketController[project-base="docs-examples/example", source="main", tags="method", indent="0"]
 
-<1> First a request to obtain the namespace is sent
+<1> First, a request to obtain the namespace is sent
 <2> Then with the response the `flatMap` operator is used to send another request to create a bucket
-<3> Finally the location of the bucket is returned in the response
+<3> Finally, the location of the bucket is returned in the response

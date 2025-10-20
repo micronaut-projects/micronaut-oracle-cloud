@@ -2,23 +2,21 @@ To use the https://docs.oracle.com/en-us/iaas/Content/Logging/Concepts/loggingov
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-logging[]
 
-
 === Create Oracle Cloud Custom Log
 
-If you don't have already a https://cloud.oracle.com/logging/log-groups[Log group] you should create it.
+If you don't already have a https://cloud.oracle.com/logging/log-groups[Log group], create one.
 
 image::oci_logging_create_log_group.png[Create Group Log]
 
-To create custom log first visit the https://cloud.oracle.com/logging/logs[Oracle Log Portal].
+To create a custom log, first visit the https://cloud.oracle.com/logging/logs[Oracle Log Portal].
 
-
-Click on the "Create Custom log".
+Click "Create Custom log".
 
 image::oci_logging_custom_log.png[Create Custom log]
 
-Choose name of your log and go to next step.
+Specify the name for the log and go to the next step.
 
-image::oci_logging_custom_log_create_step_1.png[Choose Name of Custom log]
+image::oci_logging_custom_log_create_step_1.png[Specify the Log name]
 
 Choose "Add Configuration later" and finish the wizard.
 
@@ -30,7 +28,7 @@ image::oci_logging_ocid.png[Logger OCID]
 
 === Logback configuration
 
-Edit a `src/main/resources/logback.xml` file and make it look like this:
+Edit `src/main/resources/logback.xml` to look like this:
 
 .src/main/resources/logback.xml
 [source,xml]
@@ -52,10 +50,11 @@ Edit a `src/main/resources/logback.xml` file and make it look like this:
     </root>
 </configuration>
 ----
-In the `logId` field of the `OracleCloudAppender` put your log OCID.
-You can customize your JsonLayout with additional parameters the are available on official docs of https://javadoc.io/static/ch.qos.logback.contrib/logback-json-classic/0.1.5/ch/qos/logback/contrib/json/classic/JsonLayout.html[Logback's JsonLayout].
+Specify the OCID of your log in the `logId` element.
+You can customize your JsonLayout with additional parameters as described in the https://javadoc.io/static/ch.qos.logback.contrib/logback-json-classic/0.1.5/ch/qos/logback/contrib/json/classic/JsonLayout.html[Logback JsonLayout] documentation.
 
-The `OracleCloudAppender` supports blacklisting the loggers by specifying the logger name. That might come handy if you want to use `level=DEBUG` or `level=TRACE` for the root logger level.
+`OracleCloudAppender` supports blacklisting one or more loggers by specifying the logger names.
+This is useful when specifying `level=DEBUG` or `level=TRACE` for the root logger level.
 
 .Configurable OracleCloudAppender Appender Properties
 |===
@@ -65,7 +64,7 @@ The `OracleCloudAppender` supports blacklisting the loggers by specifying the lo
 |`String`
 |true
 |/
-|the Ocid of the log
+|the OCID of the log
 
 |`type`
 |`String`
@@ -89,36 +88,37 @@ The `OracleCloudAppender` supports blacklisting the loggers by specifying the lo
 |`Integer`
 |false
 |100
-|Time in ms between two batch publishing of logs
+|Time in ms between log publishing batches
 
 |`maxBatchSize`
 |`Integer`
 |false
 |128
-|Time maximum number of log lines that will be sent in one batch request
+|The maximum number of log entries that will be sent per batch
 
 |`queueSize`
 |`Integer`
 |false
 |128
-|The size of publishing log queue
+|The size of the publishing log queue
 
 |`blackListLoggerName`
 |`List`
 |false
 |empty
-|List of logger names that won't be published
+|Comma-delimited list of logger names that won't be published
 |===
 
 NOTE: The `logId` is also configurable through the `application` and `application-oraclecloud` configuration files with the `oci.logging.logId` key, and it will be considered as the prime source of it.
 
 === OpenTelemetry and logging
 
-If you are using the https://opentelemetry.io/[OpenTelemetry] for tracing you can include `traceId` and `spanId` fields into your logs. First you have to add next dependency into your project:
+If you use https://opentelemetry.io/[OpenTelemetry] for tracing, you can include `traceId` and `spanId` fields in your logs.
+First, add this dependency in your build file:
 
 dependency:io.opentelemetry.instrumentation:opentelemetry-logback-mdc-1.0:1.16.0-alpha[scope="runtime"]
 
-Inside your `src/main/resources/logback.xml` you should add a new appender https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html[io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender].
+Inside `src/main/resources/logback.xml`, add a new https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html[io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender].
 
 .src/main/resources/logback.xml
 [source,xml]
@@ -147,9 +147,11 @@ Inside your `src/main/resources/logback.xml` you should add a new appender https
 
 === Emergency Appender
 
-Since this appender is queuing up log messages and then writing them remotely, there are a number of situations which might result in log messages not getting remoted correctly. To address such scenarios you can configure the emergency appender to preserve those messages.
+`OracleCloudAppender` queues log messages and pushes them in batches to your OCI logs, so it is possible network issues or other problems can result in log messages not being remoted correctly.
+To address such scenarios, you can configure the emergency appender to preserve those messages.
 
-Inside your `src/main/resources/logback.xml` you should add a new appender, in the example it is `STDOUT`. Inside the `OracleCloudAppender` add `appender-ref` that points to the new crated appender.
+Add a new appender in `src/main/resources/logback.xml` (in the example it is `STDOUT`).
+Inside the `OracleCloudAppender` add an `appender-ref` element that references this appender:
 
 .src/main/resources/logback.xml
 [source,xml]
@@ -183,8 +185,9 @@ Inside your `src/main/resources/logback.xml` you should add a new appender, in t
 
 === Browsing the logs
 
-When you have completed a setup, you can browse your logs on the https://cloud.oracle.com/logging/logs[Oracle Log Portal]. Choose the log that you have created. In the "Explore Log" section you should be able to see your service logs.
+You can browse your logs in the https://cloud.oracle.com/logging/logs[Oracle Log Portal].
+Navigate to your Log and view log entries in the "Explore Log" section.
 
 image::oci_logging_explore_log.png[Add Configuration later]
 
-If you have any troubles with configuring the Oracle Appender you can try to add `<configuration debug="false">` into your logback configuration.
+If you have any troubles with configuring the Oracle Appender, add `<configuration debug="false">` in `logback.xml`.

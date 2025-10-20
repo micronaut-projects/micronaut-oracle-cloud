@@ -1,22 +1,24 @@
-This module provides a Netty client implementation for the Java OCI SDK. The client uses link:https://micronaut-projects.github.io/micronaut-serialization/latest/guide/[Micronaut Serialization].
+This module provides a Netty client implementation for the Java OCI SDK.
+The client uses link:https://micronaut-projects.github.io/micronaut-serialization/latest/guide/[Micronaut Serialization].
 
 Add a dependency to the `micronaut-oraclecloud-httpclient-netty` module:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-httpclient-netty[]
 
-For serialization to work correctly, use one of the micronaut OCI SDK modules instead of the OCI SDK modules. For example, for Object Store define the dependency:
+For serialization to work correctly, use one of the Micronaut OCI SDK modules instead of the OCI SDK modules.
+For example, for Object Store, define the dependency:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-objectstorage[]
 
 ### Importing SDK's not compiled with Micronaut
 
-If an OCI SDK client exists that is built with OCI SDK v3 or above but not compiled with Micronaut and therefore missing the the required Micronaut Serialization types you can import the sdk use the `@SdkImport` annotation.
+If an OCI SDK client exists that is built with OCI SDK v3 or above but not compiled with Micronaut and therefore missing the required Micronaut Serialization types, you can import the client using the `@SdkImport` annotation.
 
-First you should add an annotation processor dependency:
+First, add an annotation processor dependency:
 
 dependency:io.micronaut.oraclecloud:oraclecloud-serde-processor[scope="annotationProcessor"]
 
-Then declare `@SdkImport` on any class passing the type of the client you wish to import. For example:
+Then declare `@SdkImport` on any class, specifying the type of the client you wish to import. For example:
 
 .Declaring `@SdkImport`
 [source,java]
@@ -28,9 +30,10 @@ Then declare `@SdkImport` on any class passing the type of the client you wish t
 
 Replace the `com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey` with the `micronaut-oraclecloud-httpclient-netty` client and the `com.oracle.oci.sdk:oci-java-sdk-bom` with `micronaut-oraclecloud-bom`.
 
-Then replace other OCI SDK modules with micronaut ones. To simplify the process, you can utilize the following regular expression:
+Then replace other OCI SDK modules with Micronaut modules.
+To simplify the process, you can use the following regular expression:
 
-For Maven replace
+For Maven, replace
 [source,regex]
 ----
 <dependency>(\s*)<groupId>com.oracle.oci.sdk</groupId>(\s*)<artifactId>oci-java-sdk-([^<]+)</artifactId>(((?!</dependency>)[\s\S])+)</dependency>
@@ -41,7 +44,7 @@ with
 <dependency>$1<groupId>io.micronaut.oraclecloud</groupId>$2<artifactId>micronaut-oraclecloud-bmc-$3</artifactId>$4</dependency>
 ----
 
-For Gradle replace
+For Gradle, replace
 [source,regex]
 ----
 com.oracle.oci.sdk:oci-java-sdk-([^:"')]+)
@@ -56,7 +59,10 @@ If you plan to use the modules in a Micronaut application, add one of the `micro
 
 ### Configuration
 
-The jersey HTTP client can be configured through a `ClientConfigurator` and `StandardClientProperties`. Only some of these properties are supported for the netty client. Which properties are supported also depends on whether the netty client is used in a managed context, i.e. whether the SDK client is injected from an application context. The following properties are supported:
+The Jersey HTTP client can be configured through a `ClientConfigurator` and `StandardClientProperties`.
+Only some of these properties are supported for the Netty client.
+Which properties are supported also depends on whether the Netty client is used in a managed context, i.e., whether the SDK client is injected from an application context.
+The following properties are supported:
 
 - `StandardClientProperties.BUFFER_REQUEST` always supported
 - `StandardClientProperties.READ_TIMEOUT` supported only when the client is _not_ managed
@@ -65,7 +71,8 @@ The jersey HTTP client can be configured through a `ClientConfigurator` and `Sta
 
 Other properties — particularly those related to proxies and TLS configuration — are not supported directly.
 Instead, these settings should be configured using the standard Micronaut HTTP client configuration properties, with a special service name prefix.
-For example, to configure the managed Netty client, you can use properties like `oci.client.read-timeout`. This allows you to configure TLS, proxy settings, timeouts, connection pool sizes, and other HTTP client options.
+For example, to configure the managed Netty client, you can use properties like `oci.client.read-timeout`.
+This allows you to configure TLS, proxy settings, timeouts, connection pool sizes, and other HTTP client options.
 
 Similarly, you can configure other Micronaut-provided clients by specifying the appropriate service ID. For example:
 
@@ -78,12 +85,11 @@ You can find a client’s service ID by checking the factory class that creates 
 - IdentityClientFactory produces IdentityClient → identity.
 - ObjectStorageClientFactory produces ObjectStorageClient → objectstorage.
 
-NOTE: You should choose either `micronaut.http.services.oci` or `oci.client` to configure your oci client. If you supply both you will get `NonUniqueBeanException`.
+NOTE: Choose either `micronaut.http.services.oci` or `oci.client` to configure your OCI client; supplying both will cause a `NonUniqueBeanException`.
 
 #### Logging
 
-To enable logging of all requests, set the `micronaut.http.services.oci.log-level` or `oci.client.log-level` property to `INFO`. Log messages
-will appear at `INFO` level.
+To enable logging of all requests, set the `micronaut.http.services.oci.log-level` or `oci.client.log-level` property to `INFO`.
+Log messages  will appear at `INFO` level.
 
-WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging
-purposes.
+WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging purposes.
