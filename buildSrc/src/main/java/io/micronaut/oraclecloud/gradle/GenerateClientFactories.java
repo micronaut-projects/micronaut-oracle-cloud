@@ -77,7 +77,6 @@ public abstract class GenerateClientFactories extends DefaultTask {
         String pack = getPackageName().get();
 
         if (!clientNames.isEmpty()) {
-            String a = "3";
             File outputFile = getOutputDirectory().get()
                 .file(pack.replace('.', File.separatorChar) + "/SdkProcessorDummy.java")
                 .getAsFile();
