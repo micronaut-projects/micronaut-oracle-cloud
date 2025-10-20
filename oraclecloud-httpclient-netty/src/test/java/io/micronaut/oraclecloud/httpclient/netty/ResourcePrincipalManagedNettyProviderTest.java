@@ -47,7 +47,7 @@ public class ResourcePrincipalManagedNettyProviderTest {
     void makeClientUsesManagedNettyHttpProvider() {
         // Run the application context so Micronaut wires ManagedNettyHttpProvider first (@Context)
         try (ApplicationContext ctx = ApplicationContext.builder()
-            .properties(java.util.Map.of("spec.name", "ResourcePrincipalManagedNettyProviderTest"))
+            .properties(java.util.Map.of("spec.name", "ResourcePrincipalManagedNettyProviderTest", "oci.netty.use-managed-provider-globally", "true"))
             .start()) {
             ResourcePrincipalAuthenticationDetailsProvider rp = ctx.getBean(ResourcePrincipalAuthenticationDetailsProvider.class);
             RecordingFederationClient federationClient = ctx.getBean(RecordingFederationClient.class);

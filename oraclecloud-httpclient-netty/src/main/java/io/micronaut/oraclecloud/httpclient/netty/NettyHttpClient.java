@@ -42,6 +42,13 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.SocketAddress;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.regex.Pattern;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Comparator;
@@ -95,6 +102,9 @@ final class NettyHttpClient implements HttpClient {
             hasContext = false;
             ownsThreadPool = true;
             DefaultHttpClientConfiguration cfg = new DefaultHttpClientConfiguration();
+            // Configure proxy via system properties for OCI use-cases
+            applyProxyFromSystemProperties(cfg, LOG);
+
             if (builder.properties.containsKey(StandardClientProperties.CONNECT_TIMEOUT)) {
                 cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.CONNECT_TIMEOUT));
             }
@@ -204,5 +214,126 @@ final class NettyHttpClient implements HttpClient {
             }
         }
         localBaseUri.set(URI.create(baseTarget));
+    }
+
+    /**
+     * Apply proxy configuration from OCI-specific system properties to the given Micronaut HTTP client configuration.
+     * Recognized properties:
+     * - io.micronaut.oci.proxy (URI, e.g. http://user:pass@host:port or socks5://host:1080)
+     * - io.micronaut.oci.proxy.host
+     * - io.micronaut.oci.proxy.port
+     * - io.micronaut.oci.proxy.username
+     * - io.micronaut.oci.proxy.password
+     * - io.micronaut.oci.proxy.type (http|socks|socks5)
+     * - io.micronaut.oci.proxy.nonProxyHosts (comma-separated, supports * wildcard)
+     */
+    static void applyProxyFromSystemProperties(DefaultHttpClientConfiguration cfg, Logger log) {
+        try {
+            final String proxyProp = System.getProperty("io.micronaut.oci.proxy");
+            final String hostProp = System.getProperty("io.micronaut.oci.proxy.host");
+            final String portProp = System.getProperty("io.micronaut.oci.proxy.port");
+            final String userProp = System.getProperty("io.micronaut.oci.proxy.username");
+            final String passProp = System.getProperty("io.micronaut.oci.proxy.password");
+            final String typeProp = System.getProperty("io.micronaut.oci.proxy.type");
+            final String nonProxyProp = System.getProperty("io.micronaut.oci.proxy.nonProxyHosts");
+
+            Proxy.Type proxyType = Proxy.Type.HTTP;
+            if (typeProp != null) {
+                if ("socks".equalsIgnoreCase(typeProp) || "socks5".equalsIgnoreCase(typeProp)) {
+                    proxyType = Proxy.Type.SOCKS;
+                } else {
+                    proxyType = Proxy.Type.HTTP;
+                }
+            }
+
+            String host = null;
+            int port = -1;
+            String user = null;
+            String pass = null;
+
+            if (proxyProp != null && !proxyProp.isBlank()) {
+                URI pUri = URI.create(proxyProp.trim());
+                if (pUri.getScheme() != null) {
+                    if (pUri.getScheme().toLowerCase(Locale.ROOT).startsWith("socks")) {
+                        proxyType = Proxy.Type.SOCKS;
+                    } else {
+                        proxyType = Proxy.Type.HTTP;
+                    }
+                }
+                host = pUri.getHost();
+                port = pUri.getPort();
+                String ui = pUri.getUserInfo();
+                if (ui != null) {
+                    int idx = ui.indexOf(':');
+                    if (idx >= 0) {
+                        user = ui.substring(0, idx);
+                        pass = ui.substring(idx + 1);
+                    } else {
+                        user = ui;
+                    }
+                }
+                if (port < 0) {
+                    port = proxyType == Proxy.Type.SOCKS ? 1080 : 80;
+                }
+            } else if (hostProp != null && !hostProp.isBlank()) {
+                host = hostProp.trim();
+                if (portProp != null) {
+                    try {
+                        port = Integer.parseInt(portProp.trim());
+                    } catch (NumberFormatException ignored) {
+                        port = -1;
+                    }
+                }
+                if (port < 0) {
+                    port = proxyType == Proxy.Type.SOCKS ? 1080 : 80;
+                }
+                user = userProp;
+                pass = passProp;
+            }
+
+            if (host != null && !host.isBlank()) {
+                InetSocketAddress address = new InetSocketAddress(host, port);
+                cfg.setProxyType(proxyType);
+                cfg.setProxyAddress(address);
+                if (user != null && !user.isBlank()) {
+                    cfg.setProxyUsername(user);
+                }
+                if (pass != null && !pass.isBlank()) {
+                    cfg.setProxyPassword(pass);
+                }
+                if (nonProxyProp != null && !nonProxyProp.isBlank()) {
+                    final var patterns = Arrays.stream(nonProxyProp.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .map(p -> p.replace(".", "\\.").replace("*", ".*"))
+                        .map(Pattern::compile)
+                        .toList();
+                    final Proxy proxy = new Proxy(proxyType, address);
+                    cfg.setProxySelector(new ProxySelector() {
+                        @Override
+                        public List<Proxy> select(URI uri) {
+                            String h = uri.getHost();
+                            if (h != null) {
+                                for (Pattern pat : patterns) {
+                                    if (pat.matcher(h).matches()) {
+                                        return List.of(Proxy.NO_PROXY);
+                                    }
+                                }
+                            }
+                            return List.of(proxy);
+                        }
+
+                        @Override
+                        public void connectFailed(URI uri, SocketAddress sa, IOException ioe) {
+                            // no-op
+                        }
+                    });
+                }
+            }
+        } catch (RuntimeException e) {
+            if (log.isDebugEnabled()) {
+                log.debug("Ignoring OCI proxy system properties due to error: {}", e.getMessage(), e);
+            }
+        }
     }
 }

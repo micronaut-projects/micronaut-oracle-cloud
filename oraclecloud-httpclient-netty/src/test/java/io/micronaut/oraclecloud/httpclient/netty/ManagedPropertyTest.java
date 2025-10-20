@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 
 @MicronautTest
 @Property(name = "spec.name", value = "ManagedPropertyTest")
+@Property(name = "oci.netty.use-managed-provider-globally", value = "false")
 public class ManagedPropertyTest {
 
     public static final Service SERVICE = Services.serviceBuilder()
@@ -47,7 +48,6 @@ public class ManagedPropertyTest {
     public void unmanagedClientUsesManagedProviderProperty() {
         MockHttpClientRegistry registry = ctx.getBean(MockHttpClientRegistry.class);
         Assertions.assertFalse(registry.clientRegistered);
-        NettyHttpProvider.setManagedHttpProvider(null);
         UnmanagedClientBuilder unmanagedClientBuilder = new UnmanagedClientBuilder(SERVICE);
         unmanagedClientBuilder.clientConfigurator(builder -> builder.property(NettyClientProperties.MANAGED_PROVIDER, managedNettyHttpProvider));
         UnmanagedClient unmanagedClient = unmanagedClientBuilder.build(authenticationDetailsProvider);

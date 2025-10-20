@@ -52,7 +52,7 @@ public class ManagedNettyIsDefaultSetTest {
                 null,
                 null,
                 null,
-                null
+                new OciNettyConfiguration(false, true)
             );
 
             Serializer serializer = HttpProvider.getDefault().getSerializer();
