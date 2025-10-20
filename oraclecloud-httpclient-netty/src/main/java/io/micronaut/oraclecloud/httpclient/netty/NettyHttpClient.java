@@ -227,6 +227,7 @@ final class NettyHttpClient implements HttpClient {
      * - io.micronaut.oci.proxy.type (http|socks|socks5)
      * - io.micronaut.oci.proxy.nonProxyHosts (comma-separated, supports * wildcard)
      */
+    @SuppressWarnings("java:S3776")
     static void applyProxyFromSystemProperties(DefaultHttpClientConfiguration cfg, Logger log) {
         try {
             final String proxyProp = System.getProperty("io.micronaut.oci.proxy");
