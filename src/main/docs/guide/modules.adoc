@@ -24,7 +24,7 @@ OCI SDK client dependencies compatible with the `micronaut-oraclecloud-httpclien
 The modules also support injection of the OCI SDK client interfaces.
 Injection of Reactor or RxJava 2 clients is supported with the addition of one of the following dependencies:
 
-dependency:io.micronaut.reactor:micronaut-reactor[]
+dependency:micronaut-reactor[groupId="io.micronaut.reactor"]
 dependency:io.micronaut.rxjava2:micronaut-rxjava2[]
 
 === micronaut-oraclecloud-sdk

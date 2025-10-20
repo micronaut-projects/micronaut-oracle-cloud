@@ -6,7 +6,7 @@ dependency:io.micronaut.rxjava2:micronaut-rxjava2[]
 
 For Reactor add the following module along with `micronaut-oraclecloud-sdk-[OCI SDK client]` module:
 
-dependency:io.micronaut.reactor:micronaut-reactor[]
+dependency:micronaut-reactor[groupId="io.micronaut.reactor"]
 
 
 For example, instead of `ObjectStorageClient`, you can inject `ObjectStorageRxClient` for RxJava 2 or `ObjectStorageReactorClient` for Reactor to use the Object Storage API:
