@@ -39,6 +39,7 @@ record OciNettyConfiguration(
     @Experimental
     @Bindable(defaultValue = "false")
     boolean legacyNettyClient,
+    @Experimental
     @Bindable(defaultValue = "false")
     boolean useManagedProviderGlobally
 ) {

@@ -90,6 +90,8 @@ purposes.
 
 ### Proxy configuration via system properties (unmanaged Netty client)
 
+WARNING: This feature is experimental and subject to change.
+
 When the Netty HTTP client is created in an unmanaged context (i.e. not obtained from a Micronaut `ApplicationContext`), this module will map the following system properties to the Micronaut HTTP client's proxy configuration:
 
 - `io.micronaut.oci.proxy` URI form: `http://user:pass@host:port`, `https://host:443` or `socks5://host:1080`
@@ -128,6 +130,8 @@ java \
 NOTE: For managed clients (obtained from Micronaut DI), configure proxy using standard Micronaut HTTP client configuration (for example `micronaut.http.services.*` or `oci.client.*`), not system properties.
 
 ### Managed Netty client configuration (oci.netty.*)
+
+WARNING: This feature is experimental and subject to change.
 
 The managed Netty client reads `oci.netty.*` settings:
 

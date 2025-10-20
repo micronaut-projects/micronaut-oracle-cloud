@@ -12,6 +12,9 @@ import java.net.ProxySelector;
 import java.net.URI;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 class ProxySystemPropertiesTest {
 
     private static final String P_PROXY = "io.micronaut.oci.proxy";
@@ -39,13 +42,13 @@ class ProxySystemPropertiesTest {
         NettyHttpClient.applyProxyFromSystemProperties(cfg, LoggerFactory.getLogger(NettyHttpClient.class));
 
         // then
-        Assertions.assertEquals(Proxy.Type.HTTP, cfg.getProxyType());
-        Assertions.assertNotNull(cfg.getProxyAddress());
+        assertEquals(Proxy.Type.HTTP, cfg.getProxyType());
+        assertNotNull(cfg.getProxyAddress());
         InetSocketAddress addr = (InetSocketAddress) cfg.getProxyAddress().get();
-        Assertions.assertEquals("proxy.example", addr.getHostString());
-        Assertions.assertEquals(8080, addr.getPort());
-        Assertions.assertEquals("user", cfg.getProxyUsername().get());
-        Assertions.assertEquals("pass", cfg.getProxyPassword().get());
+        assertEquals("proxy.example", addr.getHostString());
+        assertEquals(8080, addr.getPort());
+        assertEquals("user", cfg.getProxyUsername().get());
+        assertEquals("pass", cfg.getProxyPassword().get());
     }
 
     @Test
@@ -64,12 +67,12 @@ class ProxySystemPropertiesTest {
         NettyHttpClient.applyProxyFromSystemProperties(cfg, LoggerFactory.getLogger(NettyHttpClient.class));
 
         // then
-        Assertions.assertEquals(Proxy.Type.SOCKS, cfg.getProxyType());
+        assertEquals(Proxy.Type.SOCKS, cfg.getProxyType());
         InetSocketAddress addr = (InetSocketAddress) cfg.getProxyAddress().get();
-        Assertions.assertEquals("socks.gateway.internal", addr.getHostString());
-        Assertions.assertEquals(1081, addr.getPort());
-        Assertions.assertEquals("alice", cfg.getProxyUsername().get());
-        Assertions.assertEquals("secret", cfg.getProxyPassword().get());
+        assertEquals("socks.gateway.internal", addr.getHostString());
+        assertEquals(1081, addr.getPort());
+        assertEquals("alice", cfg.getProxyUsername().get());
+        assertEquals("secret", cfg.getProxyPassword().get());
     }
 
     @Test
@@ -87,11 +90,11 @@ class ProxySystemPropertiesTest {
 
         // then
         ProxySelector selector = cfg.getProxySelector().get();
-        Assertions.assertNotNull(selector, "ProxySelector should be configured when nonProxyHosts is set");
+        assertNotNull(selector, "ProxySelector should be configured when nonProxyHosts is set");
 
         List<Proxy> forInternal = selector.select(URI.create("https://api.internal"));
         Assertions.assertFalse(forInternal.isEmpty());
-        Assertions.assertEquals(Proxy.NO_PROXY, forInternal.get(0), "Hosts matching nonProxyHosts should bypass proxy");
+        assertEquals(Proxy.NO_PROXY, forInternal.get(0), "Hosts matching nonProxyHosts should bypass proxy");
 
         List<Proxy> forExternal = selector.select(URI.create("https://service.external"));
         Assertions.assertFalse(forExternal.isEmpty());

@@ -13,7 +13,6 @@ import com.oracle.bmc.http.Priorities;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
-import com.oracle.bmc.http.client.StandardClientProperties;
 import com.oracle.bmc.http.internal.AuthnClientFilter;
 import com.oracle.bmc.http.internal.ClientIdFilter;
 import com.oracle.bmc.http.internal.LogHeadersFilter;
@@ -31,6 +30,10 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Verifies that ResourcePrincipalAuthenticationDetailsProvider is created by Micronaut and,
@@ -53,17 +56,17 @@ public class ResourcePrincipalManagedNettyProviderTest {
             RecordingFederationClient federationClient = ctx.getBean(RecordingFederationClient.class);
 
             // Assert that makeClient() was invoked and returned a Netty client instance
-            Assertions.assertNotNull(federationClient.lastClient, "Expected AbstractFederationClient.makeClient to be invoked during construction");
+            assertNotNull(federationClient.lastClient, "Expected AbstractFederationClient.makeClient to be invoked during construction");
             String actualClientClass = federationClient.lastClient.getClass().getName();
-            Assertions.assertTrue(actualClientClass.contains("io.micronaut.oraclecloud.httpclient.netty.NettyHttpClient"),
+            assertTrue(actualClientClass.contains("io.micronaut.oraclecloud.httpclient.netty.NettyHttpClient"),
                 "Expected NettyHttpClient implementation, but was: " + actualClientClass);
 
             NettyHttpClient client = (NettyHttpClient) federationClient.lastClient;
 
-            Assertions.assertFalse(client.nettyClientFilter.isEmpty());
+            assertFalse(client.nettyClientFilter.isEmpty());
 
                 // Also ensure bean was created
-            Assertions.assertNotNull(rp, "Expected ResourcePrincipalAuthenticationDetailsProvider bean");
+            assertNotNull(rp, "Expected ResourcePrincipalAuthenticationDetailsProvider bean");
         }
     }
 
