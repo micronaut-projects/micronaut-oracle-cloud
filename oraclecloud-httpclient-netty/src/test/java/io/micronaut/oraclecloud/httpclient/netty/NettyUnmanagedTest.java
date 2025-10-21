@@ -15,7 +15,6 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +23,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class NettyUnmanagedTest extends NettyTest {
     private static final HttpProvider PROVIDER = new NettyHttpProvider();
@@ -64,8 +66,8 @@ public class NettyUnmanagedTest extends NettyTest {
     @Test
     void simpleRequestTestFilters() throws Exception {
         netty.handleOneRequest((ctx, request) -> {
-            Assertions.assertEquals(HttpMethod.GET, request.method());
-            Assertions.assertEquals("/foo", request.uri());
+            assertEquals(HttpMethod.GET, request.method());
+            assertEquals("/foo", request.uri());
 
             DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8)));
             response.headers().add("Content-Type", "text/plain");
@@ -89,23 +91,23 @@ public class NettyUnmanagedTest extends NettyTest {
             .execute().toCompletableFuture()
             .get()) {
             String s = response.textBody().toCompletableFuture().get();
-            Assertions.assertEquals("bar", s);
+            assertEquals("bar", s);
         }
         client.close();
 
-        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getStartTime());
-        Assertions.assertNotEquals(0, firstTestNettyClientFilter.getEndTime());
-        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getStartTime());
-        Assertions.assertNotEquals(0, secondTestNettyClientFilter.getEndTime());
+        assertNotEquals(0, firstTestNettyClientFilter.getStartTime());
+        assertNotEquals(0, firstTestNettyClientFilter.getEndTime());
+        assertNotEquals(0, secondTestNettyClientFilter.getStartTime());
+        assertNotEquals(0, secondTestNettyClientFilter.getEndTime());
 
-        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
-        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
-        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
-        Assertions.assertTrue(secondTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
+        assertTrue(firstTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
+        assertTrue(secondTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
+        assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getEndTime());
+        assertTrue(secondTestNettyClientFilter.getStartTime() < firstTestNettyClientFilter.getEndTime());
 
-        Assertions.assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
-        Assertions.assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
-        Assertions.assertTrue(firstTestNettyClientFilter.getEndTime() > secondTestNettyClientFilter.getEndTime());
+        assertTrue(firstTestNettyClientFilter.getStartTime() < secondTestNettyClientFilter.getStartTime());
+        assertTrue(firstTestNettyClientFilter.getOrder() < secondTestNettyClientFilter.getOrder());
+        assertTrue(firstTestNettyClientFilter.getEndTime() > secondTestNettyClientFilter.getEndTime());
     }
 
     @Override
