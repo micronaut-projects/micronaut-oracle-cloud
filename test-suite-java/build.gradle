@@ -2,7 +2,10 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-native-tests'
 }
 
-mainClassName = "helloworld.Application"
+application {
+    mainClass = "helloworld.Application"
+}
+
 // ensure Jackson databind is not on the classpath for tests
 configurations.all {
     exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")

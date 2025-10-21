@@ -26,4 +26,6 @@ test {
     exclude '**/*Test$Intercepted*'
 }
 
-mainClassName = 'example.ApplicationKt'
+application {
+    mainClass = 'example.ApplicationKt'
+}
