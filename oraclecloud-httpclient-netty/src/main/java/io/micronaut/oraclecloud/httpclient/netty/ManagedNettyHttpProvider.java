@@ -82,12 +82,14 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         @Nullable OciNettyConfiguration configuration
     ) {
         this.mnHttpClientRegistry = mnHttpClientRegistry;
-        this.configuration = configuration == null ? new OciNettyConfiguration(false) : configuration;
+        this.configuration = configuration == null ? new OciNettyConfiguration(false, false) : configuration;
         this.mnHttpClient = null;
         this.ioExecutor = ioExecutor;
         this.jsonMapper = jsonMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
-        setManagedHttpProvider(this);
+        if (this.configuration.useManagedProviderGlobally()) {
+            setManagedHttpProvider(this);
+        }
     }
 
     // For OKE: this constructor is used only with the Kubernetes client in OKE and must not
@@ -103,7 +105,7 @@ public class ManagedNettyHttpProvider implements HttpProvider {
         this.ioExecutor = ioExecutor;
         this.jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         this.nettyClientFilters = nettyClientFilters == null ? Collections.emptyList() : nettyClientFilters;
-        this.configuration = new OciNettyConfiguration(false);
+        this.configuration = new OciNettyConfiguration(false, false);
     }
 
     @Override
@@ -122,6 +124,8 @@ public class ManagedNettyHttpProvider implements HttpProvider {
      */
     @PreDestroy
     public void close() {
-        setManagedHttpProvider(null);
+        if (configuration.useManagedProviderGlobally()) {
+            setManagedHttpProvider(null);
+        }
     }
 }

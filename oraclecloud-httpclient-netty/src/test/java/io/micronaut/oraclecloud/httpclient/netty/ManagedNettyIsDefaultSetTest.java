@@ -4,15 +4,10 @@ import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
-import io.micronaut.oraclecloud.serde.OciSerdeConfiguration;
 import io.micronaut.serde.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -52,7 +47,7 @@ public class ManagedNettyIsDefaultSetTest {
                 null,
                 null,
                 null,
-                null
+                new OciNettyConfiguration(false, true)
             );
 
             Serializer serializer = HttpProvider.getDefault().getSerializer();
@@ -61,6 +56,8 @@ public class ManagedNettyIsDefaultSetTest {
                 serializer,
                 "Expected different serializer when default constructor used"
             );
+
+            managed.close();
         } finally {
             executor.shutdownNow();
         }

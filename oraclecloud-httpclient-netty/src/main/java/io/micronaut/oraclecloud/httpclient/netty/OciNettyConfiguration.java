@@ -21,9 +21,15 @@ import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.bind.annotation.Bindable;
 
 /**
- * Configuration properties specific to the managed client.
+ * Configuration properties specific to the managed Netty HTTP client for the OCI SDK.
+ * <p>
+ * Properties are prefixed with {@code oci.netty}.
+ * </p>
  *
- * @param legacyNettyClient Use the legacy implementation of the netty client.
+ * @param legacyNettyClient           Use the legacy implementation of the Netty client. This is {@link io.micronaut.core.annotation.Experimental}
+ *                                    and intended for migration scenarios.
+ * @param useManagedProviderGlobally  If {@code true}, enable the managed Netty HTTP provider globally for SDK clients,
+ *                                    centralizing HTTP client configuration via Micronaut (for example {@code micronaut.http.*} or {@code oci.client.*}).
  * @author Jonas Konrad
  * @since 4.3.0
  */
@@ -32,7 +38,10 @@ import io.micronaut.core.bind.annotation.Bindable;
 record OciNettyConfiguration(
     @Experimental
     @Bindable(defaultValue = "false")
-    boolean legacyNettyClient
+    boolean legacyNettyClient,
+    @Experimental
+    @Bindable(defaultValue = "false")
+    boolean useManagedProviderGlobally
 ) {
     static final String PREFIX = "oci.netty";
 }

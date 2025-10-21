@@ -1,8 +1,9 @@
-Oracle Cloud Autonomous Database connection information and credentials are stored in the https://docs.oracle.com/en-us/iaas/Content/Database/Tasks/adbconnecting.htm[Oracle Wallet].
+Oracle Cloud Autonomous Database connection information and credentials are stored in an https://docs.oracle.com/en-us/iaas/Content/Database/Tasks/adbconnecting.htm[Oracle Wallet].
 
 Micronaut can automatically generate and download the Wallet and configure the data source.
 
-First you need the correct version of the Oracle Database driver and required modules. To ensure you are using the right version apply the 21.1.0.0 or above Oracle Database BOM with Gradle:
+First, you need the correct version of the Oracle Database driver and required modules.
+To ensure you are using the correct version, apply the 21.1.0.0 or above Oracle Database BOM with Gradle:
 
 [source,groovy]
 ----
@@ -26,13 +27,13 @@ Or with Maven:
   </dependencyManagement>
 ----
 
-Secondly you need to add a dependency on the `micronaut-oraclecloud-atp` module:
+Second, add a dependency on the `micronaut-oraclecloud-atp` module:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-atp[scope="runtime"]
 
-Then you must configure the <<authentication, authentication provider>>.
+Then configure the <<authentication, authentication provider>>.
 
-Then simply add a dependency to one of the Micronaut connection pool implementations.
+Then, add a dependency to one of the Micronaut connection pool implementations.
 
 NOTE: Automated configuration is currently supported only for the HikariCP and UCP connection pool.
 
@@ -42,7 +43,7 @@ Or:
 
 dependency:micronaut-jdbc-hikari[groupId="io.micronaut.sql", scope="runtime"]
 
-NOTE: Note that `micronaut-oraclecloud-atp` module is compatible with Java 11+.
+NOTE: Note that `micronaut-oraclecloud-atp` module is compatible with Java 17+.
 
 To use automated data source configuration from the Wallet, provide a configuration similar to the following:
 
@@ -55,14 +56,17 @@ datasources:
     username: foo
     password: bar
 ----
-- `ocid` specifies the autonomous database id
-- `walletPassword` encrypts the keys inside the wallet (at least eight characters long, includes at least one letter and either one numeric character or one special character)
+- `ocid` specifies the Autonomous Database id
+- `wallet-password` encrypts the keys inside the wallet. It must be at least eight characters long, include at least one letter, and either one numeric character or one special character)
 - specify the database `username` and `password`
 
 NOTE: The `username` and `password` are not automatically generated and must be created in advance.
 
-Module uses `<db_name>_high` as a default service alias. This can be overriden with the `serviceAlias` property.
+The module uses `<db_name>_high` as the default service alias.
+This can be overridden with the `serviceAlias` property.
 
-The wallet is of type `SINGLE`. Use the `walletType` property to configure different types. See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].
+The wallet is of type `SINGLE`.
+Use the `walletType` property to configure different types.
+See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].
 
 TIP: See the guide for https://guides.micronaut.io/latest/micronaut-oracle-autonomous-db.html[Access an Oracle Autonomous Database] to learn more.

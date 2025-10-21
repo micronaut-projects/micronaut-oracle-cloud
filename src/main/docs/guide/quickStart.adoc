@@ -1,10 +1,10 @@
 To get started quickly, https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm[setup the Oracle Cloud CLI] making sure you have run `oci setup config` to configure local access to Oracle Cloud.
 
-Then add dependencies on the Micronaut OracleCloud modules corresponding to OCI SDK clients you wish to use, for example Vault:
+Then add dependencies on the Micronaut Oracle Cloud modules corresponding to OCI SDK clients you wish to use, for example, Vault:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
 
-Utilize Micronaut Injection to get an instance of the client in your application, e.g.:
+Use Micronaut Injection to get an instance of the client in your application, e.g.:
 ```java
 @Inject
 Vault vault
