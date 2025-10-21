@@ -1,15 +1,14 @@
-To start using https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm[Oracle Cloud Certificates] service first create certificate on OCI platform, add the following dependency to your project:
+To start using https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm[Oracle Cloud Certificates] service, first create a certificate on OCI, and add the following dependency to your project:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-certificates[]
 
-Copy ocid of your certificate:
+Copy the OCID of your certificate:
 
 image::oci_certificate_ocid.png[Certificate OCID]
 
-NOTE: Before you create Certificate make sure that you have created https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm[required polices].
+NOTE: Before you create a certificate, make sure that you have created https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm[the required policies].
 
-
-Add the following to the `application` configuration file to enable ssl and Oracle Cloud Certificate support:
+Add the following to the `application` configuration file to enable SSL and Oracle Cloud Certificate support:
 
 [configuration]
 ----
@@ -62,9 +61,9 @@ oci:
     certificate-id: ocid1.certificate.oc1.....
 ----
 
-NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file `application-oraclecloud` (with the appropriate extension, such as .yml).
+NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally, name the configuration file `application-oraclecloud` (with the appropriate extension, such as .properties).
 
-In next table you can find useful parameters to further customize integration with Oracle Cloud Certificates:
+In the next table, you can find useful parameters to further customize integration with Oracle Cloud Certificates:
 
 .Configurable Oracle Cloud Certificate properties
 |===
@@ -80,7 +79,7 @@ In next table you can find useful parameters to further customize integration wi
 |`java.lang.String`
 |true
 |/
-|the Ocid of the certificate
+|the OCID of the certificate
 
 |`oci.certificates.version-number`
 |`long`
@@ -110,13 +109,13 @@ In next table you can find useful parameters to further customize integration wi
 |`int`
 |false
 |3
-|How many attempts to retry if refresh certificate process fails
+|How many attempts to retry if refreshing the certificate fails
 
 |`oci.certificates.refresh.retry.delay`
 |`java.time.Duration`
 |false
 |1s
-|How much to delay attempts in between retry if refresh certificate process fails
+|How long to delay attempts between retries if refreshing a certificate fails
 
 |===
 

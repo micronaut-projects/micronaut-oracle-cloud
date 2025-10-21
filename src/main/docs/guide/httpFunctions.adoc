@@ -1,6 +1,6 @@
-The `micronaut-oraclecloud-function-http` module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.
+The `micronaut-oraclecloud-function-http` module lets you write HTTP API Gateway function handlers that delegate to Micronaut controllers.
 
-Since Micronaut 2.1 you can create HTTP functions with a Gradle build using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
+You can create HTTP functions with a Gradle build using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
 
 .Creating a new Function with the CLI
 [source,bash]
@@ -8,7 +8,7 @@ Since Micronaut 2.1 you can create HTTP functions with a Gradle build using the 
 $ mn create-app myfunction --features oracle-function
 ----
 
-Since Micronaut 2.2 you can create HTTP functions with a Maven build using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
+You can create HTTP functions with a Maven build using the command line or via https://micronaut.io/launch/[Micronaut Launch]:
 
 .Creating a new Function with the CLI
 [source,bash]
@@ -16,13 +16,13 @@ Since Micronaut 2.2 you can create HTTP functions with a Maven build using the c
 $ mn create-app myfunction --build=maven --features oracle-function
 ----
 
-You can then create your controller just as you would a normal Micronaut controller.
+You can then create your controller just as you would a regular Micronaut controller.
 
 snippet::example.BucketController[project-base="docs-examples/example-http-function", source="main", tags="imports,class"]
 
 <1> This example uses the `micronaut-oraclecloud-sdk` module to perform Object Storage operations, so the `ObjectStorage` client and `TenancyIdProvider` are injected.
 
-Next, add a controller method to list all of the buckets in a compartment:
+Next, add a controller method to list all the buckets in a compartment:
 
 snippet::example.BucketController[project-base="docs-examples/example-http-function", source="main", tags="listBuckets", indent="0"]
 
@@ -35,11 +35,12 @@ To build the Oracle Function with Maven, run the `./mvnw package -Dpackaging=doc
 
 === Deploy
 
-To deploy your function <<functions,follow the same instructions>> provided for regular Oracle Functions.
+To deploy your function, <<functions,follow the same instructions>> provided for regular Oracle Functions.
 
 === API Gateway
 
-Once you have deployed your function you'll need to create an API Gateway to route requests to your serverless deployment. The Micronaut router will call the proper controller function based on the incoming HTTP Request Method and the path.
+Once you have deployed your function, create an API Gateway to route requests to your serverless deployment.
+The Micronaut router will call the proper controller function based on the incoming HTTP Request Method and the path.
 
 First, create an API Gateway by selecting 'Developer Services', then 'API Gateway' from the Oracle Cloud console dashboard.
 
@@ -57,7 +58,8 @@ When the gateway is `Active`, click `Deployments`, then `Create Deployment`.
 
 image::create-deployment-button.png[Create Gateway Button]
 
-Provide a name for the deployment and enter a "Path Prefix". If necessary, configure any Authentication, CORS, or Rate Limiting and click `Next`.
+Provide a name for the deployment and enter a "Path Prefix".
+If necessary, configure any Authentication, CORS, or Rate Limiting and click `Next`.
 
 NOTE: The path prefix must match the path you used in your controller (e.g. `@Controller("/os")`).
 
@@ -65,7 +67,7 @@ image::deployment-details-basic.png[Create Gateway Button]
 
 Enter route information.
 
-1. Enter `/{path*}` as the Path. This will capture all incoming requests and the Micronaut router will match the incoming path and request method with the proper controller method.
+1. Enter `/{path*}` as the Path. This will capture all incoming requests, and the Micronaut router will match the incoming path and request method with the proper controller method.
 2. Choose `ANY` for methods. Optionally, choose the necessary methods individually.
 3. Choose 'Oracle Functions' as the type.
 4. Choose the appropriate Oracle Functions application.
@@ -81,7 +83,8 @@ Your new deployment will be listed in 'Creating' state.
 
 image::deployment-creating.png[Deployment Creating]
 
-When your new deployment becomes 'Active', click the deployment to view the deployment details. Copy the 'Endpoint' - this is the base URL that you'll use for your function invocations.
+When your new deployment becomes 'Active', click the deployment to view the deployment details.
+Copy the 'Endpoint' - this is the base URL that you'll use for your function invocations.
 
 image::deployment-details.png[Create Gateway Button]
 

@@ -1,8 +1,9 @@
 The `micronaut-oraclecloud-oke-kubernetes-client` module integrates https://micronaut-projects.github.io/micronaut-kubernetes/latest/guide/#kubernetes-client-openapi[Micronaut Kubernetes Client] with the OKE and OCI Container Engine service.
 
-When the module is enabled, the client will retrieve a kubeconfig from the OKE cluster and provide authentication
-for requests to the OKE API server. This module is not needed for Kubernetes nodes that do not connect to
-the Kubernetes API server. Instead, this is useful for sending requests to manage the OKE cluster.
+When the module is enabled, the client will retrieve a kubeconfig from the OKE cluster and provide authentication for requests to the OKE API server.
+This module is not needed for Kubernetes nodes that do not connect to
+the Kubernetes API server.
+Instead, this is useful for sending requests to manage the OKE cluster.
 
 NOTE: If you want to use an OCI client inside an OKE node, use the `micronaut-oraclecloud-oke-workload-identity` module instead.
 
@@ -10,7 +11,7 @@ To begin, add a dependency on the `micronaut-oraclecloud-oke-kubernetes-client` 
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-oke-kubernetes-client[scope="runtime"]
 
-Add a dependency on one of the Kubernetes OpenAPI clients (there is a blocking and a reactor version):
+Add a dependency on one of the Kubernetes OpenAPI clients (there are blocking and Reactor-based versions):
 
 dependency:io.micronaut.kubernetes:micronaut-kubernetes-client-openapi[scope="implementation"]
 
