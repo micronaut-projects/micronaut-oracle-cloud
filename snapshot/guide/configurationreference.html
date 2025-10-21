@@ -2478,7 +2478,15 @@
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.netty.legacy-netty-client</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Use the legacy implementation of the netty client.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use the legacy implementation of the Netty client. This is <a href="../api/io/micronaut/core/annotation/Experimental.html">Experimental</a>
+                                    and intended for migration scenarios.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.netty.use-managed-provider-globally</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If {@code true}, enable the managed Netty HTTP provider globally for SDK clients,
+                                    centralizing HTTP client configuration via Micronaut (for example {@code micronaut.http.<strong>} or {@code oci.client.</strong>}).</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
 </tbody>

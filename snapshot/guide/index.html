@@ -175,7 +175,10 @@
 
 <div class="paragraph">
 <p>This module provides integration between Micronaut and the
-Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject SDK clients into your Micronaut services and controllers. In addition to supporting the SDK&#8217;s blocking clients, the module provides reactive clients that use RxJava to provide async alternatives to the blocking clients in the SDK (an improvement upon the SDK&#8217;s 'out-of-the-box' async clients). This module also includes support for Oracle Cloud (serverless) Functions and Oracle Cloud Autonomous Database.</p>
+Oracle Cloud Infrastructure (OCI) SDK by allowing you to easily inject SDK clients into your Micronaut services and controllers.</p>
+</div>
+<div class="paragraph">
+<p>In addition to supporting the SDK&#8217;s blocking clients, the module provides reactive clients that use RxJava to provide async alternatives to the blocking clients in the SDK (an improvement upon the SDK&#8217;s 'out-of-the-box' async clients).</p>
 </div>
 
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
@@ -210,7 +213,9 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <h2 id="_micronaut_oracle_cloud_2_2_0_breaking_changes">Micronaut Oracle Cloud 2.2.0 breaking changes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In version 2.33.0, Oracle removed some dependencies from their Oracle Cloud SDK. If you relied on those dependencies being available, but did not declare them in your build file explicitly, they may now be missing. The solution is to add those dependencies to your own build file.</p>
+<p>In version 2.33.0, Oracle removed some dependencies from their Oracle Cloud SDK.
+If you relied on those dependencies being available but did not declare them in your build file explicitly, they may now be missing.
+The solution is to add those dependencies to your own build file.</p>
 </div>
 <div class="paragraph">
 <p><strong>In general, we do not recommend depending on transitive dependencies of the Oracle Cloud SDK, as future versions may remove further dependencies.</strong></p>
@@ -234,7 +239,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 <p>To get started quickly, <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm">setup the Oracle Cloud CLI</a> making sure you have run <code>oci setup config</code> to configure local access to Oracle Cloud.</p>
 </div>
 <div class="paragraph">
-<p>Then add dependencies on the Micronaut OracleCloud modules corresponding to OCI SDK clients you wish to use, for example Vault:</p>
+<p>Then add dependencies on the Micronaut Oracle Cloud modules corresponding to OCI SDK clients you wish to use, for example, Vault:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -253,7 +258,7 @@ Oracle Cloud Infrastructure (OCI) SDK by giving you the ability to easily inject
 </div></p>
 </div>
 <div class="paragraph">
-<p>Utilize Micronaut Injection to get an instance of the client in your application, e.g.:</p>
+<p>Use Micronaut Injection to get an instance of the client in your application, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -297,7 +302,8 @@ Vault vault</code></pre>
 <h2 id="config-auth">ConfigFileAuthenticationDetailsProvider</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html">ConfigFileAuthenticationDetailsProvider</a> uses a config file located at <code>$USER_HOME/.oci/config</code>. Specify a profile or config file path within the config file via your <code>application</code> configuration file:</p>
+<p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/ConfigFileAuthenticationDetailsProvider.html">ConfigFileAuthenticationDetailsProvider</a> uses a config file located at <code>$HOME/.oci/config</code>.
+Specify a profile or config file path within the config file via your <code>application</code> configuration file:</p>
 </div>
 <a id="io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties" href="#io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties">&#128279;</a>
 <table class="tableblock frame-all grid-all stretch">
@@ -344,7 +350,8 @@ Vault vault</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In the Oracle Java SDK the environment variable <code>OCI_CONFIG_FILE</code> doesn&#8217;t take precedence over the <code>~/.oci/config</code> if the file exists. Assign the <code>OCI_CONFIG_FILE</code> to <code>oci.config.path</code>. To change the order: <code>oci.config.path: ${OCI_CONFIG_FILE}</code>
+In the Oracle Java SDK, the environment variable <code>OCI_CONFIG_FILE</code> doesn&#8217;t take precedence over the <code>~/.oci/config</code> if the file exists.
+Assign the <code>OCI_CONFIG_FILE</code> to <code>oci.config.path</code>. To change the order: <code>oci.config.path: ${OCI_CONFIG_FILE}</code>
 </td>
 </tr>
 </table>
@@ -470,7 +477,8 @@ oci.user-id=&lt;value&gt;</code></pre>
 <h2 id="instance-principals">InstancePrincipalsAuthenticationDetailsProvider</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If your application is running in Oracle Cloud, you can authorize <a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider.html">InstancePrincipalsAuthenticationDetailsProvider</a> to make SDK calls and utilize Instance Principal authentication. See the <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm">documentation</a> to enable this via dynamic groups and policies, and then enable it for the Oracle Cloud environment via the <code>application-oraclecloud</code> configuration file with:</p>
+<p>If your application is running in Oracle Cloud, you can authorize <a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/InstancePrincipalsAuthenticationDetailsProvider.html">InstancePrincipalsAuthenticationDetailsProvider</a> to make SDK calls and use Instance Principal authentication.
+See the <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Identity/Tasks/callingservicesfrominstances.htm">documentation</a> to enable this using dynamic groups and policies, and then enable it for the Oracle Cloud environment via the <code>application-oraclecloud</code> configuration file with:</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -540,7 +548,9 @@ oci.user-id=&lt;value&gt;</code></pre>
 <h2 id="resource-principals">ResourcePrincipalAuthenticationDetailsProvider</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/ResourcePrincipalAuthenticationDetailsProvider.html">ResourcePrincipalAuthenticationDetailsProvider</a> is similar to <a href="#instance-principals">instance principals</a>, but used for Oracle Functions (serverless). See the <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm">documentation</a> for instructions on how to configure the necessary dynamic group rules and policies to use Resource Principal auth with your serverless functions. Once the proper configuration is complete, your Micronaut driven serverless functions will be able to use the OCI SDKs.</p>
+<p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/ResourcePrincipalAuthenticationDetailsProvider.html">ResourcePrincipalAuthenticationDetailsProvider</a> is similar to <a href="#instance-principals">instance principals</a>, but used for Oracle Functions (serverless).
+See the <a href="https://docs.cloud.oracle.com/en-us/iaas/Content/Functions/Tasks/functionsaccessingociresources.htm">documentation</a> for instructions on how to configure the necessary dynamic group rules and policies to use Resource Principal auth with your serverless functions.
+Once the proper configuration is complete, your Micronaut-driven serverless functions will be able to use the OCI SDKs.</p>
 </div>
 </div>
 </div>
@@ -548,7 +558,8 @@ oci.user-id=&lt;value&gt;</code></pre>
 <h2 id="oke-workload-identity">OkeWorkloadIdentityAuthenticationDetailsProvider</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If your application is running in Oracle Cloud OKE (Container Engine for Kubernetes), you can authorize <code>/com/oracle/bmc/auth/okeworkloadidentity/OkeWorkloadIdentityAuthenticationDetailsProvider</code> to make SDK calls and utilize OKE Workload Identity authentication. See the <a href="https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm">documentation</a> to enable this via dynamic groups and policies, and then enable it for the K8s environment via the <code>application-k8s</code> configuration file with:</p>
+<p>If your application is running in Oracle Cloud OKE (Container Engine for Kubernetes), you can authorize <code>/com/oracle/bmc/auth/okeworkloadidentity/OkeWorkloadIdentityAuthenticationDetailsProvider</code> to make SDK calls and use OKE Workload Identity authentication.
+See the <a href="https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/contenggrantingworkloadaccesstoresources.htm">documentation</a> to enable this using dynamic groups and policies, and then enable it for the K8s environment via the <code>application-k8s</code> configuration file with:</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -740,18 +751,18 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-oi
 </div></p>
 </div>
 <div class="paragraph">
-<p>Provides the common functionality and sets up the following beans:</p>
+<p>Provides common functionality and configures the following beans:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/BasicAuthenticationDetailsProvider.html">BasicAuthenticationDetailsProvider</a> - Authentication details auto-detected from local <code>$USER/.oci/config</code> or environment</p>
+<p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/auth/BasicAuthenticationDetailsProvider.html">BasicAuthenticationDetailsProvider</a> - Authentication details auto-detected from local <code>$HOME/.oci/config</code> or environment</p>
 </li>
 <li>
 <p><a href="https://docs.oracle.com/en-us/iaas/tools/java/2.2.0//com/oracle/bmc/ClientConfiguration.html">ClientConfiguration</a> - Common configuration for all clients</p>
 </li>
 <li>
-<p><a href="../api/io/micronaut/oci/core/TenancyIdProvider.html">TenancyIdProvider</a> - Interface to resolve current tenancy</p>
+<p><a href="../api/io/micronaut/oci/core/TenancyIdProvider.html">TenancyIdProvider</a> - Interface to resolve the current tenancy</p>
 </li>
 </ul>
 </div>
@@ -798,7 +809,20 @@ The modules also support injection of the OCI SDK client interfaces.
 Injection of Reactor or RxJava 2 clients is supported with the addition of one of the following dependencies:</p>
 </div>
 <div class="paragraph">
-<p>dependency:io.micronaut.<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/micronaut-reactor/.html">micronaut-reactor</a>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.reactor:micronaut-reactor")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.reactor&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-reactor&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
         <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
@@ -843,9 +867,8 @@ Injection of Reactor or RxJava 2 clients is supported with the addition of one o
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the
-Netty client implementations support Micronaut injection by default. For example to use Object Vault with
-OCI Jersey client you would define a dependency on this module as well as:
+The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the Netty client implementations support Micronaut injection by default.
+For example, to use Vault with the OCI Jersey client, you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -900,7 +923,7 @@ OCI Jersey client you would define a dependency on this module as well as:
 </div></p>
 </div>
 <div class="paragraph">
-<p>Provides support for injecting inject RxJava 2 client implementations.</p>
+<p>Provides support for injecting RxJava 2 client implementations.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -909,9 +932,8 @@ OCI Jersey client you would define a dependency on this module as well as:
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the
-Netty client implementations support Micronaut injection by default. For example to use Object Vault with
-OCI Jersey client you would define a dependency on this module as well as:
+The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the Netty client implementations support Micronaut injection by default.
+For example, to use Vault with the OCI Jersey client, you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -966,7 +988,7 @@ OCI Jersey client you would define a dependency on this module as well as:
 </div></p>
 </div>
 <div class="paragraph">
-<p>Provides support for injecting inject Reactor client implementations.</p>
+<p>Provides support for injecting Reactor client implementations.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -975,9 +997,8 @@ OCI Jersey client you would define a dependency on this module as well as:
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the
-Netty client implementations support Micronaut injection by default. For example to use Object Vault with
-OCI Jersey client you would define a dependency on this module as well as:
+The module is only required when you want to use the OCI SDK clients with a Jersey implementation, as the Netty client implementations support Micronaut injection by default.
+For example, to use Vault with the OCI Jersey client, you would define a dependency on this module as well as:
 </td>
 </tr>
 </table>
@@ -1032,7 +1053,7 @@ OCI Jersey client you would define a dependency on this module as well as:
 </div></p>
 </div>
 <div class="paragraph">
-<p>Provides the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> superclass that you can subclass to write Oracle Cloud Functions in Micronaut that can utilize Micronaut dependency injection.</p>
+<p>Provides the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> superclass that you can subclass to write Oracle Cloud Functions in Micronaut that can use Micronaut dependency injection.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1054,7 +1075,7 @@ OCI Jersey client you would define a dependency on this module as well as:
 </div></p>
 </div>
 <div class="paragraph">
-<p>Provides the <a href="../api/io/micronaut/oci/function/http/HttpFunction.html">HttpFunction</a> class that can be used as a handler to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
+<p>Provides the <a href="../api/io/micronaut/oci/function/http/HttpFunction.html">HttpFunction</a> class that can be used as a handler to write HTTP API Gateway function handlers that delegate to Micronaut controllers.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1146,7 +1167,8 @@ The module generates the OracleWallet on startup.
 
 
 <div class="paragraph">
-<p>This module provides a Netty client implementation for the Java OCI SDK. The client uses <a href="https://micronaut-projects.github.io/micronaut-serialization/latest/guide/">Micronaut Serialization</a>.</p>
+<p>This module provides a Netty client implementation for the Java OCI SDK.
+The client uses <a href="https://micronaut-projects.github.io/micronaut-serialization/latest/guide/">Micronaut Serialization</a>.</p>
 </div>
 <div class="paragraph">
 <p>Add a dependency to the <code>micronaut-oraclecloud-httpclient-netty</code> module:</p>
@@ -1168,7 +1190,8 @@ The module generates the OracleWallet on startup.
 </div></p>
 </div>
 <div class="paragraph">
-<p>For serialization to work correctly, use one of the micronaut OCI SDK modules instead of the OCI SDK modules. For example, for Object Store define the dependency:</p>
+<p>For serialization to work correctly, use one of the Micronaut OCI SDK modules instead of the OCI SDK modules.
+For example, for Object Store, define the dependency:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -1189,10 +1212,10 @@ The module generates the OracleWallet on startup.
 <div class="sect2">
 <h3 id="_importing_sdks_not_compiled_with_micronaut">Importing SDK&#8217;s not compiled with Micronaut</h3>
 <div class="paragraph">
-<p>If an OCI SDK client exists that is built with OCI SDK v3 or above but not compiled with Micronaut and therefore missing the the required Micronaut Serialization types you can import the sdk use the <code>@SdkImport</code> annotation.</p>
+<p>If an OCI SDK client exists that is built with OCI SDK v3 or above but not compiled with Micronaut and therefore missing the required Micronaut Serialization types, you can import the client using the <code>@SdkImport</code> annotation.</p>
 </div>
 <div class="paragraph">
-<p>First you should add an annotation processor dependency:</p>
+<p>First, add an annotation processor dependency:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -1214,7 +1237,7 @@ The module generates the OracleWallet on startup.
 </div></p>
 </div>
 <div class="paragraph">
-<p>Then declare <code>@SdkImport</code> on any class passing the type of the client you wish to import. For example:</p>
+<p>Then declare <code>@SdkImport</code> on any class, specifying the type of the client you wish to import. For example:</p>
 </div>
 <div class="listingblock">
 <div class="title">Declaring <code>@SdkImport</code></div>
@@ -1229,10 +1252,11 @@ The module generates the OracleWallet on startup.
 <p>Replace the <code>com.oracle.oci.sdk:oci-java-sdk-common-httpclient-jersey</code> with the <code>micronaut-oraclecloud-httpclient-netty</code> client and the <code>com.oracle.oci.sdk:oci-java-sdk-bom</code> with <code>micronaut-oraclecloud-bom</code>.</p>
 </div>
 <div class="paragraph">
-<p>Then replace other OCI SDK modules with micronaut ones. To simplify the process, you can utilize the following regular expression:</p>
+<p>Then replace other OCI SDK modules with Micronaut modules.
+To simplify the process, you can use the following regular expression:</p>
 </div>
 <div class="paragraph">
-<p>For Maven replace</p>
+<p>For Maven, replace</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1248,7 +1272,7 @@ The module generates the OracleWallet on startup.
 </div>
 </div>
 <div class="paragraph">
-<p>For Gradle replace</p>
+<p>For Gradle, replace</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1270,7 +1294,10 @@ The module generates the OracleWallet on startup.
 <div class="sect2">
 <h3 id="_configuration">Configuration</h3>
 <div class="paragraph">
-<p>The jersey HTTP client can be configured through a <code>ClientConfigurator</code> and <code>StandardClientProperties</code>. Only some of these properties are supported for the netty client. Which properties are supported also depends on whether the netty client is used in a managed context, i.e. whether the SDK client is injected from an application context. The following properties are supported:</p>
+<p>The Jersey HTTP client can be configured through a <code>ClientConfigurator</code> and <code>StandardClientProperties</code>.
+Only some of these properties are supported for the Netty client.
+Which properties are supported also depends on whether the Netty client is used in a managed context, i.e., whether the SDK client is injected from an application context.
+The following properties are supported:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1291,7 +1318,8 @@ The module generates the OracleWallet on startup.
 <div class="paragraph">
 <p>Other properties — particularly those related to proxies and TLS configuration — are not supported directly.
 Instead, these settings should be configured using the standard Micronaut HTTP client configuration properties, with a special service name prefix.
-For example, to configure the managed Netty client, you can use properties like <code>oci.client.read-timeout</code>. This allows you to configure TLS, proxy settings, timeouts, connection pool sizes, and other HTTP client options.</p>
+For example, to configure the managed Netty client, you can use properties like <code>oci.client.read-timeout</code>.
+This allows you to configure TLS, proxy settings, timeouts, connection pool sizes, and other HTTP client options.</p>
 </div>
 <div class="paragraph">
 <p>Similarly, you can configure other Micronaut-provided clients by specifying the appropriate service ID. For example:</p>
@@ -1326,7 +1354,7 @@ For example, to configure the managed Netty client, you can use properties like 
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-You should choose either <code>micronaut.http.services.oci</code> or <code>oci.client</code> to configure your oci client. If you supply both you will get <code>NonUniqueBeanException</code>.
+Choose either <code>micronaut.http.services.oci</code> or <code>oci.client</code> to configure your OCI client; supplying both will cause a <code>NonUniqueBeanException</code>.
 </td>
 </tr>
 </table>
@@ -1334,8 +1362,8 @@ You should choose either <code>micronaut.http.services.oci</code> or <code>oci.c
 <div class="sect3">
 <h4 id="_logging">Logging</h4>
 <div class="paragraph">
-<p>To enable logging of all requests, set the <code>micronaut.http.services.oci.log-level</code> or <code>oci.client.log-level</code> property to <code>INFO</code>. Log messages
-will appear at <code>INFO</code> level.</p>
+<p>To enable logging of all requests, set the <code>micronaut.http.services.oci.log-level</code> or <code>oci.client.log-level</code> property to <code>INFO</code>.
+Log messages  will appear at <code>INFO</code> level.</p>
 </div>
 <div class="admonitionblock warning">
 <table>
@@ -1349,6 +1377,127 @@ purposes.
 </td>
 </tr>
 </table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_proxy_configuration_via_system_properties_unmanaged_netty_client">Proxy configuration via system properties (unmanaged Netty client)</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This feature is experimental and subject to change.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When the Netty HTTP client is created in an unmanaged context (i.e. not obtained from a Micronaut <code>ApplicationContext</code>), this module will map the following system properties to the Micronaut HTTP client&#8217;s proxy configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>io.micronaut.oci.proxy</code> URI form: <code><a href="http://user:pass@host:port" class="bare">http://user:pass@host:port</a></code>, <code><a href="https://host:443" class="bare">https://host:443</a></code> or <code>socks5://host:1080</code></p>
+</li>
+<li>
+<p><code>io.micronaut.oci.proxy.host</code> Host name of the proxy</p>
+</li>
+<li>
+<p><code>io.micronaut.oci.proxy.port</code> Port number of the proxy</p>
+</li>
+<li>
+<p><code>io.micronaut.oci.proxy.username</code> Proxy username (optional)</p>
+</li>
+<li>
+<p><code>io.micronaut.oci.proxy.password</code> Proxy password (optional)</p>
+</li>
+<li>
+<p><code>io.micronaut.oci.proxy.type</code> One of <code>http</code>, <code>socks</code>, <code>socks5</code> (defaults to <code>http</code> unless the scheme of <code>io.micronaut.oci.proxy</code> is <code>socks*</code>)</p>
+</li>
+<li>
+<p><code>io.micronaut.oci.proxy.nonProxyHosts</code> Comma-separated host patterns that must bypass the proxy (supports <code><strong></code> wildcard), for example: <code></strong>.internal,localhost,127.0.0.1</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Property precedence:
+- If <code>io.micronaut.oci.proxy</code> is set, it is parsed and takes precedence.
+- Otherwise, discrete properties (<code>host</code>, <code>port</code>, <code>username</code>, <code>password</code>, <code>type</code>) are used if present.</p>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="listingblock">
+<div class="title">Configure via single URI</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">java -Dio.micronaut.oci.proxy=http://user:pass@proxy.example:8080 -jar app.jar</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Configure via discrete properties</div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-shell hljs" data-lang="shell">java \
+ -Dio.micronaut.oci.proxy.host=proxy.acme.local \
+ -Dio.micronaut.oci.proxy.port=3128 \
+ -Dio.micronaut.oci.proxy.username=alice \
+ -Dio.micronaut.oci.proxy.password=secret \
+ -Dio.micronaut.oci.proxy.type=http \
+ -Dio.micronaut.oci.proxy.nonProxyHosts="*.internal,localhost,127.0.0.1" \
+ -jar app.jar</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+For managed clients (obtained from Micronaut DI), configure proxy using standard Micronaut HTTP client configuration (for example <code>micronaut.http.services.<strong></code> or <code>oci.client.</strong></code>), not system properties.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_managed_netty_client_configuration_oci_netty">Managed Netty client configuration (oci.netty.*)</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This feature is experimental and subject to change.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The managed Netty client reads <code>oci.netty.*</code> settings:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>oci.netty.legacy-netty-client</code> (boolean, default <code>false</code>) — Use the legacy Netty client implementation. This is experimental and intended for migration scenarios.</p>
+</li>
+<li>
+<p><code>oci.netty.use-managed-provider-globally</code> (boolean, default <code>false</code>) — Enable usage of the managed Netty HTTP provider globally for SDK clients, centralizing configuration via Micronaut.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example (application.yml):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  netty:
+    legacy-netty-client: false
+    use-managed-provider-globally: true</code></pre>
 </div>
 </div>
 </div>
@@ -1366,7 +1515,7 @@ purposes.
 <p>In addition to the blocking clients, this module provides clients that use RxJava or Reactor to allow reactive programming with Micronaut for each SDK.</p>
 </div>
 <div class="paragraph">
-<p>For RxJava 2 add the following module along with a <code>micronaut-oraclecloud-sdk-[OCI SDK client]</code> module:</p>
+<p>For RxJava 2, add the following module along with a <code>micronaut-oraclecloud-sdk-[OCI SDK client]</code> module:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -1385,10 +1534,23 @@ purposes.
 </div></p>
 </div>
 <div class="paragraph">
-<p>For Reactor add the following module along with <code>micronaut-oraclecloud-sdk-[OCI SDK client]</code> module:</p>
+<p>For Reactor, add the following module along with <code>micronaut-oraclecloud-sdk-[OCI SDK client]</code> module:</p>
 </div>
 <div class="paragraph">
-<p>dependency:io.micronaut.<a href="https://projectreactor.io/docs/core/release/api/reactor/core/publisher/micronaut-reactor/.html">micronaut-reactor</a></p>
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">implementation(<span class="hljs-string">"io.micronaut.reactor:micronaut-reactor")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;dependency&gt;
+    &lt;groupId&gt;io.micronaut.reactor&lt;/groupId&gt;
+    &lt;artifactId&gt;micronaut-reactor&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div></p>
 </div>
 <div class="paragraph">
 <p>For example, instead of <code>ObjectStorageClient</code>, you can inject <code>ObjectStorageRxClient</code> for RxJava 2 or <code>ObjectStorageReactorClient</code> for Reactor to use the Object Storage API:</p>
@@ -1501,7 +1663,8 @@ class BucketController(private val objectStorage: ObjectStorageReactorClient,
 </table>
 </div>
 <div class="paragraph">
-<p>Once you have a reference to the relevant reactive client, it is easier to compose non-blocking operations. The following example creates a bucket:</p>
+<p>Once you have a reference to the relevant reactive client, it is easier to compose non-blocking operations.
+The following example creates a bucket:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1580,7 +1743,7 @@ override fun createBucket(name: String): Mono&lt;String&gt; {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>First a request to obtain the namespace is sent</td>
+<td>First, a request to obtain the namespace is sent</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -1588,7 +1751,7 @@ override fun createBucket(name: String): Mono&lt;String&gt; {
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Finally the location of the bucket is returned in the response</td>
+<td>Finally, the location of the bucket is returned in the response</td>
 </tr>
 </table>
 </div>
@@ -1603,7 +1766,8 @@ override fun createBucket(name: String): Mono&lt;String&gt; {
 
 
 <div class="paragraph">
-<p>Oracle Functions are based on <a href="https://fnproject.io/">Project.fn</a>. You can write simple functions targeting the Oracle Function environment by extending from the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> superclass.</p>
+<p>Oracle Functions are based on <a href="https://fnproject.io/">Project.fn</a>.
+You can write simple functions targeting the Oracle Function environment by extending the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> superclass.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1612,24 +1776,26 @@ override fun createBucket(name: String): Mono&lt;String&gt; {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Micronaut&#8217;s Oracle Function support can utilize GraalVM <code>native-image</code> running within a Docker container. This will result in extremely responsive serverless functions utilizing very few Cloud resources.
+Micronaut&#8217;s Oracle Function support can use GraalVM <code>native-image</code> running within a Docker container.
+This will result in extremely responsive serverless functions using very few Cloud resources.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>This superclass enables dependency injection for the function. Note that the the function definition must conform to the following rules:</p>
+<p>This superclass enables dependency injection for the function.
+Note that the function class must conform to the following rules:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The class must have a public no arguments constructor</p>
+<p>it must have a public, no-arguments constructor</p>
 </li>
 <li>
-<p>A public method that executes the function must be defined</p>
+<p>it must have a public method that executes the function</p>
 </li>
 <li>
-<p>The class must be annotated with <code>@Singleton</code></p>
+<p>it must be annotated with <code>@Singleton</code></p>
 </li>
 </ul>
 </div>
@@ -1651,7 +1817,7 @@ You must have <a href="#resource-principals">resource principal authentication</
 <div class="sect2">
 <h3 id="_creating_a_function_with_a_gradle_build">Creating a Function with a Gradle build</h3>
 <div class="paragraph">
-<p>With Micronaut 2.1 and above you can create a new Oracle Function using Gradle as the build tool with the following command line command:</p>
+<p>You can create a new Oracle Function using Gradle as the build tool with the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1659,7 +1825,8 @@ You must have <a href="#resource-principals">resource principal authentication</
 </div>
 </div>
 <div class="paragraph">
-<p>This will create a Gradle build that sets up the Micronaut Gradle plugin. The only changes you need to make are to modify the <code>build.gradle</code> and alter the <code>dockerBuild</code> and <code>dockerBuildNative</code> to point at the Oracle Cloud Registry you wish the publish the docker images for the function:</p>
+<p>This will create a Micronaut project with a Gradle build that configures the Micronaut Gradle plugin.
+The only necessary changes are to modify <code>build.gradle</code> and alter the <code>dockerBuild</code> and <code>dockerBuildNative</code> sections to specify the Oracle Cloud Registry to publish the docker images to for the function:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1673,13 +1840,13 @@ dockerBuildNative {
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>REGION</code> should be altered to your region, the <code>TENANCY_ID</code> to your tenancy and the <code>REPOSITORY</code> to the Docker repository you wish to publish to.</p>
+<p>Change the <code>REGION</code> to your region, the <code>TENANCY_ID</code> to your tenancy and the <code>REPOSITORY</code> to your Docker repository.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_creating_a_function_with_a_maven_build">Creating a Function with a Maven build</h3>
 <div class="paragraph">
-<p>With Micronaut 2.2 and above you can create a new Oracle Function using Maven as the build tool with the following command line command:</p>
+<p>You can create a new Oracle Function using Maven as the build tool with the following:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1687,7 +1854,8 @@ dockerBuildNative {
 </div>
 </div>
 <div class="paragraph">
-<p>This will create a Maven build that sets up the Micronaut Maven plugin. The only changes you need to make are to modify the <code>pom.xml</code> and and add these properties in the <code>&lt;properties&gt;</code> section to point at the Oracle Cloud Registry you wish the publish the docker images for the function:</p>
+<p>This will create a Micronaut project with a Maven build that configures the Micronaut Maven plugin.
+The only necessary changes are to modify <code>pom.xml</code> and add these properties in the <code>&lt;properties&gt;</code> section to specify the Oracle Cloud Registry to publish the docker images to for the function</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1697,10 +1865,10 @@ dockerBuildNative {
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>REGION</code> should be altered to your region, the <code>TENANCY_ID</code> to your tenancy and the <code>REPOSITORY</code> to the Docker repository you wish to publish to.</p>
+<p>Change the <code>REGION</code> to your region, the <code>TENANCY_ID</code> to your tenancy and the <code>REPOSITORY</code> to your Docker repository.</p>
 </div>
 <div class="paragraph">
-<p>Also add a property to define the full class name and package of the function class, e.g.</p>
+<p>Also add a property to specify the full class name and package of the function class, e.g.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1801,7 +1969,7 @@ class ListBucketsFunction : OciFunction() { // <b class="conum">(1)</b>
 </table>
 </div>
 <div class="paragraph">
-<p>Once you have defined the function, define a public method that is the function handler, for example:</p>
+<p>Once you have defined the function, define a public method to be the function handler, e.g.:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -1866,22 +2034,23 @@ fun handleRequest(): List&lt;String&gt; {
 <div class="sect2">
 <h3 id="functions-dockerfile">Docker Build</h3>
 <div class="paragraph">
-<p>To build the Oracle Function with Gradle, run the <code>./gradlew dockerBuild</code> command or to build the GraalVM native image version run <code>./gradlew dockerBuildNative</code>.</p>
+<p>To build the Oracle Function with Gradle, run the <code>./gradlew dockerBuild</code> command, or build a GraalVM native executable by running <code>./gradlew dockerBuildNative</code>.</p>
 </div>
 <div class="paragraph">
-<p>To build the Oracle Function with Maven, run the <code>./mvnw package -Dpackaging=docker</code> command or to build the GraalVM native image version run <code>./mvnw package -Dpackaging=docker-native</code>.</p>
+<p>To build the Oracle Function with Maven, run the <code>./mvnw package -Dpackaging=docker</code> command, or build a GraalVM native executable by running <code>./mvnw package -Dpackaging=docker-native</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="functions-deploy">Deploy</h3>
 <div class="paragraph">
-<p>To deploy the Oracle Function as a Java function with Gradle, run <code>./gradlew dockerPush</code> to push the function to Oracle Container Registry, or to deploy the GraalVM native image version run <code>./gradlew dockerPushNative</code>.</p>
+<p>To deploy the Oracle Function as a Java function with Gradle, run <code>./gradlew dockerPush</code> to push the function to Oracle Container Registry, or deploy the GraalVM native executable by running <code>./gradlew dockerPushNative</code>.</p>
 </div>
 <div class="paragraph">
-<p>To deploy the Oracle Function as a Java function with Maven, run <code>./mvnw deploy -Dpackaging=docker</code> to push the function to Oracle Container Registry, or to deploy the GraalVM native image version run <code>./mvnw deploy -Dpackaging=docker-native</code>.</p>
+<p>To deploy the Oracle Function as a Java function with Maven, run <code>./mvnw deploy -Dpackaging=docker</code> to push the function to Oracle Container Registry, or deploy the GraalVM native executable by running <code>./mvnw deploy -Dpackaging=docker-native</code>.</p>
 </div>
 <div class="paragraph">
-<p>Note that these commands only publish the function to Oracle Container Registry. To make the function invokable, use the Oracle Cloud UI to create the function, or use the <code>fn</code> command line application to create the function from the container image:</p>
+<p>Note that these commands only publish the function to Oracle Container Registry.
+To make the function invokable, use the Oracle Cloud UI to create the function, or use the <code>fn</code> command line application to create the function from the container image:</p>
 </div>
 <div class="listingblock">
 <div class="title">Creating a Function from a Container Image</div>
@@ -1899,7 +2068,7 @@ $ fn create function myapp myfunction us-ashburn-1.ocir.io/mytenancy/myrepositor
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-For Java functions that do not use Native Image you will need to pass <code>--memory 512 --timeout 120</code> as Java functions occupy more memory that native functions.
+For Java functions that do not use Native Image you will need to pass <code>--memory 512 --timeout 120</code> as Java functions use more memory that native functions.
 </td>
 </tr>
 </table>
@@ -1937,10 +2106,10 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 
 
 <div class="paragraph">
-<p>The <code>micronaut-oraclecloud-function-http</code> module gives you the ability to write HTTP API Gateway function handlers that delegate to regular Micronaut controllers.</p>
+<p>The <code>micronaut-oraclecloud-function-http</code> module lets you write HTTP API Gateway function handlers that delegate to Micronaut controllers.</p>
 </div>
 <div class="paragraph">
-<p>Since Micronaut 2.1 you can create HTTP functions with a Gradle build using the command line or via <a href="https://micronaut.io/launch/">Micronaut Launch</a>:</p>
+<p>You can create HTTP functions with a Gradle build using the command line or via <a href="https://micronaut.io/launch/">Micronaut Launch</a>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Creating a new Function with the CLI</div>
@@ -1949,7 +2118,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 </div>
 </div>
 <div class="paragraph">
-<p>Since Micronaut 2.2 you can create HTTP functions with a Maven build using the command line or via <a href="https://micronaut.io/launch/">Micronaut Launch</a>:</p>
+<p>You can create HTTP functions with a Maven build using the command line or via <a href="https://micronaut.io/launch/">Micronaut Launch</a>:</p>
 </div>
 <div class="listingblock">
 <div class="title">Creating a new Function with the CLI</div>
@@ -1958,7 +2127,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 </div>
 </div>
 <div class="paragraph">
-<p>You can then create your controller just as you would a normal Micronaut controller.</p>
+<p>You can then create your controller just as you would a regular Micronaut controller.</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -2073,7 +2242,7 @@ class BucketController(private val objectStorage: ObjectStorage,
 </table>
 </div>
 <div class="paragraph">
-<p>Next, add a controller method to list all of the buckets in a compartment:</p>
+<p>Next, add a controller method to list all the buckets in a compartment:</p>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
@@ -2148,13 +2317,14 @@ fun listBuckets(@PathVariable @Nullable compartmentId: String?): List&lt;String&
 <div class="sect2">
 <h3 id="_deploy">Deploy</h3>
 <div class="paragraph">
-<p>To deploy your function <a href="#functions">follow the same instructions</a> provided for regular Oracle Functions.</p>
+<p>To deploy your function, <a href="#functions">follow the same instructions</a> provided for regular Oracle Functions.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_api_gateway">API Gateway</h3>
 <div class="paragraph">
-<p>Once you have deployed your function you&#8217;ll need to create an API Gateway to route requests to your serverless deployment. The Micronaut router will call the proper controller function based on the incoming HTTP Request Method and the path.</p>
+<p>Once you have deployed your function, create an API Gateway to route requests to your serverless deployment.
+The Micronaut router will call the proper controller function based on the incoming HTTP Request Method and the path.</p>
 </div>
 <div class="paragraph">
 <p>First, create an API Gateway by selecting 'Developer Services', then 'API Gateway' from the Oracle Cloud console dashboard.</p>
@@ -2189,7 +2359,8 @@ fun listBuckets(@PathVariable @Nullable compartmentId: String?): List&lt;String&
 </div>
 </div>
 <div class="paragraph">
-<p>Provide a name for the deployment and enter a "Path Prefix". If necessary, configure any Authentication, CORS, or Rate Limiting and click <code>Next</code>.</p>
+<p>Provide a name for the deployment and enter a "Path Prefix".
+If necessary, configure any Authentication, CORS, or Rate Limiting and click <code>Next</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2214,7 +2385,7 @@ The path prefix must match the path you used in your controller (e.g. <code>@Con
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Enter <code>/{path*}</code> as the Path. This will capture all incoming requests and the Micronaut router will match the incoming path and request method with the proper controller method.</p>
+<p>Enter <code>/{path*}</code> as the Path. This will capture all incoming requests, and the Micronaut router will match the incoming path and request method with the proper controller method.</p>
 </li>
 <li>
 <p>Choose <code>ANY</code> for methods. Optionally, choose the necessary methods individually.</p>
@@ -2252,7 +2423,8 @@ The path prefix must match the path you used in your controller (e.g. <code>@Con
 </div>
 </div>
 <div class="paragraph">
-<p>When your new deployment becomes 'Active', click the deployment to view the deployment details. Copy the 'Endpoint' - this is the base URL that you&#8217;ll use for your function invocations.</p>
+<p>When your new deployment becomes 'Active', click the deployment to view the deployment details.
+Copy the 'Endpoint' - this is the base URL that you&#8217;ll use for your function invocations.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2291,13 +2463,14 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 
 
 <div class="paragraph">
-<p>Oracle Cloud Autonomous Database connection information and credentials are stored in the <a href="https://docs.oracle.com/en-us/iaas/Content/Database/Tasks/adbconnecting.htm">Oracle Wallet</a>.</p>
+<p>Oracle Cloud Autonomous Database connection information and credentials are stored in an <a href="https://docs.oracle.com/en-us/iaas/Content/Database/Tasks/adbconnecting.htm">Oracle Wallet</a>.</p>
 </div>
 <div class="paragraph">
 <p>Micronaut can automatically generate and download the Wallet and configure the data source.</p>
 </div>
 <div class="paragraph">
-<p>First you need the correct version of the Oracle Database driver and required modules. To ensure you are using the right version apply the 21.1.0.0 or above Oracle Database BOM with Gradle:</p>
+<p>First, you need the correct version of the Oracle Database driver and required modules.
+To ensure you are using the correct version, apply the 21.1.0.0 or above Oracle Database BOM with Gradle:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2323,7 +2496,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 </div>
 </div>
 <div class="paragraph">
-<p>Secondly you need to add a dependency on the <code>micronaut-oraclecloud-atp</code> module:</p>
+<p>Second, add a dependency on the <code>micronaut-oraclecloud-atp</code> module:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -2343,10 +2516,10 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 </div></p>
 </div>
 <div class="paragraph">
-<p>Then you must configure the <a href="#authentication">authentication provider</a>.</p>
+<p>Then configure the <a href="#authentication">authentication provider</a>.</p>
 </div>
 <div class="paragraph">
-<p>Then simply add a dependency to one of the Micronaut connection pool implementations.</p>
+<p>Then, add a dependency to one of the Micronaut connection pool implementations.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2404,7 +2577,7 @@ Automated configuration is currently supported only for the HikariCP and UCP con
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Note that <code>micronaut-oraclecloud-atp</code> module is compatible with Java 11+.
+Note that <code>micronaut-oraclecloud-atp</code> module is compatible with Java 17+.
 </td>
 </tr>
 </table>
@@ -2487,10 +2660,10 @@ datasources.default.password=bar</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p><code>ocid</code> specifies the autonomous database id</p>
+<p><code>ocid</code> specifies the Autonomous Database id</p>
 </li>
 <li>
-<p><code>walletPassword</code> encrypts the keys inside the wallet (at least eight characters long, includes at least one letter and either one numeric character or one special character)</p>
+<p><code>wallet-password</code> encrypts the keys inside the wallet. It must be at least eight characters long, include at least one letter, and either one numeric character or one special character)</p>
 </li>
 <li>
 <p>specify the database <code>username</code> and <code>password</code></p>
@@ -2510,10 +2683,13 @@ The <code>username</code> and <code>password</code> are not automatically genera
 </table>
 </div>
 <div class="paragraph">
-<p>Module uses <code>&lt;db_name&gt;_high</code> as a default service alias. This can be overriden with the <code>serviceAlias</code> property.</p>
+<p>The module uses <code>&lt;db_name&gt;_high</code> as the default service alias.
+This can be overridden with the <code>serviceAlias</code> property.</p>
 </div>
 <div class="paragraph">
-<p>The wallet is of type <code>SINGLE</code>. Use the <code>walletType</code> property to configure different types. See other valid options at <a href="https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails" class="bare">https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails</a>.</p>
+<p>The wallet is of type <code>SINGLE</code>.
+Use the <code>walletType</code> property to configure different types.
+See other valid options at <a href="https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails" class="bare">https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails</a>.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2544,7 +2720,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
 <p>The <code>micronaut-oraclecloud-micrometer</code> module integrates <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/">Micronaut&#8217;s Micrometer support</a> with the OCI Monitoring service.</p>
 </div>
 <div class="paragraph">
-<p>To begin, first add the standard dependencies for the Micronaut Micrometer module per the <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#_configuration">documentation</a>.</p>
+<p>To begin, add the standard dependencies for the Micronaut Micrometer module per the <a href="https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#_configuration">documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p>Next, add a dependency on the <code>micronaut-oraclecloud-micrometer</code> module:</p>
@@ -2567,7 +2743,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
 </div></p>
 </div>
 <div class="paragraph">
-<p>Don&#8217;t forget to add a dependency for the OCI SDK Monitoring module:</p>
+<p>Also add a dependency for the OCI SDK Monitoring module:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -2589,7 +2765,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
 <p>Then configure the <a href="#authentication">authentication provider</a>.</p>
 </div>
 <div class="paragraph">
-<p>You can configure this Micrometer reporter using <code>micronaut.metrics.export.oraclecloud</code>. The most commonly changed configuration properties are listed below:</p>
+<p>You can configure this Micrometer reporter using <code>micronaut.metrics.export.oraclecloud</code>.
+The most commonly changed configuration properties are listed below:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2603,10 +2780,10 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">enabled</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the reporter. Could disable to local dev for example. Default: <code>true</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to enable the reporter, e.g., set to <code>false</code> when running locally. Default: <code>true</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">applicationName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">application-name</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Application name used as a common dimension. Default: <code>${micronaut.application.name}</code>.</p></td>
 </tr>
 <tr>
@@ -2614,24 +2791,24 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
 <td class="tableblock halign-left valign-top"><p class="tableblock">Metrics namespace. Required.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">resourceGroup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resource-group</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Metrics resource group.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compartmentId</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle Cloud compartment id. Default: the Oracle SDK tenantId.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compartment-id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Oracle Cloud compartment OCID. Default: the Oracle SDK tenantId.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">step</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">How frequently to report metrics. Default: <code>PT1M</code> (1 min).  See <code>java.time.Duration#parse(CharSequence)</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">batchSize</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How many metrics send in one batch. Default: <code>50</code> (Max allowed number of metrics for current API).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">batch-size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How many metrics to send per batch. Default: <code>50</code> (Max allowed number of metrics for current API).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">descriptions</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean if meter descriptions should be sent to InfluxDB. Turn this off to minimize the amount of data sent on each scrape. Default: <code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Whether to send meter descriptions to InfluxDB. Disable to minimize the amount of data sent on each scrape. Default: <code>true</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -2739,7 +2916,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-metrics-
 <div class="sect2">
 <h3 id="_oci_sdk_client_metrics">OCI SDK client metrics</h3>
 <div class="paragraph">
-<p>If you are using OCI SDK clients instrumented by Micronaut framework by default for each request metrics will be collected.</p>
+<p>If you are using OCI SDK clients instrumented by Micronaut, by default metrics will be collected for each request.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2772,12 +2949,12 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-metrics-
 
 
 <div class="paragraph">
-<p>You can use OCI Application Performance Monitoring (APM) as a drop-in replacement for Tracing in your Micronaut Applications.</p>
+<p>You can use OCI Application Performance Monitoring (APM) to add Tracing in your Micronaut Applications.</p>
 </div>
 <div class="paragraph">
 <p>OCI APM is a suite of services that give you insight into your applications and servers running in OCI via a small agent that runs on the machine and aggregates and reports metric data.
 It&#8217;s a nice service to monitor and diagnose performance issues.
-It also includes a Trace Explorer that is Zipkin (and Jaeger) compatible which we can use from our Micronaut applications (even without taking full advantage of APM via the Java Agent).</p>
+It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) which you can use in Micronaut applications (even without taking full advantage of APM via the Java Agent).</p>
 </div>
 <div class="sect2">
 <h3 id="_add_dependencies">Add Dependencies</h3>
@@ -2872,8 +3049,9 @@ It also includes a Trace Explorer that is Zipkin (and Jaeger) compatible which w
 <div class="sect2">
 <h3 id="_create_apm_domain">Create APM Domain</h3>
 <div class="paragraph">
-<p>Now, create an APM domain in the OCI console. We&#8217;ll share a single domain to group and trace all of our services.
-That may seem a bit confusing given the name "domain", but think of it more like a "project group" or an "environment" (you may want to create separate domains for QA, Test, Prod, etc.).
+<p>Create an APM domain in the OCI console if you haven&#8217;t already.
+We&#8217;ll share a single domain to group and trace all of our services.
+That may seem a bit confusing given the name "domain", but think of it more like a "project group" or an "environment" (you may want to create separate domains for QA, Test, Prod, etc.)
 Search for <code>Application Performance Monitoring</code> and click <code>Administration</code>.</p>
 </div>
 <div class="imageblock">
@@ -2915,10 +3093,10 @@ Here you&#8217;ll need to grab a few values, so copy the data upload endpoint (#
 </div>
 </div>
 <div class="paragraph">
-<p>Now we have what we need to construct a URL to plug in to our application configuration files.
+<p>Now we have what we need to construct a URL to use in application configuration files.
 The <code>Collector URL</code> format requires us to construct a URL by using the <code>data upload endpoint</code> as our base URL and generate the path based on some choices including values from our private or public key.
 The format is <a href="https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/configure-open-source-tracing-systems.html#APMGN-GUID-B5EDE254-C854-436D-B844-B986A4E077AA">documented here</a>.
-Once we&#8217;ve constructed the URL path, we can add it to our <code>application-oraclecloud</code> configuration file.</p>
+Once we&#8217;ve constructed the URL path, add it to your <code>application-oraclecloud</code> configuration file.</p>
 </div>
 <div class="openblock">
 <div class="title">Example Oracle Cloud Config</div>
@@ -3038,12 +3216,13 @@ tracing {
 </div>
 </div>
 <div class="paragraph">
-<p>If you want to keep these values out of the config file, you could set them as environment variables on the server like so:</p>
+<p>To avoid hard-coding these values in config files, you can set them as environment variables, e.g.:</p>
 </div>
 <div class="listingblock">
 <div class="title">Set ENV vars</div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export TRACING_ZIPKIN_HTTP_URL="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com" export TRACING_ZIPKIN_HTTP_PATH="/20200101/observations/public-span?dataFormat=zipkin&amp;dataFormatVersion=2&amp;dataKey=[public key]"</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">export TRACING_ZIPKIN_HTTP_URL="https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com"
+export TRACING_ZIPKIN_HTTP_PATH="/20200101/observations/public-span?dataFormat=zipkin&amp;dataFormatVersion=2&amp;dataKey=[public key]"</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3101,7 +3280,7 @@ tracing {
 </div>
 </div>
 <div class="paragraph">
-<p>For more info, please see <a href="https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices">Adding Tracing to Your Distributed Cloud Native Microservices</a>.</p>
+<p>For more info, see <a href="https://blogs.oracle.com/developers/adding-tracing-to-your-distributed-cloud-native-microservices">Adding Tracing to Your Distributed Cloud Native Microservices</a>.</p>
 </div>
 <div class="paragraph">
 <p>Read more about the Trace Explorer in the <a href="https://docs.oracle.com/en-us/iaas/application-performance-monitoring/doc/use-trace-explorer.html">documentation</a>.</p>
@@ -3151,7 +3330,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
 <div class="sect2">
 <h3 id="_create_oracle_cloud_custom_log">Create Oracle Cloud Custom Log</h3>
 <div class="paragraph">
-<p>If you don&#8217;t have already a <a href="https://cloud.oracle.com/logging/log-groups">Log group</a> you should create it.</p>
+<p>If you don&#8217;t already have a <a href="https://cloud.oracle.com/logging/log-groups">Log group</a>, create one.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -3159,10 +3338,10 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
 </div>
 </div>
 <div class="paragraph">
-<p>To create custom log first visit the <a href="https://cloud.oracle.com/logging/logs">Oracle Log Portal</a>.</p>
+<p>To create a custom log, first visit the <a href="https://cloud.oracle.com/logging/logs">Oracle Log Portal</a>.</p>
 </div>
 <div class="paragraph">
-<p>Click on the "Create Custom log".</p>
+<p>Click "Create Custom log".</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -3170,11 +3349,11 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
 </div>
 </div>
 <div class="paragraph">
-<p>Choose name of your log and go to next step.</p>
+<p>Specify the name for the log and go to the next step.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="../img/oci_logging_custom_log_create_step_1.png" alt="Choose Name of Custom log">
+<img src="../img/oci_logging_custom_log_create_step_1.png" alt="Specify the Log name">
 </div>
 </div>
 <div class="paragraph">
@@ -3197,7 +3376,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
 <div class="sect2">
 <h3 id="_logback_configuration">Logback configuration</h3>
 <div class="paragraph">
-<p>Edit a <code>src/main/resources/logback.xml</code> file and make it look like this:</p>
+<p>Edit <code>src/main/resources/logback.xml</code> to look like this:</p>
 </div>
 <div class="listingblock">
 <div class="title">src/main/resources/logback.xml</div>
@@ -3221,11 +3400,12 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
 </div>
 </div>
 <div class="paragraph">
-<p>In the <code>logId</code> field of the <code>OracleCloudAppender</code> put your log OCID.
-You can customize your JsonLayout with additional parameters the are available on official docs of <a href="https://javadoc.io/static/ch.qos.logback.contrib/logback-json-classic/0.1.5/ch/qos/logback/contrib/json/classic/JsonLayout.html">Logback&#8217;s JsonLayout</a>.</p>
+<p>Specify the OCID of your log in the <code>logId</code> element.
+You can customize your JsonLayout with additional parameters as described in the <a href="https://javadoc.io/static/ch.qos.logback.contrib/logback-json-classic/0.1.5/ch/qos/logback/contrib/json/classic/JsonLayout.html">Logback JsonLayout</a> documentation.</p>
 </div>
 <div class="paragraph">
-<p>The <code>OracleCloudAppender</code> supports blacklisting the loggers by specifying the logger name. That might come handy if you want to use <code>level=DEBUG</code> or <code>level=TRACE</code> for the root logger level.</p>
+<p><code>OracleCloudAppender</code> supports blacklisting one or more loggers by specifying the logger names.
+This is useful when specifying <code>level=DEBUG</code> or <code>level=TRACE</code> for the root logger level.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Configurable OracleCloudAppender Appender Properties</caption>
@@ -3251,7 +3431,7 @@ You can customize your JsonLayout with additional parameters the are available o
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the Ocid of the log</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the OCID of the log</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
@@ -3279,28 +3459,28 @@ You can customize your JsonLayout with additional parameters the are available o
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time in ms between two batch publishing of logs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Time in ms between log publishing batches</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>maxBatchSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time maximum number of log lines that will be sent in one batch request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The maximum number of log entries that will be sent per batch</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>queueSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Integer</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">128</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The size of publishing log queue</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The size of the publishing log queue</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>blackListLoggerName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>List</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">empty</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of logger names that won&#8217;t be published</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma-delimited list of logger names that won&#8217;t be published</p></td>
 </tr>
 </tbody>
 </table>
@@ -3320,7 +3500,8 @@ The <code>logId</code> is also configurable through the <code>application</code>
 <div class="sect2">
 <h3 id="_opentelemetry_and_logging">OpenTelemetry and logging</h3>
 <div class="paragraph">
-<p>If you are using the <a href="https://opentelemetry.io/">OpenTelemetry</a> for tracing you can include <code>traceId</code> and <code>spanId</code> fields into your logs. First you have to add next dependency into your project:</p>
+<p>If you use <a href="https://opentelemetry.io/">OpenTelemetry</a> for tracing, you can include <code>traceId</code> and <code>spanId</code> fields in your logs.
+First, add this dependency in your build file:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -3341,7 +3522,7 @@ The <code>logId</code> is also configurable through the <code>application</code>
 </div></p>
 </div>
 <div class="paragraph">
-<p>Inside your <code>src/main/resources/logback.xml</code> you should add a new appender <a href="https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html">io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender</a>.</p>
+<p>Inside <code>src/main/resources/logback.xml</code>, add a new <a href="https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html">io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender</a>.</p>
 </div>
 <div class="listingblock">
 <div class="title">src/main/resources/logback.xml</div>
@@ -3372,10 +3553,12 @@ The <code>logId</code> is also configurable through the <code>application</code>
 <div class="sect2">
 <h3 id="_emergency_appender">Emergency Appender</h3>
 <div class="paragraph">
-<p>Since this appender is queuing up log messages and then writing them remotely, there are a number of situations which might result in log messages not getting remoted correctly. To address such scenarios you can configure the emergency appender to preserve those messages.</p>
+<p><code>OracleCloudAppender</code> queues log messages and pushes them in batches to your OCI logs, so it is possible network issues or other problems can result in log messages not being remoted correctly.
+To address such scenarios, you can configure the emergency appender to preserve those messages.</p>
 </div>
 <div class="paragraph">
-<p>Inside your <code>src/main/resources/logback.xml</code> you should add a new appender, in the example it is <code>STDOUT</code>. Inside the <code>OracleCloudAppender</code> add <code>appender-ref</code> that points to the new crated appender.</p>
+<p>Add a new appender in <code>src/main/resources/logback.xml</code> (in the example it is <code>STDOUT</code>).
+Inside the <code>OracleCloudAppender</code> add an <code>appender-ref</code> element that references this appender:</p>
 </div>
 <div class="listingblock">
 <div class="title">src/main/resources/logback.xml</div>
@@ -3411,7 +3594,8 @@ The <code>logId</code> is also configurable through the <code>application</code>
 <div class="sect2">
 <h3 id="_browsing_the_logs">Browsing the logs</h3>
 <div class="paragraph">
-<p>When you have completed a setup, you can browse your logs on the <a href="https://cloud.oracle.com/logging/logs">Oracle Log Portal</a>. Choose the log that you have created. In the "Explore Log" section you should be able to see your service logs.</p>
+<p>You can browse your logs in the <a href="https://cloud.oracle.com/logging/logs">Oracle Log Portal</a>.
+Navigate to your Log and view log entries in the "Explore Log" section.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -3419,7 +3603,7 @@ The <code>logId</code> is also configurable through the <code>application</code>
 </div>
 </div>
 <div class="paragraph">
-<p>If you have any troubles with configuring the Oracle Appender you can try to add <code>&lt;configuration debug="false"&gt;</code> into your logback configuration.</p>
+<p>If you have any troubles with configuring the Oracle Appender, add <code>&lt;configuration debug="false"&gt;</code> in <code>logback.xml</code>.</p>
 </div>
 </div>
 
@@ -3452,10 +3636,10 @@ The <code>logId</code> is also configurable through the <code>application</code>
 </div></p>
 </div>
 <div class="paragraph">
-<p>Then create a <code>bootstrap</code> configuration file in <code>src/main/resources/</code> and ensure your <a href="#authentication">Authentication</a> configuration is present in this file so you can authenticate with one of the supported mechanisms (config, instance principal, resource principal etc.).</p>
+<p>Then create a <code>bootstrap</code> configuration file in <code>src/main/resources/</code> and ensure your <a href="#authentication">Authentication</a> configuration is present in this file to enable authenticating with one of the supported mechanisms (config, instance principal, resource principal, etc.)</p>
 </div>
 <div class="paragraph">
-<p>Then add the following to the <code>bootstrap</code> configuration file to specify Vault support:</p>
+<p>Then, add the following to the <code>bootstrap</code> configuration file to specify Vault support:</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -3576,7 +3760,8 @@ oci {
 </div>
 </div>
 <div class="paragraph">
-<p>One or many Vaults can be configured and each should include a <code>ocid</code> and <code>compartment-ocid</code> configuration entry. Note that the <code>compartment-ocid</code> is not the vault compartment but a compartment from where the secrets will be fetched.</p>
+<p>One or more Vaults can be configured, and each must include <code>ocid</code> and <code>compartment-ocid</code> configuration values.
+Note that the <code>compartment-ocid</code> is not the vault compartment, but the compartment from where the secrets will be fetched.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3585,13 +3770,14 @@ oci {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file <code>bootstrap-oraclecloud</code> (with the appropriate extension, such as .yml).
+If you only want this configuration to be active in the Oracle Cloud environment but not locally, name the configuration file <code>bootstrap-oraclecloud</code> (with the appropriate extension, such as .properties).
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You&#8217;re now ready to go! You can access the config variables in a few different ways. If you create a secret with the name of <code>SECRET_ONE</code> in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:</p>
+<p>You&#8217;re now ready to go! You can access the config variables in a few different ways.
+If you create a secret with the name of <code>SECRET_ONE</code> in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3607,7 +3793,7 @@ If you only want this configuration to be active in the Oracle Cloud environment
 </div>
 </div>
 <div class="paragraph">
-<p>Vault retrieved values are always <code>String</code>, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.</p>
+<p>Values from Vault are always <code>String</code>, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.</p>
 </div>
 <div class="paragraph">
 <p>So if you were to create secrets in your Oracle Cloud Vault like so:</p>
@@ -3652,19 +3838,16 @@ If you only want this configuration to be active in the Oracle Cloud environment
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ConfigurationProperties("my-secrets")
-public class Config {
-    private String one;
-    private String two;
-    private boolean three;
-    private int four;
-    private Double five;
-
-    /* getters/setters removed for brevity */
+public record Config(String one,
+                     String two,
+                     boolean three,
+                     int four,
+                     Double five) {
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Another option is to inject your variables into your configuration files which gives you the ability to store things like database passwords and API keys in your vault:</p>
+<p>Another option is to inject your variables into your configuration files. Then allows you to store things like database passwords and API keys in your vault:</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -3676,8 +3859,8 @@ public class Config {
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">datasources:
-    default:
-        password: ${DB_PASSWORD}</code></pre>
+  default:
+    password: ${DB_PASSWORD}</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -3765,7 +3948,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-se
 </div></p>
 </div>
 <div class="paragraph">
-<p>For more information, check the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
+<p>For more information, see the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -3790,7 +3973,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-object-s
 
 
 <div class="paragraph">
-<p>To start using <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm">Oracle Cloud Certificates</a> service first create certificate on OCI platform, add the following dependency to your project:</p>
+<p>To start using <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/overview.htm">Oracle Cloud Certificates</a> service, first create a certificate on OCI, and add the following dependency to your project:</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
@@ -3809,7 +3992,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-object-s
 </div></p>
 </div>
 <div class="paragraph">
-<p>Copy ocid of your certificate:</p>
+<p>Copy the OCID of your certificate:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -3823,13 +4006,13 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-object-s
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Before you create Certificate make sure that you have created <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm">required polices</a>.
+Before you create a certificate, make sure that you have created <a href="https://docs.oracle.com/en-us/iaas/Content/certificates/managing-certificate-authorities.htm">the required policies</a>.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Add the following to the <code>application</code> configuration file to enable ssl and Oracle Cloud Certificate support:</p>
+<p>Add the following to the <code>application</code> configuration file to enable SSL and Oracle Cloud Certificate support:</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -4150,13 +4333,13 @@ oci {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you only want this configuration to be active in the Oracle Cloud environment but not locally name the configuration file <code>application-oraclecloud</code> (with the appropriate extension, such as .yml).
+If you only want this configuration to be active in the Oracle Cloud environment but not locally, name the configuration file <code>application-oraclecloud</code> (with the appropriate extension, such as .properties).
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>In next table you can find useful parameters to further customize integration with Oracle Cloud Certificates:</p>
+<p>In the next table, you can find useful parameters to further customize integration with Oracle Cloud Certificates:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Configurable Oracle Cloud Certificate properties</caption>
@@ -4189,7 +4372,7 @@ If you only want this configuration to be active in the Oracle Cloud environment
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.lang.String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">/</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">the Ocid of the certificate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the OCID of the certificate</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.version-number</code></p></td>
@@ -4224,14 +4407,14 @@ If you only want this configuration to be active in the Oracle Cloud environment
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How many attempts to retry if refresh certificate process fails</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How many attempts to retry if refreshing the certificate fails</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>oci.certificates.refresh.retry.delay</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.time.Duration</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How much to delay attempts in between retry if refresh certificate process fails</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">How long to delay attempts between retries if refreshing a certificate fails</p></td>
 </tr>
 </tbody>
 </table>
@@ -4310,9 +4493,10 @@ Global refresh settings continue to be configured under <code>oci.certificates.r
 <p>The <code>micronaut-oraclecloud-oke-kubernetes-client</code> module integrates <a href="https://micronaut-projects.github.io/micronaut-kubernetes/latest/guide/#kubernetes-client-openapi">Micronaut Kubernetes Client</a> with the OKE and OCI Container Engine service.</p>
 </div>
 <div class="paragraph">
-<p>When the module is enabled, the client will retrieve a kubeconfig from the OKE cluster and provide authentication
-for requests to the OKE API server. This module is not needed for Kubernetes nodes that do not connect to
-the Kubernetes API server. Instead, this is useful for sending requests to manage the OKE cluster.</p>
+<p>When the module is enabled, the client will retrieve a kubeconfig from the OKE cluster and provide authentication for requests to the OKE API server.
+This module is not needed for Kubernetes nodes that do not connect to
+the Kubernetes API server.
+Instead, this is useful for sending requests to manage the OKE cluster.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -4347,7 +4531,7 @@ If you want to use an OCI client inside an OKE node, use the <code>micronaut-ora
 </div></p>
 </div>
 <div class="paragraph">
-<p>Add a dependency on one of the Kubernetes OpenAPI clients (there is a blocking and a reactor version):</p>
+<p>Add a dependency on one of the Kubernetes OpenAPI clients (there are blocking and Reactor-based versions):</p>
 </div>
 <div class="paragraph">
 <p>        <div class="listingblock multi-language-sample">
