@@ -12,10 +12,6 @@ dependencies {
 afterEvaluate {
 
     kotlin {
-        jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
-        
         kotlinDaemonJvmArgs = [
             "-Dfile.encoding=UTF-8",
             "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
@@ -30,10 +26,9 @@ afterEvaluate {
             "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"
         ]
     }
-    
+
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = "21"
     }
 
 }
-
