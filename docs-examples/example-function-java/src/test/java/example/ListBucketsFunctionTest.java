@@ -3,12 +3,9 @@ package example;
 import com.fnproject.fn.testing.FnTestingRule;
 import example.mock.MockData;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledOnJre;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.condition.JRE.JAVA_8;
 
-@DisabledOnJre(value = JAVA_8, disabledReason = "FDK requires Java 11+")
 public class ListBucketsFunctionTest {
 
     FnTestingRule fn = FnTestingRule.createDefault();
@@ -21,8 +18,8 @@ public class ListBucketsFunctionTest {
         MockData.bucketNames.add("b2");
 
         fn.givenEvent().enqueue()
-          .addSharedClass(MockData.class)
-          .thenRun(ListBucketsFunction.class, "handleRequest");
+            .addSharedClass(MockData.class)
+            .thenRun(ListBucketsFunction.class, "handleRequest");
 
         String body = fn.getOnlyResult().getBodyAsString();
         assertEquals("[\"b1\",\"b2\"]", body);

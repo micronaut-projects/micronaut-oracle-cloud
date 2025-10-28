@@ -1,11 +1,12 @@
 package io.micronaut.oraclecloud.function.http;
 
 import io.micronaut.core.annotation.Creator;
-import io.micronaut.core.annotation.Introspected;
+import io.micronaut.serde.annotation.Serdeable;
 
-@Introspected
+@Serdeable
 public class Person {
-    private String name;
+
+    private final String name;
     private int age = 18;
 
     public Person(String name) {

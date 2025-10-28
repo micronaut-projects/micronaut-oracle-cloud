@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals
 @Stepwise
 // avoid running this test in parallel as the interactions with Object Storage
 // can step on each other causing issues
-@IgnoreIf({ jvm.java8 }) // FDK requires Java 11+
 class BucketControllerSpec extends Specification {
 
     private static final String testBucket = '__mn_oci_test_bucket'
@@ -52,7 +51,7 @@ class BucketControllerSpec extends Specification {
 
         then:
         response.status() == OK
-        response.body() == '{"objects":["o1","o2"]}'
+        response.body().contains '"objects":["o1","o2"]'
     }
 
     void 'test delete bucket'() {

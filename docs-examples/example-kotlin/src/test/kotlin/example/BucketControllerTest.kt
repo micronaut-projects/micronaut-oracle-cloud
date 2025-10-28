@@ -7,14 +7,15 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import reactor.core.publisher.Mono
-import java.util.*
 
 @MicronautTest
 @Requires(missingProperty = "micronaut.test.server.executable")
 class BookControllerTest {
+
     @Inject
     lateinit var client: BucketClient
 
@@ -22,13 +23,16 @@ class BookControllerTest {
     fun testBuckets() {
         MockData.bucketNames.add("b1")
         MockData.bucketNames.add("b2")
-        val bucketName = "test-bucket-" + RandomStringUtils.randomAlphanumeric(10)
-        val names = client!!.listBuckets(null).block()
-        Assertions.assertEquals(Arrays.asList("b1", "b2"), names)
+        val bucketName = "test-bucket-" + RandomStringUtils.secure().nextAlphabetic(10)
+
+        val names = client.listBuckets(null).block()
+        assertEquals(listOf("b1", "b2"), names)
+
         val location = client.createBucket(bucketName).block()
-        Assertions.assertEquals(MockData.bucketLocation, location)
+        assertEquals(MockData.bucketLocation, location)
+
         val result = client.deleteBucket(bucketName).block()
-        Assertions.assertTrue(result)
+        assertTrue(result!!)
     }
 
     @AfterEach
