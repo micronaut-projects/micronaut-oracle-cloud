@@ -5,27 +5,18 @@ plugins {
 
 dependencies {
     testAnnotationProcessor(platform(mn.micronaut.core.bom))
-    testAnnotationProcessor(mn.micronaut.inject.java)
-    testImplementation(platform(mn.micronaut.core.bom))
-    testImplementation(mn.micronaut.inject.java)
-
+    testImplementation(libs.fn.runtime)
     testImplementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.http.server.tck)
-    testImplementation(libs.junit.platform.engine)
+    testImplementation(mn.micronaut.inject.java)
     testImplementation(mn.micronaut.jackson.databind)
-    testImplementation(libs.junit.jupiter)
-    testRuntimeOnly(mnLogging.logback.classic)
-
-    testRuntimeOnly(mnValidation.micronaut.validation)
-
+    testImplementation(mnTest.junit.platform.engine)
+    testImplementation(mnTest.junit.platform.suite)
+    testImplementation(platform(mn.micronaut.core.bom))
     testImplementation(projects.micronautOraclecloudFunctionHttp)
     testImplementation(projects.micronautOraclecloudFunctionHttpTest)
-    testImplementation(libs.fn.runtime)
-}
-
-java {
-    sourceCompatibility = JavaVersion.toVersion("17")
-    targetCompatibility = JavaVersion.toVersion("17")
+    testRuntimeOnly(mnLogging.logback.classic)
+    testRuntimeOnly(mnValidation.micronaut.validation)
 }
 
 tasks.named<Test>("test") {

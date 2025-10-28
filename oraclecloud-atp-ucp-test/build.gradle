@@ -4,13 +4,10 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor mn.micronaut.inject.java
-
-    api mn.micronaut.inject
-
-    testImplementation projects.micronautOraclecloudAtp
-    testImplementation mnSql.micronaut.jdbc.ucp
-    testImplementation mnTest.micronaut.test.spock
-
-    testRuntimeOnly mnSql.h2
+    annotationProcessor(mn.micronaut.inject.java)
+    api(mn.micronaut.inject)
+    testImplementation(mnSql.micronaut.jdbc.ucp)
+    testImplementation(mnTest.micronaut.test.spock)
+    testImplementation(projects.micronautOraclecloudAtp)
+    testRuntimeOnly(mnSql.h2)
 }

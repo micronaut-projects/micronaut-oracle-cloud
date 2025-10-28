@@ -30,11 +30,6 @@ dependencies {
     testImplementation(libs.oci.common.httpclient.jersey3)
 }
 
-java {
-    sourceCompatibility = JavaVersion.toVersion("17")
-    targetCompatibility = JavaVersion.toVersion("17")
-}
-
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }

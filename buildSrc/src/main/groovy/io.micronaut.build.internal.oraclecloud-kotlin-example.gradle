@@ -6,7 +6,15 @@ plugins {
 }
 
 dependencies {
-    kapt "io.micronaut:micronaut-graal:${libs.versions.micronaut.asProvider().get()}"
+    kapt("io.micronaut:micronaut-graal:${libs.versions.micronaut.asProvider().get()}")
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.stdlib)
+    implementation(mnKotlin.micronaut.kotlin.runtime)
+    runtimeOnly(mn.jackson.module.kotlin)
+}
+
+micronaut {
+    testRuntime 'junit5'
 }
 
 afterEvaluate {
@@ -34,5 +42,4 @@ afterEvaluate {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         kotlinOptions.jvmTarget = "21"
     }
-
 }

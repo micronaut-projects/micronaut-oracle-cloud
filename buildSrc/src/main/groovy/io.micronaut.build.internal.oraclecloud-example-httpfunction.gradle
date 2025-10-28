@@ -1,0 +1,19 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-example'
+}
+
+dependencies {
+    implementation(mn.reactor)
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(projects.micronautOraclecloudFunctionHttp)
+    runtimeOnly(libs.fn.runtime)
+    runtimeOnly(mnLogging.slf4j.simple)
+    testImplementation(libs.oci.common.httpclient.jersey3)
+    testImplementation(projects.micronautOraclecloudFunctionHttpTest)
+}
+
+application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
+
+run {
+    args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
+}

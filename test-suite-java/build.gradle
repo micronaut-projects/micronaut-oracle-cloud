@@ -10,18 +10,19 @@ application {
 configurations.all {
     exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
 }
+
 dependencies {
+    implementation(mn.micronaut.context)
+    implementation(mn.micronaut.management)
+    implementation(mn.reactor)
+    implementation(mnMicrometer.micrometer.core)
+    implementation(mnMicrometer.micronaut.micrometer.core)
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mnSql.micronaut.jdbc.hikari)
     implementation(platform(libs.oci.bom))
-    implementation mnSerde.micronaut.serde.jackson
-    implementation mn.micronaut.context
-    implementation mn.reactor
-    implementation project(':micronaut-oraclecloud-vault')
-    implementation project(':micronaut-oraclecloud-atp')
-    implementation project(':micronaut-oraclecloud-sdk')
-    implementation mnSql.micronaut.jdbc.hikari
-    implementation mn.micronaut.management
-    implementation mnMicrometer.micronaut.micrometer.core
-    implementation mnMicrometer.micrometer.core
-    implementation project(':micronaut-oraclecloud-micrometer')
-    runtimeOnly mnLogging.logback.classic
+    implementation(projects.micronautOraclecloudAtp)
+    implementation(projects.micronautOraclecloudMicrometer)
+    implementation(projects.micronautOraclecloudSdk)
+    implementation(projects.micronautOraclecloudVault)
+    runtimeOnly(mnLogging.logback.classic)
 }

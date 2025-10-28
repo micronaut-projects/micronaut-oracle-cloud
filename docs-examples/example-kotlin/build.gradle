@@ -4,28 +4,21 @@ plugins {
 }
 
 dependencies {
+    implementation(mn.micronaut.http.server.netty)
+    implementation(mnReactor.micronaut.reactor)
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mnSerde.micronaut.serde.support)
     implementation(projects.micronautOraclecloudBmcDatabase)
     implementation(projects.micronautOraclecloudBmcObjectstorage)
-    implementation libs.kotlin.reflect
-    implementation libs.kotlin.stdlib
-    implementation mn.micronaut.http.server.netty
-    implementation mnKotlin.micronaut.kotlin.runtime
-    implementation mnReactor.micronaut.reactor
-    implementation mnSerde.micronaut.serde.support
-    implementation mnSerde.micronaut.serde.jackson
-    runtimeOnly mnLogging.logback.classic
-    runtimeOnly mn.jackson.module.kotlin
-    runtimeOnly mn.snakeyaml
-    testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mnTest.micronaut.test.junit5
-    testRuntimeOnly libs.junit.jupiter
-    testImplementation libs.commons.lang3
-}
-
-test {
-    exclude '**/*Test$Intercepted*'
+    runtimeOnly(mn.snakeyaml)
+    runtimeOnly(mnLogging.logback.classic)
+    testImplementation(libs.commons.lang3)
 }
 
 application {
     mainClass = 'example.ApplicationKt'
+}
+
+test {
+    exclude '**/*Test$Intercepted*'
 }

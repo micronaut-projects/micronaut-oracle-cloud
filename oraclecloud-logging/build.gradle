@@ -3,15 +3,14 @@ plugins {
 }
 
 dependencies {
-    api projects.micronautOraclecloudBmcLoggingingestion
-    api mn.micronaut.inject
-    api mnSerde.micronaut.serde.jackson
-    implementation mnLogging.logback.classic
-    implementation libs.logback.json.classic, {
+    api(mn.micronaut.inject)
+    api(mnSerde.micronaut.serde.jackson)
+    api(projects.micronautOraclecloudBmcLoggingingestion)
+    implementation(mnLogging.logback.classic)
+    implementation(libs.logback.json.classic) {
         exclude group:'ch.qos.logback', module:'logback-classic'
     }
-
-    testImplementation mn.snakeyaml
-    testImplementation mn.micronaut.inject.groovy
-    testImplementation mnTest.micronaut.test.spock
+    testImplementation(mn.micronaut.inject.groovy)
+    testImplementation(mn.snakeyaml)
+    testImplementation(mnTest.micronaut.test.spock)
 }

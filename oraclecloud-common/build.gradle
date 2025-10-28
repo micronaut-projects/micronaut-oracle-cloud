@@ -7,26 +7,23 @@ dependencies {
         exclude group: 'org.javassist', module: 'javassist'
         exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
     }
-    api mn.micronaut.inject
-    api mn.micronaut.json.core
-
-    compileOnly libs.graal.svm
-    compileOnly mn.micronaut.context
-    compileOnly mn.micronaut.discovery.core
-    compileOnly mn.micronaut.jackson.databind
-    compileOnly mn.micronaut.http.client
-
-    compileOnly mn.reactor
-    compileOnly mnReactor.micronaut.reactor
-    compileOnly mnRxjava2.rxjava2
+    api(mn.micronaut.inject)
+    api(mn.micronaut.json.core)
     compileOnly("com.oracle.oci.sdk:oci-java-sdk-common:$gradle.ociVersion")
-
-    runtimeOnly libs.slf4j.jcl
+    compileOnly(libs.graal.svm)
+    compileOnly(mn.micronaut.context)
+    compileOnly(mn.micronaut.discovery.core)
+    compileOnly(mn.micronaut.http.client)
+    compileOnly(mn.micronaut.jackson.databind)
+    compileOnly(mn.reactor)
+    compileOnly(mnReactor.micronaut.reactor)
+    compileOnly(mnRxjava2.rxjava2)
+    runtimeOnly(libs.slf4j.jcl)
+    testImplementation(mn.micronaut.context)
+    testImplementation(mn.micronaut.discovery.core)
+    testImplementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.http.server.netty)
+    testImplementation(mnTest.micronaut.test.spock)
     testImplementation(mnTest.mockito.core)
-    testImplementation mn.micronaut.context
-    testImplementation mn.micronaut.discovery.core
-    testImplementation mn.micronaut.http.client
-    testImplementation mnTest.micronaut.test.spock
-    testImplementation mn.micronaut.http.server.netty
-    testImplementation projects.micronautOraclecloudHttpclientNetty
+    testImplementation(projects.micronautOraclecloudHttpclientNetty)
 }

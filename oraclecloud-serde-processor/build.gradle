@@ -5,15 +5,15 @@ plugins {
 
 dependencies {
     // Transitive dependencies
-    implementation mn.micronaut.inject
-    implementation mn.micronaut.inject.java
-    implementation mnSourcegen.micronaut.sourcegen.annotations
-    implementation mnSourcegen.micronaut.sourcegen.generator
-    implementation mnSerde.micronaut.serde.processor
-    implementation mnSerde.micronaut.serde.api
+    implementation(mn.micronaut.inject)
+    implementation(mn.micronaut.inject.java)
+    implementation(mnSerde.micronaut.serde.api)
+    implementation(mnSerde.micronaut.serde.processor)
+    implementation(mnSourcegen.micronaut.sourcegen.annotations)
+    implementation(mnSourcegen.micronaut.sourcegen.generator)
 
     testImplementation(libs.oci.objectstorage)
-    testImplementation mn.micronaut.inject.java.test
+    testImplementation(mn.micronaut.inject.java.test)
     testImplementation(mnSourcegen.micronaut.sourcegen.generator.java)
     testImplementation(projects.micronautOraclecloudCommon)
 }

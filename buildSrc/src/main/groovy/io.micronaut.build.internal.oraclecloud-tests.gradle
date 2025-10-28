@@ -1,12 +1,3 @@
 plugins {
     id "io.micronaut.build.internal.oraclecloud-base"
 }
-
-tasks.named("test") {
-    useJUnitPlatform()
-}
-
-java {
-    sourceCompatibility = JavaVersion.toVersion("21")
-    targetCompatibility = JavaVersion.toVersion("21")
-}

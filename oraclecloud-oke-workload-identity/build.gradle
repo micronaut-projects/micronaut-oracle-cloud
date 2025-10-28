@@ -3,14 +3,13 @@ plugins {
 }
 
 dependencies {
-    api projects.micronautOraclecloudCommon
-    api libs.oci.oke.workload.identity
-    implementation projects.micronautOraclecloudHttpclientNetty
-    implementation mn.micronaut.http.client
-    implementation libs.oci.common
-
+    api(libs.oci.oke.workload.identity)
+    api(projects.micronautOraclecloudCommon)
+    implementation(libs.oci.common)
+    implementation(mn.micronaut.http.client)
+    implementation(projects.micronautOraclecloudHttpclientNetty)
+    testImplementation(mn.micronaut.context)
     testImplementation(mnTest.mockito.core)
-    testImplementation mn.micronaut.context
 }
 
 test {

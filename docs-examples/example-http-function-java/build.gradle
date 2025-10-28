@@ -1,23 +1,10 @@
 plugins {
-    id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'io.micronaut.build.internal.oraclecloud-example-httpfunction'
+    id 'io.micronaut.build.internal.oraclecloud-java-example'
     id 'com.gradleup.shadow'
 }
 
 dependencies {
-    annotationProcessor mn.micronaut.graal
-    implementation mn.micronaut.runtime
-    implementation mn.reactor
-    implementation projects.micronautOraclecloudFunctionHttp
-    runtimeOnly libs.fn.runtime
-    runtimeOnly mnLogging.slf4j.simple
-    testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation mnTest.micronaut.test.junit5
-    testImplementation projects.micronautOraclecloudFunctionHttpTest
-    testRuntimeOnly libs.junit.jupiter
-}
-
-application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
-
-run {
-    args('io.micronaut.oraclecloud.function.http.HttpFunction::handleRequest')
+    annotationProcessor(mn.micronaut.graal)
+    annotationProcessor(mnSerde.micronaut.serde.processor)
 }

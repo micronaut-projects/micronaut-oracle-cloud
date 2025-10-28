@@ -23,7 +23,6 @@ dependencies {
     // for self-signed certs
     testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")
 
-    testAnnotationProcessor mn.micronaut.inject.java
     testAnnotationProcessor projects.micronautOraclecloudSerdeProcessor
     testAnnotationProcessor projects.micronautOraclecloudSerdeInternalProcessor
     testAnnotationProcessor(mnSourcegen.micronaut.sourcegen.generator.java)
@@ -53,7 +52,4 @@ dependencies {
      projects.micronautOraclecloudBmcStreaming,
      projects.micronautOraclecloudBmcEncryption
     ].forEach(module -> testImplementation(module))
-}
-tasks.withType(Test).configureEach {
-    useJUnitPlatform()
 }

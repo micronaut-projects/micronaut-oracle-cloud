@@ -8,9 +8,9 @@ repositories {
 }
 
 dependencies {
-    implementation libs.micronaut.gradle.plugin
-    implementation libs.kotlin.gradle.plugin
-    implementation libs.kotlin.gradle.allopen
-    implementation libs.shadow.plugin
-    implementation libs.protobuf.gradle.plugin
+    implementation(libs.kotlin.gradle.allopen)
+    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.micronaut.gradle.plugin)
+    implementation(libs.protobuf.gradle.plugin)
+    implementation(libs.shadow.plugin)
 }
