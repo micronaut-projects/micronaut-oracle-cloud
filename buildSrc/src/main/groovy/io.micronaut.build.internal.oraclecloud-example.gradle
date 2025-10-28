@@ -17,11 +17,8 @@ dependencies {
     testRuntimeOnly mnSerde.micronaut.serde.jackson
 }
 
-if (JavaVersion.current().isCompatibleWith(JavaVersion.toVersion(19))) {
-    plugins.withId('org.graalvm.buildtools.native') {
-        graalvmNative.binaries.all {
-            buildArgs.add('--enable-preview')
-        }
+plugins.withId('org.graalvm.buildtools.native') {
+    graalvmNative.binaries.all {
+        buildArgs.add('--enable-preview')
     }
 }
-

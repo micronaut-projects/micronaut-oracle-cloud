@@ -41,7 +41,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }}
     strategy:
       matrix:
-        java: [ '17' ]
+        java: [ '21' ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -54,7 +54,7 @@ jobs:
         uses: actions/setup-java@v4.7.0
         with:
           distribution: 'oracle'
-          java-version: '17'
+          java-version: '21'
       - name: "Set up GRAALVM_HOME for Native Build Tools"
         uses: graalvm/setup-graalvm@v1.2.4.1
         with:

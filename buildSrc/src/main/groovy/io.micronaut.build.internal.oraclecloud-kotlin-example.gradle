@@ -12,6 +12,10 @@ dependencies {
 afterEvaluate {
 
     kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+        }
+
         kotlinDaemonJvmArgs = [
             "-Dfile.encoding=UTF-8",
             "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",

@@ -6,7 +6,7 @@ If you are interested in contributing to Micronaut and are looking for issues to
 
 ## JDK Setup
 
-Micronaut Oracle Cloud currently requires JDK 17
+Micronaut Oracle Cloud currently requires JDK 21
 
 ## IDE Setup
 
