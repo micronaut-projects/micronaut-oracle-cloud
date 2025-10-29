@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api(libs.oci.oke.workload.identity)
     api(projects.micronautOraclecloudCommon)
-    compileOnly(mn.reactor)
+    implementation(mn.reactor)
     implementation(libs.oci.common)
     implementation(mn.micronaut.http.client)
     implementation(projects.micronautOraclecloudHttpclientNetty)
