@@ -5,6 +5,7 @@ plugins {
 dependencies {
     api(libs.oci.oke.workload.identity)
     api(projects.micronautOraclecloudCommon)
+    compileOnly(mn.reactor)
     implementation(libs.oci.common)
     implementation(mn.micronaut.http.client)
     implementation(projects.micronautOraclecloudHttpclientNetty)
@@ -18,8 +19,8 @@ test {
 
 micronautBuild {
     binaryCompatibility {
-        def dash = version.indexOf('-')
-        def v = dash > 0 ? version.substring(0, dash) : version
+        int dash = version.indexOf('-')
+        String v = dash > 0 ? version.substring(0, dash) : version
         def (major, minor, patch) = v.split('[.]').collect { it.toInteger() }
         enabled = major > 3 || (major == 3 && minor > 1) || (major == 3 && minor == 1 && patch > 0)
     }
