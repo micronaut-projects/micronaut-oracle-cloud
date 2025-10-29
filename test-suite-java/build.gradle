@@ -7,8 +7,8 @@ application {
 }
 
 // ensure Jackson databind is not on the classpath for tests
-configurations.all {
-    exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
+configurations.configureEach {
+    exclude(group: "com.fasterxml.jackson.core", module: "jackson-databind")
 }
 
 dependencies {

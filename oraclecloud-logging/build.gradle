@@ -8,7 +8,7 @@ dependencies {
     api(projects.micronautOraclecloudBmcLoggingingestion)
     implementation(mnLogging.logback.classic)
     implementation(libs.logback.json.classic) {
-        exclude group:'ch.qos.logback', module:'logback-classic'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
     }
     testImplementation(mn.micronaut.inject.groovy)
     testImplementation(mn.snakeyaml)

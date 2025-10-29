@@ -15,7 +15,6 @@ application {
 }
 
 graalvmNative {
-    toolchainDetection = false
     binaries.configureEach {
         buildArgs.addAll(
                 "-H:+StaticExecutableWithDynamicLibC",

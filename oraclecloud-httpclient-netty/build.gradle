@@ -7,7 +7,7 @@ dependencies {
     implementation mn.netty.codec.http
 
     implementation(libs.oci.common) {
-        exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
+        exclude(group: "com.fasterxml.jackson.core", module: "jackson-databind")
     }
     api(libs.oci.common.httpclient)
     api mnSerde.micronaut.serde.api

@@ -40,7 +40,7 @@ afterEvaluate {
     }
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.preferProjectModules()
 }
 

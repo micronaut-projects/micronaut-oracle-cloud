@@ -21,7 +21,6 @@ sourceSets {
     }
 }
 
-
 if (!project.name.contains("circuitbreaker")) {
     var generateClientFactories = tasks.register("generateClientFactories", GenerateClientFactories) {
         sources = sourceSets.main.java
@@ -69,7 +68,7 @@ def metadataJar = tasks.register("metadataJar", Jar) {
     }
 }
 
-configurations.all {
+configurations.configureEach {
     if (name == "metadataElements") {
         outgoing.artifact(metadataJar) {
             classifier = null
@@ -122,7 +121,7 @@ micronautBuild {
     binaryCompatibility.enabled = false
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.preferProjectModules()
     ResolutionStrategy rs = resolutionStrategy
     rs.dependencySubstitution.all {

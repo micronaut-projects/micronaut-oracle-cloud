@@ -5,7 +5,7 @@ plugins {
 dependencies {
     api(libs.oci.common) {
         exclude group: 'org.javassist', module: 'javassist'
-        exclude(group:"com.fasterxml.jackson.core", module:"jackson-databind")
+        exclude(group: "com.fasterxml.jackson.core", module: "jackson-databind")
     }
     api(mn.micronaut.inject)
     api(mn.micronaut.json.core)

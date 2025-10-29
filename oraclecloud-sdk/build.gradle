@@ -6,7 +6,7 @@ plugins {
 dependencies {
     annotationProcessor projects.micronautOraclecloudSdkProcessor
     api(projects.micronautOraclecloudCommon) {
-        exclude group:'commons-logging', module:'commons-logging'
+        exclude group: 'commons-logging', module: 'commons-logging'
     }
     api(projects.micronautOraclecloudHttpclientNetty)
 
