@@ -42,6 +42,11 @@ public class HttpHandlerApplicationContextProvider implements ApplicationContext
         return applicationContext;
     }
 
+    /**
+     * Returns the {@link HttpHandler}.
+     *
+     * @return the handler
+     */
     public HttpHandler getHttpHandler() {
         return httpHandler;
     }

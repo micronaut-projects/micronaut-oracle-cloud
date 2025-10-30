@@ -78,10 +78,11 @@ import java.util.stream.Collectors;
 @Internal
 final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, ServletExchange<InputEvent, OutputEvent>, MutableHttpRequest<B>, ServerHttpRequest<B> {
 
-    private static final String COOKIE_HEADER = "Cookie";
-
     @SuppressWarnings("rawtypes")
     static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
+
+    private static final String COOKIE_HEADER = "Cookie";
+
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
     private final FnServletResponse<Object> response;
