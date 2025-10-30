@@ -1,5 +1,4 @@
 [versions]
-bytebuddy = '1.17.8'
 fn = '1.0.212'
 graal-svm = "23.1.8"
 javapoet = '1.13.0'
@@ -56,7 +55,6 @@ micronaut-sql = { module = "io.micronaut.sql:micronaut-sql-bom", version.ref = "
 micronaut-validation = { module = "io.micronaut.validation:micronaut-validation-bom", version.ref = "micronaut-validation" }
 
 apache-http-core5 = { module = 'org.apache.httpcomponents.core5:httpcore5', version.ref = 'managed-apache-http-core5' }
-bytebuddy = { module = 'net.bytebuddy:byte-buddy', version.ref = 'bytebuddy' }
 commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'commons-lang3' }
 fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }

@@ -8,7 +8,6 @@ repositories {
 
 dependencies {
     testAnnotationProcessor(mn.micronaut.inject.java)
-    testImplementation(libs.bytebuddy)
     testImplementation(mnTest.junit.platform.launcher)
     testImplementation(mnTest.micronaut.test.junit5)
     testRuntimeOnly(libs.objenesis)
