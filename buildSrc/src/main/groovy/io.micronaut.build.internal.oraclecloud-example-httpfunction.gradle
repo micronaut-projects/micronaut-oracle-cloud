@@ -8,8 +8,8 @@ dependencies {
     implementation(projects.micronautOraclecloudFunctionHttp)
     runtimeOnly(libs.fn.runtime)
     runtimeOnly(mnLogging.slf4j.simple)
-    testImplementation(libs.oci.common.httpclient.jersey3)
     testImplementation(projects.micronautOraclecloudFunctionHttpTest)
+    testImplementation(projects.micronautOraclecloudHttpclientNetty)
 }
 
 application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
