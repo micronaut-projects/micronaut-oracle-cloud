@@ -40,6 +40,7 @@ class HikariPoolAtpTest {
                 "datasources.default.username", userName,
                 "datasources.default.password", password,
                 "datasources.default.walletPassword", "FooBar.123",
+                "micronaut.metrics.binders.jdbc.enabled", false,
                 "micronaut.metrics.export.oraclecloud.enabled", false
             ), Environment.ORACLE_CLOUD
         )) {
