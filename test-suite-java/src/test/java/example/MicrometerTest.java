@@ -8,14 +8,16 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
+import static io.micronaut.core.util.StringUtils.FALSE;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 @MicronautTest(startApplication = false)
 @Requires(beans = AuthenticationDetailsProvider.class)
-@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = FALSE)
 @Requires(property = "monitoring.compartment.ocid")
 class MicrometerTest {
 
@@ -24,24 +26,22 @@ class MicrometerTest {
 
     @Test
     void testMicrometer() {
-        Assertions.assertDoesNotThrow(() -> {
-            ApplicationContext context = ApplicationContext.run(Map.of(
+        assertDoesNotThrow(() -> {
+            try (var context = ApplicationContext.run(Map.of(
                 "micronaut.metrics.export.oraclecloud.namespace", "micronaut_test",
                 "micronaut.metrics.export.oraclecloud.applicationName", "micronaut_test",
                 "micronaut.metrics.export.oraclecloud.compartmentId", compartmentOcid,
                 "micronaut.metrics.export.oraclecloud.enabled", true
-            ), Environment.ORACLE_CLOUD);
+            ), Environment.ORACLE_CLOUD)) {
 
-            OracleCloudMeterRegistry cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class);
-
-            Counter counter = Counter.builder("micronaut.test.counter").
-                tag("test", "test").
-                description("Testing of micronaut-oraclecloud-monitoring module").
-                register(cloudMeterRegistry);
-            counter.increment(5.0);
-            Thread.sleep(2000);
-            context.close();
+                var cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class);
+                var counter = Counter.builder("micronaut.test.counter").
+                    tag("test", "test").
+                    description("Testing of micronaut-oraclecloud-monitoring module").
+                    register(cloudMeterRegistry);
+                counter.increment(5.0);
+                Thread.sleep(2000);
+            }
         });
     }
-
 }
