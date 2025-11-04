@@ -5,23 +5,28 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 @Deprecated
 class StreamReadingHandlerTest {
+
     private ExecutorService executor;
 
     @BeforeEach
@@ -32,7 +37,7 @@ class StreamReadingHandlerTest {
     @AfterEach
     public void tearDown() throws InterruptedException {
         executor.shutdown();
-        Assertions.assertTrue(executor.awaitTermination(5, TimeUnit.SECONDS));
+        assertTrue(executor.awaitTermination(5, SECONDS));
         executor = null;
     }
 
@@ -46,20 +51,20 @@ class StreamReadingHandlerTest {
         InputStream stream = handler.getInputStream();
         byte[] buffer = new byte[1024];
 
-        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
-        Assertions.assertEquals(3, stream.read(buffer));
-        Assertions.assertEquals("foo", new String(buffer, 0, 3, StandardCharsets.UTF_8));
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(UTF_8))));
+        assertEquals(3, stream.read(buffer));
+        assertEquals("foo", new String(buffer, 0, 3, UTF_8));
 
-        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8))));
-        Assertions.assertEquals(3, stream.read(buffer));
-        Assertions.assertEquals("bar", new String(buffer, 0, 3, StandardCharsets.UTF_8));
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(UTF_8))));
+        assertEquals(3, stream.read(buffer));
+        assertEquals("bar", new String(buffer, 0, 3, UTF_8));
 
-        Assertions.assertFalse(released.get());
+        assertFalse(released.get());
 
         channel.writeInbound(new DefaultLastHttpContent());
-        Assertions.assertEquals(-1, stream.read(buffer));
+        assertEquals(-1, stream.read(buffer));
 
-        Assertions.assertTrue(released.get());
+        assertTrue(released.get());
     }
 
     @Test
@@ -75,7 +80,7 @@ class StreamReadingHandlerTest {
 
         Future<?> future = executor.submit(() -> {
             char[] buffer = new char[1024];
-            InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+            InputStreamReader reader = new InputStreamReader(stream, UTF_8);
             while (true) {
                 int n = reader.read(buffer);
                 if (n == -1) {
@@ -86,18 +91,18 @@ class StreamReadingHandlerTest {
             return null;
         });
 
-        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
-        Assertions.assertEquals("foo", queue.take());
-        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(StandardCharsets.UTF_8))));
-        Assertions.assertEquals("bar", queue.take());
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(UTF_8))));
+        assertEquals("foo", queue.take());
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("bar".getBytes(UTF_8))));
+        assertEquals("bar", queue.take());
 
-        Assertions.assertFalse(released.get());
+        assertFalse(released.get());
 
         channel.writeInbound(new DefaultLastHttpContent());
 
         future.get();
 
-        Assertions.assertTrue(released.get());
+        assertTrue(released.get());
     }
 
     @Test
@@ -110,14 +115,14 @@ class StreamReadingHandlerTest {
         InputStream stream = handler.getInputStream();
         byte[] buffer = new byte[1024];
 
-        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(StandardCharsets.UTF_8))));
-        Assertions.assertFalse(released.get());
+        channel.writeInbound(new DefaultHttpContent(Unpooled.wrappedBuffer("foo".getBytes(UTF_8))));
+        assertFalse(released.get());
         channel.writeInbound(new DefaultLastHttpContent());
-        Assertions.assertTrue(released.get());
+        assertTrue(released.get());
 
-        Assertions.assertEquals(3, stream.read(buffer));
-        Assertions.assertEquals("foo", new String(buffer, 0, 3, StandardCharsets.UTF_8));
-        Assertions.assertEquals(-1, stream.read(buffer));
+        assertEquals(3, stream.read(buffer));
+        assertEquals("foo", new String(buffer, 0, 3, UTF_8));
+        assertEquals(-1, stream.read(buffer));
     }
 
     @Test
@@ -129,22 +134,22 @@ class StreamReadingHandlerTest {
         channel.pipeline().addLast(handlerImpl);
         InputStream stream = handler.getInputStream();
 
-        Assertions.assertFalse(released.get());
+        assertFalse(released.get());
         channel.pipeline().fireExceptionCaught(new RuntimeException("foo"));
-        Assertions.assertTrue(released.get());
+        assertTrue(released.get());
         channel.pipeline().fireExceptionCaught(new RuntimeException("bar"));
 
         try {
             stream.read();
-            Assertions.fail();
+            fail();
         } catch (IOException e) {
-            Assertions.assertEquals("foo", e.getCause().getMessage());
+            assertEquals("foo", e.getCause().getMessage());
         }
 
         try {
             channel.checkException();
         } catch (Exception e) {
-            Assertions.assertEquals("bar", e.getMessage());
+            assertEquals("bar", e.getMessage());
         }
     }
 }

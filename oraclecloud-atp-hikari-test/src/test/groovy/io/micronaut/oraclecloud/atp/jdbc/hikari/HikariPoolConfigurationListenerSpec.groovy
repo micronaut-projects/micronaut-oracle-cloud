@@ -14,23 +14,22 @@ import java.sql.ResultSet
 class HikariPoolConfigurationListenerSpec extends Specification {
 
     @Shared
-    String userName = "${System.getenv("ATP_USER")}"
+    String userName = System.getenv("ATP_USER")
 
     @Shared
-    String password = "${System.getenv("ATP_PASS")}"
+    String password = System.getenv("ATP_PASS")
 
     @Shared
-    String atpId = "${System.getenv("ATP_OCID")}"
+    String atpId = System.getenv("ATP_OCID")
 
-    def "test it connects to database"() {
+    void "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
-                "datasources.default.ocid"           : atpId,
-                "datasources.default.username"       : userName,
-                "datasources.default.password"       : password,
-                "datasources.default.walletPassword" : "FooBar.123"
+                "datasources.default.ocid"          : atpId,
+                "datasources.default.username"      : userName,
+                "datasources.default.password"      : password,
+                "datasources.default.walletPassword": "FooBar.123"
         ], Environment.ORACLE_CLOUD)
-
 
         when:
         DataSource dataSource = context.getBean(DataSource)
@@ -45,12 +44,12 @@ class HikariPoolConfigurationListenerSpec extends Specification {
         context.close()
     }
 
-    def "test it skips datasource without ocid field"() {
+    void "test it skips datasource without ocid field"() {
         given:
         ApplicationContext context = ApplicationContext.run([
-                "datasources.default.url"            : "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
-                "datasources.default.username"       : userName,
-                "datasources.default.password"       : password,
+                "datasources.default.url"     : "jdbc:h2:mem:default;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+                "datasources.default.username": userName,
+                "datasources.default.password": password,
         ], Environment.ORACLE_CLOUD)
 
         when:
