@@ -41,7 +41,7 @@ jobs:
     runs-on: ${{ needs.start-runner.outputs.label }}
     strategy:
       matrix:
-        java: [ '17' ]
+        java: [ '21' ]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/cache@v4
@@ -54,7 +54,7 @@ jobs:
         uses: actions/setup-java@v4.7.0
         with:
           distribution: 'oracle'
-          java-version: '17'
+          java-version: '21'
       - name: "Set up GRAALVM_HOME for Native Build Tools"
         uses: graalvm/setup-graalvm@v1.2.4.1
         with:
@@ -63,7 +63,7 @@ jobs:
           components: 'native-image'
           set-java-home: 'false'
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5
       - name: Build with Gradle
         id: gradle
         run: |

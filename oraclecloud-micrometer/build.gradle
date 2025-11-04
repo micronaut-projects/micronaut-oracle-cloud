@@ -3,15 +3,15 @@ plugins {
 }
 
 dependencies {
-    api projects.micronautOraclecloudBmcMonitoring
-    api mnMicrometer.micronaut.micrometer.core
-    api mnMicrometer.micrometer.core
-    api mn.micronaut.inject
-    api mn.micronaut.runtime
-    implementation mn.micronaut.http.client
-    testImplementation mn.micronaut.management
-    testImplementation mnTest.micronaut.test.spock
-    testImplementation projects.micronautOraclecloudHttpclientNetty
-    testImplementation projects.micronautOraclecloudSdk
-    testRuntimeOnly mn.micronaut.http.server.netty
+    api(mn.micronaut.inject)
+    api(mn.micronaut.runtime)
+    api(mnMicrometer.micrometer.core)
+    api(mnMicrometer.micronaut.micrometer.core)
+    api(projects.micronautOraclecloudBmcMonitoring)
+    implementation(mn.micronaut.http.client)
+    testImplementation(mn.micronaut.management)
+    testImplementation(mnTest.micronaut.test.spock)
+    testImplementation(projects.micronautOraclecloudHttpclientNetty)
+    testImplementation(projects.micronautOraclecloudSdk)
+    testRuntimeOnly(mn.micronaut.http.server.netty)
 }

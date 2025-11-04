@@ -49,7 +49,7 @@ def internalCompile = Attribute.of("internal.compile", Boolean)
 
 // Workaround for variant selection problem
 
-configurations.all {
+configurations.configureEach {
     if (canBeConsumed) {
         attributes.attribute(proto, name == 'runtimeElements')
     } else if (name == 'compileProtoPath') {

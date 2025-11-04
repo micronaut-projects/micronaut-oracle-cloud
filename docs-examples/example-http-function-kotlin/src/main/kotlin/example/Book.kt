@@ -15,10 +15,10 @@
  */
 package example
 
-import io.micronaut.core.annotation.Introspected
+import io.micronaut.serde.annotation.Serdeable
 import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 
-@Introspected
+@Serdeable
 data class Book(@field:NotBlank val title: String,
                 @field:Min(100) val pages: Int)

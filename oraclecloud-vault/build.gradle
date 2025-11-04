@@ -3,11 +3,11 @@ plugins {
 }
 
 dependencies {
-    api projects.micronautOraclecloudBmcSecrets
-    api projects.micronautOraclecloudBmcVault
-    api mn.micronaut.discovery.core
-    api mn.micronaut.inject
-    implementation mnDiscoveryClient.micronaut.discovery.client
-    implementation mn.reactor
-    testImplementation mnTest.micronaut.test.spock
+    api(mn.micronaut.discovery.core)
+    api(mn.micronaut.inject)
+    api(projects.micronautOraclecloudBmcSecrets)
+    api(projects.micronautOraclecloudBmcVault)
+    implementation(mn.reactor)
+    implementation(mnDiscoveryClient.micronaut.discovery.client)
+    testImplementation(mnTest.micronaut.test.spock)
 }

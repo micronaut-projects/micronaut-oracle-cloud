@@ -1,0 +1,14 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'groovy'
+}
+
+dependencies {
+    implementation(mnGroovy.micronaut.runtime.groovy)
+    testAnnotationProcessor(mn.micronaut.inject.groovy)
+    testImplementation(mnTest.micronaut.test.spock)
+}
+
+micronaut {
+    testRuntime 'spock2'
+}

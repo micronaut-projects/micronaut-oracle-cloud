@@ -1,20 +1,4 @@
 plugins {
-    id 'io.micronaut.build.internal.oraclecloud-example'
-}
-
-dependencies {
-    implementation mn.micronaut.runtime
-    implementation projects.micronautOraclecloudFunction
-    runtimeOnly libs.fn.runtime
-    runtimeOnly mnLogging.slf4j.simple
-    testAnnotationProcessor mn.micronaut.inject.java
-    testImplementation libs.fn.testing.junit4
-    testImplementation mnTest.micronaut.test.junit5
-    testRuntimeOnly libs.junit.jupiter
-}
-
-application.mainClass.set 'com.fnproject.fn.runtime.EntryPoint'
-
-run {
-    args('example.ListBucketsFunction::handleRequest')
+    id 'io.micronaut.build.internal.oraclecloud-example-function'
+    id 'io.micronaut.build.internal.oraclecloud-java-example'
 }

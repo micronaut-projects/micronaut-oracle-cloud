@@ -4,9 +4,9 @@ plugins {
 }
 
 dependencies {
-    implementation libs.javapoet
-    implementation mn.micronaut.inject.java
+    implementation(libs.javapoet)
     implementation(libs.oci.common) {
         transitive = false
     }
+    implementation(mn.micronaut.inject.java)
 }

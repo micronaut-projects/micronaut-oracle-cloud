@@ -1,5 +1,5 @@
 plugins {
-    id 'io.micronaut.application'
+    id 'io.micronaut.minimal.application'
     id 'io.micronaut.build.internal.oraclecloud-base'
 }
 
@@ -7,21 +7,18 @@ micronaut {
     version libs.versions.micronaut.platform.get()
     coreVersion.set(libs.versions.micronaut.asProvider().get())
 }
+
 dependencies {
+    annotationProcessor(mnValidation.micronaut.validation.processor)
     implementation(libs.oci.objectstorage) {
         exclude group: 'org.javassist', module: 'javassist'
     }
-    annotationProcessor mnValidation.micronaut.validation.processor
-    implementation mnValidation.micronaut.validation
-    testImplementation mn.micronaut.http.client
-    testRuntimeOnly mnSerde.micronaut.serde.jackson
+    implementation(mnValidation.micronaut.validation)
+    testImplementation(mn.micronaut.http.client)
 }
 
-if (JavaVersion.current().isCompatibleWith(JavaVersion.toVersion(19))) {
-    plugins.withId('org.graalvm.buildtools.native') {
-        graalvmNative.binaries.all {
-            buildArgs.add('--enable-preview')
-        }
+plugins.withId('org.graalvm.buildtools.native') {
+    graalvmNative.binaries.all {
+        buildArgs.add('--enable-preview')
     }
 }
-

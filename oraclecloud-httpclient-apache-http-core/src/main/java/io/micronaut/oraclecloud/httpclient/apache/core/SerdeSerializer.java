@@ -79,7 +79,7 @@ final class SerdeSerializer implements ApacheCoreSerializer {
         return objectMapper.writeValueAsString(o);
     }
 
-    private static class UnmanagedSerializerHolder {
+    private static final class UnmanagedSerializerHolder {
         // only initialize if necessary
 
         private static final Map<String, Object> DEFAULT_MAPPER_CONFIG = Map.of(

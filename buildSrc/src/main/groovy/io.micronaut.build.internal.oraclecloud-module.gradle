@@ -6,10 +6,7 @@ plugins {
 ossIndexAudit {
     excludeCoordinates = ["org.eclipse.jetty:jetty-http@9.4.58.v20250814"]
 }
+
 dependencies {
-    api platform(libs.oci.bom)
-    annotationProcessor mn.micronaut.inject.java
-}
-configurations.all {
-    resolutionStrategy.preferProjectModules()
+    api(platform(libs.oci.bom))
 }

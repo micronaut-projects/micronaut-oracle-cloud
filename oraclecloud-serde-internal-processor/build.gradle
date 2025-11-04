@@ -5,11 +5,11 @@ plugins {
 
 dependencies {
     // Transitive dependencies
-    implementation mn.micronaut.inject
-    implementation mn.micronaut.inject.java
-    implementation mnSerde.micronaut.serde.processor
-    implementation mnSerde.micronaut.serde.api
+    implementation(mn.micronaut.inject)
+    implementation(mn.micronaut.inject.java)
+    implementation(mnSerde.micronaut.serde.api)
+    implementation(mnSerde.micronaut.serde.processor)
 
-    testImplementation mn.micronaut.inject.java.test
-    testImplementation libs.oci.common
+    testImplementation(libs.oci.common)
+    testImplementation(mn.micronaut.inject.java.test)
 }

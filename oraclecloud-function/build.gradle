@@ -3,13 +3,13 @@ plugins {
 }
 
 dependencies {
-    annotationProcessor mn.micronaut.graal
-    api libs.fn.api
-    api mn.micronaut.function
-    api projects.micronautOraclecloudCommon
-    compileOnly mn.micronaut.jackson.databind
-    compileOnly libs.graal.svm
-    testImplementation projects.micronautOraclecloudBmcObjectstorage
-    testImplementation libs.fn.testing.junit4
-    testImplementation mnTest.micronaut.test.spock
+    annotationProcessor(mn.micronaut.graal)
+    api(libs.fn.api)
+    api(mn.micronaut.function)
+    api(projects.micronautOraclecloudCommon)
+    compileOnly(libs.graal.svm)
+    compileOnly(mn.micronaut.jackson.databind)
+    testImplementation(libs.fn.testing.junit4)
+    testImplementation(mnTest.micronaut.test.spock)
+    testImplementation(projects.micronautOraclecloudBmcObjectstorage)
 }

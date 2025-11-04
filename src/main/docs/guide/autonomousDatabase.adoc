@@ -43,7 +43,7 @@ Or:
 
 dependency:micronaut-jdbc-hikari[groupId="io.micronaut.sql", scope="runtime"]
 
-NOTE: Note that `micronaut-oraclecloud-atp` module is compatible with Java 17+.
+NOTE: Note that `micronaut-oraclecloud-atp` module is compatible with Java 21+.
 
 To use automated data source configuration from the Wallet, provide a configuration similar to the following:
 

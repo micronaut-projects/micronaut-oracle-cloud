@@ -1,6 +1,5 @@
 plugins {
     id("io.micronaut.build.internal.bom")
-
     id("io.micronaut.build.internal.oraclecloud-bom")
 }
 
@@ -15,9 +14,15 @@ dependencies {
         }
     }
 }
+
 micronautBom {
     suppressions {
-       bomAuthorizedGroupIds.put("io.micronaut.oraclecloud:micronaut-oraclecloud-bom", ["com.oracle.database.security", "com.oracle.database.ha", "com.oracle.database.nls", "com.oracle.database.xml", "com.oracle.database.observability"] as Set)
+        bomAuthorizedGroupIds.put("io.micronaut.oraclecloud:micronaut-oraclecloud-bom",
+            ["com.oracle.database.security",
+             "com.oracle.database.ha",
+             "com.oracle.database.nls",
+             "com.oracle.database.xml",
+             "com.oracle.database.observability"] as Set)
         acceptedVersionRegressions.add("ojdbc")
         acceptedLibraryRegressions.add("boms-oracle-jdbc")
         acceptedLibraryRegressions.add("oracle-jdbc")

@@ -3,24 +3,24 @@ plugins {
 }
 
 repositories {
-    repositories {
-        mavenCentral()
-    }
+    mavenCentral()
 }
 
 dependencies {
-    testImplementation mnTest.micronaut.test.junit5
-    testRuntimeOnly libs.junit.jupiter
-    testAnnotationProcessor mn.micronaut.inject.java
-    testRuntimeOnly mnSerde.micronaut.serde.jackson
+    testAnnotationProcessor(mn.micronaut.inject.java)
     testImplementation(mnTest.junit.platform.launcher)
+    testImplementation(mnTest.micronaut.test.junit5)
+    testRuntimeOnly(libs.objenesis)
+    testRuntimeOnly(mnSerde.micronaut.serde.jackson)
+    testRuntimeOnly(mnTest.junit.jupiter.engine)
+    testRuntimeOnly(mnTest.junit.platform.launcher)
+    testRuntimeOnly(mnTest.junit.platform.suite)
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs.addAll([
             '-parameters',
-            // enables incremental compilation
             '-Amicronaut.processing.incremental=true',
             '-Amicronaut.processing.annotations=io.micronaut.oraclecloud.*',
             "-Amicronaut.processing.group=$project.group",
@@ -34,14 +34,12 @@ micronautBuild {
 
 afterEvaluate {
     java {
-        toolchain.languageVersion.convention(null)
-        toolchain.languageVersion.set(null)
-        sourceCompatibility = 17
-        targetCompatibility = 17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.preferProjectModules()
 }
 

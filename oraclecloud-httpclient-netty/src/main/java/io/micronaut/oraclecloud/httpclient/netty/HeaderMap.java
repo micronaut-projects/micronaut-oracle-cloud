@@ -78,7 +78,7 @@ final class HeaderMap extends AbstractMap<String, List<String>> {
         return new KeySet();
     }
 
-    private class KeySet extends AbstractSet<String> {
+    private final class KeySet extends AbstractSet<String> {
         @Override
         public boolean contains(Object o) {
             return containsKey(o);

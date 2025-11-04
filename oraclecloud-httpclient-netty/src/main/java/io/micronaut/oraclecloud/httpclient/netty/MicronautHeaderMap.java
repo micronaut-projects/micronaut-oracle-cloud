@@ -38,7 +38,7 @@ final class MicronautHeaderMap extends AbstractMap<String, List<String>> {
 
     @Override
     public Set<Entry<String, List<String>>> entrySet() {
-        return new AbstractSet<Entry<String, List<String>>>() {
+        return new AbstractSet<>() {
             @Override
             public Iterator<Entry<String, List<String>>> iterator() {
                 return new HeaderIterator(headers);

@@ -2,10 +2,14 @@ package io.micronaut.oraclecloud.httpclient.netty;
 
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MutableHttpHeaders;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings({"RedundantCollectionOperation", "MismatchedQueryAndUpdateOfCollection"})
 class HeaderMapTest {
@@ -15,24 +19,24 @@ class HeaderMapTest {
         headers.add("Foo", "bar");
 
         MicronautHeaderMap map = new MicronautHeaderMap(headers);
-        Assertions.assertTrue(map.containsKey("foo"));
-        Assertions.assertTrue(map.containsKey("FOO"));
-        Assertions.assertTrue(map.containsKey("Foo"));
-        Assertions.assertTrue(map.keySet().contains("foo"));
-        Assertions.assertTrue(map.keySet().contains("FOO"));
-        Assertions.assertTrue(map.keySet().contains("Foo"));
+        assertTrue(map.containsKey("foo"));
+        assertTrue(map.containsKey("FOO"));
+        assertTrue(map.containsKey("Foo"));
+        assertTrue(map.keySet().contains("foo"));
+        assertTrue(map.keySet().contains("FOO"));
+        assertTrue(map.keySet().contains("Foo"));
 
         List<String> foo = map.remove("Foo");
 
-        Assertions.assertEquals(foo.size(), 1);
-        Assertions.assertEquals(foo.get(0), "bar");
-        Assertions.assertFalse(map.containsKey("foo"));
-        Assertions.assertFalse(map.containsKey("FOO"));
-        Assertions.assertFalse(map.containsKey("Foo"));
-        Assertions.assertFalse(map.keySet().contains("foo"));
-        Assertions.assertFalse(map.keySet().contains("FOO"));
-        Assertions.assertFalse(map.keySet().contains("Foo"));
+        assertEquals(1, foo.size());
+        assertEquals("bar", foo.getFirst());
+        assertFalse(map.containsKey("foo"));
+        assertFalse(map.containsKey("FOO"));
+        assertFalse(map.containsKey("Foo"));
+        assertFalse(map.keySet().contains("foo"));
+        assertFalse(map.keySet().contains("FOO"));
+        assertFalse(map.keySet().contains("Foo"));
 
-        Assertions.assertNull(map.remove("Foo"));
+        assertNull(map.remove("Foo"));
     }
 }

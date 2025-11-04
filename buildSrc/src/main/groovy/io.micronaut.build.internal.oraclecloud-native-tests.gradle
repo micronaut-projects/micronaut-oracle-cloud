@@ -2,6 +2,7 @@ plugins {
     id "io.micronaut.build.internal.oraclecloud-tests"
     id "io.micronaut.application"
 }
+
 micronaut {
     version libs.versions.micronaut.platform.get()
     coreVersion.set(libs.versions.micronaut.asProvider().get())
@@ -15,7 +16,7 @@ graalvmNative {
         enabled = true
     }
     binaries {
-        all {
+        configureEach {
             resources.autodetect()
             buildArgs.add("--verbose")
         }

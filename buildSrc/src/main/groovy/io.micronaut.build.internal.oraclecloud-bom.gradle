@@ -9,20 +9,20 @@ static Collection<String> parseOciBomArtifacts(String version) {
 }
 
 static Collection<File> parseOciSdkModules() {
-    var modules = new File("target/checkouts/oci-java-sdk").listFiles().findAll {it.name.startsWith("bmc-")}
+    var modules = new File("target/checkouts/oci-java-sdk").listFiles().findAll { it.name.startsWith("bmc-") }
     var secondLevelModules = modules.collectMany {
-        it.listFiles().findAll{ it.name.startsWith("bmc-") }
+        it.listFiles().findAll { it.name.startsWith("bmc-") }
     }
     return (modules + secondLevelModules)
-            .findAll {new File(it.path + "/src/main/java").exists() }
+            .findAll { new File(it.path + "/src/main/java").exists() }
 }
 
 static Collection<String> parseOciSdkClientClassNames() {
     return parseOciSdkModules()
-        .collect{ new File(it.path + "/src/main/java/com/oracle/bmc") }
-        .findAll{ it.exists() }
+        .collect { new File(it.path + "/src/main/java/com/oracle/bmc") }
+        .findAll { it.exists() }
         // Get all the packages com/oracle/bmc/*
-        .collectMany{List.of(it.listFiles()) }
+        .collectMany { List.of(it.listFiles()) }
         // Get all the files com/oracle/bmc/package/*Client.java
         .collectMany {
             var packageName = "com.oracle.bmc.$it.name."
@@ -55,5 +55,3 @@ if (!extraPropertiesExtension.has('ociArtifacts')) {
 if (!extraPropertiesExtension.has('ociSdkClientClasses')) {
     extraPropertiesExtension.set('ociSdkClientClasses', parseOciSdkClientClassNames().join(","))
 }
-
-

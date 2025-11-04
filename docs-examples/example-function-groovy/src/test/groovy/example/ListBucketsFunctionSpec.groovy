@@ -1,11 +1,9 @@
-package example;
+package example
 
 import com.fnproject.fn.testing.FnTestingRule
 import example.mock.MockData
-import spock.lang.IgnoreIf
 import spock.lang.Specification
 
-@IgnoreIf({ jvm.java8 }) // FDK requires Java 11+
 class ListBucketsFunctionSpec extends Specification {
 
     void 'test function'() {

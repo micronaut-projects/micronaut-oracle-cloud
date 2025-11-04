@@ -83,7 +83,7 @@ class StreamReadingHandler extends DecidedBodyHandler {
         }
     }
 
-    private class Stream extends InputStream {
+    private final class Stream extends InputStream {
         @Override
         public int read() throws IOException {
             byte[] bytes = new byte[1];

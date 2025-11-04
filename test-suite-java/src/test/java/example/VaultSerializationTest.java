@@ -8,11 +8,12 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static io.micronaut.core.util.StringUtils.FALSE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @MicronautTest
-@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
+@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = FALSE)
 public class VaultSerializationTest {
     @Test
     void testSerialization(JsonMapper jsonMapper) throws IOException {
