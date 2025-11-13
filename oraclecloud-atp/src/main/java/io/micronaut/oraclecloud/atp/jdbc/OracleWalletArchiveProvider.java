@@ -45,6 +45,8 @@ public class OracleWalletArchiveProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleWalletArchiveProvider.class);
 
+    private static final String DEFAULT_SERVICE_ALIAS_SUFFIX = "high";
+
     private final Database databaseClient;
 
     public OracleWalletArchiveProvider(Database databaseClient) {
@@ -58,11 +60,11 @@ public class OracleWalletArchiveProvider {
         }
         String suffix = cfg.getServiceAliasSuffix();
         if (StringUtils.isEmpty(suffix)) {
-            suffix = "high";
+            suffix = DEFAULT_SERVICE_ALIAS_SUFFIX;
         }
         String computed = dbName + "_" + suffix;
         if (LOG.isInfoEnabled()) {
-            LOG.info("Using default serviceAlias: " + computed);
+            LOG.info("Using default serviceAlias: {}", computed);
         }
         return computed;
     }

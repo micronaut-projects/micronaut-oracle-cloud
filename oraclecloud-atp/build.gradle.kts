@@ -17,4 +17,5 @@ dependencies {
     implementation(libs.oracle.xml.xdb)
     implementation(platform("${libs.oracle.jdbc.bom.get()}:${mnSql.versions.ojdbc.get()}"))
     runtimeOnly(libs.slf4j.jcl)
+    testImplementation(mnTest.junit.jupiter.params)
 }

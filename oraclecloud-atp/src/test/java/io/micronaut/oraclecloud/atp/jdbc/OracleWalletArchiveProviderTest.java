@@ -15,41 +15,32 @@
  */
 package io.micronaut.oraclecloud.atp.jdbc;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.Arguments;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OracleWalletArchiveProviderTest {
 
-    @Test
-    void usesDefaultHighWhenSuffixNotConfigured() {
+    @ParameterizedTest
+    @MethodSource("aliasCases")
+    void resolvesServiceAlias(String explicitAlias, String suffix, String baseName, String expected) {
         AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
-        // No explicit service alias, no suffix configured
-        cfg.setServiceAlias(null);
-        cfg.setServiceAliasSuffix(null);
+        cfg.setServiceAlias(explicitAlias);
+        cfg.setServiceAliasSuffix(suffix);
 
-        String result = OracleWalletArchiveProvider.resolveServiceAlias(cfg, "mydb");
-        assertEquals("mydb_high", result);
+        String result = OracleWalletArchiveProvider.resolveServiceAlias(cfg, baseName);
+        assertEquals(expected, result);
     }
 
-    @Test
-    void usesConfiguredSuffixWhenProvided() {
-        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
-        // No explicit service alias, suffix configured
-        cfg.setServiceAlias(null);
-        cfg.setServiceAliasSuffix("tp");
-
-        String result = OracleWalletArchiveProvider.resolveServiceAlias(cfg, "mydb");
-        assertEquals("mydb_tp", result);
-    }
-
-    @Test
-    void explicitServiceAliasOverridesSuffixComputation() {
-        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
-        cfg.setServiceAlias("custom_alias");
-        cfg.setServiceAliasSuffix("tp"); // Should be ignored when serviceAlias is set
-
-        String result = OracleWalletArchiveProvider.resolveServiceAlias(cfg, "mydb");
-        assertEquals("custom_alias", result);
+    private static Stream<Arguments> aliasCases() {
+        return Stream.of(
+            Arguments.of(null, null, "mydb", "mydb_high"),
+            Arguments.of(null, "tp", "mydb", "mydb_tp"),
+            Arguments.of("custom_alias", "tp", "mydb", "custom_alias")
+        );
     }
 }
