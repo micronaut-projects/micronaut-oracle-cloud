@@ -39,6 +39,13 @@ public class AutonomousDatabaseConfiguration {
     private String serviceAlias;
 
     /**
+     * Suffix for the default service alias. If {@link #serviceAlias} is not configured,
+     * the default service alias will be computed as (dbName + "_" + serviceAliasSuffix).
+     * Defaults to "high".
+     */
+    private String serviceAliasSuffix = "high";
+
+    /**
      * @return autonomous database ocid
      */
     public String getOcid() {
@@ -92,5 +99,19 @@ public class AutonomousDatabaseConfiguration {
      */
     public void setServiceAlias(String serviceAlias) {
         this.serviceAlias = serviceAlias;
+    }
+
+    /**
+     * @return service alias suffix. Defaults to "high" if not set.
+     */
+    public String getServiceAliasSuffix() {
+        return serviceAliasSuffix;
+    }
+
+    /**
+     * @param serviceAliasSuffix service alias suffix to use when service alias is not configured
+     */
+    public void setServiceAliasSuffix(String serviceAliasSuffix) {
+        this.serviceAliasSuffix = serviceAliasSuffix;
     }
 }
