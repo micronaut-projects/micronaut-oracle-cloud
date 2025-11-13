@@ -51,6 +51,22 @@ public class OracleWalletArchiveProvider {
         this.databaseClient = databaseClient;
     }
 
+    static String resolveServiceAlias(AutonomousDatabaseConfiguration cfg, String dbName) {
+        String serviceAlias = cfg.getServiceAlias();
+        if (StringUtils.isNotEmpty(serviceAlias)) {
+            return serviceAlias;
+        }
+        String suffix = cfg.getServiceAliasSuffix();
+        if (StringUtils.isEmpty(suffix)) {
+            suffix = "high";
+        }
+        String computed = dbName + "_" + suffix;
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Using default serviceAlias: " + computed);
+        }
+        return computed;
+    }
+
     /**
      * Creates wallet archive based on the {@link AutonomousDatabaseConfiguration}.
      *
@@ -81,10 +97,7 @@ public class OracleWalletArchiveProvider {
                                 .build()
                 );
                 final String dbName = getAutonomousDatabaseResponse.getAutonomousDatabase().getDbName();
-                serviceAlias = String.format("%s_high", dbName);
-                if (LOG.isInfoEnabled()) {
-                    LOG.info("Using default serviceAlias: " + serviceAlias);
-                }
+                serviceAlias = resolveServiceAlias(autonomousDatabaseConfiguration, dbName);
             }
 
             return WalletModule.instance()
