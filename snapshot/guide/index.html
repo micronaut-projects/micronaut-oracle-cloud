@@ -2696,6 +2696,9 @@ datasources.default.password=bar</code></pre>
 <li>
 <p>specify the database <code>username</code> and <code>password</code></p>
 </li>
+<li>
+<p>optionally <code>service-alias-suffix</code> controls the suffix used when computing the default service alias using database name and given service alias suffix; defaults to <code>high</code> (e.g., set to <code>tp</code>)</p>
+</li>
 </ul>
 </div>
 <div class="admonitionblock note">
@@ -2711,8 +2714,7 @@ The <code>username</code> and <code>password</code> are not automatically genera
 </table>
 </div>
 <div class="paragraph">
-<p>The module uses <code>&lt;db_name&gt;_high</code> as the default service alias.
-This can be overridden with the <code>serviceAlias</code> property.</p>
+<p>The module uses <code>(db_name + "_" + service-alias-suffix)</code> as the default service alias. By default, <code>service-alias-suffix</code> is <code>high</code>. You can override it (for example to <code>tp</code>). If <code>service-alias</code> is set, it takes precedence over the suffix-based value.</p>
 </div>
 <div class="paragraph">
 <p>The wallet is of type <code>SINGLE</code>.
