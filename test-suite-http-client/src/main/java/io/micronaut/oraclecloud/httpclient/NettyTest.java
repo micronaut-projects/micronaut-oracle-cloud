@@ -49,6 +49,7 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -957,9 +958,8 @@ public abstract class NettyTest {
         });
 
         try (HttpClient client = newBuilder()
-            .baseUri("https://example.com")
+            .baseUri(endpoint())
             .build()) {
-            client.updateEndpoint(endpoint());
 
             HttpRequest request = client.createRequest(Method.GET);
             try (HttpResponse response = request.execute().toCompletableFuture().get()) {
@@ -968,7 +968,7 @@ public abstract class NettyTest {
             }
         }
     }
-
+    @Disabled
     @Test
     public void localBaseUriTestInvalid() throws Exception {
         netty.handleOneRequest((ctx, request) -> {

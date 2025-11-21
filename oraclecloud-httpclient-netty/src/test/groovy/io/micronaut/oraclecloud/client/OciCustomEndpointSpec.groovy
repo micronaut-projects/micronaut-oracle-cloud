@@ -78,7 +78,7 @@ class OciCustomEndpointSpec extends Specification {
         given:
         ApplicationContext context = ApplicationContext.run([
                 "spec.name"            : "OciCustomEndpointSpecFactory",
-                "spec.name.provider"   : "OciCustomEndpointSpec",
+                "spec.name.provider"   : "OciCustomEndpointSpecFactory",
                 "oci.config.enabled"   : "false",
         ], Environment.ORACLE_CLOUD)
 
