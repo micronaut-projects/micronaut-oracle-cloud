@@ -222,8 +222,11 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
                             TYPE_INTERNAL_BUILDER_ACCESS
                                 .invokeStatic("getEndpoint", ClassTypeDef.STRING, clientBuilderParam)
                                 .isNull()
+                        ).and(
+                            TYPE_INTERNAL_BUILDER_ACCESS
+                                .invokeStatic("getRegion", TYPE_REGION, clientBuilderParam)
+                                .isNull()
                         );
-
 
                         return condition.ifTrue(
                             clientBuilderParam.invoke("region", clientBuilderDef, field.invoke("getRegion", TYPE_REGION))

@@ -319,7 +319,10 @@ final class MicronautHttpRequest implements HttpRequest {
             filterState.add(filter.beforeRequest(this));
         }
 
-        return Mono.from(client.upstreamHttpClient.exchange(mnRequest, byteBody, blockHint))
+        // Split outgoing body to avoid claim conflicts when multiple readers (e.g. request signing + send) need access
+        CloseableByteBody toSend = byteBody == null ? null : byteBody.split(ByteBody.SplitBackpressureMode.FASTEST);
+
+        return Mono.from(client.upstreamHttpClient.exchange(mnRequest, toSend, blockHint))
             .toFuture()
             .thenApply(r -> (HttpResponse) new MicronautHttpResponse(client.jsonMapper, r, offloadExecutor))
             .exceptionallyCompose(e -> runResponseFilters(filterState, null, e))
