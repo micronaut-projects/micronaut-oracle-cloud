@@ -11,7 +11,7 @@ slf4j-jcl = '2.0.17'
 shadow = '8.0.0'
 groovy = "4.0.28"
 spock = "2.3-groovy-4.0"
-oci = "3.74.2"
+oci = "3.77.0"
 oracle-database-security = "21.19.0.0"
 protobuf = '0.9.5'
 
