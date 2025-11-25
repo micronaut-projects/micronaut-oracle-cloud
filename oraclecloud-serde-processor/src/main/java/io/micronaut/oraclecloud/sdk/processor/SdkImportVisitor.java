@@ -68,6 +68,7 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
     public static final ClassTypeDef TYPE_REQUEST_SIGNER_FACTORY = ClassTypeDef.of("com.oracle.bmc.http.signing.RequestSignerFactory");
     public static final ClassTypeDef TYPE_REGION = ClassTypeDef.of("com.oracle.bmc.Region");
     public static final ClassTypeDef TYPE_INTERNAL_BUILDER_ACCESS = ClassTypeDef.of("com.oracle.bmc.common.InternalBuilderAccess");
+    public static final String GET_REGION = "getRegion";
     private ClassElement asyncClientType;
     private ClassElement syncClientType;
 
@@ -217,16 +218,19 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
                         VariableDef.MethodParameter authDetails = params.get(1);
                         VariableDef.Field field = aThis.field(regionProviderField);
                         ExpressionDef.ConditionExpressionDef condition = field.isNonNull().and(
-                            field.invoke("getRegion", TYPE_REGION).isNonNull()
+                            field.invoke(GET_REGION, TYPE_REGION).isNonNull()
                         ).and(
                             TYPE_INTERNAL_BUILDER_ACCESS
                                 .invokeStatic("getEndpoint", ClassTypeDef.STRING, clientBuilderParam)
                                 .isNull()
+                        ).and(
+                            TYPE_INTERNAL_BUILDER_ACCESS
+                                .invokeStatic(GET_REGION, TYPE_REGION, clientBuilderParam)
+                                .isNull()
                         );
 
-
                         return condition.ifTrue(
-                            clientBuilderParam.invoke("region", clientBuilderDef, field.invoke("getRegion", TYPE_REGION))
+                            clientBuilderParam.invoke("region", clientBuilderDef, field.invoke(GET_REGION, TYPE_REGION))
                                 .invoke("build", clientDef, authDetails).returning(),
                             clientBuilderParam.invoke("build", clientDef, authDetails).returning()
                         );
