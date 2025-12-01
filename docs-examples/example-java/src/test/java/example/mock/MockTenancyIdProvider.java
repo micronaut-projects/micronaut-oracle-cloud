@@ -1,6 +1,6 @@
 package example.mock;
 
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;

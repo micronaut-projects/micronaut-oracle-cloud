@@ -17,7 +17,7 @@ package io.micronaut.oraclecloud.core;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.core.util.Toggleable;
 
 import static io.micronaut.oraclecloud.core.OracleCloudConfigFileConfigurationProperties.PREFIX;

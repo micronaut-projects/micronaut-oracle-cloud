@@ -20,7 +20,7 @@ import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextProvider;
 import io.micronaut.core.annotation.Experimental;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Implementation of {@link ApplicationContextProvider} that provides an {@link HttpHandler} and an {@link ApplicationContext}.

@@ -19,7 +19,7 @@ import com.oracle.bmc.http.client.HttpClientBuilder;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.client.Serializer;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import java.util.concurrent.atomic.AtomicReference;
 
