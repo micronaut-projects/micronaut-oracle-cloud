@@ -2,7 +2,7 @@ package io.micronaut.oraclecloud.function.http;
 
 import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.core.io.Writable;
 import io.micronaut.http.HttpHeaders;

@@ -15,7 +15,7 @@
  */
 package io.micronaut.oraclecloud.certificates.config;
 
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.naming.Named;
 import io.micronaut.core.util.Toggleable;
 import io.micronaut.oraclecloud.core.OracleCloudCoreFactory;

@@ -20,7 +20,7 @@ import com.fnproject.fn.api.OutputEvent;
 import com.fnproject.fn.api.RuntimeContext;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.convert.DefaultMutableConversionService;

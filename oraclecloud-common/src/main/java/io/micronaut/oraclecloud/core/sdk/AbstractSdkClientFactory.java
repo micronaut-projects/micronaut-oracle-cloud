@@ -23,8 +23,8 @@ import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
 import io.micronaut.core.annotation.Internal;
-import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
 
 import java.util.List;

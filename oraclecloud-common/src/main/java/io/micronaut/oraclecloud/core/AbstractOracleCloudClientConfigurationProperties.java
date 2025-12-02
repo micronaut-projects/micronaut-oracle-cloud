@@ -26,7 +26,7 @@ import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
 import com.oracle.bmc.waiter.MaxTimeTerminationStrategy;
 import com.oracle.bmc.waiter.TerminationStrategy;
 import io.micronaut.context.annotation.ConfigurationBuilder;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.http.client.HttpClientConfiguration;
 
 import java.time.Duration;

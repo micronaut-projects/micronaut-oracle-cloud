@@ -15,7 +15,7 @@
  */
 package io.micronaut.oraclecloud.core;
 
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Interface that supplies the Tenant ID.

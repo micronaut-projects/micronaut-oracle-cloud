@@ -18,7 +18,7 @@ package io.micronaut.oraclecloud.certificates.deprecated;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
-import io.micronaut.core.annotation.NonNull;
+import org.jspecify.annotations.NonNull;
 import io.micronaut.http.ssl.ServerSslConfiguration;
 import io.micronaut.oraclecloud.certificates.OracleCloudCertificationsConfiguration;
 import jakarta.inject.Singleton;
