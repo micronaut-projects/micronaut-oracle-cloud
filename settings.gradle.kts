@@ -80,6 +80,7 @@ val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.ver
 gitRepositories {
     // Checkout in a directory that is ignored by the sync'ed .gitignore
     checkoutsDirectory.set(file("target/checkouts"))
+    // If you get the error Branch or Tag not found. Go to target/checkouts and do git pull
     include("oci-java-sdk") {
         uri.set("https://github.com/oracle/oci-java-sdk.git")
         autoInclude.set(false)
