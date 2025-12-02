@@ -10,12 +10,14 @@ dependencies {
 }
 
 afterEvaluate {
-
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
     kotlin {
-        jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
         }
-        
         kotlinDaemonJvmArgs = [
             "-Dfile.encoding=UTF-8",
             "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
@@ -30,7 +32,7 @@ afterEvaluate {
             "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"
         ]
     }
-    
+
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
         kotlinOptions.jvmTarget = "17"
     }
