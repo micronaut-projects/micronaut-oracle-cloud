@@ -34,29 +34,30 @@ import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.channel.ChannelException;
 import io.netty.handler.codec.PrematureChannelClosureException;
-import io.netty.handler.timeout.ReadTimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.net.URI;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketAddress;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.regex.Pattern;
+import java.net.SocketException;
+import java.net.URI;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.OCI_NETTY_CLIENT_FILTERS_KEY;
@@ -182,9 +183,10 @@ final class NettyHttpClient implements HttpClient {
         // these exceptions will allow the client to retry the request
         return e instanceof JacksonException ||
             e instanceof PrematureChannelClosureException ||
-            e instanceof ReadTimeoutException ||
+            e instanceof ChannelException ||
             e instanceof io.micronaut.http.client.exceptions.ReadTimeoutException ||
-            e instanceof ResponseClosedException;
+            e instanceof ResponseClosedException ||
+            e instanceof SocketException;
     }
 
     @Override

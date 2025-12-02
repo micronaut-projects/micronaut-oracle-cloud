@@ -83,6 +83,12 @@ public class ApacheNettyTest extends NettyTest {
     }
 
     @Override
+    @Disabled // makes no sense for UDS
+    public void tcpRefuseTest() throws Exception {
+        super.tcpRefuseTest();
+    }
+
+    @Override
     @Disabled // not implemented
     public void connectionReuse() throws Exception {
         super.connectionReuse();
