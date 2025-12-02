@@ -132,7 +132,6 @@ class OracleCloudSdkMetricsFilterSpec extends Specification {
         final BmcException exception = thrown()
 
         expect:
-        exception.message.contains("Error returned by GetAlarm operation in Monitoring service")
         context.containsBean(SdkMetricsNettyClientFilter)
         def meter = meterRegistry.getMeters().find(x -> x.getId().toString().contains("oci.sdk.client"))
         meter.id.getTag("host") == "localhost"

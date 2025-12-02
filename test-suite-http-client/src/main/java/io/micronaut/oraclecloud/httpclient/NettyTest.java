@@ -781,6 +781,18 @@ public abstract class NettyTest {
             // no response sent
         });
 
+        assertProcessingException();
+    }
+
+    @Test
+    @Timeout(60)
+    public void tcpRefuseTest() throws Exception {
+        netty.serverChannel.close().sync();
+
+        assertProcessingException();
+    }
+
+    private void assertProcessingException() {
         try (HttpClient client = newBuilder()
             .build()) {
             try (HttpResponse response = client.createRequest(Method.GET)
