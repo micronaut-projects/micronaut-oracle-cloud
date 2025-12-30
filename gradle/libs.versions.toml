@@ -31,7 +31,7 @@ micronaut-validation = "4.12.0"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
-commons-lang3 = "3.19.0"
+commons-lang3 = "3.20.0"
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-53864?component-type=maven&component-name=com.google.code.gson%2Fgson
 gson = "2.13.2"
 
