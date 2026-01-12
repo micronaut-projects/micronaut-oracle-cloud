@@ -31,6 +31,7 @@ import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
 import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider;
+import io.micronaut.oraclecloud.atp.jdbc.iam.IamDbTokenProvider;
 import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource;
 import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes;
 import jakarta.inject.Singleton;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Properties;
 
 /**
  * UCP connection pool listener that downloads oracle wallet and configures the {@link PoolDataSource}.
@@ -106,6 +108,7 @@ public class UcpPoolConfigurationListener implements BeanInitializedEventListene
                     .loadWalletArchive(autonomousDatabaseConfiguration);
 
             try {
+                final boolean iamMode = AutonomousDatabaseConfiguration.AuthMode.IAM == autonomousDatabaseConfiguration.getAuthMode();
                 if (StringUtils.isEmpty(bean.getConfiguredDriverClassName())) {
                     LOG.debug("Configured connection factory " + ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE + " for [{}] datasource",
                             beanName);
@@ -153,6 +156,9 @@ public class UcpPoolConfigurationListener implements BeanInitializedEventListene
 
                     @Override
                     public char[] password() {
+                        if (iamMode) {
+                            return null;
+                        }
                         if (bean.getPassword() != null) {
                             return bean.getPassword().toCharArray();
                         } else {
@@ -162,10 +168,38 @@ public class UcpPoolConfigurationListener implements BeanInitializedEventListene
 
                     @Override
                     public OracleDataSourceAttributes password(char[] password) {
+                            if (iamMode) {
+                                bean.setPassword(null);
+                                return this;
+                            }
                             bean.setPassword(String.valueOf(password));
                             return this;
                     }
                 });
+
+                if (iamMode) {
+                    final IamDbTokenProvider tokenProvider =
+                            autonomousDatabaseConfiguration.getIamProviderQualifier() != null
+                                    ? beanLocator.findBean(IamDbTokenProvider.class, Qualifiers.byName(autonomousDatabaseConfiguration.getIamProviderQualifier()))
+                                    .orElseThrow(() -> new NoSuchBeanException(IamDbTokenProvider.class))
+                                    : beanLocator.findBean(IamDbTokenProvider.class)
+                                    .orElseThrow(() -> new NoSuchBeanException(IamDbTokenProvider.class));
+                    final Properties tokenProps = tokenProvider.tokenConnectionProperties(beanName, autonomousDatabaseConfiguration.getServiceAlias());
+                    final Properties merged = new Properties();
+                    // Start with existing connection properties from the PoolDataSource
+                    final Properties existing = bean.getPoolDataSource().getConnectionProperties();
+                    if (existing != null && !existing.isEmpty()) {
+                        merged.putAll(existing);
+                    }
+                    if (tokenProps != null && !tokenProps.isEmpty()) {
+                        merged.putAll(tokenProps);
+                    }
+                    if (!merged.isEmpty()) {
+                        bean.getPoolDataSource().setConnectionProperties(merged);
+                    }
+                    bean.setPassword(null);
+                    bean.getPoolDataSource().setPassword(null);
+                }
 
                 LOG.debug("Successfully configured OracleWallet for [{}] datasource", beanName);
             } catch (IOException | SQLException e) {

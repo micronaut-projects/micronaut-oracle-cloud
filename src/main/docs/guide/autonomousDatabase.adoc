@@ -70,3 +70,58 @@ Use the `walletType` property to configure different types.
 See other valid options at https://docs.oracle.com/en-us/iaas/api/#/en/database/20160918/datatypes/GenerateAutonomousDatabaseWalletDetails[].
 
 TIP: See the guide for https://guides.micronaut.io/latest/micronaut-oracle-autonomous-db.html[Access an Oracle Autonomous Database] to learn more.
+
+==== Token-based (IAM) authentication (optional)
+
+By default, Micronaut uses the wallet and database username/password to authenticate to ADB. Optionally, you can enable token-based authentication (IAM) while still using the wallet for TCPS and service alias resolution.
+
+NOTE: This module does not ship a token provider. You must supply an `IamDbTokenProvider` bean that returns the correct Oracle JDBC token-based authentication properties for your OJDBC version and tenancy/Identity Domain configuration. The OJDBC version must support token-based authentication for Autonomous Database.
+
+To enable IAM mode, configure:
+
+[configuration]
+----
+datasources:
+  default:
+    ocid: ocid1.autonomousdatabase.oc1.....
+    walletPassword: micronaut.1
+    oraclecloud:
+      atp:
+        auth: IAM
+        iamProviderQualifier: iamTest # optional; name of the provider bean to use
+----
+
+- `auth` can be `PASSWORD` (default) or `IAM`.
+- `iamProviderQualifier` is optional and allows selecting a specific provider bean by name if multiple are present.
+
+Implement a provider by exposing a bean implementing `io.micronaut.oraclecloud.atp.jdbc.iam.IamDbTokenProvider`:
+
+[source,java]
+----
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.annotation.Singleton;
+import io.micronaut.inject.qualifiers.Qualifiers;
+import io.micronaut.oraclecloud.atp.jdbc.iam.IamDbTokenProvider;
+
+import java.util.Properties;
+
+@Singleton
+@jakarta.inject.Named("iamTest")
+@Requires(env = "oraclecloud")
+class ExampleIamDbTokenProvider implements IamDbTokenProvider {
+    @Override
+    public Properties tokenConnectionProperties(String dataSourceName, String serviceAlias) {
+        Properties props = new Properties();
+        // Populate with the proper OJDBC token authentication properties/credential object for your setup.
+        // For example (property keys vary by OJDBC version):
+        // props.setProperty("oracle.jdbc.token", "<ACCESS_TOKEN>");
+        // props.setProperty("oracle.net.authentication_services", "(TCPS)");
+        return props;
+    }
+}
+----
+
+Behavior:
+- PASSWORD mode (default): wallet + username/password (unchanged).
+- IAM mode: wallet still configures TCPS and JDBC URL; the password is not used. The token provider's properties are applied to the DataSource/Pool to enable token-based authentication.
+- A wallet is still required for secure connectivity and service alias resolution.

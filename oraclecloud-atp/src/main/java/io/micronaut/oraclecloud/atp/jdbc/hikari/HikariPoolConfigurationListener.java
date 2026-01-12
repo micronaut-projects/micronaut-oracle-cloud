@@ -30,6 +30,7 @@ import io.micronaut.core.order.Ordered;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration;
 import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider;
+import io.micronaut.oraclecloud.atp.jdbc.iam.IamDbTokenProvider;
 import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource;
 import oracle.jdbc.datasource.impl.OracleDataSource;
 import org.slf4j.Logger;
@@ -102,15 +103,44 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
                     .loadWalletArchive(autonomousDatabaseConfiguration);
 
             try {
+                final boolean iamMode = AutonomousDatabaseConfiguration.AuthMode.IAM == autonomousDatabaseConfiguration.getAuthMode();
+
                 OracleDataSource oracleDataSource = new OracleDataSource();
                 walletArchive.configure(oracleDataSource);
+
+                // When IAM mode is enabled, clear password and merge IAM token properties with any user-supplied properties
+                if (iamMode) {
+                    final IamDbTokenProvider tokenProvider =
+                            autonomousDatabaseConfiguration.getIamProviderQualifier() != null
+                                    ? beanLocator.findBean(IamDbTokenProvider.class, Qualifiers.byName(autonomousDatabaseConfiguration.getIamProviderQualifier()))
+                                    .orElseThrow(() -> new NoSuchBeanException(IamDbTokenProvider.class))
+                                    : beanLocator.findBean(IamDbTokenProvider.class)
+                                    .orElseThrow(() -> new NoSuchBeanException(IamDbTokenProvider.class));
+
+                    final Properties tokenProps = tokenProvider.tokenConnectionProperties(beanName, autonomousDatabaseConfiguration.getServiceAlias());
+                    oracleDataSource.setPassword((String) null);
+
+                    final Properties merged = new Properties();
+                    if (tokenProps != null && !tokenProps.isEmpty()) {
+                        merged.putAll(tokenProps);
+                    }
+                    final Properties dataSourceProperties = bean.getDataSourceProperties();
+                    if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
+                        merged.putAll(dataSourceProperties);
+                    }
+                    if (!merged.isEmpty()) {
+                        oracleDataSource.setConnectionProperties(merged);
+                    }
+                } else {
+                    final Properties dataSourceProperties = bean.getDataSourceProperties();
+                    if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
+                        oracleDataSource.setConnectionProperties(dataSourceProperties);
+                    }
+                }
+
                 bean.setDataSource(oracleDataSource);
                 bean.setUrl(oracleDataSource.getURL());
                 bean.setDriverClassName(ORACLE_JDBC_ORACLE_DRIVER);
-                final Properties dataSourceProperties = bean.getDataSourceProperties();
-                if (dataSourceProperties != null && !dataSourceProperties.isEmpty()) {
-                    oracleDataSource.setConnectionProperties(dataSourceProperties);
-                }
             } catch (SQLException | IOException e) {
                 throw new ConfigurationException("Error configuring the [" + beanName + "] datasource: " + e.getMessage(), e);
             }

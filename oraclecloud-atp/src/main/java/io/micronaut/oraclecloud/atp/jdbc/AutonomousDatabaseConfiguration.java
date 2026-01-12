@@ -46,6 +46,26 @@ public class AutonomousDatabaseConfiguration {
     private String serviceAliasSuffix = "high";
 
     /**
+     * Authentication mode for connecting to ADB. Defaults to PASSWORD (current behavior).
+     * When set to IAM, the JDBC connection will use token-based authentication with a provided token properties provider.
+     */
+    private AuthMode authMode;
+
+    /**
+     * Optional bean qualifier (name) to select a specific IamDbTokenProvider for this datasource.
+     * If not set, the primary provider will be used if present.
+     */
+    private String iamProviderQualifier;
+
+    /**
+     * Authentication mode options.
+     */
+    public enum AuthMode {
+        PASSWORD,
+        IAM
+    }
+
+    /**
      * @return autonomous database ocid
      */
     public String getOcid() {
@@ -113,5 +133,33 @@ public class AutonomousDatabaseConfiguration {
      */
     public void setServiceAliasSuffix(String serviceAliasSuffix) {
         this.serviceAliasSuffix = serviceAliasSuffix;
+    }
+
+    /**
+     * @return Authentication mode. Null means default (PASSWORD).
+     */
+    public AuthMode getAuthMode() {
+        return authMode;
+    }
+
+    /**
+     * @param authMode Authentication mode to use for ADB connections.
+     */
+    public void setAuthMode(AuthMode authMode) {
+        this.authMode = authMode;
+    }
+
+    /**
+     * @return Optional qualifier (bean name) of the IAM token provider to use.
+     */
+    public String getIamProviderQualifier() {
+        return iamProviderQualifier;
+    }
+
+    /**
+     * @param iamProviderQualifier Qualifier (bean name) of the IAM token provider to use.
+     */
+    public void setIamProviderQualifier(String iamProviderQualifier) {
+        this.iamProviderQualifier = iamProviderQualifier;
     }
 }
