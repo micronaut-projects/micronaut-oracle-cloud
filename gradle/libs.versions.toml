@@ -1,6 +1,6 @@
 [versions]
 fn = '1.0.212'
-graal-svm = "23.1.8"
+graal-svm = "23.1.10"
 javapoet = '1.13.0'
 kotlin = '2.2.21'
 logback-json-classic = '0.1.5'
