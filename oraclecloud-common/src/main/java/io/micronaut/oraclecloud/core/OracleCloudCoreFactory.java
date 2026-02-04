@@ -39,6 +39,7 @@ import io.micronaut.context.exceptions.DisabledBeanException;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.discovery.cloud.oraclecloud.OracleCloudMetadataConfiguration;
+import io.micronaut.http.client.HttpClientConfiguration;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -203,6 +204,7 @@ public class OracleCloudCoreFactory {
     @Primary
     @BootstrapContextCompatible
     @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
+    @Requires(classes = HttpClientConfiguration.class)
     protected ClientConfiguration.ClientConfigurationBuilder configurationBuilder(
             OracleCloudClientConfigurationProperties props) {
         return props.getClientBuilder();
@@ -216,6 +218,7 @@ public class OracleCloudCoreFactory {
      */
     @BootstrapContextCompatible
     @EachBean(ServiceOracleCloudClientConfigurationProperties.class)
+    @Requires(classes = HttpClientConfiguration.class)
     protected ClientConfiguration.ClientConfigurationBuilder configurationPerClientBuilder(ServiceOracleCloudClientConfigurationProperties props) {
         return props.getClientBuilder();
     }
@@ -277,6 +280,7 @@ public class OracleCloudCoreFactory {
     @Primary
     @BootstrapContextCompatible
     @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
+    @Requires(classes = HttpClientConfiguration.class)
     protected ClientConfiguration clientConfiguration(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }
@@ -286,6 +290,7 @@ public class OracleCloudCoreFactory {
      * @return client configuration for each client.
      */
     @EachBean(ClientConfiguration.ClientConfigurationBuilder.class)
+    @Requires(classes = HttpClientConfiguration.class)
     protected ClientConfiguration clientConfigurationPerClient(ClientConfiguration.ClientConfigurationBuilder builder) {
         return builder.build();
     }

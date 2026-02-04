@@ -446,7 +446,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
         final MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)
-                .addParameter(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration").addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "specificClientConfiguration")
                 .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 

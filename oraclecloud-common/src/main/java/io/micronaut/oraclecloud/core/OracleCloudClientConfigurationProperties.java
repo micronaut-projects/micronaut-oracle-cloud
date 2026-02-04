@@ -17,9 +17,11 @@ package io.micronaut.oraclecloud.core;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Secondary;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
+import io.micronaut.http.client.HttpClientConfiguration;
 import io.micronaut.http.ssl.AbstractClientSslConfiguration;
 import io.micronaut.http.ssl.ClientSslConfiguration;
 import io.micronaut.http.ssl.SslConfiguration;
@@ -39,6 +41,7 @@ import static io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProper
 @ConfigurationProperties(PREFIX)
 @BootstrapContextCompatible
 @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
+@Requires(beans = HttpClientConfiguration.class)
 @Secondary
 public class OracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties {
 
