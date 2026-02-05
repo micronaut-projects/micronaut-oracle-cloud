@@ -41,7 +41,7 @@ import static io.micronaut.oraclecloud.core.OracleCloudClientConfigurationProper
 @ConfigurationProperties(PREFIX)
 @BootstrapContextCompatible
 @Named(OracleCloudCoreFactory.ORACLE_CLOUD)
-@Requires(beans = HttpClientConfiguration.class)
+@Requires(classes = HttpClientConfiguration.class)
 @Secondary
 public class OracleCloudClientConfigurationProperties extends AbstractOracleCloudClientConfigurationProperties {
 
