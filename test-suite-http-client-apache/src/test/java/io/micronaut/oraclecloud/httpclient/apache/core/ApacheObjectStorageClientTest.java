@@ -1,13 +1,17 @@
 package io.micronaut.oraclecloud.httpclient.apache.core;
 
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Primary;
+import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.runtime.server.EmbeddedServer;
+import io.micronaut.test.annotation.MockBean;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -45,6 +49,8 @@ public class ApacheObjectStorageClientTest {
     static Path socketFile;
     static ServerSocketChannel server;
     static ExecutorService executor;
+
+    @MockBean(AbstractAuthenticationDetailsProvider.class) AbstractAuthenticationDetailsProvider authenticationDetailsProvider() { return new AbstractAuthenticationDetailsProvider() {}; }
 
     @BeforeEach
     protected void bootstrap() throws Exception {
@@ -145,4 +151,5 @@ public class ApacheObjectStorageClientTest {
             return builder;
         }
     }
+
 }
