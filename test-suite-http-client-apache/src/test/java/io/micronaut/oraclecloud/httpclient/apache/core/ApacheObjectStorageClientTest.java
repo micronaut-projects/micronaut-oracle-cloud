@@ -114,8 +114,11 @@ public class ApacheObjectStorageClientTest {
     @Test
     void failsToStartWithApacheClientSelected() {
         try (ApplicationContext ctx = ApplicationContext.run(Map.of())) {
+            EmbeddedServer emServer = ctx.getBean(EmbeddedServer.class);
+            if (!emServer.isRunning()) {
+                emServer.start();
+            }
             objectStorageClient = ctx.getBean(ObjectStorageClient.class);
-            ctx.getBean(EmbeddedServer.class);
             GetObjectResponse resp = objectStorageClient.getObject(
                 GetObjectRequest.builder()
                     .bucketName("test")
