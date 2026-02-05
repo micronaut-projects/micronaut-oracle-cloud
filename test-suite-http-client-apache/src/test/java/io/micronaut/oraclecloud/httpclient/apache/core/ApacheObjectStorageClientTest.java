@@ -4,11 +4,12 @@ import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.annotation.Value;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.runtime.server.EmbeddedServer;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -116,6 +117,7 @@ public class ApacheObjectStorageClientTest {
             "micronaut.server.port", "${random.port}"
         ))) {
             objectStorageClient = ctx.getBean(ObjectStorageClient.class);
+            ctx.getBean(EmbeddedServer.class);
             GetObjectResponse resp = objectStorageClient.getObject(
                 GetObjectRequest.builder()
                     .bucketName("test")
@@ -130,14 +132,15 @@ public class ApacheObjectStorageClientTest {
     static class DatabaseClientBuilderListener
         implements BeanCreatedEventListener<ObjectStorageClient.Builder> {
 
-        @Value("${micronaut.server.port}") int port;
+        @Inject
+        EmbeddedServer embeddedServer;
 
         @Override
         public ObjectStorageClient.Builder onCreated(
             @NonNull BeanCreatedEvent<ObjectStorageClient.Builder> event
         ) {
             ObjectStorageClient.Builder builder = event.getBean();
-            builder.endpoint("http://localhost:" + port);
+            builder.endpoint(embeddedServer.getURL().toString());
             return builder;
         }
     }
