@@ -113,9 +113,7 @@ public class ApacheObjectStorageClientTest {
 
     @Test
     void failsToStartWithApacheClientSelected() {
-        try (ApplicationContext ctx = ApplicationContext.run(Map.of(
-            "micronaut.server.port", "${random.port}"
-        ))) {
+        try (ApplicationContext ctx = ApplicationContext.run(Map.of())) {
             objectStorageClient = ctx.getBean(ObjectStorageClient.class);
             ctx.getBean(EmbeddedServer.class);
             GetObjectResponse resp = objectStorageClient.getObject(

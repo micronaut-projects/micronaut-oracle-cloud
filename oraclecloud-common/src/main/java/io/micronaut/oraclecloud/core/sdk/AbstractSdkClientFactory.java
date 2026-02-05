@@ -81,7 +81,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
             builder.configuration(Objects.requireNonNull(specificClientConfiguration, "Client configuration cannot be null"));
         } else {
             if (clientConfiguration != null) {
-                builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+                builder.configuration(clientConfiguration);
             }
         }
 
