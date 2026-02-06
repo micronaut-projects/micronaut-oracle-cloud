@@ -5,8 +5,6 @@ import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.requests.GetObjectRequest;
 import com.oracle.bmc.objectstorage.responses.GetObjectResponse;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.annotation.Primary;
-import io.micronaut.context.annotation.Replaces;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.core.annotation.NonNull;
@@ -36,9 +34,9 @@ import java.util.concurrent.Executors;
 import static io.micronaut.oraclecloud.httpclient.apache.core.ApacheCoreHttpClientBuilder.SOCKET_PATH_PROPERTY;
 
 /**
- * Verifies that when ObjectStorage client is used with Apache Http Core client
- * (and Netty client excluded), the application fails to start with the expected
- * NoClassDefFoundError for HttpClientConfiguration, which we'll address later.
+ * Verifies that when the ObjectStorage client is used with the Apache Http Core client
+ * (with Netty excluded), the application starts and a simple request can be executed
+ * successfully.
  */
 @MicronautTest
 public class ApacheObjectStorageClientTest {
