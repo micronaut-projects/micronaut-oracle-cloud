@@ -51,7 +51,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
     @Deprecated(since = "5.3.0")
     protected AbstractSdkClientFactory(
         B builder,
-        ClientConfiguration clientConfiguration,
+        @Nullable ClientConfiguration clientConfiguration,
         @Nullable ClientConfigurator clientConfigurator,
         @Nullable RequestSignerFactory requestSignerFactory,
         @Nullable RegionProvider regionProvider
@@ -70,7 +70,7 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
      */
     protected AbstractSdkClientFactory(
             B builder,
-            ClientConfiguration clientConfiguration,
+            @Nullable ClientConfiguration clientConfiguration,
             @Nullable ClientConfiguration specificClientConfiguration,
             @Nullable ClientConfigurator serviceIdClientConfigurator,
             @Nullable List<ClientConfigurator> clientConfiguratorList,
@@ -80,7 +80,9 @@ public abstract class AbstractSdkClientFactory<B extends ClientBuilderBase<B, T>
         if (specificClientConfiguration != null) {
             builder.configuration(Objects.requireNonNull(specificClientConfiguration, "Client configuration cannot be null"));
         } else {
-            builder.configuration(Objects.requireNonNull(clientConfiguration, "Client configuration cannot be null"));
+            if (clientConfiguration != null) {
+                builder.configuration(clientConfiguration);
+            }
         }
 
         if (serviceIdClientConfigurator != null) {
