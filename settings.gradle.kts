@@ -54,6 +54,7 @@ include("test-suite-java")
 include("test-suite-graal-function")
 include("test-suite-graal-logging")
 include("test-suite-http-client")
+include("test-suite-http-client-apache")
 include("test-suite-http-server-tck-oraclecloud-function-http")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
@@ -80,6 +81,7 @@ val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.ver
 gitRepositories {
     // Checkout in a directory that is ignored by the sync'ed .gitignore
     checkoutsDirectory.set(file("target/checkouts"))
+    // If you get the error Branch or Tag not found. Go to target/checkouts and do git pull
     include("oci-java-sdk") {
         uri.set("https://github.com/oracle/oci-java-sdk.git")
         autoInclude.set(false)

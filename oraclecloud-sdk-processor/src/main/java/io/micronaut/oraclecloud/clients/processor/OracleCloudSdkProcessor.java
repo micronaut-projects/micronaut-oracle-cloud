@@ -101,7 +101,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
      */
     public static final String OCI_SDK_CLIENT_CLASSES_OPTION = "ociSdkClientClasses";
 
-    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return regionProvider != null && regionProvider.getRegion() != null && $T.getEndpoint(clientBuilder) == null ? clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider) : clientBuilder.build(authenticationDetailsProvider)";
+    private static final String RETURN_BUILDER_STATEMENT_WITH_REGION = "return regionProvider != null && regionProvider.getRegion() != null && $T.getEndpoint(clientBuilder) == null && $T.getRegion(clientBuilder) == null ? clientBuilder.region(regionProvider.getRegion()).build(authenticationDetailsProvider) : clientBuilder.build(authenticationDetailsProvider)";
 
     private static final String RETURN_BUILDER_STATEMENT_WITHOUT_REGION = "return clientBuilder.build(authenticationDetailsProvider)";
 
@@ -409,7 +409,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
                 .addAnnotation(requiresSpec.build())
                 .addAnnotation(preDestroy.build())
                 .addModifiers(Modifier.PROTECTED)
-                .addStatement(FACTORIES_THAT_DOESNT_SUPPORT_REGION.stream().noneMatch(factoryName::startsWith) ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION, InternalBuilderAccess.class);
+                .addStatement(FACTORIES_THAT_DOESNT_SUPPORT_REGION.stream().noneMatch(factoryName::startsWith) ? RETURN_BUILDER_STATEMENT_WITH_REGION : RETURN_BUILDER_STATEMENT_WITHOUT_REGION, InternalBuilderAccess.class, InternalBuilderAccess.class);
 
         if (isBootstrapCompatible) {
             buildMethod.addAnnotation(BootstrapContextCompatible.class);
@@ -446,7 +446,7 @@ public class OracleCloudSdkProcessor extends AbstractProcessor {
 
         final MethodSpec.Builder constructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)
-                .addParameter(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration")
+                .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "clientConfiguration").addAnnotation(Nullable.class).build())
                 .addParameter(ParameterSpec.builder(ClassName.get("com.oracle.bmc", "ClientConfiguration"), "specificClientConfiguration")
                 .addAnnotation(Nullable.class).addAnnotation(AnnotationSpec.builder(Named.class).addMember(VALUE_FIELD, CodeBlock.builder().add("\"" + serviceSimpleName + "\"").build()).build()).build())
 
