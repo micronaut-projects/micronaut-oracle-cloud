@@ -27,6 +27,7 @@ import io.micronaut.core.annotation.ReflectiveAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -120,12 +121,16 @@ public abstract class OciFunction implements AutoCloseable {
      */
     @NonNull
     protected ApplicationContextBuilder newApplicationContextBuilder(RuntimeContext ctx) {
+        Map<String, Object> map = new HashMap<>();
+        for (String k : ctx.getConfiguration().keySet()) {
+            map.put(k, ctx.getConfiguration().get(k));
+        }
         return ApplicationContext
                 .builder(Environment.FUNCTION, Environment.ORACLE_CLOUD)
                 .deduceEnvironment(false)
                 .propertySources(PropertySource.of(
                         Environment.FUNCTION,
-                        ctx.getConfiguration(),
+                        map,
                         PropertySource.PropertyConvention.ENVIRONMENT_VARIABLE
                 ))
                 .singletons(ctx);
