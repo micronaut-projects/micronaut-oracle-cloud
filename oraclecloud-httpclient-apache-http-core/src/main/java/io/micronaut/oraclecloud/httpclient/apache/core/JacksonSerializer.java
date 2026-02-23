@@ -19,16 +19,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationContext;
 import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.SerializerProvider;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.ser.BeanPropertyWriter;
 import tools.jackson.databind.ser.PropertyWriter;
 import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
 import tools.jackson.databind.ser.std.SimpleFilterProvider;
-import tools.jackson.databind.util.ISO8601Utils;
 import tools.jackson.databind.util.StdDateFormat;
-import tools.jackson.datatype.jsr310.JavaTimeModule;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
@@ -41,24 +39,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.text.FieldPosition;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 @Internal
 @Singleton
 @Bean(typed = ApacheCoreSerializer.class)
-@Requires(classes = {ObjectMapper.class, JavaTimeModule.class})
+@Requires(classes = {ObjectMapper.class})
 @Requires(property = "spec.name", notEquals = "ManagedSerdeNettyTest")
 @BootstrapContextCompatible
 @Secondary
 final class JacksonSerializer implements ApacheCoreSerializer {
     private final ObjectMapper objectMapper = JsonMapper.builder()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
         .defaultDateFormat(new Rfc3339DateFormat())
-        .addModule(new JavaTimeModule())
         .filterProvider(new SimpleFilterProvider().addFilter("explicitlySetFilter", ExplicitlySetFilter.INSTANCE))
         .build();
 
@@ -96,13 +95,17 @@ final class JacksonSerializer implements ApacheCoreSerializer {
     private static final class Rfc3339DateFormat extends StdDateFormat {
         // from java-sdk
 
+        private static final DateTimeFormatter ISO8601_WITH_MILLIS = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX", Locale.US)
+            .withZone(ZoneId.of("UTC"));
+
         Rfc3339DateFormat() {
         }
 
         @Override
-        public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
+        public StringBuffer format(Date date, StringBuffer toAppendTo, java.text.FieldPosition fieldPosition) {
             // Same as ISO8601DateFormat but we always serialize millis
-            toAppendTo.append(ISO8601Utils.format(date, true));
+            toAppendTo.append(ISO8601_WITH_MILLIS.format(date.toInstant()));
             return toAppendTo;
         }
 
@@ -124,8 +127,8 @@ final class JacksonSerializer implements ApacheCoreSerializer {
         }
 
         @Override
-        public void serializeAsField(
-            Object pojo, JsonGenerator jgen, SerializerProvider provider, PropertyWriter writer)
+        public void serializeAsProperty(
+            Object pojo, JsonGenerator jgen, SerializationContext provider, PropertyWriter writer)
             throws Exception {
 
             if (include(writer)) {
@@ -136,25 +139,24 @@ final class JacksonSerializer implements ApacheCoreSerializer {
                     Object fieldValue = field.get(pojo);
                     if (fieldValue != null) {
                         // not null, definitely serialize
-                        writer.serializeAsField(pojo, jgen, provider);
+                        writer.serializeAsProperty(pojo, jgen, provider);
                     } else if (pojo instanceof ExplicitlySetBmcModel) {
                         // null, find out if null was explicitly set using the
                         //      method from BmcModel common class
                         if (((ExplicitlySetBmcModel) pojo).wasPropertyExplicitlySet(writer.getName())) {
-                            writer.serializeAsField(pojo, jgen, provider);
+                            writer.serializeAsProperty(pojo, jgen, provider);
                         }
                     } else if (hasExplicitlySetInAField(pojo, writer)) {
                         // To be removed on the next architecture-level change
                         //      kept for compatibility reasons
                         // null, find out if model has explicitlySet property
-                        writer.serializeAsField(pojo, jgen, provider);
+                        writer.serializeAsProperty(pojo, jgen, provider);
                     }
                 } finally {
                     field.setAccessible(accessible);
                 }
-            } else if (!jgen.canOmitFields()) {
-                // since 2.3
-                writer.serializeAsOmittedField(pojo, jgen, provider);
+            } else if (!jgen.canOmitProperties()) {
+                writer.serializeAsOmittedProperty(pojo, jgen, provider);
             }
         }
 
