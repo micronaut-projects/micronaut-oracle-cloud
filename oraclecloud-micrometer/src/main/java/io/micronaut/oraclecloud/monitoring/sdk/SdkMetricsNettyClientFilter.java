@@ -67,7 +67,7 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
     }
 
     @Override
-    public HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, @NonNull Timer.Sample timerSample) {
+    public HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, Timer.@NonNull Sample timerSample) {
 
         List<Tag> tags = new ArrayList<>(4);
 
