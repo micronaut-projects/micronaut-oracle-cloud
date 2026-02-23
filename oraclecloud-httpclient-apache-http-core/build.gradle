@@ -15,9 +15,9 @@ dependencies {
 
     // jackson serializer
     compileOnly(mn.jackson.databind)
-    compileOnly(mn.jackson.datatype.jsr310)
+    //compileOnly(mn.jackson.datatype.jsr310)
     testImplementation(mn.jackson.databind)
-    testImplementation(mn.jackson.datatype.jsr310)
+    //testImplementation(mn.jackson.datatype.jsr310)
 
     // serde serializer
     compileOnly(mnSerde.micronaut.serde.api)
