@@ -44,8 +44,7 @@ public abstract class AbstractOracleCloudClientConfigurationProperties extends H
     private final RetryConfiguration.Builder retryBuilder = RetryConfiguration.builder();
 
     @ConfigurationBuilder(prefixes = "", value = "circuit-breaker")
-    @Nullable
-    private CircuitBreakerConfiguration.CircuitBreakerConfigurationBuilder circuitBreakerBuilder;
+    private CircuitBreakerConfiguration.@Nullable CircuitBreakerConfigurationBuilder circuitBreakerBuilder;
 
     @ConfigurationBuilder(value = "retry-termination-strategy")
     private final TerminationStrategyConfig retryTerminationStrategy = new TerminationStrategyConfig();

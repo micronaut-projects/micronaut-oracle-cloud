@@ -125,7 +125,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
          *
          * @param keyConfiguration The key configuration.
          */
-        void setKey(@Nullable OracleCloudClientSslClientConfiguration.DefaultKeyConfiguration keyConfiguration) {
+        void setKey(OracleCloudClientSslClientConfiguration.@Nullable DefaultKeyConfiguration keyConfiguration) {
             if (keyConfiguration != null) {
                 super.setKey(keyConfiguration);
             }
@@ -136,7 +136,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
          *
          * @param keyStoreConfiguration The key store configuration
          */
-        void setKeyStore(@Nullable OracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration keyStoreConfiguration) {
+        void setKeyStore(OracleCloudClientSslClientConfiguration.@Nullable DefaultKeyStoreConfiguration keyStoreConfiguration) {
             if (keyStoreConfiguration != null) {
                 super.setKeyStore(keyStoreConfiguration);
             }
@@ -147,7 +147,7 @@ public class OracleCloudClientConfigurationProperties extends AbstractOracleClou
          *
          * @param trustStore The trust store configuration
          */
-        void setTrustStore(@Nullable OracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration trustStore) {
+        void setTrustStore(OracleCloudClientSslClientConfiguration.@Nullable DefaultTrustStoreConfiguration trustStore) {
             if (trustStore != null) {
                 super.setTrustStore(trustStore);
             }
