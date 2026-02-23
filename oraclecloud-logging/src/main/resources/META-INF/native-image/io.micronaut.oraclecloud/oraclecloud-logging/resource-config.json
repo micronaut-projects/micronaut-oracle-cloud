@@ -1,0 +1,8 @@
+{
+  "resources": {
+    "includes": [
+      { "pattern": "ch/qos/logback/core/logback-core-version.properties" },
+      { "pattern": "ch/qos/logback/classic/logback-classic-version.properties" }
+    ]
+  }
+}
