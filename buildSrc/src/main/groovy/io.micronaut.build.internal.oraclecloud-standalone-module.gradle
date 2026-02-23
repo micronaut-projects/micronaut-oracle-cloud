@@ -6,3 +6,10 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-base'
     id 'io.micronaut.build.internal.base-module'
 }
+
+micronautBuild {
+    descriptor {
+        parentModuleId = "io.micronaut.oraclecloud:micronaut-oraclecloud-common"
+    }
+}
+
