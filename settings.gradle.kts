@@ -16,7 +16,7 @@ plugins {
     id("io.micronaut.build.internal.ocisdk")
 }
 
-rootProject.name = "oracle-cloud"
+rootProject.name = "oracle-cloud-parent"
 
 include("oraclecloud-atp")
 include("oraclecloud-atp-hikari-test")
