@@ -15,7 +15,7 @@
  */
 package io.micronaut.oraclecloud.function;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.fnproject.fn.api.FnConfiguration;
 import com.fnproject.fn.api.RuntimeContext;
 import org.jspecify.annotations.NonNull;
