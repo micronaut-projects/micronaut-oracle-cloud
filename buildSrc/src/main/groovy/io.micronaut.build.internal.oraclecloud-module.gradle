@@ -7,6 +7,12 @@ ossIndexAudit {
     excludeCoordinates = ["org.eclipse.jetty:jetty-http@9.4.58.v20250814"]
 }
 
+micronautBuild {
+    descriptor {
+        parentModuleId = "io.micronaut.oraclecloud:micronaut-oraclecloud-common"
+    }
+}
+
 dependencies {
     api(platform(libs.oci.bom))
 }
