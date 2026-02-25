@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
+import tools.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.HashSet;
 import java.util.Objects;

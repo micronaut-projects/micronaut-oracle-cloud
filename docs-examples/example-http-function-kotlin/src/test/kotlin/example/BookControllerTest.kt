@@ -54,7 +54,7 @@ class BookControllerTest {
 
         val response = Mono.from(
             client.exchange(
-                HttpRequest.GET<Any?>("/books"),
+                HttpRequest.GET("/books"),
                 Argument.listOf(Book::class.java)
             )
         ).block()

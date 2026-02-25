@@ -16,30 +16,31 @@
 package io.micronaut.oraclecloud.httpclient.apache.core;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import tools.jackson.core.JsonGenerator;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.SerializationContext;
-import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.ser.BeanPropertyWriter;
-import tools.jackson.databind.ser.PropertyWriter;
-import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
-import tools.jackson.databind.ser.std.SimpleFilterProvider;
-import tools.jackson.databind.util.StdDateFormat;
+import com.oracle.bmc.encryption.internal.EncryptionHeader;
+import com.oracle.bmc.encryption.internal.EncryptionKey;
 import com.oracle.bmc.http.client.internal.ExplicitlySetBmcModel;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Secondary;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.jackson.Jackson2AnnotationSupport;
+import io.micronaut.jackson.databind.JacksonDatabindMapper;
 import jakarta.inject.Singleton;
+import tools.jackson.core.JsonGenerator;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationContext;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.BeanPropertyWriter;
+import tools.jackson.databind.ser.PropertyWriter;
+import tools.jackson.databind.ser.std.SimpleBeanPropertyFilter;
+import tools.jackson.databind.ser.std.SimpleFilterProvider;
+import tools.jackson.databind.util.StdDateFormat;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -54,44 +55,24 @@ import java.util.Set;
 @Requires(property = "spec.name", notEquals = "ManagedSerdeNettyTest")
 @BootstrapContextCompatible
 @Secondary
-final class JacksonSerializer implements ApacheCoreSerializer {
-    private final ObjectMapper objectMapper = JsonMapper.builder()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-        .defaultDateFormat(new Rfc3339DateFormat())
-        .filterProvider(new SimpleFilterProvider().addFilter("explicitlySetFilter", ExplicitlySetFilter.INSTANCE))
-        .build();
+final class JacksonSerializer extends ApacheCoreSerializer {
+    private static final ObjectMapper MAPPER;
 
-    @Override
-    public <T> T readValue(String s, Class<T> type) throws IOException {
-        return objectMapper.readValue(s, type);
+    static {
+        JsonMapper.Builder builder = JsonMapper.builder()
+            .addModule(new MyModule())
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .defaultDateFormat(new Rfc3339DateFormat())
+            .filterProvider(new SimpleFilterProvider().addFilter("explicitlySetFilter", ExplicitlySetFilter.INSTANCE));
+        Jackson2AnnotationSupport.installJackson2Introspector(builder);
+        MAPPER = builder.build();
     }
 
-    @Override
-    public <T> T readValue(byte[] bytes, Class<T> type) throws IOException {
-        return objectMapper.readValue(bytes, type);
+    JacksonSerializer() {
+        super(new JacksonDatabindMapper(MAPPER));
     }
 
-    @Override
-    public String writeValueAsString(Object o) throws IOException {
-        return objectMapper.writeValueAsString(o);
-    }
-
-    @Override
-    public <T> T readValue(InputStream inputStream, Class<T> type) throws IOException {
-        return objectMapper.readValue(inputStream, type);
-    }
-
-    @Override
-    public <T> List<T> readList(InputStream inputStream, Class<T> type) throws IOException {
-        return objectMapper.readValue(inputStream, objectMapper.getTypeFactory().constructCollectionType(List.class, type));
-    }
-
-    @Override
-    public void writeValue(OutputStream outputStream, Object value) throws IOException {
-        objectMapper.writeValue(outputStream, value);
-    }
-
-    @SuppressWarnings({"deprecation", "MethodDoesntCallSuperMethod"})
+    @SuppressWarnings({"MethodDoesntCallSuperMethod"})
     private static final class Rfc3339DateFormat extends StdDateFormat {
         // from java-sdk
 
@@ -240,6 +221,31 @@ final class JacksonSerializer implements ApacheCoreSerializer {
                 }
             }
             return sb.toString();
+        }
+    }
+
+    private static final class MyModule extends SimpleModule {
+        {
+            addDeserializer(EncryptionHeader.class, new EncryptionHeaderDeserializer());
+        }
+    }
+
+    private static final class EncryptionHeaderDeserializer extends ValueDeserializer<EncryptionHeader> {
+        @Override
+        public EncryptionHeader deserialize(tools.jackson.core.JsonParser p, tools.jackson.databind.DeserializationContext ctxt) throws tools.jackson.core.JacksonException {
+            EncryptionHeaderDto dto = p.readValueAs(EncryptionHeaderDto.class);
+            EncryptionHeader result = new EncryptionHeader();
+            for (EncryptionKey key : dto.encryptedDataKeys) {
+                result.setEncryptionHeader(key, dto.IV, dto.additionalAuthenticatedData);
+            }
+            return result;
+        }
+
+        record EncryptionHeaderDto(
+            String additionalAuthenticatedData,
+            String IV,
+            List<EncryptionKey> encryptedDataKeys
+        ) {
         }
     }
 }

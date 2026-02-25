@@ -18,7 +18,6 @@ package io.micronaut.oraclecloud.httpclient.apache.core;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.core.type.Argument;
 import io.micronaut.oraclecloud.httpclient.apache.core.serde.OciSerdeConfiguration;
 import io.micronaut.oraclecloud.httpclient.apache.core.serde.OciSerializationConfiguration;
 import io.micronaut.serde.ObjectMapper;
@@ -26,10 +25,6 @@ import io.micronaut.serde.config.annotation.SerdeConfig;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -37,46 +32,14 @@ import java.util.Map;
 @Requires(bean = ObjectMapper.class)
 @Requires(property = "spec.name", notEquals = "ManagedJacksonNettyTest")
 @BootstrapContextCompatible
-final class SerdeSerializer implements ApacheCoreSerializer {
-    private final ObjectMapper objectMapper;
-
+final class SerdeSerializer extends ApacheCoreSerializer {
     @Inject
     SerdeSerializer(ObjectMapper objectMapper, OciSerdeConfiguration ociSerdeConfiguration, OciSerializationConfiguration ociSerializationConfiguration) {
-        this.objectMapper = objectMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null);
+        super(objectMapper.cloneWithConfiguration(ociSerdeConfiguration, ociSerializationConfiguration, null));
     }
 
     SerdeSerializer() {
-        this.objectMapper = UnmanagedSerializerHolder.DEFAULT_MAPPER;
-    }
-
-    @Override
-    public <T> T readValue(InputStream inputStream, Class<T> type) throws IOException {
-        return objectMapper.readValue(inputStream, type);
-    }
-
-    @Override
-    public <T> List<T> readList(InputStream inputStream, Class<T> type) throws IOException {
-        return objectMapper.readValue(inputStream, Argument.listOf(type));
-    }
-
-    @Override
-    public void writeValue(OutputStream outputStream, Object value) throws IOException {
-        objectMapper.writeValue(outputStream, value);
-    }
-
-    @Override
-    public <T> T readValue(String s, Class<T> type) throws IOException {
-        return objectMapper.readValue(s, type);
-    }
-
-    @Override
-    public <T> T readValue(byte[] bytes, Class<T> type) throws IOException {
-        return objectMapper.readValue(bytes, type);
-    }
-
-    @Override
-    public String writeValueAsString(Object o) throws IOException {
-        return objectMapper.writeValueAsString(o);
+        super(UnmanagedSerializerHolder.DEFAULT_MAPPER);
     }
 
     private static final class UnmanagedSerializerHolder {

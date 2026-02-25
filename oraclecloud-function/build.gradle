@@ -5,10 +5,12 @@ plugins {
 dependencies {
     annotationProcessor(mn.micronaut.graal)
     api(libs.fn.api)
+    implementation(libs.fn.runtime)
     api(mn.micronaut.function)
     api(projects.micronautOraclecloudCommon)
     compileOnly(libs.graal.svm)
     compileOnly(mn.micronaut.jackson.databind)
+    compileOnly(libs.jackson2.databind)
     testImplementation(libs.fn.testing.junit4)
     testImplementation(mnTest.micronaut.test.spock)
     testImplementation(projects.micronautOraclecloudBmcObjectstorage)

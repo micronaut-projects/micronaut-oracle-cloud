@@ -15,15 +15,15 @@
  */
 package io.micronaut.oraclecloud.function;
 
-import tools.jackson.databind.ObjectMapper;
 import com.fnproject.fn.api.FnConfiguration;
 import com.fnproject.fn.api.RuntimeContext;
-import org.jspecify.annotations.NonNull;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.ReflectiveAccess;
+import io.micronaut.json.JsonMapper;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,14 +75,11 @@ public abstract class OciFunction implements AutoCloseable {
                         .start();
             }
             applicationContext.inject(this);
-            if (enableSharedJackson()) {
-                applicationContext.findBean(ObjectMapper.class).ifPresent(
-                        objectMapper -> ctx.setAttribute(
-                        "com.fnproject.fn.runtime.coercion.jackson.JacksonCoercion.om",
-                        objectMapper));
-
-            }
             setup(ctx);
+            // if someone overrides setup, they can place their coercions before ours
+            SerdeCoercion coercion = new SerdeCoercion(applicationContext.getBean(JsonMapper.class));
+            ctx.addInputCoercion(coercion);
+            ctx.addOutputCoercion(coercion);
         } catch (Throwable e) {
             LOG.error("An error occurred initializing the function: " + e.getMessage(), e);
             throw e;
@@ -95,13 +92,6 @@ public abstract class OciFunction implements AutoCloseable {
      */
     protected void setup(RuntimeContext ctx) {
         // no-op
-    }
-
-    /**
-     * @return Whether Micronaut's shared Jackson object mapper should be used.
-     */
-    protected boolean enableSharedJackson() {
-        return true;
     }
 
     /**
