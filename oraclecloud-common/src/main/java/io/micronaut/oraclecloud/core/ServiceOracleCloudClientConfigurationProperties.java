@@ -118,7 +118,7 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
          *
          * @param keyConfiguration The key configuration.
          */
-        void setKey(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultKeyConfiguration keyConfiguration) {
+        void setKey(ServiceOracleCloudClientSslClientConfiguration.@Nullable DefaultKeyConfiguration keyConfiguration) {
             if (keyConfiguration != null) {
                 super.setKey(keyConfiguration);
             }
@@ -129,7 +129,7 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
          *
          * @param keyStoreConfiguration The key store configuration
          */
-        void setKeyStore(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultKeyStoreConfiguration keyStoreConfiguration) {
+        void setKeyStore(ServiceOracleCloudClientSslClientConfiguration.@Nullable DefaultKeyStoreConfiguration keyStoreConfiguration) {
             if (keyStoreConfiguration != null) {
                 super.setKeyStore(keyStoreConfiguration);
             }
@@ -140,7 +140,7 @@ public final class ServiceOracleCloudClientConfigurationProperties extends Abstr
          *
          * @param trustStore The trust store configuration
          */
-        void setTrustStore(@Nullable ServiceOracleCloudClientSslClientConfiguration.DefaultTrustStoreConfiguration trustStore) {
+        void setTrustStore(ServiceOracleCloudClientSslClientConfiguration.@Nullable DefaultTrustStoreConfiguration trustStore) {
             if (trustStore != null) {
                 super.setTrustStore(trustStore);
             }

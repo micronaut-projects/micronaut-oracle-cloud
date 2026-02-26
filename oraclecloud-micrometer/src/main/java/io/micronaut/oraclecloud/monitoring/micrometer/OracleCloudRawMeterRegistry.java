@@ -32,7 +32,7 @@ import io.micrometer.core.instrument.distribution.HistogramGauges;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
-import io.micrometer.core.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDatapointProducer;
 import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudCounter;

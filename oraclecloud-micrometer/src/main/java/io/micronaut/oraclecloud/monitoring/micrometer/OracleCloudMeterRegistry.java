@@ -29,7 +29,7 @@ import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
-import io.micrometer.core.lang.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient;
 import jakarta.inject.Provider;
 

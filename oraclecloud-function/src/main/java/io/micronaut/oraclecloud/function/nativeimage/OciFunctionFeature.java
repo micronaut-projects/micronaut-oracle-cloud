@@ -26,8 +26,8 @@ import io.micronaut.core.reflect.ReflectionUtils;
 import io.micronaut.core.util.ArrayUtils;
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
-import org.graalvm.nativeimage.hosted.RuntimeReflection;
 import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
+import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
@@ -138,13 +138,27 @@ final class OciFunctionFeature implements Feature {
     }
 
     private static void checkDeserialize(AnnotatedElement type) {
-        JsonDeserialize deser = type.getAnnotation(JsonDeserialize.class);
-        if (deser != null) {
-            registerIfNecessary(deser.builder());
-            registerIfNecessary(deser.as());
-            registerIfNecessary(deser.contentAs());
-            registerIfNecessary(deser.keyAs());
-            registerIfNecessary(deser.using());
+        try {
+            var deser = type.getAnnotation(JsonDeserialize.class);
+            if (deser != null) {
+                registerIfNecessary(deser.builder());
+                registerIfNecessary(deser.as());
+                registerIfNecessary(deser.contentAs());
+                registerIfNecessary(deser.keyAs());
+                registerIfNecessary(deser.using());
+            }
+        } catch (LinkageError ignored) {
+        }
+        try {
+            var deser = type.getAnnotation(tools.jackson.databind.annotation.JsonDeserialize.class);
+            if (deser != null) {
+                registerIfNecessary(deser.builder());
+                registerIfNecessary(deser.as());
+                registerIfNecessary(deser.contentAs());
+                registerIfNecessary(deser.keyAs());
+                registerIfNecessary(deser.using());
+            }
+        } catch (LinkageError ignored) {
         }
     }
 

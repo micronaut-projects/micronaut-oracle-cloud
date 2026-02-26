@@ -15,18 +15,19 @@
  */
 package io.micronaut.oraclecloud.function;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fnproject.fn.api.FnConfiguration;
 import com.fnproject.fn.api.RuntimeContext;
-import org.jspecify.annotations.NonNull;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.ReflectiveAccess;
+import io.micronaut.json.JsonMapper;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -74,14 +75,11 @@ public abstract class OciFunction implements AutoCloseable {
                         .start();
             }
             applicationContext.inject(this);
-            if (enableSharedJackson()) {
-                applicationContext.findBean(ObjectMapper.class).ifPresent(
-                        objectMapper -> ctx.setAttribute(
-                        "com.fnproject.fn.runtime.coercion.jackson.JacksonCoercion.om",
-                        objectMapper));
-
-            }
             setup(ctx);
+            // if someone overrides setup, they can place their coercions before ours
+            SerdeCoercion coercion = new SerdeCoercion(applicationContext.getBean(JsonMapper.class));
+            ctx.addInputCoercion(coercion);
+            ctx.addOutputCoercion(coercion);
         } catch (Throwable e) {
             LOG.error("An error occurred initializing the function: " + e.getMessage(), e);
             throw e;
@@ -94,13 +92,6 @@ public abstract class OciFunction implements AutoCloseable {
      */
     protected void setup(RuntimeContext ctx) {
         // no-op
-    }
-
-    /**
-     * @return Whether Micronaut's shared Jackson object mapper should be used.
-     */
-    protected boolean enableSharedJackson() {
-        return true;
     }
 
     /**
@@ -120,12 +111,16 @@ public abstract class OciFunction implements AutoCloseable {
      */
     @NonNull
     protected ApplicationContextBuilder newApplicationContextBuilder(RuntimeContext ctx) {
+        Map<String, Object> map = new HashMap<>();
+        for (String k : ctx.getConfiguration().keySet()) {
+            map.put(k, ctx.getConfiguration().get(k));
+        }
         return ApplicationContext
                 .builder(Environment.FUNCTION, Environment.ORACLE_CLOUD)
                 .deduceEnvironment(false)
                 .propertySources(PropertySource.of(
                         Environment.FUNCTION,
-                        ctx.getConfiguration(),
+                        map,
                         PropertySource.PropertyConvention.ENVIRONMENT_VARIABLE
                 ))
                 .singletons(ctx);

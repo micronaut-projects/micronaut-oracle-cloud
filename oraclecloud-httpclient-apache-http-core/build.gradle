@@ -14,10 +14,8 @@ dependencies {
     implementation(libs.apache.http.core5)
 
     // jackson serializer
-    compileOnly(mn.jackson.databind)
-    compileOnly(mn.jackson.datatype.jsr310)
-    testImplementation(mn.jackson.databind)
-    testImplementation(mn.jackson.datatype.jsr310)
+    compileOnly(mn.micronaut.jackson.databind)
+    testImplementation(mn.micronaut.jackson.databind)
 
     // serde serializer
     compileOnly(mnSerde.micronaut.serde.api)

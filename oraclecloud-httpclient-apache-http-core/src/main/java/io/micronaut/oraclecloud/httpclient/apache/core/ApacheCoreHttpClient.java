@@ -15,7 +15,7 @@
  */
 package io.micronaut.oraclecloud.httpclient.apache.core;
 
-import com.fasterxml.jackson.core.JacksonException;
+import tools.jackson.core.JacksonException;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.Method;

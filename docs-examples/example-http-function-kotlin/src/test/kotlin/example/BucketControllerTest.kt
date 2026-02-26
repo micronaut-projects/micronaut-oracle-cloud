@@ -28,7 +28,7 @@ class BucketControllerTest {
         MockData.bucketNames.add("b2")
 
         val response = FnHttpTest
-            .invoke(HttpRequest.GET<Any?>("/os/buckets"), SHARED_CLASSES)
+            .invoke(HttpRequest.GET("/os/buckets"), SHARED_CLASSES)
 
         assertEquals(OK, response.status())
         assertEquals("[\"b1\",\"b2\"]", response.body())
@@ -37,7 +37,7 @@ class BucketControllerTest {
     @Test
     @Order(2)
     fun testCreateBucket() {
-        val response: HttpResponse<String?> = FnHttpTest
+        val response: HttpResponse<String> = FnHttpTest
             .invoke(HttpRequest.POST(CREATE_DELETE_URI, ""), SHARED_CLASSES)
 
         assertEquals(OK, response.status())
@@ -51,17 +51,17 @@ class BucketControllerTest {
         MockData.objectNames.add("o2")
 
         val response = FnHttpTest
-            .invoke(HttpRequest.GET<Any?>("/os/objects/$TEST_BUCKET"), SHARED_CLASSES)
+            .invoke(HttpRequest.GET("/os/objects/$TEST_BUCKET"), SHARED_CLASSES)
 
         assertEquals(OK, response.status())
-        assertTrue(response.body().contains("\"objects\":[\"o1\",\"o2\"]"))
+        assertTrue(response.body()!!.contains("\"objects\":[\"o1\",\"o2\"]"))
     }
 
     @Test
     @Order(4)
     fun testDeleteBucket() {
-        val response: HttpResponse<String?> = FnHttpTest
-            .invoke(HttpRequest.DELETE<Any?>(CREATE_DELETE_URI), SHARED_CLASSES)
+        val response: HttpResponse<String> = FnHttpTest
+            .invoke(HttpRequest.DELETE(CREATE_DELETE_URI), SHARED_CLASSES)
 
         assertEquals(OK, response.status())
         assertEquals("true", response.body())

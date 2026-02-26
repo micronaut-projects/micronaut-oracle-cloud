@@ -119,6 +119,10 @@ tasks.configureEach {
 
 micronautBuild {
     binaryCompatibility.enabled = false
+
+    descriptor {
+        parentModuleId = "io.micronaut.oraclecloud:micronaut-oraclecloud-common"
+    }
 }
 
 configurations.configureEach {
