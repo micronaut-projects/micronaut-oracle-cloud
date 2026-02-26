@@ -1,15 +1,10 @@
 plugins {
-    id 'org.jetbrains.kotlin.plugin.allopen'
-    id 'org.jetbrains.kotlin.jvm'
-    id 'org.jetbrains.kotlin.kapt'
-    id 'io.micronaut.build.internal.kotlin-base'
+    id("io.micronaut.build.internal.kotlin-kapt")
     id 'io.micronaut.build.internal.oraclecloud-example'
 }
 
 dependencies {
     kapt("io.micronaut:micronaut-graal:${libs.versions.micronaut.asProvider().get()}")
-    implementation(libs.kotlin.reflect)
-    implementation(libs.kotlin.stdlib)
     implementation(mnKotlin.micronaut.kotlin.runtime)
     runtimeOnly(mn.jackson.module.kotlin)
 }
@@ -24,9 +19,6 @@ afterEvaluate {
         targetCompatibility = JavaVersion.VERSION_25
     }
     kotlin {
-        compilerOptions {
-            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25
-        }
         kotlinDaemonJvmArgs = [
             "-Dfile.encoding=UTF-8",
             "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
@@ -42,7 +34,4 @@ afterEvaluate {
         ]
     }
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile) {
-        kotlinOptions.jvmTarget = "25"
-    }
 }
