@@ -15,7 +15,7 @@
     <script>hljs.initHighlightingOnLoad();</script>
     <link rel="stylesheet" href="../css/multi-language-sample.css"/>
     <script src="../js/docs.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.13/clipboard.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script>
     <script type="text/javascript">
         function addJsClass(el) {
             var classes = document.body.className.split(" ");
@@ -23,7 +23,9 @@
             document.body.className = classes.join(" ");
         }
     </script>
-
+    <style type="text/css">
+        .lang-java { display: block }; .lang-python { display: block }; .lang-kotlin { display: block }; .lang-groovy { display: block }; 
+    </style>
 </head>
 
 <body class="body" id="docs" onload="addJsClass();" onhashchange="highlightMenu()">
@@ -161,13 +163,13 @@
         <h1>Micronaut Oracle Cloud</h1>
         <p></p>
         <p>Provides integration between Micronaut and Oracle Cloud</p>
-        <p><strong>Version:</strong> 5.6.3-SNAPSHOT </p>
+        <p><strong>Version:</strong> 6.0.0-SNAPSHOT </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/introduction.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/introduction.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -184,7 +186,7 @@ Oracle Cloud Infrastructure (OCI) SDK by allowing you to easily inject SDK clien
 <h1 id="releaseHistory"><a class="anchor" href="#releaseHistory"></a>2 Release History</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/releaseHistory.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/releaseHistory.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -200,7 +202,7 @@ Oracle Cloud Infrastructure (OCI) SDK by allowing you to easily inject SDK clien
 <h1 id="breaks"><a class="anchor" href="#breaks"></a>3 Breaking Changes</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/breaks.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/breaks.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -229,7 +231,7 @@ The solution is to add those dependencies to your own build file.</p>
 <h1 id="quickStart"><a class="anchor" href="#quickStart"></a>4 Quick Start</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/quickStart.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/quickStart.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -255,7 +257,8 @@ The solution is to add those dependencies to your own build file.</p>
     &lt;artifactId&gt;micronaut-oraclecloud-bmc-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Use Micronaut Injection to get an instance of the client in your application, e.g.:</p>
@@ -273,7 +276,7 @@ Vault vault</code></pre>
 <h1 id="authentication"><a class="anchor" href="#authentication"></a>5 Authentication</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/authentication.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/authentication.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -638,7 +641,8 @@ See the <a href="https://docs.oracle.com/en-us/iaas/Content/ContEng/Tasks/conten
     &lt;artifactId&gt;micronaut-oraclecloud-oke-workload-identity&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -723,7 +727,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-oi
 <h1 id="modules"><a class="anchor" href="#modules"></a>6 Available Modules</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/modules.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/modules.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -748,7 +752,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-oi
     &lt;artifactId&gt;micronaut-oraclecloud-common&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides common functionality and configures the following beans:</p>
@@ -783,7 +788,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-oi
     &lt;artifactId&gt;micronaut-oraclecloud-httpclient-netty&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides an implementation of the OCI SDK client based on Netty and Micronaut Serialization.</p>
@@ -823,6 +829,7 @@ Injection of Reactor or RxJava 2 clients is supported with the addition of one o
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+
         <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
@@ -836,7 +843,8 @@ Injection of Reactor or RxJava 2 clients is supported with the addition of one o
     &lt;artifactId&gt;micronaut-rxjava2&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 </div>
 <div class="sect2">
@@ -855,7 +863,8 @@ Injection of Reactor or RxJava 2 clients is supported with the addition of one o
     &lt;artifactId&gt;micronaut-oraclecloud-sdk&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides support for injecting any of the available SDK client interfaces.</p>
@@ -888,6 +897,7 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+
         <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
@@ -901,7 +911,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;oci-java-sdk-common-httpclient-jersey&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 </div>
 <div class="sect2">
@@ -920,7 +931,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;micronaut-oraclecloud-sdk-rxjava2&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides support for injecting RxJava 2 client implementations.</p>
@@ -953,6 +965,7 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+
         <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
@@ -966,7 +979,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;oci-java-sdk-common-httpclient-jersey&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 </div>
 <div class="sect2">
@@ -985,7 +999,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;micronaut-oraclecloud-sdk-reactor&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides support for injecting Reactor client implementations.</p>
@@ -1018,6 +1033,7 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+
         <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
@@ -1031,7 +1047,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;oci-java-sdk-common-httpclient-jersey&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 </div>
 <div class="sect2">
@@ -1050,7 +1067,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;micronaut-oraclecloud-function&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides the <a href="../api/io/micronaut/oci/function/OciFunction.html">OciFunction</a> superclass that you can subclass to write Oracle Cloud Functions in Micronaut that can use Micronaut dependency injection.</p>
@@ -1072,7 +1090,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;micronaut-oraclecloud-function-http&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides the <a href="../api/io/micronaut/oci/function/http/HttpFunction.html">HttpFunction</a> class that can be used as a handler to write HTTP API Gateway function handlers that delegate to Micronaut controllers.</p>
@@ -1094,7 +1113,8 @@ For example, to use Vault with the OCI Jersey client, you would define a depende
     &lt;artifactId&gt;micronaut-oraclecloud-atp&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides support for configuring the data source connection for the UCP and HikariCP connection pools by specifying Oracle Cloud Autonomous Database configuration.</p>
@@ -1128,7 +1148,8 @@ The module generates the OracleWallet on startup.
     &lt;artifactId&gt;micronaut-oraclecloud-micrometer&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides support for sending <a href="https://micrometer.io">Micrometer</a> metrics to the <a href="https://docs.oracle.com/en-us/iaas/Content/Monitoring/Concepts/monitoringoverview.htm">Oracle Cloud Monitoring</a> service.</p>
@@ -1150,7 +1171,8 @@ The module generates the OracleWallet on startup.
     &lt;artifactId&gt;micronaut-oraclecloud-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Provides support for <a href="https://docs.micronaut.io/latest/guide/#cloudConfiguration">Distributed Configuration</a> with <a href="https://docs.oracle.com/en-us/iaas/Content/KeyManagement/Concepts/keyoverview.htm">Oracle Cloud Vault</a> service.</p>
@@ -1160,7 +1182,7 @@ The module generates the OracleWallet on startup.
 <h1 id="httpclient"><a class="anchor" href="#httpclient"></a>7 OCI SDK Netty HTTP Client</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/httpclient.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/httpclient.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1187,7 +1209,8 @@ The client uses <a href="https://micronaut-projects.github.io/micronaut-serializ
     &lt;artifactId&gt;micronaut-oraclecloud-httpclient-netty&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>For serialization to work correctly, use one of the Micronaut OCI SDK modules instead of the OCI SDK modules.
@@ -1207,7 +1230,8 @@ For example, for Object Store, define the dependency:</p>
     &lt;artifactId&gt;micronaut-oraclecloud-bmc-objectstorage&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="sect2">
 <h3 id="_importing_sdks_not_compiled_with_micronaut">Importing SDK&#8217;s not compiled with Micronaut</h3>
@@ -1234,7 +1258,8 @@ For example, for Object Store, define the dependency:</p>
     &lt;/path&gt;
 &lt;/annotationProcessorPaths&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Then declare <code>@SdkImport</code> on any class, specifying the type of the client you wish to import. For example:</p>
@@ -1505,7 +1530,7 @@ This feature is experimental and subject to change.
 <h1 id="reactive"><a class="anchor" href="#reactive"></a>8 Reactive Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/reactive.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/reactive.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1531,7 +1556,8 @@ This feature is experimental and subject to change.
     &lt;artifactId&gt;micronaut-rxjava2&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>For Reactor, add the following module along with <code>micronaut-oraclecloud-sdk-[OCI SDK client]</code> module:</p>
@@ -1550,7 +1576,8 @@ This feature is experimental and subject to change.
     &lt;artifactId&gt;micronaut-reactor&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>For example, instead of <code>ObjectStorageClient</code>, you can inject <code>ObjectStorageRxClient</code> for RxJava 2 or <code>ObjectStorageReactorClient</code> for Reactor to use the Object Storage API:</p>
@@ -1564,7 +1591,7 @@ import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import com.oracle.bmc.objectstorage.responses.CreateBucketResponse;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Delete;
 import io.micronaut.http.annotation.Get;
@@ -1589,6 +1616,34 @@ public class BucketController implements BucketOperations {
         this.objectStorage = objectStorage;
         this.tenancyIdProvider = tenancyIdProvider;
     }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import com.oracle.bmc.objectstorage.responses.ListBucketsResponse
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails
+import com.oracle.bmc.objectstorage.responses.CreateBucketResponse
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.responses.DeleteBucketResponse
+import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Post
+import reactor.core.publisher.Mono
+
+@Controller("/os")
+class BucketController(private val objectStorage: ObjectStorageReactorClient,
+                       private val tenancyIdProvider: TenancyIdProvider) // <b class="conum">(1)</b>
+    : BucketOperations {
 }</code></pre>
 </div>
 </div>
@@ -1623,34 +1678,6 @@ class BucketController implements BucketOperations {
         this.objectStorage = objectStorage
         this.tenancyIdProvider = tenancyIdProvider
     }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient
-import io.micronaut.oraclecloud.core.TenancyIdProvider
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.PathVariable
-import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
-import com.oracle.bmc.objectstorage.responses.ListBucketsResponse
-import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
-import com.oracle.bmc.objectstorage.model.CreateBucketDetails
-import com.oracle.bmc.objectstorage.responses.CreateBucketResponse
-import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
-import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
-import com.oracle.bmc.objectstorage.responses.DeleteBucketResponse
-import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse
-import io.micronaut.core.annotation.Nullable
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Delete
-import io.micronaut.http.annotation.Post
-import reactor.core.publisher.Mono
-
-@Controller("/os")
-class BucketController(private val objectStorage: ObjectStorageReactorClient,
-                       private val tenancyIdProvider: TenancyIdProvider) // <b class="conum">(1)</b>
-    : BucketOperations {
 }</code></pre>
 </div>
 </div>
@@ -1694,6 +1721,28 @@ public Mono&lt;String&gt; createBucket(String name) {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Post(value = "/buckets/{name}")
+override fun createBucket(name: String): Mono&lt;String&gt; {
+    val tenancyId = tenancyIdProvider.tenancyId
+    val getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenancyId).build()
+    return objectStorage.getNamespace(getNamespaceRequest) // <b class="conum">(1)</b>
+            .flatMap { namespaceResponse: GetNamespaceResponse -&gt;
+                val createBucketRequest = CreateBucketRequest.builder()
+                        .namespaceName(namespaceResponse.value)
+                        .createBucketDetails(CreateBucketDetails.builder()
+                                .compartmentId(tenancyId)
+                                .name(name)
+                                .build())
+                        .build()
+                objectStorage.createBucket(createBucketRequest) // <b class="conum">(2)</b>
+                        .map { obj: CreateBucketResponse -&gt; obj.location } // <b class="conum">(3)</b>
+            }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Override
 @Post(value = '/buckets/{name}')
 Mono&lt;String&gt; createBucket(String name) {
@@ -1717,28 +1766,6 @@ Mono&lt;String&gt; createBucket(String name) {
 }</code></pre>
 </div>
 </div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Post(value = "/buckets/{name}")
-override fun createBucket(name: String): Mono&lt;String&gt; {
-    val tenancyId = tenancyIdProvider.tenancyId
-    val getNamespaceRequest = GetNamespaceRequest.builder()
-            .compartmentId(tenancyId).build()
-    return objectStorage.getNamespace(getNamespaceRequest) // <b class="conum">(1)</b>
-            .flatMap { namespaceResponse: GetNamespaceResponse -&gt;
-                val createBucketRequest = CreateBucketRequest.builder()
-                        .namespaceName(namespaceResponse.value)
-                        .createBucketDetails(CreateBucketDetails.builder()
-                                .compartmentId(tenancyId)
-                                .name(name)
-                                .build())
-                        .build()
-                objectStorage.createBucket(createBucketRequest) // <b class="conum">(2)</b>
-                        .map { obj: CreateBucketResponse -&gt; obj.location } // <b class="conum">(3)</b>
-            }
-}</code></pre>
-</div>
-</div>
 <div class="colist arabic">
 <table>
 <tr>
@@ -1759,7 +1786,7 @@ override fun createBucket(name: String): Mono&lt;String&gt; {
 <h1 id="functions"><a class="anchor" href="#functions"></a>9 Oracle Functions (Serverless)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/functions.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/functions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -1909,6 +1936,29 @@ public class ListBucketsFunction extends OciFunction { // <b class="conum">(1)</
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorageClient
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import io.micronaut.core.annotation.ReflectiveAccess
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import io.micronaut.oraclecloud.function.OciFunction
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+
+@Singleton
+class ListBucketsFunction : OciFunction() { // <b class="conum">(1)</b>
+
+    @Inject
+    lateinit var objectStorageClient : ObjectStorageClient // <b class="conum">(2)</b>
+
+    @Inject
+    lateinit var tenantIdProvider: TenancyIdProvider
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.oracle.bmc.objectstorage.ObjectStorageClient
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
@@ -1929,29 +1979,6 @@ class ListBucketsFunction extends OciFunction { // <b class="conum">(1)</b>
 
     @Inject
     TenancyIdProvider tenantIdProvider
-
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorageClient
-import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
-import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
-import io.micronaut.core.annotation.ReflectiveAccess
-import io.micronaut.oraclecloud.core.TenancyIdProvider
-import io.micronaut.oraclecloud.function.OciFunction
-import jakarta.inject.Inject
-import jakarta.inject.Singleton
-
-@Singleton
-class ListBucketsFunction : OciFunction() { // <b class="conum">(1)</b>
-
-    @Inject
-    lateinit var objectStorageClient : ObjectStorageClient // <b class="conum">(2)</b>
-
-    @Inject
-    lateinit var tenantIdProvider: TenancyIdProvider
 
 }</code></pre>
 </div>
@@ -1993,24 +2020,6 @@ public List&lt;String&gt; handleRequest() {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@ReflectiveAccess
-List&lt;String&gt; handleRequest() {
-
-    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
-            .compartmentId(tenantIdProvider.tenancyId).build()
-    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).value
-
-    ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
-            .namespaceName(namespace)
-            .compartmentId(tenantIdProvider.tenancyId)
-            .build()
-
-    return objectStorageClient.listBuckets(listBucketsRequest).items*.name
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@ReflectiveAccess
 fun handleRequest(): List&lt;String&gt; {
 
@@ -2025,6 +2034,24 @@ fun handleRequest(): List&lt;String&gt; {
 
     return objectStorageClient.listBuckets(listBucketsRequest)
             .items.map { it.name }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@ReflectiveAccess
+List&lt;String&gt; handleRequest() {
+
+    GetNamespaceRequest getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(tenantIdProvider.tenancyId).build()
+    String namespace = objectStorageClient.getNamespace(getNamespaceRequest).value
+
+    ListBucketsRequest listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(tenantIdProvider.tenancyId)
+            .build()
+
+    return objectStorageClient.listBuckets(listBucketsRequest).items*.name
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2099,7 +2126,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 <h1 id="httpFunctions"><a class="anchor" href="#httpFunctions"></a>10 Oracle Functions HTTP (Serverless)</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/httpFunctions.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/httpFunctions.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2141,7 +2168,7 @@ import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import com.oracle.bmc.objectstorage.requests.ListObjectsRequest;
-import io.micronaut.core.annotation.Nullable;
+import org.jspecify.annotations.Nullable;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
@@ -2168,6 +2195,32 @@ public class BucketController {
         this.objectStorage = objectStorage;
         this.tenancyIdProvider = tenancyIdProvider;
     }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorage
+import com.oracle.bmc.objectstorage.model.CreateBucketDetails
+import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
+import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
+import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
+import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
+import com.oracle.bmc.objectstorage.requests.ListObjectsRequest
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.MediaType
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.PathVariable
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.QueryValue
+import io.micronaut.oraclecloud.core.TenancyIdProvider
+import java.util.Optional
+
+@Controller("/os")
+class BucketController(private val objectStorage: ObjectStorage,
+                       private val tenancyIdProvider: TenancyIdProvider) { // <b class="conum">(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -2204,32 +2257,6 @@ class BucketController {
         this.objectStorage = objectStorage
         this.tenancyIdProvider = tenancyIdProvider
     }
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorage
-import com.oracle.bmc.objectstorage.model.CreateBucketDetails
-import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
-import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest
-import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
-import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
-import com.oracle.bmc.objectstorage.requests.ListObjectsRequest
-import io.micronaut.core.annotation.Nullable
-import io.micronaut.http.MediaType
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Delete
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.PathVariable
-import io.micronaut.http.annotation.Post
-import io.micronaut.http.annotation.QueryValue
-import io.micronaut.oraclecloud.core.TenancyIdProvider
-import java.util.Optional
-
-@Controller("/os")
-class BucketController(private val objectStorage: ObjectStorage,
-                       private val tenancyIdProvider: TenancyIdProvider) { // <b class="conum">(1)</b>
 }</code></pre>
 </div>
 </div>
@@ -2270,6 +2297,23 @@ public List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartment
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Get("/buckets{/compartmentId}")
+fun listBuckets(@PathVariable @Nullable compartmentId: String?): List&lt;String&gt; {
+    val compartmentOcid = compartmentId ?: tenancyIdProvider.tenancyId!!
+    val getNamespaceRequest = GetNamespaceRequest.builder()
+            .compartmentId(compartmentOcid).build()
+    val namespace = objectStorage.getNamespace(getNamespaceRequest).value
+    val listBucketsRequest = ListBucketsRequest.builder()
+            .namespaceName(namespace)
+            .compartmentId(compartmentOcid)
+            .build()
+    return objectStorage.listBuckets(listBucketsRequest).items
+            .map { it.name }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Get('/buckets{/compartmentId}')
 List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartmentId) {
 
@@ -2285,23 +2329,6 @@ List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartmentId) {
             .build()
 
     return objectStorage.listBuckets(listBucketsRequest).items*.name
-}</code></pre>
-</div>
-</div>
-<div class="listingblock multi-language-sample">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Get("/buckets{/compartmentId}")
-fun listBuckets(@PathVariable @Nullable compartmentId: String?): List&lt;String&gt; {
-    val compartmentOcid = compartmentId ?: tenancyIdProvider.tenancyId!!
-    val getNamespaceRequest = GetNamespaceRequest.builder()
-            .compartmentId(compartmentOcid).build()
-    val namespace = objectStorage.getNamespace(getNamespaceRequest).value
-    val listBucketsRequest = ListBucketsRequest.builder()
-            .namespaceName(namespace)
-            .compartmentId(compartmentOcid)
-            .build()
-    return objectStorage.listBuckets(listBucketsRequest).items
-            .map { it.name }
 }</code></pre>
 </div>
 </div>
@@ -2456,7 +2483,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-f
 <h1 id="autonomousDatabase"><a class="anchor" href="#autonomousDatabase"></a>11 Oracle Autonomous Database</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/autonomousDatabase.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/autonomousDatabase.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2513,7 +2540,8 @@ To ensure you are using the correct version, apply the 21.1.0.0 or above Oracle 
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Then configure the <a href="#authentication">authentication provider</a>.</p>
@@ -2548,7 +2576,8 @@ Automated configuration is currently supported only for the HikariCP and UCP con
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Or:</p>
@@ -2568,7 +2597,8 @@ Automated configuration is currently supported only for the HikariCP and UCP con
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2577,7 +2607,7 @@ Automated configuration is currently supported only for the HikariCP and UCP con
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Note that <code>micronaut-oraclecloud-atp</code> module is compatible with Java 17+.
+Note that <code>micronaut-oraclecloud-atp</code> module is compatible with Java 21+.
 </td>
 </tr>
 </table>
@@ -2668,6 +2698,9 @@ datasources.default.password=bar</code></pre>
 <li>
 <p>specify the database <code>username</code> and <code>password</code></p>
 </li>
+<li>
+<p>optionally <code>service-alias-suffix</code> controls the suffix used when computing the default service alias using database name and given service alias suffix; defaults to <code>high</code> (e.g., set to <code>tp</code>)</p>
+</li>
 </ul>
 </div>
 <div class="admonitionblock note">
@@ -2683,8 +2716,7 @@ The <code>username</code> and <code>password</code> are not automatically genera
 </table>
 </div>
 <div class="paragraph">
-<p>The module uses <code>&lt;db_name&gt;_high</code> as the default service alias.
-This can be overridden with the <code>serviceAlias</code> property.</p>
+<p>The module uses <code>(db_name + "_" + service-alias-suffix)</code> as the default service alias. By default, <code>service-alias-suffix</code> is <code>high</code>. You can override it (for example to <code>tp</code>). If <code>service-alias</code> is set, it takes precedence over the suffix-based value.</p>
 </div>
 <div class="paragraph">
 <p>The wallet is of type <code>SINGLE</code>.
@@ -2707,7 +2739,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
 <h1 id="micrometer"><a class="anchor" href="#micrometer"></a>12 Micrometer Support For Oracle Monitoring</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/micrometer.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/micrometer.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2740,7 +2772,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Also add a dependency for the OCI SDK Monitoring module:</p>
@@ -2759,7 +2792,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-oracle-a
     &lt;artifactId&gt;oci-java-sdk-monitoring&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Then configure the <a href="#authentication">authentication provider</a>.</p>
@@ -2942,7 +2976,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-metrics-
 <h1 id="tracing"><a class="anchor" href="#tracing"></a>13 OCI Application Performance Monitoring as a Tracing Endpoint</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/tracing.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/tracing.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -2973,7 +3007,8 @@ It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) wh
     &lt;artifactId&gt;micronaut-management&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <div class="title">Micronaut Tracing</div>
@@ -2990,7 +3025,8 @@ It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) wh
     &lt;artifactId&gt;micronaut-tracing&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <div class="title">Brave Instrumentation</div>
@@ -3008,7 +3044,8 @@ It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) wh
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <div class="title">Zipkin Reporter</div>
@@ -3026,7 +3063,8 @@ It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) wh
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <div class="title">Open Tracing</div>
@@ -3043,7 +3081,8 @@ It also includes a Trace Explorer that is compatible with Zipkin (and Jaeger) wh
     &lt;artifactId&gt;brave-opentracing&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 </div>
 <div class="sect2">
@@ -3302,7 +3341,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
 <h1 id="logging"><a class="anchor" href="#logging"></a>14 OCI Logging service</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/logging.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/logging.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3325,7 +3364,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-tr
     &lt;artifactId&gt;micronaut-oraclecloud-logging&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="sect2">
 <h3 id="_create_oracle_cloud_custom_log">Create Oracle Cloud Custom Log</h3>
@@ -3519,7 +3559,8 @@ First, add this dependency in your build file:</p>
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Inside <code>src/main/resources/logback.xml</code>, add a new <a href="https://javadoc.io/doc/io.opentelemetry.instrumentation/opentelemetry-logback-1.0/latest/io/opentelemetry/instrumentation/logback/v1_0/OpenTelemetryAppender.html">io.opentelemetry.instrumentation.logback.v1_0.OpenTelemetryAppender</a>.</p>
@@ -3610,7 +3651,7 @@ Navigate to your Log and view log entries in the "Explore Log" section.</p>
 <h1 id="vault"><a class="anchor" href="#vault"></a>15 Secure Distributed Configuration with Oracle Cloud Vault</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/vault.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/vault.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3633,7 +3674,8 @@ Navigate to your Log and view log entries in the "Explore Log" section.</p>
     &lt;artifactId&gt;micronaut-oraclecloud-vault&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Then create a <code>bootstrap</code> configuration file in <code>src/main/resources/</code> and ensure your <a href="#authentication">Authentication</a> configuration is present in this file to enable authenticating with one of the supported mechanisms (config, instance principal, resource principal, etc.)</p>
@@ -3919,7 +3961,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-se
 <h1 id="cloudStorage"><a class="anchor" href="#cloudStorage"></a>16 Oracle Cloud Storage Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/cloudStorage.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/cloudStorage.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3945,7 +3987,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-se
     &lt;artifactId&gt;micronaut-object-storage-oracle-cloud&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>For more information, see the <a href="https://micronaut-projects.github.io/micronaut-object-storage/latest/guide/#oracleCloud">Micronaut Object Storage Oracle Cloud support</a> documentation.</p>
@@ -3966,7 +4009,7 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-object-s
 <h1 id="certificates"><a class="anchor" href="#certificates"></a>17 OCI Certificate SSL Support</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/certificates.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/certificates.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -3989,7 +4032,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-object-s
     &lt;artifactId&gt;micronaut-oraclecloud-certificates&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Copy the OCID of your certificate:</p>
@@ -4483,7 +4527,7 @@ Global refresh settings continue to be configured under <code>oci.certificates.r
 <h1 id="okeKubernetesClient"><a class="anchor" href="#okeKubernetesClient"></a>18 OCI OKE Kubernetes Client</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/okeKubernetesClient.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/okeKubernetesClient.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4528,7 +4572,8 @@ If you want to use an OCI client inside an OKE node, use the <code>micronaut-ora
     &lt;scope&gt;runtime&lt;/scope&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Add a dependency on one of the Kubernetes OpenAPI clients (there are blocking and Reactor-based versions):</p>
@@ -4547,7 +4592,8 @@ If you want to use an OCI client inside an OKE node, use the <code>micronaut-ora
     &lt;artifactId&gt;micronaut-kubernetes-client-openapi&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
-</div></p>
+</div>
+</p>
 </div>
 <div class="paragraph">
 <p>Then configure the OKE kubernetes client cluster id:</p>
@@ -4630,7 +4676,7 @@ If you want to use an OCI client inside an OKE node, use the <code>micronaut-ora
 <h1 id="oracleCloudGuides"><a class="anchor" href="#oracleCloudGuides"></a>19 Guides</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/oracleCloudGuides.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/oracleCloudGuides.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>
@@ -4646,7 +4692,7 @@ If you want to use an OCI client inside an OKE node, use the <code>micronaut-ora
 <h1 id="repository"><a class="anchor" href="#repository"></a>20 Repository</h1>
 
 <div class='contribute-btn'>
-    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/5.6.x/src/main/docs/guide/repository.adoc"'>
+    <button type='button' class='btn btn-default' onclick='window.location.href="https://github.com/micronaut-projects/micronaut-oracle-cloud/edit/6.0.x/src/main/docs/guide/repository.adoc"'>
         <i class='fa fa-pencil-square-o'></i> Improve this doc
     </button>
 </div>

@@ -24,6 +24,7 @@ io.micronaut.oraclecloud.httpclient.apache.core
 io.micronaut.oraclecloud.httpclient.apache.core.serde
 io.micronaut.oraclecloud.httpclient.netty
 io.micronaut.oraclecloud.httpclient.netty.visitor
+io.micronaut.oraclecloud.info
 io.micronaut.oraclecloud.logging
 io.micronaut.oraclecloud.monitoring
 io.micronaut.oraclecloud.monitoring.micrometer
