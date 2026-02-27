@@ -21,11 +21,6 @@ dependencies {
     testImplementation(mn.micronaut.http.server.netty)
 }
 
-java {
-    sourceCompatibility = JavaVersion.toVersion("25")
-    targetCompatibility = JavaVersion.toVersion("25")
-}
-
 tasks.named<Test>("test") {
     useJUnitPlatform()
 }
