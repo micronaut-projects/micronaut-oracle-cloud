@@ -56,6 +56,10 @@ configurations.configureEach {
         attributes.attribute(proto, Boolean.TRUE)
     }
 }
+afterEvaluate {
+    // Since Gradle 9.3, if signing is enabled (which is the case for releases)
+    configurations.removeIf { it.name == "archives"}
+}
 
 dependencies {
     metadataElements projects.micronautOraclecloudHttpclientNetty
