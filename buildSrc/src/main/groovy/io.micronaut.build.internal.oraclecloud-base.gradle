@@ -32,12 +32,7 @@ micronautBuild {
     checkstyleVersion = "10.5.0"
 }
 
-afterEvaluate {
-    java {
-        sourceCompatibility = JavaVersion.VERSION_25
-        targetCompatibility = JavaVersion.VERSION_25
-    }
-}
+
 
 configurations.configureEach {
     resolutionStrategy.preferProjectModules()

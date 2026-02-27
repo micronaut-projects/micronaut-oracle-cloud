@@ -4,7 +4,6 @@ micronaut-platform = "4.10.8"
 fn = '1.1.7'
 graal-svm = "23.1.10"
 javapoet = '1.13.0'
-kotlin = '2.3.10'
 logback-json-classic = '0.1.5'
 objenesis = "3.4"
 oracle-database-security = "21.20.0.0"
@@ -65,8 +64,6 @@ fn-testing-junit4 = { module = 'com.fnproject.fn:testing-junit4', version.ref = 
 graal-svm = { module = "org.graalvm.nativeimage:svm", version.ref = "graal-svm"}
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 javapoet = { module = 'com.squareup:javapoet', version.ref = 'javapoet' }
-kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin' }
-kotlin-stdlib = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin' }
 logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-json-classic' }
 objenesis = { module = "org.objenesis:objenesis", version.ref = "objenesis" }
 oci-bom = { module = "com.oracle.oci.sdk:oci-java-sdk-bom", version.ref = "oci" }
@@ -86,8 +83,6 @@ slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
 jackson2-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson2' }
 
 #plugins
-kotlin-gradle-allopen = { module = 'org.jetbrains.kotlin:kotlin-allopen', version.ref = 'kotlin' }
-kotlin-gradle-plugin = { module = 'org.jetbrains.kotlin:kotlin-gradle-plugin', version.ref = 'kotlin' }
 micronaut-gradle-plugin = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref="micronaut-gradle-plugin" }
 protobuf-gradle-plugin = { module = "com.google.protobuf:protobuf-gradle-plugin", version.ref = "protobuf" }
 shadow-plugin = { module = "com.gradleup.shadow:shadow-gradle-plugin", version.ref = "shadow" }

@@ -38,7 +38,7 @@ import reactor.core.publisher.Mono
 
 // tag::class[]
 @Controller("/os")
-class BucketController(private val objectStorage: ObjectStorageReactorClient,
+open class BucketController(private val objectStorage: ObjectStorageReactorClient,
                        private val tenancyIdProvider: TenancyIdProvider) // <1>
     : BucketOperations {
 // end::class[]
