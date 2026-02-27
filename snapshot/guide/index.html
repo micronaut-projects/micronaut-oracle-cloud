@@ -1641,7 +1641,7 @@ import io.micronaut.http.annotation.Post
 import reactor.core.publisher.Mono
 
 @Controller("/os")
-class BucketController(private val objectStorage: ObjectStorageReactorClient,
+open class BucketController(private val objectStorage: ObjectStorageReactorClient,
                        private val tenancyIdProvider: TenancyIdProvider) // <b class="conum">(1)</b>
     : BucketOperations {
 }</code></pre>
