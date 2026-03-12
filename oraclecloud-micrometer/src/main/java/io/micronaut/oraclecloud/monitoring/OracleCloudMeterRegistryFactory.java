@@ -47,6 +47,8 @@ import static io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory
  * @since 1.2
  */
 @Factory
+@Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+@Requires(property = OracleCloudMeterRegistryFactory.ORACLECLOUD_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
 public class OracleCloudMeterRegistryFactory {
 
     public static final Logger LOG = LoggerFactory.getLogger(OracleCloudMeterRegistryFactory.class);
