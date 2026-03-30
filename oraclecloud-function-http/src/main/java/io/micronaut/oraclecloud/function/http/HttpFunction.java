@@ -139,7 +139,7 @@ public class HttpFunction extends OciFunction {
 
                 FnServletRequest<Object> servletRequest = new FnServletRequest<>(
                     body, inputEvent, response, gatewayContext, conversionService,
-                    httpHandler.getMediaTypeCodecRegistry()
+                    httpHandler.getMessageBodyHandlerRegistry()
                 );
                 DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
                     servletRequest,

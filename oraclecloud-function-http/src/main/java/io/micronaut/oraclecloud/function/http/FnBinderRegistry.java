@@ -27,7 +27,7 @@ import io.micronaut.http.bind.DefaultRequestBinderRegistry;
 import io.micronaut.http.bind.binders.DefaultBodyAnnotationBinder;
 import io.micronaut.http.bind.binders.RequestArgumentBinder;
 import io.micronaut.http.bind.binders.TypedRequestArgumentBinder;
-import io.micronaut.http.codec.MediaTypeCodecRegistry;
+import io.micronaut.http.body.MessageBodyHandlerRegistry;
 import io.micronaut.servlet.http.ServletBinderRegistry;
 
 import jakarta.inject.Singleton;
@@ -50,15 +50,15 @@ class FnBinderRegistry extends ServletBinderRegistry {
      * @param runtimeContext            The runtime context.
      * @param defaultBodyAnnotationBinder The default binder
      */
-    public FnBinderRegistry(MediaTypeCodecRegistry mediaTypeCodecRegistry,
+    public FnBinderRegistry(MessageBodyHandlerRegistry messageBodyHandlerRegistry,
                             ConversionService conversionService,
                             List<RequestArgumentBinder> binders,
                             RuntimeContext runtimeContext,
                             DefaultBodyAnnotationBinder<?> defaultBodyAnnotationBinder) {
-        super(mediaTypeCodecRegistry, conversionService, binders, defaultBodyAnnotationBinder);
+        super(messageBodyHandlerRegistry, conversionService, binders, defaultBodyAnnotationBinder);
         this.runtimeContext = runtimeContext;
 
-        this.byAnnotation.put(Body.class, new FnBodyBinder<>(conversionService, mediaTypeCodecRegistry, defaultBodyAnnotationBinder));
+        this.byAnnotation.put(Body.class, new FnBodyBinder<>(conversionService, messageBodyHandlerRegistry, defaultBodyAnnotationBinder));
         this.byType.put(RuntimeContext.class, new FnRuntimeContextBinder());
     }
 
