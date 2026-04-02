@@ -1,11 +1,19 @@
 package io.micronaut.oraclecloud.discovery.vault
 
+import com.oracle.bmc.secrets.Secrets
+import com.oracle.bmc.vault.Vaults
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.DefaultApplicationContextBuilder
+import io.micronaut.context.annotation.BootstrapContextCompatible
+import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
 import io.micronaut.context.env.Environment
 import io.micronaut.context.env.PropertySource
 import io.micronaut.context.exceptions.NoSuchBeanException
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
 import jakarta.inject.Singleton
 import org.reactivestreams.Publisher
 import reactor.core.publisher.Flux
@@ -50,7 +58,8 @@ class OracleCloudVaultConfigurationSpec extends Specification {
     void "it is missing vault configuration client bean when disabled"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
-                'micronaut.config-client.enabled': true,
+                'micronaut.config-client.enabled': false,
+                'oci.config.enabled'             : false,
                 'oci.vault.config.enabled'       : false,
                 'oci.vault.vaults'               : [
                         ['ocid'            : 'ocid1.vault.oc1.phx....',
