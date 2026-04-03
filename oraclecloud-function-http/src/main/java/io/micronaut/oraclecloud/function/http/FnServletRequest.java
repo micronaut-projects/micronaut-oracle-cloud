@@ -404,18 +404,32 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public @NonNull InetSocketAddress getRemoteAddress() {
+        String sourceIp = inputEvent.getHeaders().get("Fn-Http-Source-Ip").orElse(null);
+        if (StringUtils.isEmpty(sourceIp)) {
+            sourceIp = inputEvent.getHeaders().get(FN_HTTP_HEADER_PREFIX + "Fn-Http-Source-Ip").orElse(null);
+        }
+        if (StringUtils.isNotEmpty(sourceIp)) {
+            String host = sourceIp.split(",", 2)[0].trim();
+            if (StringUtils.isNotEmpty(host)) {
+                try {
+                    return new InetSocketAddress(InetAddress.getByName(host), 0);
+                } catch (UnknownHostException ignored) {
+                    return InetSocketAddress.createUnresolved(host, 0);
+                }
+            }
+        }
         String forwardedFor = getHeaders().get("X-Forwarded-For");
         if (StringUtils.isNotEmpty(forwardedFor)) {
             String host = forwardedFor.split(",", 2)[0].trim();
             if (StringUtils.isNotEmpty(host)) {
-                return new InetSocketAddress(host, 0);
+                return InetSocketAddress.createUnresolved(host, 0);
             }
         }
         String realIp = getHeaders().get("X-Real-Ip");
         if (StringUtils.isNotEmpty(realIp)) {
             String host = realIp.split(",", 2)[0].trim();
             if (StringUtils.isNotEmpty(host)) {
-                return new InetSocketAddress(host, 0);
+                return InetSocketAddress.createUnresolved(host, 0);
             }
         }
         String forwarded = getHeaders().get("Forwarded");
@@ -542,11 +556,11 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         }
 
         private List<String> getNormalizedValues(String name) {
-            List<String> direct = gatewayContext.getHeaders().getAllValues(name);
+            List<String> direct = inputEvent.getHeaders().getAllValues(name);
             if (!direct.isEmpty()) {
                 return direct;
             }
-            return gatewayContext.getHeaders().getAllValues(FN_HTTP_HEADER_PREFIX + name);
+            return inputEvent.getHeaders().getAllValues(FN_HTTP_HEADER_PREFIX + name);
         }
 
         @Override
@@ -571,7 +585,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
         @Override
         public Set<String> names() {
-            return gatewayContext.getHeaders().keys().stream()
+            return inputEvent.getHeaders().keys().stream()
                 .map(this::normalizeHeaderName)
                 .collect(Collectors.toCollection(HashSet::new));
         }
@@ -596,13 +610,13 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
         @Override
         public MutableHttpHeaders add(CharSequence header, CharSequence value) {
-            gatewayContext.getHeaders().addHeader(header.toString(), value.toString());
+            response.getHeaders().add(header, value);
             return this;
         }
 
         @Override
         public MutableHttpHeaders remove(CharSequence header) {
-            gatewayContext.getHeaders().removeHeader(header.toString());
+            response.getHeaders().remove(header);
             return this;
         }
 

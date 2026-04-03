@@ -57,7 +57,7 @@ public class FnHttpGatewayContextAdapter implements HTTPGatewayContext {
 
     @Override
     public Headers getHeaders() {
-        return inputEvent.getHeaders();
+        return Headers.fromMultiHeaderMap(request.getHeaders().asMap());
     }
 
     @Override

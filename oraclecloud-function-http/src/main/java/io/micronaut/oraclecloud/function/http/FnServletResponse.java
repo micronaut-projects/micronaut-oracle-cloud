@@ -54,6 +54,7 @@ import java.util.Optional;
  */
 @Internal
 final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> {
+    static final String SYNTHETIC_EMPTY_BODY_HEADER = "X-Micronaut-Fn-Synthetic-Empty-Body";
     private final Map<String, List<String>> headers = new LinkedHashMap<>(10);
     private final HTTPGatewayContext gatewayContext;
     private final ConversionService conversionService;
@@ -63,6 +64,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     private MutableConvertibleValues<Object> attributes;
     private B bodyObject;
     private String reason = HttpStatus.OK.getReason();
+    private boolean finalized;
 
     FnServletResponse(HTTPGatewayContext gatewayContext, ConversionService conversionService) {
         this.gatewayContext = gatewayContext;
@@ -72,6 +74,11 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     @Override
     public OutputEvent getNativeResponse() {
         finalizeLogicalResponse();
+        boolean syntheticEmptyBody = body.size() == 0 && !headers.isEmpty();
+        if (syntheticEmptyBody) {
+            headers.computeIfAbsent(SYNTHETIC_EMPTY_BODY_HEADER, ignored -> new ArrayList<>(1)).add("true");
+            body.writeBytes(new byte[]{' '});
+        }
         MediaType contentType = getContentType().orElse(null);
         if (contentType == null && body.size() > 0) {
             contentType = MediaType.APPLICATION_JSON_TYPE;
@@ -85,15 +92,15 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     }
 
     private void finalizeLogicalResponse() {
+        if (finalized) {
+            return;
+        }
+        finalized = true;
         if (bodyObject instanceof HttpResponse<?> httpResponse) {
             this.status = httpResponse.code();
             this.reason = httpResponse.reason();
             this.gatewayContext.setStatusCode(this.status);
-            httpResponse.getHeaders().forEach((name, values) -> {
-                if (!headers.containsKey(name)) {
-                    headers.put(name, new ArrayList<>(values));
-                }
-            });
+            mergeHeaders(httpResponse.getHeaders());
             if (body.size() == 0) {
                 httpResponse.getBody().ifPresent(responseBody -> writeLogicalBody(responseBody));
             }
@@ -102,6 +109,10 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
         if (body.size() == 0 && bodyObject != null) {
             writeLogicalBody(bodyObject);
         }
+    }
+
+    void finalizeResponse() {
+        finalizeLogicalResponse();
     }
 
     private void writeLogicalBody(Object responseBody) {
@@ -116,6 +127,10 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
         Map<String, List<String>> fnHeaders = new LinkedHashMap<>(headers.size());
         headers.forEach((name, values) -> fnHeaders.put("Fn-Http-H-" + name, values));
         return Headers.fromMultiHeaderMap(fnHeaders);
+    }
+
+    private void mergeHeaders(io.micronaut.http.HttpHeaders sourceHeaders) {
+        sourceHeaders.forEach((name, values) -> headers.put(name, new ArrayList<>(values)));
     }
 
     @Override

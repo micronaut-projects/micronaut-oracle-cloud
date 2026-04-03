@@ -145,6 +145,7 @@ public class HttpFunction extends OciFunction {
                         servletRequest
                     );
                 }
+                response.finalizeResponse();
             }
             OutputEvent nativeResponse = response.getNativeResponse();
             optionalBufferingInputStream.bufferIfNecessary();
