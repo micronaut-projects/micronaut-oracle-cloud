@@ -87,6 +87,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     private static final String COOKIE_HEADER = "Cookie";
     private static final String FN_HTTP_HEADER_PREFIX = "Fn-Http-H-";
+    private static final String LOCALHOST = "localhost";
 
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
@@ -250,24 +251,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         if (uri == null) {
             synchronized (this) {
                 if (uri == null) {
-                    URI requestUri = URI.create(gatewayContext.getRequestURL());
-                    String path = requestUri.getRawPath();
-                    if (StringUtils.isEmpty(path)) {
-                        path = "/";
-                    }
-                    String query = requestUri.getRawQuery();
-                    String scheme = requestUri.getScheme();
-                    String host = requestUri.getHost();
-                    int port = requestUri.getPort();
-                    String authority = requestUri.getRawAuthority();
-                    if (StringUtils.isNotEmpty(authority) || StringUtils.isNotEmpty(scheme) || StringUtils.isNotEmpty(host)) {
-                        uri = URI.create((StringUtils.isEmpty(scheme) ? "http" : scheme) + "://"
-                            + (StringUtils.isEmpty(authority) ? (StringUtils.isEmpty(host) ? "localhost" : host + (port >= 0 ? ":" + port : "")) : authority)
-                            + path
-                            + (query == null ? "" : "?" + query));
-                    } else {
-                        uri = URI.create(path + (query == null ? "" : "?" + query));
-                    }
+                    uri = buildUri(URI.create(gatewayContext.getRequestURL()));
                 }
             }
         }
@@ -404,65 +388,26 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     @Override
     public @NonNull InetSocketAddress getRemoteAddress() {
-        String sourceIp = inputEvent.getHeaders().get("Fn-Http-Source-Ip").orElse(null);
-        if (StringUtils.isEmpty(sourceIp)) {
-            sourceIp = inputEvent.getHeaders().get(FN_HTTP_HEADER_PREFIX + "Fn-Http-Source-Ip").orElse(null);
+        InetSocketAddress sourceIpAddress = resolveSourceIpAddress();
+        if (sourceIpAddress != null) {
+            return sourceIpAddress;
         }
-        if (StringUtils.isNotEmpty(sourceIp)) {
-            String host = sourceIp.split(",", 2)[0].trim();
-            if (StringUtils.isNotEmpty(host)) {
-                try {
-                    return new InetSocketAddress(InetAddress.getByName(host), 0);
-                } catch (UnknownHostException ignored) {
-                    return InetSocketAddress.createUnresolved(host, 0);
-                }
-            }
+
+        InetSocketAddress forwardedForAddress = resolveUnresolvedAddress(getHeaders().get("X-Forwarded-For"));
+        if (forwardedForAddress != null) {
+            return forwardedForAddress;
         }
-        String forwardedFor = getHeaders().get("X-Forwarded-For");
-        if (StringUtils.isNotEmpty(forwardedFor)) {
-            String host = forwardedFor.split(",", 2)[0].trim();
-            if (StringUtils.isNotEmpty(host)) {
-                return InetSocketAddress.createUnresolved(host, 0);
-            }
+
+        InetSocketAddress realIpAddress = resolveUnresolvedAddress(getHeaders().get("X-Real-Ip"));
+        if (realIpAddress != null) {
+            return realIpAddress;
         }
-        String realIp = getHeaders().get("X-Real-Ip");
-        if (StringUtils.isNotEmpty(realIp)) {
-            String host = realIp.split(",", 2)[0].trim();
-            if (StringUtils.isNotEmpty(host)) {
-                return InetSocketAddress.createUnresolved(host, 0);
-            }
+
+        InetSocketAddress forwardedAddress = resolveForwardedAddress(getHeaders().get("Forwarded"));
+        if (forwardedAddress != null) {
+            return forwardedAddress;
         }
-        String forwarded = getHeaders().get("Forwarded");
-        if (StringUtils.isNotEmpty(forwarded)) {
-            for (String part : forwarded.split(";|,")) {
-                String trimmed = part.trim();
-                if (trimmed.regionMatches(true, 0, "for=", 0, 4)) {
-                    String host = trimmed.substring(4).trim();
-                    if (host.startsWith("\"") && host.endsWith("\"") && host.length() > 1) {
-                        host = host.substring(1, host.length() - 1);
-                    }
-                    if (host.startsWith("[")) {
-                        int closing = host.indexOf(']');
-                        if (closing > 0) {
-                            host = host.substring(1, closing);
-                        }
-                    } else {
-                        int colon = host.indexOf(':');
-                        if (colon > 0) {
-                            host = host.substring(0, colon);
-                        }
-                    }
-                    if (StringUtils.isNotEmpty(host)) {
-                        try {
-                            InetAddress address = InetAddress.getByName(host);
-                            return new InetSocketAddress(address, 0);
-                        } catch (UnknownHostException ignored) {
-                            return new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
-                        }
-                    }
-                }
-            }
-        }
+
         return new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
     }
 
@@ -472,7 +417,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         String host = currentUri.getHost();
         int port = currentUri.getPort();
         if (StringUtils.isEmpty(host)) {
-            host = "localhost";
+            host = LOCALHOST;
         }
         if (port < 0) {
             port = currentUri.getScheme() != null && currentUri.getScheme().equalsIgnoreCase("https") ? 443 : 80;
@@ -484,9 +429,117 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     public @NonNull String getServerName() {
         String host = getUri().getHost();
         if (StringUtils.isEmpty(host)) {
-            host = "localhost";
+            host = LOCALHOST;
         }
         return host;
+    }
+
+    private URI buildUri(URI requestUri) {
+        String path = normalizePath(requestUri.getRawPath());
+        String query = requestUri.getRawQuery();
+        if (hasAuthority(requestUri)) {
+            return URI.create(buildAbsoluteUri(requestUri, path, query));
+        }
+        return URI.create(appendQuery(path, query));
+    }
+
+    private String normalizePath(String path) {
+        return StringUtils.isEmpty(path) ? "/" : path;
+    }
+
+    private boolean hasAuthority(URI requestUri) {
+        return StringUtils.isNotEmpty(requestUri.getRawAuthority())
+            || StringUtils.isNotEmpty(requestUri.getScheme())
+            || StringUtils.isNotEmpty(requestUri.getHost());
+    }
+
+    private String buildAbsoluteUri(URI requestUri, String path, String query) {
+        String scheme = StringUtils.isEmpty(requestUri.getScheme()) ? "http" : requestUri.getScheme();
+        return scheme + "://" + resolveAuthority(requestUri) + appendQuery(path, query);
+    }
+
+    private String resolveAuthority(URI requestUri) {
+        String authority = requestUri.getRawAuthority();
+        if (StringUtils.isNotEmpty(authority)) {
+            return authority;
+        }
+        String host = StringUtils.isEmpty(requestUri.getHost()) ? LOCALHOST : requestUri.getHost();
+        int port = requestUri.getPort();
+        return port >= 0 ? host + ":" + port : host;
+    }
+
+    private String appendQuery(String path, String query) {
+        return query == null ? path : path + "?" + query;
+    }
+
+    private InetSocketAddress resolveSourceIpAddress() {
+        String sourceIp = inputEvent.getHeaders().get("Fn-Http-Source-Ip").orElse(null);
+        if (StringUtils.isEmpty(sourceIp)) {
+            sourceIp = inputEvent.getHeaders().get(FN_HTTP_HEADER_PREFIX + "Fn-Http-Source-Ip").orElse(null);
+        }
+        return resolveSourceIpAddress(sourceIp);
+    }
+
+    private InetSocketAddress resolveSourceIpAddress(String sourceIp) {
+        String host = extractFirstHost(sourceIp);
+        if (StringUtils.isEmpty(host)) {
+            return null;
+        }
+        try {
+            return new InetSocketAddress(InetAddress.getByName(host), 0);
+        } catch (UnknownHostException ignored) {
+            return InetSocketAddress.createUnresolved(host, 0);
+        }
+    }
+
+    private InetSocketAddress resolveUnresolvedAddress(String headerValue) {
+        String host = extractFirstHost(headerValue);
+        return StringUtils.isEmpty(host) ? null : InetSocketAddress.createUnresolved(host, 0);
+    }
+
+    private String extractFirstHost(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
+        String host = value.split(",", 2)[0].trim();
+        return StringUtils.isEmpty(host) ? null : host;
+    }
+
+    private InetSocketAddress resolveForwardedAddress(String forwarded) {
+        if (StringUtils.isEmpty(forwarded)) {
+            return null;
+        }
+        for (String part : forwarded.split(";|,")) {
+            String host = extractForwardedHost(part);
+            if (StringUtils.isNotEmpty(host)) {
+                try {
+                    return new InetSocketAddress(InetAddress.getByName(host), 0);
+                } catch (UnknownHostException ignored) {
+                    return new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+                }
+            }
+        }
+        return null;
+    }
+
+    private String extractForwardedHost(String part) {
+        String trimmed = part.trim();
+        if (!trimmed.regionMatches(true, 0, "for=", 0, 4)) {
+            return null;
+        }
+        return normalizeForwardedHost(trimmed.substring(4).trim());
+    }
+
+    private String normalizeForwardedHost(String host) {
+        if (host.startsWith("\"") && host.endsWith("\"") && host.length() > 1) {
+            host = host.substring(1, host.length() - 1);
+        }
+        if (host.startsWith("[")) {
+            int closing = host.indexOf(']');
+            return closing > 0 ? host.substring(1, closing) : host;
+        }
+        int colon = host.indexOf(':');
+        return colon > 0 ? host.substring(0, colon) : host;
     }
 
     /**
