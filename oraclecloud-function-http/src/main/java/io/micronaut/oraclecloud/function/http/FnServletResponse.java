@@ -26,6 +26,7 @@ import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpHeaders;
 import io.micronaut.http.MutableHttpResponse;
@@ -70,12 +71,45 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
 
     @Override
     public OutputEvent getNativeResponse() {
+        finalizeLogicalResponse();
+        MediaType contentType = getContentType().orElse(null);
+        if (contentType == null && body.size() > 0) {
+            contentType = MediaType.APPLICATION_JSON_TYPE;
+        }
         return OutputEvent.fromBytes(
                 body.toByteArray(),
                 status <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
-                getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString(),
+                contentType == null ? null : contentType.toString(),
                 toFnHeaders()
         );
+    }
+
+    private void finalizeLogicalResponse() {
+        if (bodyObject instanceof HttpResponse<?> httpResponse) {
+            this.status = httpResponse.code();
+            this.reason = httpResponse.reason();
+            this.gatewayContext.setStatusCode(this.status);
+            httpResponse.getHeaders().forEach((name, values) -> {
+                if (!headers.containsKey(name)) {
+                    headers.put(name, new ArrayList<>(values));
+                }
+            });
+            if (body.size() == 0) {
+                httpResponse.getBody().ifPresent(responseBody -> writeLogicalBody(responseBody));
+            }
+            return;
+        }
+        if (body.size() == 0 && bodyObject != null) {
+            writeLogicalBody(bodyObject);
+        }
+    }
+
+    private void writeLogicalBody(Object responseBody) {
+        if (responseBody instanceof byte[] bytes) {
+            body.writeBytes(bytes);
+        } else if (responseBody instanceof CharSequence charSequence) {
+            body.writeBytes(charSequence.toString().getBytes(getCharacterEncoding()));
+        }
     }
 
     private Headers toFnHeaders() {
@@ -175,6 +209,18 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
         public MutableHttpHeaders add(CharSequence header, CharSequence value) {
             if (header != null && value != null) {
                 headers.computeIfAbsent(header.toString(), s -> new ArrayList<>(5)).add(value.toString());
+            }
+            return this;
+        }
+
+        @Override
+        public MutableHttpHeaders set(CharSequence header, CharSequence value) {
+            if (header != null) {
+                if (value == null) {
+                    headers.remove(header.toString());
+                } else {
+                    headers.put(header.toString(), new ArrayList<>(List.of(value.toString())));
+                }
             }
             return this;
         }

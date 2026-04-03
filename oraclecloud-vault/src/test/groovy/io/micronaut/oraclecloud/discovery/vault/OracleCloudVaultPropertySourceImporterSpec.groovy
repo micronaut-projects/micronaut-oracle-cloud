@@ -30,16 +30,16 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
 
         when:
         def declaration = importer.newImportDeclaration(ConnectionString.parse('oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*,API_.*&excludes=DB_LEGACY_PASSWORD&retry-attempts=2&retry-delay=10ms'))
-        def properties = declaration.properties
+        def importConfiguration = declaration.declaration
 
         then:
-        properties.get('oci.vault.vaults[0].compartment-ocid') == 'ocid1.compartment.oc1..'
-        properties.get('oci.vault.vaults[0].ocid') == 'ocid1.vault.oc1.phx..'
-        properties.get('oci.vault.vaults[0].includes[0]') == 'DB_.*'
-        properties.get('oci.vault.vaults[0].includes[1]') == 'API_.*'
-        properties.get('oci.vault.vaults[0].excludes[0]') == 'DB_LEGACY_PASSWORD'
-        properties.get('oci.vault.config.retry-attempts') == 2
-        properties.get('oci.vault.config.retry-delay') == '10ms'
+        importConfiguration.compartmentId() == 'ocid1.compartment.oc1..'
+        importConfiguration.vaultOcid() == 'ocid1.vault.oc1.phx..'
+        importConfiguration.includes() == ['DB_.*', 'API_.*']
+        importConfiguration.excludes() == ['DB_LEGACY_PASSWORD']
+        importConfiguration.retryAttempts() == 2
+        importConfiguration.retryDelay() == '10ms'
+        importConfiguration.authProperties().isEmpty()
     }
 
     void 'it parses provider map declarations into vault import configuration'() {
@@ -58,18 +58,17 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
             'config-path': '/tmp/oci/config',
             'config-profile': 'ALT'
         ]))
-        def properties = declaration.properties
+        def importConfiguration = declaration.declaration
 
         then:
-        properties.get('oci.vault.vaults[0].compartment-ocid') == 'ocid1.compartment.oc1..'
-        properties.get('oci.vault.vaults[0].ocid') == 'ocid1.vault.oc1.phx..'
-        properties.get('oci.vault.vaults[0].includes[0]') == 'DB_.*'
-        properties.get('oci.vault.vaults[0].includes[1]') == 'API_.*'
-        properties.get('oci.vault.vaults[0].excludes[0]') == 'DB_LEGACY_PASSWORD'
-        properties.get('oci.vault.config.retry-attempts') == 2
-        properties.get('oci.vault.config.retry-delay') == '10ms'
-        properties.get('oci.config.path') == '/tmp/oci/config'
-        properties.get('oci.config.profile') == 'ALT'
+        importConfiguration.compartmentId() == 'ocid1.compartment.oc1..'
+        importConfiguration.vaultOcid() == 'ocid1.vault.oc1.phx..'
+        importConfiguration.includes() == ['DB_.*', 'API_.*']
+        importConfiguration.excludes() == ['DB_LEGACY_PASSWORD']
+        importConfiguration.retryAttempts() == 2
+        importConfiguration.retryDelay() == '10ms'
+        importConfiguration.authProperties().get('oci.config.path') == '/tmp/oci/config'
+        importConfiguration.authProperties().get('oci.config.profile') == 'ALT'
     }
 
     static final class TestImportContext implements PropertySourceImporter.ImportContext<OracleCloudVaultImportConfiguration> {
