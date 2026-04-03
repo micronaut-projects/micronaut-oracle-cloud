@@ -16,10 +16,11 @@
 package io.micronaut.oraclecloud.discovery.vault;
 
 import io.micronaut.context.env.PropertySource;
-import io.micronaut.context.env.PropertySourceImporter;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.util.ConnectionString;
+import io.micronaut.discovery.config.RetryablePropertySourceImporter;
+import io.micronaut.retry.RetryPolicy;
 
 import java.util.Optional;
 
@@ -30,7 +31,7 @@ import java.util.Optional;
  * @since 6.0.0
  */
 @Internal
-public final class OracleCloudVaultPropertySourceImporter implements PropertySourceImporter<OracleCloudVaultImportConfiguration> {
+public final class OracleCloudVaultPropertySourceImporter extends RetryablePropertySourceImporter<OracleCloudVaultImportConfiguration> {
 
     static final String PROVIDER = "oraclecloud-vault";
     private final OracleCloudVaultImporterContextFactory contextFactory = new OracleCloudVaultImporterContextFactory();
@@ -42,18 +43,19 @@ public final class OracleCloudVaultPropertySourceImporter implements PropertySou
         return PROVIDER;
     }
 
+
     @Override
-    public OracleCloudVaultImportConfiguration newImportDeclaration(ConnectionString connectionString) {
+    protected OracleCloudVaultImportConfiguration newImportDeclaration(ConnectionString connectionString, RetryPolicy retryPolicy) {
         return binder.bind(connectionString);
     }
 
     @Override
-    public OracleCloudVaultImportConfiguration newImportDeclaration(ConvertibleValues<Object> values) {
+    protected OracleCloudVaultImportConfiguration newImportDeclaration(ConvertibleValues<Object> values, RetryPolicy retryPolicy) {
         return binder.bind(values);
     }
 
     @Override
-    public Optional<PropertySource> importPropertySource(ImportContext<OracleCloudVaultImportConfiguration> context) {
+    protected Optional<PropertySource> importRetryablePropertySource(ImportContext<OracleCloudVaultImportConfiguration> context) {
         OracleCloudVaultImportConfiguration importConfiguration = context.importDeclaration();
         OracleCloudVaultImporterContextFactory.OracleCloudVaultImporterContext importerContext = getOrCreateImporterContext(context, importConfiguration);
         OracleCloudVaultConfiguration configuration = importerContext.configuration();
@@ -69,7 +71,7 @@ public final class OracleCloudVaultPropertySourceImporter implements PropertySou
     }
 
     @Override
-    public void close() {
+    protected void closeRetryableImporter() {
         if (importerContext != null) {
             importerContext.close();
             importerContext = null;

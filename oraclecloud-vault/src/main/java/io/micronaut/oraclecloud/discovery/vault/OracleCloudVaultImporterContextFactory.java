@@ -140,7 +140,9 @@ final class OracleCloudVaultImporterContextFactory {
     private static boolean supportedPackages(String name) {
         return name.startsWith("io.micronaut.oraclecloud")
             || name.startsWith("com.oracle.bmc")
+            || name.startsWith("io.micronaut.discovery")
             || name.startsWith("io.micronaut.http")
+            || name.startsWith("io.micronaut.http.netty")
             || name.startsWith("io.micronaut.jackson")
             || name.startsWith("io.micronaut.json")
             || name.startsWith("io.micronaut.context")
@@ -151,6 +153,7 @@ final class OracleCloudVaultImporterContextFactory {
             || name.startsWith("io.micronaut.serde")
             || name.startsWith("io.micronaut.runtime.converters")
             || name.startsWith("io.micronaut.core.convert")
+            || name.startsWith("io.netty")
             || name.startsWith("java.util.concurrent")
             || name.startsWith("reactor.");
     }

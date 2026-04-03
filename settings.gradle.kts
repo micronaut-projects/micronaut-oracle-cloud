@@ -6,7 +6,6 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        mavenLocal()
     }
     includeBuild("settings-build-logic")
 }
@@ -96,8 +95,7 @@ gitRepositories {
 
 dependencyResolutionManagement {
     repositories {
-        
+
         mavenCentral()
-        mavenLocal()
     }
 }

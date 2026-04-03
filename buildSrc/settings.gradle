@@ -7,8 +7,7 @@ dependencyResolutionManagement {
         }
     }
     repositories {
-        
+
         mavenCentral()
-        mavenLocal()
     }
 }
