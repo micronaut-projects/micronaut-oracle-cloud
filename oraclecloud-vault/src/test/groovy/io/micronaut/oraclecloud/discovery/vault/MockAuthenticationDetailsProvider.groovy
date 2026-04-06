@@ -14,7 +14,7 @@ import jakarta.inject.Singleton
 @Singleton
 @Replaces(ConfigFileAuthenticationDetailsProvider)
 @Primary
-@Requires(missingProperty = "vault.ocid")
+@Requires(property = "vault.test-mocks.enabled", value = "true")
 class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
 
     @Override

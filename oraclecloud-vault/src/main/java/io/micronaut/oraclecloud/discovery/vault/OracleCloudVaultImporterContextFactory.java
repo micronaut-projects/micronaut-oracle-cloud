@@ -19,6 +19,7 @@ import com.oracle.bmc.secrets.Secrets;
 import com.oracle.bmc.vault.Vaults;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.ApplicationContextBuilder;
+import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanConfiguration;
@@ -41,6 +42,23 @@ import java.util.function.Predicate;
 @Internal
 final class OracleCloudVaultImporterContextFactory {
     private static final String LEGACY_VAULT_CONFIGURATION_CLIENT = "io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfigurationClient";
+    private static final String[] AUTH_PROPERTY_KEYS = {
+        "oci.auth.strategy",
+        "oci.config.path",
+        "oci.config.profile",
+        "oci.config.enabled",
+        "oci.auth.tenant-id",
+        "oci.auth.user-id",
+        "oci.auth.fingerprint",
+        "oci.auth.private-key",
+        "oci.auth.pass-phrase",
+        "oci.session-token.token",
+        "oci.region",
+        "oci.config.use-instance-principal",
+        "oci.config.instance-principal.enabled",
+        "OCI_RESOURCE_PRINCIPAL_VERSION",
+        "oci.config.oke-workload-identity.enabled"
+    };
 
     private final Map<Class<?>, Object> singletonOverrides;
 
@@ -67,6 +85,7 @@ final class OracleCloudVaultImporterContextFactory {
         @Nullable Vaults vaults) {
         Set<String> activeNames = environment.getActiveNames();
         Map<String, Object> properties = importConfiguration.properties();
+        mergeParentAuthProperties(environment, properties);
         ApplicationContextBuilder builder = ApplicationContext.builder(
             properties,
             activeNames.toArray(String[]::new)
@@ -108,6 +127,16 @@ final class OracleCloudVaultImporterContextFactory {
             secrets,
             vaults
         );
+    }
+
+    private static void mergeParentAuthProperties(Environment environment, Map<String, Object> properties) {
+        for (String key : AUTH_PROPERTY_KEYS) {
+            if (properties.containsKey(key)) {
+                continue;
+            }
+            environment.getProperty(key, Argument.OBJECT_ARGUMENT)
+                .ifPresent(value -> properties.put(key, value));
+        }
     }
 
     private static void handleIncludesExcludes(OracleCloudVaultImportConfiguration importConfiguration, OracleCloudVaultConfiguration.OracleCloudVault v) {

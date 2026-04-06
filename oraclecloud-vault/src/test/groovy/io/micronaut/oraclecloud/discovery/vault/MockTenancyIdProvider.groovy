@@ -11,7 +11,7 @@ import jakarta.inject.Singleton
 @Context
 @Singleton
 @Replaces(TenancyIdProvider)
-@Requires(missingProperty = "vault.ocid")
+@Requires(property = "vault.test-mocks.enabled", value = "true")
 class MockTenancyIdProvider implements TenancyIdProvider {
 
     @Override

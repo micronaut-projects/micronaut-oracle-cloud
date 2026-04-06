@@ -76,6 +76,7 @@ class OracleCloudVaultPropertySourceImporterLifecycleSpec extends Specification 
                 'micronaut.config-client.enabled': true,
                 'oci.vault.config.enabled': true,
                 'oci.config.enabled': false,
+                'vault.test-mocks.enabled': true,
                 'micronaut.metrics.export.oraclecloud.enabled': false,
                 'oci.vault.config.retry-attempts': 2,
                 'oci.vault.config.retry-delay': '10ms',

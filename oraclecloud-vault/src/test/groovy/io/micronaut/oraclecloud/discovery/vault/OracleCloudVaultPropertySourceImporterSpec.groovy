@@ -15,7 +15,7 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
 
     void 'it rejects URI declarations missing compartment or vault identifiers'() {
         given:
-        def importer = new OracleCloudVaultPropertySourceImporter(null, null)
+        def importer = new OracleCloudVaultPropertySourceImporter()
 
         when:
         importer.newImportDeclaration(ConnectionString.parse('oraclecloud-vault://compartment-only', ConnectionString.ParseMode.HOST))
@@ -27,7 +27,7 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
 
     void 'it parses URI declarations into vault import configuration'() {
         given:
-        def importer = new OracleCloudVaultPropertySourceImporter(null, null)
+        def importer = new OracleCloudVaultPropertySourceImporter()
 
         when:
         def declaration = importer.newImportDeclaration(ConnectionString.parse('oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*,API_.*&excludes=DB_LEGACY_PASSWORD&retry-attempts=2&retry-delay=10ms'))
@@ -45,7 +45,7 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
 
     void 'it parses provider map declarations into vault import configuration'() {
         given:
-        def importer = new OracleCloudVaultPropertySourceImporter(null, null)
+        def importer = new OracleCloudVaultPropertySourceImporter()
 
         when:
         def declaration = importer.newImportDeclaration(ConvertibleValues.of([

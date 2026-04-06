@@ -127,6 +127,7 @@ class OracleCloudVaultImporterParitySpec extends Specification {
                 ],
                 'micronaut.metrics.export.oraclecloud.enabled': false,
                 'oci.config.enabled': false,
+                'vault.test-mocks.enabled': true,
             ])
         }
     }

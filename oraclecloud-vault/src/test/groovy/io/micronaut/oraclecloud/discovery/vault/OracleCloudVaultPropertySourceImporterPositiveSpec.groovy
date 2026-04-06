@@ -79,6 +79,7 @@ class OracleCloudVaultPropertySourceImporterPositiveSpec extends Specification {
             bootstrapEnvironment(true)
             properties([
                 'oci.config.enabled': false,
+                'vault.test-mocks.enabled': true,
                 'micronaut.metrics.export.oraclecloud.enabled': false,
             ])
         }

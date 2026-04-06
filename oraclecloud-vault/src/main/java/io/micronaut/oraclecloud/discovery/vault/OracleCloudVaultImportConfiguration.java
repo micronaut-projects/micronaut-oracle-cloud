@@ -75,7 +75,7 @@ record OracleCloudVaultImportConfiguration(String compartmentId,
             properties.put("oci.vault.config.retry-delay", retryDelay);
         }
         properties.putAll(authProperties);
-        if (!authProperties.containsKey("config-path") && !authProperties.containsKey("config-profile")) {
+        if (!authProperties.containsKey("oci.config.path") && !authProperties.containsKey("oci.config.profile")) {
             properties.put("oci.config.enabled", StringUtils.FALSE);
         }
         return properties;

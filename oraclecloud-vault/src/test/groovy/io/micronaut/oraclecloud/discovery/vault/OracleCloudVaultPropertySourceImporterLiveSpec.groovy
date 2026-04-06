@@ -27,12 +27,18 @@ class OracleCloudVaultPropertySourceImporterLiveSpec extends Specification {
     @Shared
     String region = System.getenv("OCI_REGION")
 
+    @Shared
+    boolean configFileEnabled = Boolean.parseBoolean(System.getenv("OCI_CONFIG_ENABLED"))
+
+    @Shared
+    String configPath = System.getenv("OCI_CONFIG_PATH")
+
+    @Shared
+    String configProfile = System.getenv("OCI_CONFIG_PROFILE")
+
     void "importer loads secret from real vault using documented connection string syntax"() {
         given:
-        String importValue = "oraclecloud-vault://${compartmentOcid}/${vaultOcid}?use-instance-principal=true"
-        if (region) {
-            importValue += "&region=${encode(region)}"
-        }
+        String importValue = buildImportValue()
         ApplicationContext ctx = ApplicationContext.run([
             'micronaut.config.import[0]': importValue,
             'micronaut.metrics.export.oraclecloud.enabled': false,
@@ -47,6 +53,25 @@ class OracleCloudVaultPropertySourceImporterLiveSpec extends Specification {
 
         cleanup:
         ctx.close()
+    }
+
+    private String buildImportValue() {
+        List<String> options = []
+        if (configFileEnabled) {
+            if (configPath) {
+                options << "config-path=${configPath}"
+            }
+            if (configProfile) {
+                options << "config-profile=${encode(configProfile)}"
+            }
+        } else {
+            options << "use-instance-principal=true"
+        }
+        if (region) {
+            options << "region=${encode(region)}"
+        }
+        String query = options.isEmpty() ? "" : "?${options.join('&')}"
+        "oraclecloud-vault://${compartmentOcid}/${vaultOcid}${query}"
     }
 
     private static String encode(String value) {
