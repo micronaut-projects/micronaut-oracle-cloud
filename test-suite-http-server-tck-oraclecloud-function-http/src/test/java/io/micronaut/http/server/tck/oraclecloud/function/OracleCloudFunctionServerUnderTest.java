@@ -84,7 +84,7 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
             request,
             function.getApplicationContext().getBean(MessageBodyHandlerRegistry.class)
         );
-        FnHttpGatewayContextAdapter context = new FnHttpGatewayContextAdapter(request, inputEvent);
+        FnHttpGatewayContextAdapter context = new FnHttpGatewayContextAdapter(request);
         OutputEvent outputEvent = function.handleRequest(context, inputEvent);
         HttpResponse<O> response = new FnOutputEventAdapter<>(
             outputEvent,

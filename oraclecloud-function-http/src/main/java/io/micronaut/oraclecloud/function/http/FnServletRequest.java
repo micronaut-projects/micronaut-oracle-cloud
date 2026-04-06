@@ -57,7 +57,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Collection;
@@ -509,7 +508,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         if (StringUtils.isEmpty(forwarded)) {
             return null;
         }
-        for (String part : forwarded.split(";|,")) {
+        for (String part : forwarded.split("[;,]")) {
             String host = extractForwardedHost(part);
             if (StringUtils.isNotEmpty(host)) {
                 try {

@@ -35,7 +35,6 @@ import java.util.Map;
 public class FnHttpGatewayContextAdapter implements HTTPGatewayContext {
 
     private final HttpRequest<?> request;
-    private final InputEvent inputEvent;
     private Integer statusCode;
     private final Map<String, List<String>> responseHeaders = new HashMap<>();
 
@@ -43,11 +42,9 @@ public class FnHttpGatewayContextAdapter implements HTTPGatewayContext {
      * Create the adapter context.
      *
      * @param request The Micronaut HTTP request
-     * @param inputEvent The input event
      */
-    public FnHttpGatewayContextAdapter(HttpRequest<?> request, InputEvent inputEvent) {
+    public FnHttpGatewayContextAdapter(HttpRequest<?> request) {
         this.request = request;
-        this.inputEvent = inputEvent;
     }
 
     @Override

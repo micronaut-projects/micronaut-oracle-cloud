@@ -55,8 +55,6 @@ import java.util.concurrent.ExecutorService;
 @BootstrapContextCompatible
 public class OracleCloudVaultConfigurationClient implements ConfigurationClient {
 
-    private static final Logger LOG = LoggerFactory.getLogger(OracleCloudVaultConfigurationClient.class);
-
     private final OracleCloudVaultConfiguration oracleCloudVaultClientConfiguration;
     private final ExecutorService executorService;
     private final OracleCloudVaultPropertySourceLoader propertySourceLoader;

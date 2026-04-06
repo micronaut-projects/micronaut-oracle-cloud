@@ -42,8 +42,7 @@ public final class OracleCloudVaultPropertySourceImporter extends RetryablePrope
     public String getProvider() {
         return PROVIDER;
     }
-
-
+    
     @Override
     protected OracleCloudVaultImportConfiguration newImportDeclaration(ConnectionString connectionString, RetryPolicy retryPolicy) {
         return binder.bind(connectionString);
