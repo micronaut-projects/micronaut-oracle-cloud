@@ -16,7 +16,6 @@
 package io.micronaut.http.server.tck.oraclecloud.function.adapter;
 
 import com.fnproject.fn.api.Headers;
-import com.fnproject.fn.api.InputEvent;
 import com.fnproject.fn.api.InvocationContext;
 import com.fnproject.fn.api.QueryParameters;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;

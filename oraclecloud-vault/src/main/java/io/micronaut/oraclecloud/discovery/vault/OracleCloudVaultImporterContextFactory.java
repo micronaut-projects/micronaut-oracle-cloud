@@ -40,6 +40,7 @@ import java.util.function.Predicate;
  */
 @Internal
 final class OracleCloudVaultImporterContextFactory {
+    private static final String LEGACY_VAULT_CONFIGURATION_CLIENT = "io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfigurationClient";
 
     private final Map<Class<?>, Object> singletonOverrides;
 
@@ -129,7 +130,7 @@ final class OracleCloudVaultImporterContextFactory {
 
     private static java.util.function.Predicate<QualifiedBeanType<?>> vaultBeans() {
         return beanDefinition -> {
-            if (beanDefinition.getBeanType().equals(OracleCloudVaultConfigurationClient.class)) {
+            if (beanDefinition.getBeanType().getName().equals(LEGACY_VAULT_CONFIGURATION_CLIENT)) {
                 return false;
             }
             String name = beanDefinition.getBeanType().getName();

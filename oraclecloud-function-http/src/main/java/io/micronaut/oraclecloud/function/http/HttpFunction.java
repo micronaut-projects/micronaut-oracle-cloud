@@ -140,11 +140,9 @@ public class HttpFunction extends OciFunction {
                     body, inputEvent, response, gatewayContext, conversionService,
                     httpHandler.getMediaTypeCodecRegistry()
                 );
-                try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {
-                    this.httpHandler.service(
-                        servletRequest
-                    );
-                }
+                PropagatedContext.getOrEmpty()
+                    .plus(new ServerHttpRequestContext(servletRequest))
+                    .propagate(() -> this.httpHandler.service(servletRequest));
                 response.finalizeResponse();
             }
             OutputEvent nativeResponse = response.getNativeResponse();

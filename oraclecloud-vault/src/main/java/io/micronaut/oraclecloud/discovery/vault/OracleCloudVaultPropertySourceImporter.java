@@ -36,7 +36,6 @@ public final class OracleCloudVaultPropertySourceImporter extends RetryablePrope
     static final String PROVIDER = "oraclecloud-vault";
     private final OracleCloudVaultImporterContextFactory contextFactory = new OracleCloudVaultImporterContextFactory();
     private final OracleCloudVaultImportConfigurationBinder binder = new OracleCloudVaultImportConfigurationBinder();
-    private OracleCloudVaultImporterContextFactory.OracleCloudVaultImporterContext importerContext;
 
     @Override
     public String getProvider() {
@@ -56,36 +55,30 @@ public final class OracleCloudVaultPropertySourceImporter extends RetryablePrope
     @Override
     protected Optional<PropertySource> importRetryablePropertySource(ImportContext<OracleCloudVaultImportConfiguration> context) {
         OracleCloudVaultImportConfiguration importConfiguration = context.importDeclaration();
-        OracleCloudVaultImporterContextFactory.OracleCloudVaultImporterContext importerContext = getOrCreateImporterContext(context, importConfiguration);
-        OracleCloudVaultConfiguration configuration = importerContext.configuration();
-        if (configuration.getVaults().isEmpty()) {
-            return Optional.empty();
+        try (OracleCloudVaultImporterContextFactory.OracleCloudVaultImporterContext importerContext = createImporterContext(context, importConfiguration)) {
+            OracleCloudVaultConfiguration configuration = importerContext.configuration();
+            if (configuration.getVaults().isEmpty()) {
+                return Optional.empty();
+            }
+            OracleCloudVaultPropertySourceLoader loader = new OracleCloudVaultPropertySourceLoader(
+                importerContext.secretsClient(),
+                importerContext.vaultsClient(),
+                configuration.getDiscoveryConfiguration()
+            );
+            return Optional.of(loader.load(configuration.getVaults()));
         }
-        OracleCloudVaultPropertySourceLoader loader = new OracleCloudVaultPropertySourceLoader(
-            importerContext.secretsClient(),
-            importerContext.vaultsClient(),
-            configuration.getDiscoveryConfiguration()
-        );
-        return Optional.of(loader.load(configuration.getVaults()));
     }
 
     @Override
     protected void closeRetryableImporter() {
-        if (importerContext != null) {
-            importerContext.close();
-            importerContext = null;
-        }
     }
 
-    private OracleCloudVaultImporterContextFactory.OracleCloudVaultImporterContext getOrCreateImporterContext(ImportContext<OracleCloudVaultImportConfiguration> context,
-                                                                                                                OracleCloudVaultImportConfiguration importConfiguration) {
-        if (importerContext == null) {
-            importerContext = contextFactory.create(
-                context.environment(),
-                importConfiguration,
-                null,
-                null);
-        }
-        return importerContext;
+    private OracleCloudVaultImporterContextFactory.OracleCloudVaultImporterContext createImporterContext(ImportContext<OracleCloudVaultImportConfiguration> context,
+                                                                                                          OracleCloudVaultImportConfiguration importConfiguration) {
+        return contextFactory.create(
+            context.environment(),
+            importConfiguration,
+            null,
+            null);
     }
 }

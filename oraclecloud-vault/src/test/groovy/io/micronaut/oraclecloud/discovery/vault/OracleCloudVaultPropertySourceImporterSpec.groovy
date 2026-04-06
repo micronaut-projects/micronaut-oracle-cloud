@@ -2,6 +2,7 @@ package io.micronaut.oraclecloud.discovery.vault
 
 import io.micronaut.context.env.PropertySource
 import io.micronaut.context.env.PropertySourceImporter
+import io.micronaut.context.ApplicationContext
 import io.micronaut.context.exceptions.ConfigurationException
 import io.micronaut.core.convert.value.ConvertibleValues
 import io.micronaut.core.io.ResourceLoader
@@ -69,6 +70,60 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
         importConfiguration.retryDelay() == '10ms'
         importConfiguration.authProperties().get('oci.config.path') == '/tmp/oci/config'
         importConfiguration.authProperties().get('oci.config.profile') == 'ALT'
+    }
+
+    void 'it creates a fresh importer context for each distinct import declaration'() {
+        given:
+        def firstConfiguration = OracleCloudVaultImportConfiguration.of(
+            'ocid1.compartment.oc1.first',
+            'ocid1.vault.oc1.first',
+            [],
+            [],
+            null,
+            null,
+            [:]
+        )
+        def secondConfiguration = OracleCloudVaultImportConfiguration.of(
+            'ocid1.compartment.oc1.second',
+            'ocid1.vault.oc1.second',
+            ['DB_.*'],
+            ['LEGACY'],
+            null,
+            null,
+            [:]
+        )
+        def factory = new OracleCloudVaultImporterContextFactory([:])
+        def firstSecrets = Stub(com.oracle.bmc.secrets.Secrets)
+        def firstVaults = Stub(com.oracle.bmc.vault.Vaults)
+        def secondSecrets = Stub(com.oracle.bmc.secrets.Secrets)
+        def secondVaults = Stub(com.oracle.bmc.vault.Vaults)
+        def applicationContext = ApplicationContext.run()
+        def environment = applicationContext.environment
+
+        when:
+        def firstContext = factory.create(environment, firstConfiguration, firstSecrets, firstVaults)
+        def secondContext = factory.create(environment, secondConfiguration, secondSecrets, secondVaults)
+
+        then:
+        firstContext.configuration().vaults.first().compartmentOcid == 'ocid1.compartment.oc1.first'
+        firstContext.configuration().vaults.first().ocid == 'ocid1.vault.oc1.first'
+        firstContext.configuration().vaults.first().includes as List == []
+        firstContext.configuration().vaults.first().excludes as List == []
+        firstContext.secretsClient().is(firstSecrets)
+        firstContext.vaultsClient().is(firstVaults)
+
+        secondContext.configuration().vaults.first().compartmentOcid == 'ocid1.compartment.oc1.second'
+        secondContext.configuration().vaults.first().ocid == 'ocid1.vault.oc1.second'
+        secondContext.configuration().vaults.first().includes as List == ['DB_.*']
+        secondContext.configuration().vaults.first().excludes as List == ['LEGACY']
+        secondContext.secretsClient().is(secondSecrets)
+        secondContext.vaultsClient().is(secondVaults)
+        !firstContext.configuration().is(secondContext.configuration())
+
+        cleanup:
+        firstContext?.close()
+        secondContext?.close()
+        applicationContext.close()
     }
 
     static final class TestImportContext implements PropertySourceImporter.ImportContext<OracleCloudVaultImportConfiguration> {

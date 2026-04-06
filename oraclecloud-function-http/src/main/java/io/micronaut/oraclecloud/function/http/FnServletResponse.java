@@ -102,7 +102,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
             this.gatewayContext.setStatusCode(this.status);
             mergeHeaders(httpResponse.getHeaders());
             if (body.size() == 0) {
-                httpResponse.getBody().ifPresent(responseBody -> writeLogicalBody(responseBody));
+                httpResponse.getBody().ifPresent(this::writeLogicalBody);
             }
             return;
         }
