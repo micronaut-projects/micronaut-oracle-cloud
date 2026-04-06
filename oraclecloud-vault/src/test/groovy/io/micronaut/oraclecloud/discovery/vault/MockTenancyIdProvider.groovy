@@ -3,6 +3,7 @@ package io.micronaut.oraclecloud.discovery.vault
 import io.micronaut.context.annotation.BootstrapContextCompatible
 import io.micronaut.context.annotation.Context
 import io.micronaut.context.annotation.Replaces
+import io.micronaut.context.annotation.Requires
 import io.micronaut.oraclecloud.core.TenancyIdProvider
 import jakarta.inject.Singleton
 
@@ -10,6 +11,7 @@ import jakarta.inject.Singleton
 @Context
 @Singleton
 @Replaces(TenancyIdProvider)
+@Requires(missingProperty = "vault.ocid")
 class MockTenancyIdProvider implements TenancyIdProvider {
 
     @Override

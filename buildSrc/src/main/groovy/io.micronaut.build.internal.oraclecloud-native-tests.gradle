@@ -19,6 +19,7 @@ graalvmNative {
         configureEach {
             resources.autodetect()
             buildArgs.add("--verbose")
+            buildArgs.add("-H:+SharedArenaSupport")
         }
     }
 }

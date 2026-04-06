@@ -6,6 +6,7 @@ import com.oracle.bmc.auth.ConfigFileAuthenticationDetailsProvider
 import io.micronaut.context.annotation.BootstrapContextCompatible
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.annotation.Replaces
+import io.micronaut.context.annotation.Requires
 import jakarta.inject.Singleton
 
 @AuthCachingPolicy(cacheKeyId = false, cachePrivateKey = false)
@@ -13,6 +14,7 @@ import jakarta.inject.Singleton
 @Singleton
 @Replaces(ConfigFileAuthenticationDetailsProvider)
 @Primary
+@Requires(missingProperty = "vault.ocid")
 class MockAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
 
     @Override
