@@ -15,12 +15,16 @@
  */
 package io.micronaut.oraclecloud.discovery.vault;
 
+import com.oracle.bmc.secrets.Secrets;
+import com.oracle.bmc.vault.Vaults;
 import io.micronaut.context.env.PropertySource;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.util.ConnectionString;
 import io.micronaut.discovery.config.RetryablePropertySourceImporter;
 import io.micronaut.retry.RetryPolicy;
+import jakarta.inject.Inject;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -36,6 +40,14 @@ public final class OracleCloudVaultPropertySourceImporter extends RetryablePrope
     static final String PROVIDER = "oraclecloud-vault";
     private final OracleCloudVaultImporterContextFactory contextFactory = new OracleCloudVaultImporterContextFactory();
     private final OracleCloudVaultImportConfigurationBinder binder = new OracleCloudVaultImportConfigurationBinder();
+    private final @Nullable Secrets parentSecrets;
+    private final @Nullable Vaults parentVaults;
+
+    @Inject
+    OracleCloudVaultPropertySourceImporter(@Nullable Secrets parentSecrets, @Nullable Vaults parentVaults) {
+        this.parentSecrets = parentSecrets;
+        this.parentVaults = parentVaults;
+    }
 
     @Override
     public String getProvider() {
@@ -74,7 +86,7 @@ public final class OracleCloudVaultPropertySourceImporter extends RetryablePrope
         return contextFactory.create(
             context.environment(),
             importConfiguration,
-            null,
-            null);
+            parentSecrets,
+            parentVaults);
     }
 }
