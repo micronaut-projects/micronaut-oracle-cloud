@@ -149,7 +149,7 @@ final class OracleCloudVaultPropertySourceLoader {
                         LOG.debug("Error occurred while retrieving secret bundle value for {}, will retry", secretOcid, signal.failure());
                     }
                 })
-        ).doOnError(ex -> LOG.error("Failed to retrieve secret {}", secretOcid)).block();
+        ).doOnError(ex -> LOG.error("Failed to retrieve secret {}", secretOcid, ex)).block();
     }
 
     byte[] getSecretValue(String secretOcid) {
