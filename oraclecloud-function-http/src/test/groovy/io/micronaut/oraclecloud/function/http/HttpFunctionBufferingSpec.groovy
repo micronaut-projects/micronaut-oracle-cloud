@@ -25,6 +25,7 @@ import java.util.concurrent.ThreadLocalRandom
 
 @MicronautTest
 @Property(name = "spec.name", value = "HttpFunctionBufferingSpec")
+@Property(name = "micronaut.propagation", value = "thread-local")
 class HttpFunctionBufferingSpec extends Specification {
     @Inject
     HttpFunction httpFunction

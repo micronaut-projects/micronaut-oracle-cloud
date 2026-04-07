@@ -16,7 +16,6 @@
 package io.micronaut.http.server.tck.oraclecloud.function.adapter;
 
 import com.fnproject.fn.api.Headers;
-import com.fnproject.fn.api.InputEvent;
 import com.fnproject.fn.api.InvocationContext;
 import com.fnproject.fn.api.QueryParameters;
 import com.fnproject.fn.api.httpgateway.HTTPGatewayContext;
@@ -35,7 +34,6 @@ import java.util.Map;
 public class FnHttpGatewayContextAdapter implements HTTPGatewayContext {
 
     private final HttpRequest<?> request;
-    private final InputEvent inputEvent;
     private Integer statusCode;
     private final Map<String, List<String>> responseHeaders = new HashMap<>();
 
@@ -43,11 +41,9 @@ public class FnHttpGatewayContextAdapter implements HTTPGatewayContext {
      * Create the adapter context.
      *
      * @param request The Micronaut HTTP request
-     * @param inputEvent The input event
      */
-    public FnHttpGatewayContextAdapter(HttpRequest<?> request, InputEvent inputEvent) {
+    public FnHttpGatewayContextAdapter(HttpRequest<?> request) {
         this.request = request;
-        this.inputEvent = inputEvent;
     }
 
     @Override
@@ -57,7 +53,7 @@ public class FnHttpGatewayContextAdapter implements HTTPGatewayContext {
 
     @Override
     public Headers getHeaders() {
-        return inputEvent.getHeaders();
+        return Headers.fromMultiHeaderMap(request.getHeaders().asMap());
     }
 
     @Override

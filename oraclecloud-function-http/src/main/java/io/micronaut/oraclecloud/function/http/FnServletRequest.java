@@ -55,7 +55,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -82,6 +85,8 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     static final Argument<ConvertibleValues> CONVERTIBLE_VALUES_ARGUMENT = Argument.of(ConvertibleValues.class);
 
     private static final String COOKIE_HEADER = "Cookie";
+    private static final String FN_HTTP_HEADER_PREFIX = "Fn-Http-H-";
+    private static final String LOCALHOST = "localhost";
 
     private final InputEvent inputEvent;
     private final HTTPGatewayContext gatewayContext;
@@ -213,7 +218,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
     private Map<CharSequence, Cookie> parseCookiesFromHeader() {
         Set<Cookie> result = new HashSet<>();
-        for (String header: gatewayContext.getHeaders().getAllValues(COOKIE_HEADER)) {
+        for (String header: getHeaders().getAll(COOKIE_HEADER)) {
             for (io.netty.handler.codec.http.cookie.Cookie cookie : ServerCookieDecoder.LAX.decode(header)) {
                 result.add(new NettyCookie(cookie));
             }
@@ -245,11 +250,34 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         if (uri == null) {
             synchronized (this) {
                 if (uri == null) {
-                    uri = URI.create(gatewayContext.getRequestURL());
+                    uri = buildUri(URI.create(gatewayContext.getRequestURL()));
                 }
             }
         }
         return uri;
+    }
+
+    @Override
+    public @NonNull String getPath() {
+        String path = getUri().getRawPath();
+        return StringUtils.isEmpty(path) ? "/" : path;
+    }
+
+    @Override
+    public @NonNull String getContextPath() {
+        return "";
+    }
+
+    public @NonNull String getPathInfo() {
+        return getUri().getRawPath();
+    }
+
+    public @NonNull String getServletPath() {
+        return getUri().getRawPath();
+    }
+
+    public @Nullable String getQueryString() {
+        return getUri().getRawQuery();
     }
 
     @Override
@@ -269,7 +297,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     @Override
     public <T> MutableHttpRequest<T> body(T body) {
         // no-op, as body cannot be changed
-        return (FnServletRequest<T>) body;
+        return (FnServletRequest<T>) this;
     }
 
     @NonNull
@@ -357,6 +385,162 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return byteBody;
     }
 
+    @Override
+    public @NonNull InetSocketAddress getRemoteAddress() {
+        InetSocketAddress sourceIpAddress = resolveSourceIpAddress();
+        if (sourceIpAddress != null) {
+            return sourceIpAddress;
+        }
+
+        InetSocketAddress forwardedForAddress = resolveUnresolvedAddress(getHeaders().get("X-Forwarded-For"));
+        if (forwardedForAddress != null) {
+            return forwardedForAddress;
+        }
+
+        InetSocketAddress realIpAddress = resolveUnresolvedAddress(getHeaders().get("X-Real-Ip"));
+        if (realIpAddress != null) {
+            return realIpAddress;
+        }
+
+        InetSocketAddress forwardedAddress = resolveForwardedAddress(getHeaders().get("Forwarded"));
+        if (forwardedAddress != null) {
+            return forwardedAddress;
+        }
+
+        return new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+    }
+
+    @Override
+    public @NonNull InetSocketAddress getServerAddress() {
+        URI currentUri = getUri();
+        String host = currentUri.getHost();
+        int port = currentUri.getPort();
+        if (StringUtils.isEmpty(host)) {
+            host = LOCALHOST;
+        }
+        if (port < 0) {
+            port = currentUri.getScheme() != null && currentUri.getScheme().equalsIgnoreCase("https") ? 443 : 80;
+        }
+        return InetSocketAddress.createUnresolved(host, port);
+    }
+
+    @Override
+    public @NonNull String getServerName() {
+        String host = getUri().getHost();
+        if (StringUtils.isEmpty(host)) {
+            host = LOCALHOST;
+        }
+        return host;
+    }
+
+    private URI buildUri(URI requestUri) {
+        String path = normalizePath(requestUri.getRawPath());
+        String query = requestUri.getRawQuery();
+        if (hasAuthority(requestUri)) {
+            return URI.create(buildAbsoluteUri(requestUri, path, query));
+        }
+        return URI.create(appendQuery(path, query));
+    }
+
+    private String normalizePath(String path) {
+        return StringUtils.isEmpty(path) ? "/" : path;
+    }
+
+    private boolean hasAuthority(URI requestUri) {
+        return StringUtils.isNotEmpty(requestUri.getRawAuthority())
+            || StringUtils.isNotEmpty(requestUri.getScheme())
+            || StringUtils.isNotEmpty(requestUri.getHost());
+    }
+
+    private String buildAbsoluteUri(URI requestUri, String path, String query) {
+        String scheme = StringUtils.isEmpty(requestUri.getScheme()) ? "http" : requestUri.getScheme();
+        return scheme + "://" + resolveAuthority(requestUri) + appendQuery(path, query);
+    }
+
+    private String resolveAuthority(URI requestUri) {
+        String authority = requestUri.getRawAuthority();
+        if (StringUtils.isNotEmpty(authority)) {
+            return authority;
+        }
+        String host = StringUtils.isEmpty(requestUri.getHost()) ? LOCALHOST : requestUri.getHost();
+        int port = requestUri.getPort();
+        return port >= 0 ? host + ":" + port : host;
+    }
+
+    private String appendQuery(String path, String query) {
+        return query == null ? path : path + "?" + query;
+    }
+
+    private InetSocketAddress resolveSourceIpAddress() {
+        String sourceIp = inputEvent.getHeaders().get("Fn-Http-Source-Ip").orElse(null);
+        if (StringUtils.isEmpty(sourceIp)) {
+            sourceIp = inputEvent.getHeaders().get(FN_HTTP_HEADER_PREFIX + "Fn-Http-Source-Ip").orElse(null);
+        }
+        return resolveSourceIpAddress(sourceIp);
+    }
+
+    private InetSocketAddress resolveSourceIpAddress(String sourceIp) {
+        String host = extractFirstHost(sourceIp);
+        if (StringUtils.isEmpty(host)) {
+            return null;
+        }
+        try {
+            return new InetSocketAddress(InetAddress.getByName(host), 0);
+        } catch (UnknownHostException ignored) {
+            return InetSocketAddress.createUnresolved(host, 0);
+        }
+    }
+
+    private InetSocketAddress resolveUnresolvedAddress(String headerValue) {
+        String host = extractFirstHost(headerValue);
+        return StringUtils.isEmpty(host) ? null : InetSocketAddress.createUnresolved(host, 0);
+    }
+
+    private String extractFirstHost(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return null;
+        }
+        String host = value.split(",", 2)[0].trim();
+        return StringUtils.isEmpty(host) ? null : host;
+    }
+
+    private InetSocketAddress resolveForwardedAddress(String forwarded) {
+        if (StringUtils.isEmpty(forwarded)) {
+            return null;
+        }
+        for (String part : forwarded.split("[;,]")) {
+            String host = extractForwardedHost(part);
+            if (StringUtils.isNotEmpty(host)) {
+                try {
+                    return new InetSocketAddress(InetAddress.getByName(host), 0);
+                } catch (UnknownHostException ignored) {
+                    return new InetSocketAddress(InetAddress.getLoopbackAddress(), 0);
+                }
+            }
+        }
+        return null;
+    }
+
+    private String extractForwardedHost(String part) {
+        String trimmed = part.trim();
+        if (!trimmed.regionMatches(true, 0, "for=", 0, 4)) {
+            return null;
+        }
+        return normalizeForwardedHost(trimmed.substring(4).trim());
+    }
+
+    private String normalizeForwardedHost(String host) {
+        if (host.startsWith("\"") && host.endsWith("\"") && host.length() > 1) {
+            host = host.substring(1, host.length() - 1);
+        }
+        if (host.startsWith("[")) {
+            int closing = host.indexOf(']');
+            return closing > 0 ? host.substring(1, closing) : host;
+        }
+        int colon = host.indexOf(':');
+        return colon > 0 ? host.substring(0, colon) : host;
+    }
+
     /**
      * The fn parameters.
      */
@@ -419,10 +603,22 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
      */
     private final class FnHttpHeaders implements MutableHttpHeaders {
 
+        private String normalizeHeaderName(String name) {
+            return name.startsWith(FN_HTTP_HEADER_PREFIX) ? name.substring(FN_HTTP_HEADER_PREFIX.length()) : name;
+        }
+
+        private List<String> getNormalizedValues(String name) {
+            List<String> direct = inputEvent.getHeaders().getAllValues(name);
+            if (!direct.isEmpty()) {
+                return direct;
+            }
+            return inputEvent.getHeaders().getAllValues(FN_HTTP_HEADER_PREFIX + name);
+        }
+
         @Override
         public List<String> getAll(CharSequence name) {
             if (name != null) {
-                return gatewayContext.getHeaders().getAllValues(name.toString());
+                return getNormalizedValues(name.toString());
             }
             return Collections.emptyList();
         }
@@ -431,25 +627,32 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         @Override
         public String get(CharSequence name) {
             if (name != null) {
-                return gatewayContext.getHeaders().get(name.toString()).orElse(null);
+                List<String> values = getNormalizedValues(name.toString());
+                if (!values.isEmpty()) {
+                    return values.get(0);
+                }
             }
             return null;
         }
 
         @Override
         public Set<String> names() {
-            return new HashSet<>(gatewayContext.getHeaders().keys());
+            return inputEvent.getHeaders().keys().stream()
+                .map(this::normalizeHeaderName)
+                .collect(Collectors.toCollection(HashSet::new));
         }
 
         @Override
         public Collection<List<String>> values() {
-            return gatewayContext.getHeaders().asMap().values();
+            return names().stream()
+                .map(this::getNormalizedValues)
+                .toList();
         }
 
         @Override
         public <T> Optional<T> get(CharSequence name, ArgumentConversionContext<T> conversionContext) {
             if (name != null) {
-                Optional<String> v = gatewayContext.getHeaders().get(name.toString());
+                Optional<String> v = Optional.ofNullable(get(name));
                 return v.flatMap(s -> conversionService.convert(
                     s, conversionContext
                 ));
@@ -459,13 +662,13 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
 
         @Override
         public MutableHttpHeaders add(CharSequence header, CharSequence value) {
-            gatewayContext.getHeaders().addHeader(header.toString(), value.toString());
+            response.getHeaders().add(header, value);
             return this;
         }
 
         @Override
         public MutableHttpHeaders remove(CharSequence header) {
-            gatewayContext.getHeaders().removeHeader(header.toString());
+            response.getHeaders().remove(header);
             return this;
         }
 

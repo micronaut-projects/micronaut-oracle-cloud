@@ -115,6 +115,7 @@ public abstract class OciFunction implements AutoCloseable {
         for (String k : ctx.getConfiguration().keySet()) {
             map.put(k, ctx.getConfiguration().get(k));
         }
+        map.putIfAbsent("micronaut.propagation", "thread-local");
         return ApplicationContext
                 .builder(Environment.FUNCTION, Environment.ORACLE_CLOUD)
                 .deduceEnvironment(false)

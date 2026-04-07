@@ -95,6 +95,7 @@ gitRepositories {
 
 dependencyResolutionManagement {
     repositories {
+
         mavenCentral()
     }
 }
