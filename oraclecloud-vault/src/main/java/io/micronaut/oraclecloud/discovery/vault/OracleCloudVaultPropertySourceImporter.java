@@ -21,7 +21,6 @@ import io.micronaut.core.convert.value.ConvertibleValues;
 import io.micronaut.core.util.ConnectionString;
 import io.micronaut.discovery.config.RetryablePropertySourceImporter;
 import io.micronaut.retry.RetryPolicy;
-import jakarta.inject.Inject;
 
 import java.util.Optional;
 

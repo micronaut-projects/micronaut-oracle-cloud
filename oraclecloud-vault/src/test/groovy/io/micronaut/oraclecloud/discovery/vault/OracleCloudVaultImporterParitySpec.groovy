@@ -8,13 +8,9 @@ import io.micronaut.context.annotation.BootstrapContextCompatible
 import io.micronaut.context.annotation.Primary
 import io.micronaut.context.env.PropertySource
 import io.micronaut.core.util.ConnectionString
-import io.micronaut.test.annotation.MockBean
-import io.micronaut.test.extensions.spock.annotation.MicronautTest
-import jakarta.inject.Inject
 import reactor.core.publisher.Flux
 import spock.lang.Specification
 
-@MicronautTest(contextBuilder = OracleCloudVaultImporterParitySpec.MyContextBuilder)
 class OracleCloudVaultImporterParitySpec extends Specification {
 
     private static final List<MockVaultSecrets.Secret> FIRST_VAULT_SECRETS = [
@@ -39,29 +35,6 @@ class OracleCloudVaultImporterParitySpec extends Specification {
     private static final OracleCloudVaultConfigurationClientSpecCharacterization.TrackingMockVaultSecrets SECOND_VAULT =
         new OracleCloudVaultConfigurationClientSpecCharacterization.TrackingMockVaultSecrets(SECOND_VAULT_SECRETS, 'vault-two')
 
-    @Inject
-    ApplicationContext context
-
-    @Inject Secrets secrets
-    @Inject Vaults vaults
-
-    @MockBean
-    @BootstrapContextCompatible
-    @Primary
-    static Secrets secrets() {
-        new OracleCloudVaultConfigurationClientSpecCharacterization.DelegatingSecretsClient([FIRST_VAULT, SECOND_VAULT])
-    }
-
-    @MockBean
-    @BootstrapContextCompatible
-    @Primary
-    static Vaults vaults() {
-        new OracleCloudVaultConfigurationClientSpecCharacterization.DelegatingVaultsClient([
-            (MyContextBuilder.FIRST_VAULT_OCID): FIRST_VAULT,
-            (MyContextBuilder.SECOND_VAULT_OCID): SECOND_VAULT,
-        ])
-    }
-
     void setup() {
         FIRST_VAULT.reset()
         SECOND_VAULT.reset()
@@ -69,9 +42,32 @@ class OracleCloudVaultImporterParitySpec extends Specification {
 
     void 'importer compatible loading matches legacy filtering ordering and retry behavior'() {
         given:
-        def configuration = context.getBean(OracleCloudVaultConfiguration)
+        ApplicationContext context = new MyContextBuilder().build()
+        context.start()
+        Secrets secrets = new OracleCloudVaultConfigurationClientSpecCharacterization.DelegatingSecretsClient([FIRST_VAULT, SECOND_VAULT])
+        Vaults vaults = new OracleCloudVaultConfigurationClientSpecCharacterization.DelegatingVaultsClient([
+            (MyContextBuilder.FIRST_VAULT_OCID): FIRST_VAULT,
+            (MyContextBuilder.SECOND_VAULT_OCID): SECOND_VAULT,
+        ])
+        def configuration = new OracleCloudVaultConfiguration()
+        configuration.discoveryConfiguration.retryAttempts = 2
+        configuration.discoveryConfiguration.retryDelay = java.time.Duration.ofMillis(10)
+        configuration.vaults = [
+            new OracleCloudVaultConfiguration.OracleCloudVault(
+                ocid: MyContextBuilder.FIRST_VAULT_OCID,
+                compartmentOcid: MyContextBuilder.COMPARTMENT_OCID,
+                includes: ['alpha-.*', 'beta-v1', 'shared-secret'],
+                excludes: ['alpha-v2']
+            ),
+            new OracleCloudVaultConfiguration.OracleCloudVault(
+                ocid: MyContextBuilder.SECOND_VAULT_OCID,
+                compartmentOcid: MyContextBuilder.COMPARTMENT_OCID,
+                includes: ['delta-v1', 'shared-secret'],
+                excludes: ['omega-.*']
+            )
+        ]
         def legacyClient = new OracleCloudVaultConfigurationClient(configuration, null, secrets, vaults)
-        def raw = ConnectionString.parse('oraclecloud-vault://' + MyContextBuilder.COMPARTMENT_OCID + '/' + MyContextBuilder.FIRST_VAULT_OCID + '?includes=alpha-.*,beta-v1,shared-secret&retry-attempts=2&retry-delay=10ms')
+        def raw = ConnectionString.parse('oraclecloud-vault://' + MyContextBuilder.COMPARTMENT_OCID + '/' + MyContextBuilder.FIRST_VAULT_OCID + '?includes=alpha-.*,beta-v1,shared-secret&excludes=alpha-v2&retry-attempts=2&retry-delay=10ms')
         def declaration = new OracleCloudVaultImportConfigurationBinder().bind(raw)
         OracleCloudVaultImporterContextFactory importerContextFactory = new OracleCloudVaultImporterContextFactory()
 
@@ -98,6 +94,7 @@ class OracleCloudVaultImporterParitySpec extends Specification {
 
         cleanup:
         importerContext?.close()
+        context?.close()
     }
 
     static class MyContextBuilder extends DefaultApplicationContextBuilder {
@@ -108,7 +105,6 @@ class OracleCloudVaultImporterParitySpec extends Specification {
         MyContextBuilder() {
             bootstrapEnvironment(true)
             properties([
-                'micronaut.config-import[0].provider': 'oraclecloud-vault',
                 'oci.vault.config.retry-attempts': 2,
                 'oci.vault.config.retry-delay': '10ms',
                 'oci.vault.vaults': [

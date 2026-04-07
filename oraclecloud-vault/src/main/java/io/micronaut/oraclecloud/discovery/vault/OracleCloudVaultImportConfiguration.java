@@ -75,7 +75,10 @@ record OracleCloudVaultImportConfiguration(String compartmentId,
             properties.put("oci.vault.config.retry-delay", retryDelay);
         }
         properties.putAll(authProperties);
-        if (!authProperties.containsKey("oci.config.path") && !authProperties.containsKey("oci.config.profile")) {
+        if (Boolean.parseBoolean(String.valueOf(authProperties.get("oci.config.use-instance-principal")))) {
+            properties.put("oci.config.instance-principal.enabled", StringUtils.TRUE);
+            properties.put("oci.config.enabled", StringUtils.FALSE);
+        } else if (!authProperties.containsKey("oci.config.path") && !authProperties.containsKey("oci.config.profile")) {
             properties.put("oci.config.enabled", StringUtils.FALSE);
         }
         return properties;
