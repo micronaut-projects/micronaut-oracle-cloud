@@ -1641,7 +1641,7 @@ import io.micronaut.http.annotation.Post
 import reactor.core.publisher.Mono
 
 @Controller("/os")
-class BucketController(private val objectStorage: ObjectStorageReactorClient,
+open class BucketController(private val objectStorage: ObjectStorageReactorClient,
                        private val tenancyIdProvider: TenancyIdProvider) // <b class="conum">(1)</b>
     : BucketOperations {
 }</code></pre>
@@ -3678,72 +3678,147 @@ Navigate to your Log and view log entries in the "Explore Log" section.</p>
 </p>
 </div>
 <div class="paragraph">
-<p>Then create a <code>bootstrap</code> configuration file in <code>src/main/resources/</code> and ensure your <a href="#authentication">Authentication</a> configuration is present in this file to enable authenticating with one of the supported mechanisms (config, instance principal, resource principal, etc.)</p>
+<p>Oracle Cloud Vault import is importer-first and can be declared either with a connection string or with a provider-map entry.</p>
 </div>
+<div class="sect1">
+<h2 id="_connection_string_import">Connection string import</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Then, add the following to the <code>bootstrap</code> configuration file to specify Vault support:</p>
+<p>The connection string form uses the compartment ID as the host and the Vault OCID as the path:</p>
 </div>
 <div class="openblock">
 <div class="content">
 <div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.application.name=myapp
-micronaut.config-client.enabled=true
-oci.vault.config.enabled=true
-oci.vault.vaults[0].ocid=ocid1.vault.oc1.phx...
-oci.vault.vaults[0].compartment-ocid=ocid1.compartment.oc1...</code></pre>
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.config.import[0]=oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&amp;includes=API_.*&amp;excludes=DB_LEGACY_PASSWORD&amp;retry-attempts=2&amp;retry-delay=10ms</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
-  application:
-    name: myapp
-  config-client:
-    enabled: true
-oci:
-  vault:
-    config:
-      enabled: true
-    vaults:
-      - ocid: ocid1.vault.oc1.phx...
-        compartment-ocid: ocid1.compartment.oc1...</code></pre>
+  config:
+    import:
+      - oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&amp;includes=API_.*&amp;excludes=DB_LEGACY_PASSWORD&amp;retry-attempts=2&amp;retry-delay=10ms</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
-  [micronaut.application]
-    name="myapp"
-  [micronaut.config-client]
-    enabled=true
-[oci]
-  [oci.vault]
-    [oci.vault.config]
-      enabled=true
-    [[oci.vault.vaults]]
-      ocid="ocid1.vault.oc1.phx..."
-      compartment-ocid="ocid1.compartment.oc1..."</code></pre>
+  [micronaut.config]
+    import=[
+      "oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&amp;includes=API_.*&amp;excludes=DB_LEGACY_PASSWORD&amp;retry-attempts=2&amp;retry-delay=10ms"
+    ]</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
-  application {
-    name = "myapp"
+  config {
+    'import' = ["oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&amp;includes=API_.*&amp;excludes=DB_LEGACY_PASSWORD&amp;retry-attempts=2&amp;retry-delay=10ms"]
   }
-  configClient {
-    enabled = true
-  }
-}
-oci {
-  vault {
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
     config {
-      enabled = true
+      import = ["oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&amp;includes=API_.*&amp;excludes=DB_LEGACY_PASSWORD&amp;retry-attempts=2&amp;retry-delay=10ms"]
     }
-    vaults = [{
-        ocid = "ocid1.vault.oc1.phx..."
-        compartmentOcid = "ocid1.compartment.oc1..."
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "config": {
+      "import": ["oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&amp;includes=API_.*&amp;excludes=DB_LEGACY_PASSWORD&amp;retry-attempts=2&amp;retry-delay=10ms"]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>This format supports:
+- include and exclude filters through repeated <code>includes</code> and <code>excludes</code> query parameters
+- retry configuration through <code>retry-attempts</code> and <code>retry-delay</code>
+- OCI authentication options through user info and query parameters, depending on the chosen authentication strategy</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_provider_map_import">Provider-map import</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The equivalent provider-map configuration is:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.config.import[0].provider=oraclecloud-vault
+micronaut.config.import[0].compartment-id=ocid1.compartment.oc1..
+micronaut.config.import[0].ocid=ocid1.vault.oc1.phx..
+micronaut.config.import[0].includes[0]=DB_.*
+micronaut.config.import[0].includes[1]=API_.*
+micronaut.config.import[0].excludes[0]=DB_LEGACY_PASSWORD
+micronaut.config.import[0].retry-attempts=2
+micronaut.config.import[0].retry-delay=10ms</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  config:
+    import:
+      - provider: oraclecloud-vault
+        compartment-id: ocid1.compartment.oc1..
+        ocid: ocid1.vault.oc1.phx..
+        includes:
+          - DB_.*
+          - API_.*
+        excludes:
+          - DB_LEGACY_PASSWORD
+        retry-attempts: 2
+        retry-delay: 10ms</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.config]
+    [[micronaut.config.import]]
+      provider="oraclecloud-vault"
+      compartment-id="ocid1.compartment.oc1.."
+      ocid="ocid1.vault.oc1.phx.."
+      includes=[
+        "DB_.*",
+        "API_.*"
+      ]
+      excludes=[
+        "DB_LEGACY_PASSWORD"
+      ]
+      retry-attempts=2
+      retry-delay="10ms"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  config {
+    'import' = [{
+        provider = "oraclecloud-vault"
+        compartmentId = "ocid1.compartment.oc1.."
+        ocid = "ocid1.vault.oc1.phx.."
+        includes = ["DB_.*", "API_.*"]
+        excludes = ["DB_LEGACY_PASSWORD"]
+        retryAttempts = 2
+        retryDelay = "10ms"
       }]
   }
 }</code></pre>
@@ -3753,21 +3828,15 @@ oci {
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
   micronaut {
-    application {
-      name = "myapp"
-    }
-    config-client {
-      enabled = true
-    }
-  }
-  oci {
-    vault {
-      config {
-        enabled = true
-      }
-      vaults = [{
-          ocid = "ocid1.vault.oc1.phx..."
-          compartment-ocid = "ocid1.compartment.oc1..."
+    config {
+      import = [{
+          provider = "oraclecloud-vault"
+          compartment-id = "ocid1.compartment.oc1.."
+          ocid = "ocid1.vault.oc1.phx.."
+          includes = ["DB_.*", "API_.*"]
+          excludes = ["DB_LEGACY_PASSWORD"]
+          retry-attempts = 2
+          retry-delay = "10ms"
         }]
     }
   }
@@ -3778,21 +3847,134 @@ oci {
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
   "micronaut": {
-    "application": {
-      "name": "myapp"
-    },
-    "config-client": {
-      "enabled": true
+    "config": {
+      "import": [{
+          "provider": "oraclecloud-vault",
+          "compartment-id": "ocid1.compartment.oc1..",
+          "ocid": "ocid1.vault.oc1.phx..",
+          "includes": ["DB_.*", "API_.*"],
+          "excludes": ["DB_LEGACY_PASSWORD"],
+          "retry-attempts": 2,
+          "retry-delay": "10ms"
+        }]
     }
-  },
-  "oci": {
-    "vault": {
-      "config": {
-        "enabled": true
-      },
-      "vaults": [{
-          "ocid": "ocid1.vault.oc1.phx...",
-          "compartment-ocid": "ocid1.compartment.oc1..."
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_oci_authentication_options">OCI authentication options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Oracle Cloud Vault import supports the same OCI authentication mechanisms as the rest of the Oracle Cloud integration and the importer declaration can supply the values needed to activate them. Common approaches include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Config file authentication with <code>config-path</code> and <code>config-profile</code></p>
+</li>
+<li>
+<p>Simple authentication with tenant ID, user ID, fingerprint, private key, and optional passphrase</p>
+</li>
+<li>
+<p>Instance principal with <code>use-instance-principal=true</code></p>
+</li>
+<li>
+<p>Resource principal with <code>use-resource-principal=true</code></p>
+</li>
+<li>
+<p>OKE workload identity with <code>use-oke-workload-identity=true</code></p>
+</li>
+<li>
+<p>Session token authentication with <code>session-token</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For example, config-file based authentication with a provider-map declaration:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.config.import[0].provider=oraclecloud-vault
+micronaut.config.import[0].compartment-id=ocid1.compartment.oc1..
+micronaut.config.import[0].ocid=ocid1.vault.oc1.phx..
+micronaut.config.import[0].config-path=/home/app/.oci/config
+micronaut.config.import[0].config-profile=ALT</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  config:
+    import:
+      - provider: oraclecloud-vault
+        compartment-id: ocid1.compartment.oc1..
+        ocid: ocid1.vault.oc1.phx..
+        config-path: /home/app/.oci/config
+        config-profile: ALT</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.config]
+    [[micronaut.config.import]]
+      provider="oraclecloud-vault"
+      compartment-id="ocid1.compartment.oc1.."
+      ocid="ocid1.vault.oc1.phx.."
+      config-path="/home/app/.oci/config"
+      config-profile="ALT"</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  config {
+    'import' = [{
+        provider = "oraclecloud-vault"
+        compartmentId = "ocid1.compartment.oc1.."
+        ocid = "ocid1.vault.oc1.phx.."
+        configPath = "/home/app/.oci/config"
+        configProfile = "ALT"
+      }]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    config {
+      import = [{
+          provider = "oraclecloud-vault"
+          compartment-id = "ocid1.compartment.oc1.."
+          ocid = "ocid1.vault.oc1.phx.."
+          config-path = "/home/app/.oci/config"
+          config-profile = "ALT"
+        }]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "config": {
+      "import": [{
+          "provider": "oraclecloud-vault",
+          "compartment-id": "ocid1.compartment.oc1..",
+          "ocid": "ocid1.vault.oc1.phx..",
+          "config-path": "/home/app/.oci/config",
+          "config-profile": "ALT"
         }]
     }
   }
@@ -3802,8 +3984,64 @@ oci {
 </div>
 </div>
 <div class="paragraph">
-<p>One or more Vaults can be configured, and each must include <code>ocid</code> and <code>compartment-ocid</code> configuration values.
-Note that the <code>compartment-ocid</code> is not the vault compartment, but the compartment from where the secrets will be fetched.</p>
+<p>Or simple authentication via connection string user info and query parameters:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.config.import[0]=oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&amp;user-id=ocid1.user.oc1..&amp;fingerprint=aa:bb:cc&amp;private-key=/secrets/oci.pem</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  config:
+    import:
+      - oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&amp;user-id=ocid1.user.oc1..&amp;fingerprint=aa:bb:cc&amp;private-key=/secrets/oci.pem</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.config]
+    import=[
+      "oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&amp;user-id=ocid1.user.oc1..&amp;fingerprint=aa:bb:cc&amp;private-key=/secrets/oci.pem"
+    ]</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  config {
+    'import' = ["oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&amp;user-id=ocid1.user.oc1..&amp;fingerprint=aa:bb:cc&amp;private-key=/secrets/oci.pem"]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    config {
+      import = ["oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&amp;user-id=ocid1.user.oc1..&amp;fingerprint=aa:bb:cc&amp;private-key=/secrets/oci.pem"]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "config": {
+      "import": ["oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&amp;user-id=ocid1.user.oc1..&amp;fingerprint=aa:bb:cc&amp;private-key=/secrets/oci.pem"]
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3812,14 +4050,13 @@ Note that the <code>compartment-ocid</code> is not the vault compartment, but th
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-If you only want this configuration to be active in the Oracle Cloud environment but not locally, name the configuration file <code>bootstrap-oraclecloud</code> (with the appropriate extension, such as .properties).
+Oracle Cloud Vault import in this module is startup-load only. This change does not add watch metadata, scheduled polling, or automatic refresh support.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>You&#8217;re now ready to go! You can access the config variables in a few different ways.
-If you create a secret with the name of <code>SECRET_ONE</code> in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:</p>
+<p>If you create a secret with the name <code>SECRET_ONE</code> in Oracle Cloud Vault, it is available like any standard configuration variable:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3835,10 +4072,10 @@ If you create a secret with the name of <code>SECRET_ONE</code> in your Oracle C
 </div>
 </div>
 <div class="paragraph">
-<p>Values from Vault are always <code>String</code>, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.</p>
+<p>Values from Vault are stored as strings, but you can still bind them into strongly typed configuration using <code>@ConfigurationProperties</code>.</p>
 </div>
 <div class="paragraph">
-<p>So if you were to create secrets in your Oracle Cloud Vault like so:</p>
+<p>So if your Oracle Cloud Vault contains secrets like:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3875,7 +4112,7 @@ If you create a secret with the name of <code>SECRET_ONE</code> in your Oracle C
 </tbody>
 </table>
 <div class="paragraph">
-<p>You could add a config bean, like so:</p>
+<p>You can bind them like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3889,7 +4126,7 @@ public record Config(String one,
 </div>
 </div>
 <div class="paragraph">
-<p>Another option is to inject your variables into your configuration files. Then allows you to store things like database passwords and API keys in your vault:</p>
+<p>Another option is to inject Vault-backed values into other configuration entries, such as datasource passwords or API keys:</p>
 </div>
 <div class="openblock">
 <div class="content">
@@ -3945,6 +4182,96 @@ public record Config(String one,
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>Legacy bootstrap-based distributed configuration remains available for migration, but it is deprecated. The old bootstrap path requires:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">micronaut.config-client.enabled=true
+oci.vault.config.enabled=true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">micronaut:
+  config-client:
+    enabled: true
+oci:
+  vault:
+    config:
+      enabled: true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[micronaut]
+  [micronaut.config-client]
+    enabled=true
+[oci]
+  [oci.vault]
+    [oci.vault.config]
+      enabled=true</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">micronaut {
+  configClient {
+    enabled = true
+  }
+}
+oci {
+  vault {
+    config {
+      enabled = true
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  micronaut {
+    config-client {
+      enabled = true
+    }
+  }
+  oci {
+    vault {
+      config {
+        enabled = true
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "micronaut": {
+    "config-client": {
+      "enabled": true
+    }
+  },
+  "oci": {
+    "vault": {
+      "config": {
+        "enabled": true
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>That legacy path now emits a deprecation warning and should be replaced with importer-first configuration.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -3956,6 +4283,8 @@ See the guide for <a href="https://guides.micronaut.io/latest/micronaut-cloud-se
 </td>
 </tr>
 </table>
+</div>
+</div>
 </div>
 
 <h1 id="cloudStorage"><a class="anchor" href="#cloudStorage"></a>16 Oracle Cloud Storage Support</h1>
