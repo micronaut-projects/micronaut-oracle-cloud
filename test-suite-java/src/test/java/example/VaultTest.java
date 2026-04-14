@@ -8,6 +8,7 @@ import io.micronaut.context.env.PropertySource;
 import io.micronaut.oraclecloud.discovery.vault.OracleCloudVaultConfigurationClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@EnabledIfSystemProperty(named = "oci.config.path", matches = ".+")
 @MicronautTest(startApplication = false)
 @Requires(property = "vault.ocid")
 @Requires(property = "vault.secrets.compartment.ocid")
@@ -40,7 +42,6 @@ class VaultTest {
 
     @Test
     void testVaultLoadSecrets() {
-
         List<Map<?, ?>> vaults = List.of((Map.of(
             "ocid", vaultOcid,
             "compartment-ocid", compartmentOcid
@@ -63,5 +64,4 @@ class VaultTest {
             assertEquals(secretValue, new String((byte[]) value));
         }
     }
-
 }

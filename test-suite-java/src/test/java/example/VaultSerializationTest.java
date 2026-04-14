@@ -5,6 +5,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.json.JsonMapper;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.io.IOException;
 
@@ -12,6 +13,7 @@ import static io.micronaut.core.util.StringUtils.FALSE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@EnabledIfSystemProperty(named = "oci.config.path", matches = ".+")
 @MicronautTest
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = FALSE)
 public class VaultSerializationTest {
