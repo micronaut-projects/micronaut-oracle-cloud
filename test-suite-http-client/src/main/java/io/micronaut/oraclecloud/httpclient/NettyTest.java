@@ -74,7 +74,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(NettyRule.class)
@@ -95,15 +94,6 @@ public abstract class NettyTest {
     protected abstract void customize(ClientBuilderBase<?, ?> client);
 
     protected abstract void setupBootstrap(ServerBootstrap bootstrap) throws Exception;
-
-
-    private static void assumeOciConfigAvailableForManagedClient() {
-        String configPath = System.getProperty("oci.config.path");
-        if (configPath == null || configPath.isBlank()) {
-            configPath = System.getenv("OCI_CONFIG_FILE");
-        }
-        assumeTrue(configPath != null && !configPath.isBlank(), "OCI config path required for managed OCI HTTP client tests");
-    }
 
     protected final Channel getServerChannel() {
         return netty.serverChannel;
@@ -621,7 +611,6 @@ public abstract class NettyTest {
 
     @Test
     public void fullSetupTestManagedCustomProperties() throws CertificateException {
-        assumeOciConfigAvailableForManagedClient();
         for (int i = 0; i < 3; i++) {
             int finalI = i;
             netty.handleOneRequest((ctx, request) -> {

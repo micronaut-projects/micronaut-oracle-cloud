@@ -9,14 +9,12 @@ import io.micronaut.context.env.Environment;
 import io.micronaut.oraclecloud.monitoring.micrometer.OracleCloudMeterRegistry;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.util.Map;
 
 import static io.micronaut.core.util.StringUtils.FALSE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@EnabledIfSystemProperty(named = "oci.config.path", matches = ".+")
 @MicronautTest(startApplication = false)
 @Requires(beans = AuthenticationDetailsProvider.class)
 @Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = FALSE)
@@ -37,10 +35,10 @@ class MicrometerTest {
             ), Environment.ORACLE_CLOUD)) {
 
                 var cloudMeterRegistry = context.getBean(OracleCloudMeterRegistry.class);
-                var counter = Counter.builder("micronaut.test.counter")
-                    .tag("test", "test")
-                    .description("Testing of micronaut-oraclecloud-monitoring module")
-                    .register(cloudMeterRegistry);
+                var counter = Counter.builder("micronaut.test.counter").
+                    tag("test", "test").
+                    description("Testing of micronaut-oraclecloud-monitoring module").
+                    register(cloudMeterRegistry);
                 counter.increment(5.0);
                 Thread.sleep(2000);
             }

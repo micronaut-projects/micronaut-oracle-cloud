@@ -6,7 +6,6 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -17,7 +16,6 @@ import java.util.Map;
 import static io.micronaut.core.util.StringUtils.FALSE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@EnabledIfSystemProperty(named = "oci.config.path", matches = ".+")
 @MicronautTest(startApplication = false)
 @Requires(property = "atp.user")
 @Requires(property = "atp.pass")
