@@ -15,19 +15,8 @@ import java.security.cert.CertificateException;
 import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
-
 public class Jersey3Test extends NettyTest {
-    private static void assumeOciConfigAvailable() {
-        String configPath = System.getProperty("oci.config.path");
-        if (configPath == null || configPath.isBlank()) {
-            configPath = System.getenv("OCI_CONFIG_FILE");
-        }
-        assumeTrue(configPath != null && !configPath.isBlank(), "OCI config path required for managed OCI HTTP client tests");
-    }
-
     private HttpProvider provider() {
-        assumeOciConfigAvailable();
         return Jersey3HttpProvider.getInstance();
     }
 
