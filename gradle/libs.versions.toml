@@ -1,27 +1,27 @@
 [versions]
-micronaut = "5.0.0-M20"
+micronaut = "5.0.0-M23"
 micronaut-platform = "4.10.8"
-fn = '1.1.7'
+fn = '1.1.11'
 graal-svm = "23.1.10"
 javapoet = '1.13.0'
 logback-json-classic = '0.1.5'
 objenesis = "3.4"
-oracle-database-security = "21.20.0.0"
+oracle-database-security = "21.21.0.0"
 oci = "3.84.0"
 protobuf = '0.9.6'
-shadow = '8.3.9'
+shadow = '9.4.1'
 slf4j-jcl = '2.0.17'
-jackson2 = "2.21.1"
+jackson2 = "2.21.2"
 
-managed-apache-http-core5 = "5.3.6"
+managed-apache-http-core5 = "5.4.2"
 micronaut-discovery-client = "5.0.0-M1"
 micronaut-gradle-plugin = "4.6.2"
 micronaut-groovy = "5.0.0-M1"
 micronaut-kotlin = "5.0.0-M1"
 micronaut-kubernetes = "8.0.0-M1"
-micronaut-reactor = "4.0.0-M1"
+micronaut-reactor = "4.0.0-M2"
 micronaut-rxjava2 = "2.9.0"
-micronaut-serde = "3.0.0-M2"
+micronaut-serde = "3.0.0-M7"
 micronaut-servlet = "6.0.0-M2"
 micronaut-sql = "7.0.0-M7"
 micronaut-micrometer = "6.0.1-M1"
