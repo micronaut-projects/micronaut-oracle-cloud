@@ -57,6 +57,7 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
 
     public OracleCloudFunctionServerUnderTest(Map<String, Object> properties) {
         properties.put("micronaut.server.context-path", "/");
+        properties.putIfAbsent("micronaut.propagation", "thread-local");
         properties.put("endpoints.health.service-ready-indicator-enabled", StringUtils.FALSE);
         properties.put("endpoints.refresh.enabled", StringUtils.FALSE);
         properties.putAll(properties.entrySet().stream().collect(Collectors.toMap(
@@ -83,7 +84,7 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
             request,
             function.getApplicationContext().getBean(MessageBodyHandlerRegistry.class)
         );
-        FnHttpGatewayContextAdapter context = new FnHttpGatewayContextAdapter(request, inputEvent);
+        FnHttpGatewayContextAdapter context = new FnHttpGatewayContextAdapter(request);
         OutputEvent outputEvent = function.handleRequest(context, inputEvent);
         HttpResponse<O> response = new FnOutputEventAdapter<>(
             outputEvent,

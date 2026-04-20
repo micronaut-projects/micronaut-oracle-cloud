@@ -26,6 +26,7 @@ import io.micronaut.core.convert.value.MutableConvertibleValues;
 import io.micronaut.core.convert.value.MutableConvertibleValuesMap;
 import io.micronaut.http.HttpHeaders;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.MutableHttpHeaders;
 import io.micronaut.http.MutableHttpResponse;
@@ -53,6 +54,7 @@ import java.util.Optional;
  */
 @Internal
 final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> {
+    static final String SYNTHETIC_EMPTY_BODY_HEADER = "X-Micronaut-Fn-Synthetic-Empty-Body";
     private final Map<String, List<String>> headers = new LinkedHashMap<>(10);
     private final HTTPGatewayContext gatewayContext;
     private final ConversionService conversionService;
@@ -62,6 +64,7 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
     private MutableConvertibleValues<Object> attributes;
     private B bodyObject;
     private String reason = HttpStatus.OK.getReason();
+    private boolean finalized;
 
     FnServletResponse(HTTPGatewayContext gatewayContext, ConversionService conversionService) {
         this.gatewayContext = gatewayContext;
@@ -70,18 +73,64 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
 
     @Override
     public OutputEvent getNativeResponse() {
+        finalizeLogicalResponse();
+        boolean syntheticEmptyBody = body.size() == 0 && !headers.isEmpty();
+        if (syntheticEmptyBody) {
+            headers.computeIfAbsent(SYNTHETIC_EMPTY_BODY_HEADER, ignored -> new ArrayList<>(1)).add("true");
+            body.writeBytes(new byte[]{' '});
+        }
+        MediaType contentType = getContentType().orElse(null);
+        if (contentType == null && body.size() > 0) {
+            contentType = MediaType.APPLICATION_JSON_TYPE;
+        }
         return OutputEvent.fromBytes(
                 body.toByteArray(),
                 status <= 499 ? OutputEvent.Status.Success : OutputEvent.Status.FunctionError,
-                getContentType().orElse(MediaType.APPLICATION_JSON_TYPE).toString(),
+                contentType == null ? null : contentType.toString(),
                 toFnHeaders()
         );
+    }
+
+    private void finalizeLogicalResponse() {
+        if (finalized) {
+            return;
+        }
+        finalized = true;
+        if (bodyObject instanceof HttpResponse<?> httpResponse) {
+            this.status = httpResponse.code();
+            this.reason = httpResponse.reason();
+            this.gatewayContext.setStatusCode(this.status);
+            mergeHeaders(httpResponse.getHeaders());
+            if (body.size() == 0) {
+                httpResponse.getBody().ifPresent(this::writeLogicalBody);
+            }
+            return;
+        }
+        if (body.size() == 0 && bodyObject != null) {
+            writeLogicalBody(bodyObject);
+        }
+    }
+
+    void finalizeResponse() {
+        finalizeLogicalResponse();
+    }
+
+    private void writeLogicalBody(Object responseBody) {
+        if (responseBody instanceof byte[] bytes) {
+            body.writeBytes(bytes);
+        } else if (responseBody instanceof CharSequence charSequence) {
+            body.writeBytes(charSequence.toString().getBytes(getCharacterEncoding()));
+        }
     }
 
     private Headers toFnHeaders() {
         Map<String, List<String>> fnHeaders = new LinkedHashMap<>(headers.size());
         headers.forEach((name, values) -> fnHeaders.put("Fn-Http-H-" + name, values));
         return Headers.fromMultiHeaderMap(fnHeaders);
+    }
+
+    private void mergeHeaders(io.micronaut.http.HttpHeaders sourceHeaders) {
+        sourceHeaders.forEach((name, values) -> headers.put(name, new ArrayList<>(values)));
     }
 
     @Override
@@ -175,6 +224,18 @@ final class FnServletResponse<B> implements ServletHttpResponse<OutputEvent, B> 
         public MutableHttpHeaders add(CharSequence header, CharSequence value) {
             if (header != null && value != null) {
                 headers.computeIfAbsent(header.toString(), s -> new ArrayList<>(5)).add(value.toString());
+            }
+            return this;
+        }
+
+        @Override
+        public MutableHttpHeaders set(CharSequence header, CharSequence value) {
+            if (header != null) {
+                if (value == null) {
+                    headers.remove(header.toString());
+                } else {
+                    headers.put(header.toString(), new ArrayList<>(List.of(value.toString())));
+                }
             }
             return this;
         }

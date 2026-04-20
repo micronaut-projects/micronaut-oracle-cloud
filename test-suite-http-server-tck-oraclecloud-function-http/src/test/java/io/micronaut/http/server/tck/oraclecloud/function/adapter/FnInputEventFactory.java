@@ -22,7 +22,6 @@ import io.micronaut.core.annotation.Internal;
 import org.jspecify.annotations.NonNull;
 import io.micronaut.core.convert.ConversionService;
 import io.micronaut.core.type.Argument;
-import io.micronaut.core.type.MutableHeaders;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.body.MessageBodyHandlerRegistry;
@@ -96,6 +95,12 @@ public final class FnInputEventFactory {
                     e -> Headers.canonicalKey(e.getKey()),
                     Entry::getValue
             ));
+        String remoteAddress = request.getRemoteAddress().getAddress() != null
+            ? request.getRemoteAddress().getAddress().getHostAddress()
+            : request.getRemoteAddress().getHostString();
+        if (remoteAddress != null && !remoteAddress.isBlank()) {
+            headers.putIfAbsent("Fn-Http-Source-Ip", List.of(remoteAddress));
+        }
         return Headers.fromMultiHeaderMap(headers);
     }
 

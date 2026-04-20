@@ -33,7 +33,6 @@ import io.micronaut.http.context.ServerHttpRequestContext;
 import io.micronaut.inject.qualifiers.Qualifiers;
 import io.micronaut.oraclecloud.function.OciFunction;
 import io.micronaut.scheduling.TaskExecutors;
-import io.micronaut.servlet.http.DefaultServletExchange;
 import io.micronaut.servlet.http.ServletExchange;
 import io.micronaut.servlet.http.ServletHttpHandler;
 import io.micronaut.http.body.stream.InputStreamByteBody;
@@ -141,15 +140,10 @@ public class HttpFunction extends OciFunction {
                     body, inputEvent, response, gatewayContext, conversionService,
                     httpHandler.getMessageBodyHandlerRegistry()
                 );
-                DefaultServletExchange<InputEvent, OutputEvent> exchange = new DefaultServletExchange<>(
-                    servletRequest,
-                    response
-                );
-                try (PropagatedContext.Scope ignore = PropagatedContext.getOrEmpty().plus(new ServerHttpRequestContext(servletRequest)).propagate()) {
-                    this.httpHandler.service(
-                        exchange
-                    );
-                }
+                PropagatedContext.getOrEmpty()
+                    .plus(new ServerHttpRequestContext(servletRequest))
+                    .propagate(() -> this.httpHandler.service(servletRequest));
+                response.finalizeResponse();
             }
             OutputEvent nativeResponse = response.getNativeResponse();
             optionalBufferingInputStream.bufferIfNecessary();

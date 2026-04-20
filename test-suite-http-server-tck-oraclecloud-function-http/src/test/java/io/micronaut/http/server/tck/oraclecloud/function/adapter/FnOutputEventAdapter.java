@@ -27,7 +27,8 @@ import io.micronaut.http.MutableHttpHeaders;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -39,11 +40,12 @@ import java.util.Optional;
  */
 @Internal
 public class FnOutputEventAdapter<B> implements HttpResponse<B> {
-
+    private static final String SYNTHETIC_EMPTY_BODY_HEADER = "X-Micronaut-Fn-Synthetic-Empty-Body";
     private final OutputEvent event;
     private final ConversionService conversionService;
     private final FnHttpGatewayContextAdapter gatewayContext;
     private final MutableConvertibleValues<Object> attributes = new MutableConvertibleValuesMap<>();
+    private byte[] cachedBytes;
 
     /**
      * Create the output event adapter.
@@ -62,8 +64,15 @@ public class FnOutputEventAdapter<B> implements HttpResponse<B> {
 
     @Override
     public MutableHttpHeaders getHeaders() {
+        Map<String, List<String>> eventHeaders = event.getHeaders().asMap();
+        Map<String, List<String>> gatewayHeaders = gatewayContext.getResponseHeaders();
+        Map<String, List<String>> mergedHeaders = mergeHeaders(eventHeaders, gatewayHeaders);
+        if (isSyntheticEmptyBodyResponse()) {
+            mergedHeaders.remove("Content-Type");
+        }
+        mergedHeaders.remove(SYNTHETIC_EMPTY_BODY_HEADER);
         return new CaseInsensitiveMutableHttpHeaders(
-            mergeHeaders(gatewayContext.getResponseHeaders(), event.getHeaders().asMap()),
+            mergedHeaders,
             conversionService
         );
     }
@@ -75,17 +84,14 @@ public class FnOutputEventAdapter<B> implements HttpResponse<B> {
 
     @Override
     public Optional<B> getBody() {
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            event.writeToOutput(bos);
-            byte[] bytes = bos.toByteArray();
-            if (bytes.length == 0) {
-                return Optional.empty();
-            }
-            return (Optional<B>) Optional.of(bytes);
-        } catch (IOException e) {
+        byte[] bytes = responseBytes();
+        if (isSyntheticEmptyBodyResponse()) {
             return Optional.empty();
         }
+        if (bytes.length == 0) {
+            return Optional.empty();
+        }
+        return (Optional<B>) Optional.of(bytes);
     }
 
     @Override
@@ -105,28 +111,50 @@ public class FnOutputEventAdapter<B> implements HttpResponse<B> {
     }
 
     private Map<String, List<String>> mergeHeaders(
-        Map<String, List<String>> first,
-        Map<String, List<String>> other
+        Map<String, List<String>> eventHeaders,
+        Map<String, List<String>> gatewayHeaders
     ) {
-        Map<String, List<String>> result = new HashMap<>();
-        first.forEach((key, value) -> {
-            // TODO understand why the headers start this way
+        Map<String, List<String>> result = new LinkedHashMap<>();
+        eventHeaders.forEach((key, value) -> {
             if (key.startsWith("Fn-Http-H-")) {
                 key = key.substring("Fn-Http-H-".length());
             }
-            result.put(key, value);
+            if (!key.startsWith("Fn-Http-")) {
+                result.put(key, new ArrayList<>(value));
+            }
         });
-        other.forEach((key, value) -> {
-            if (key.startsWith("Fn-Http-H-")) {
-                key = key.substring("Fn-Http-H-".length());
-            }
-            if (result.containsKey(key)) {
-                result.get(key).addAll(value);
-            } else {
-                result.put(key, value);
+        gatewayHeaders.forEach((key, value) -> {
+            String normalizedKey = key.startsWith("Fn-Http-H-") ? key.substring("Fn-Http-H-".length()) : key;
+            if (!normalizedKey.startsWith("Fn-Http-")) {
+                List<String> existing = result.get(normalizedKey);
+                boolean eventHeaderMissing = existing == null || existing.isEmpty();
+                boolean gatewayHeaderPresent = value != null && !value.isEmpty();
+                if (eventHeaderMissing || gatewayHeaderPresent) {
+                    result.put(normalizedKey, new ArrayList<>(value));
+                }
             }
         });
         return result;
+    }
+
+    private byte[] responseBytes() {
+        if (cachedBytes == null) {
+            try {
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                event.writeToOutput(bos);
+                cachedBytes = bos.toByteArray();
+            } catch (IOException e) {
+                cachedBytes = new byte[0];
+            }
+        }
+        return cachedBytes;
+    }
+
+    private boolean isSyntheticEmptyBodyResponse() {
+        return event.getHeaders().get(SYNTHETIC_EMPTY_BODY_HEADER).isPresent()
+            || event.getHeaders().get("Fn-Http-H-" + SYNTHETIC_EMPTY_BODY_HEADER).isPresent()
+            || gatewayContext.getResponseHeaders().containsKey(SYNTHETIC_EMPTY_BODY_HEADER)
+            || gatewayContext.getResponseHeaders().containsKey("Fn-Http-H-" + SYNTHETIC_EMPTY_BODY_HEADER);
     }
 
 }

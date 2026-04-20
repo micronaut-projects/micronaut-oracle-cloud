@@ -2,33 +2,84 @@ To get started with https://docs.micronaut.io/latest/guide/#cloudConfiguration[D
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-vault[]
 
-Then create a `bootstrap` configuration file in `src/main/resources/` and ensure your <<authentication, Authentication>> configuration is present in this file to enable authenticating with one of the supported mechanisms (config, instance principal, resource principal, etc.)
+Oracle Cloud Vault import is importer-first and can be declared either with a connection string or with a provider-map entry.
 
-Then, add the following to the `bootstrap` configuration file to specify Vault support:
+== Connection string import
+
+The connection string form uses the compartment ID as the host and the Vault OCID as the path:
 
 [configuration]
 ----
 micronaut:
-  application:
-    name: myapp
-  config-client:
-    enabled: true
-oci:
-  vault:
-    config:
-      enabled: true
-    vaults:
-      - ocid: ocid1.vault.oc1.phx...
-        compartment-ocid: ocid1.compartment.oc1...
+  config:
+    import:
+      - oraclecloud-vault://ocid1.compartment.oc1../ocid1.vault.oc1.phx..?includes=DB_.*&includes=API_.*&excludes=DB_LEGACY_PASSWORD&retry-attempts=2&retry-delay=10ms
 ----
 
-One or more Vaults can be configured, and each must include `ocid` and `compartment-ocid` configuration values.
-Note that the `compartment-ocid` is not the vault compartment, but the compartment from where the secrets will be fetched.
+This format supports:
+- include and exclude filters through repeated `includes` and `excludes` query parameters
+- retry configuration through `retry-attempts` and `retry-delay`
+- OCI authentication options through user info and query parameters, depending on the chosen authentication strategy
 
-NOTE: If you only want this configuration to be active in the Oracle Cloud environment but not locally, name the configuration file `bootstrap-oraclecloud` (with the appropriate extension, such as .properties).
+== Provider-map import
 
-You're now ready to go! You can access the config variables in a few different ways.
-If you create a secret with the name of `SECRET_ONE` in your Oracle Cloud Vault, then it will be available to use in your application like any standard configuration variable:
+The equivalent provider-map configuration is:
+
+[configuration]
+----
+micronaut:
+  config:
+    import:
+      - provider: oraclecloud-vault
+        compartment-id: ocid1.compartment.oc1..
+        ocid: ocid1.vault.oc1.phx..
+        includes:
+          - DB_.*
+          - API_.*
+        excludes:
+          - DB_LEGACY_PASSWORD
+        retry-attempts: 2
+        retry-delay: 10ms
+----
+
+== OCI authentication options
+
+Oracle Cloud Vault import supports the same OCI authentication mechanisms as the rest of the Oracle Cloud integration and the importer declaration can supply the values needed to activate them. Common approaches include:
+
+- Config file authentication with `config-path` and `config-profile`
+- Simple authentication with tenant ID, user ID, fingerprint, private key, and optional passphrase
+- Instance principal with `use-instance-principal=true`
+- Resource principal with `use-resource-principal=true`
+- OKE workload identity with `use-oke-workload-identity=true`
+- Session token authentication with `session-token`
+
+For example, config-file based authentication with a provider-map declaration:
+
+[configuration]
+----
+micronaut:
+  config:
+    import:
+      - provider: oraclecloud-vault
+        compartment-id: ocid1.compartment.oc1..
+        ocid: ocid1.vault.oc1.phx..
+        config-path: /home/app/.oci/config
+        config-profile: ALT
+----
+
+Or simple authentication via connection string user info and query parameters:
+
+[configuration]
+----
+micronaut:
+  config:
+    import:
+      - oraclecloud-vault://tenant-user:secret@ocid1.compartment.oc1../ocid1.vault.oc1.phx..?tenant-id=ocid1.tenancy.oc1..&user-id=ocid1.user.oc1..&fingerprint=aa:bb:cc&private-key=/secrets/oci.pem
+----
+
+NOTE: Oracle Cloud Vault import in this module is startup-load only. This change does not add watch metadata, scheduled polling, or automatic refresh support.
+
+If you create a secret with the name `SECRET_ONE` in Oracle Cloud Vault, it is available like any standard configuration variable:
 
 [source,java]
 ----
@@ -42,9 +93,9 @@ You can also use `@Property`:
 @Property(name = "SECRET_ONE") String secretOne;
 ----
 
-Values from Vault are always `String`, but you can use @ConfigurationProperties` on a bean to provide properly typed configuration variables.
+Values from Vault are stored as strings, but you can still bind them into strongly typed configuration using `@ConfigurationProperties`.
 
-So if you were to create secrets in your Oracle Cloud Vault like so:
+So if your Oracle Cloud Vault contains secrets like:
 
 [cols="1,1"]
 |===
@@ -66,7 +117,7 @@ So if you were to create secrets in your Oracle Cloud Vault like so:
 |3.16
 |===
 
-You could add a config bean, like so:
+You can bind them like this:
 
 [source,java]
 ----
@@ -79,7 +130,7 @@ public record Config(String one,
 }
 ----
 
-Another option is to inject your variables into your configuration files. Then allows you to store things like database passwords and API keys in your vault:
+Another option is to inject Vault-backed values into other configuration entries, such as datasource passwords or API keys:
 
 [configuration]
 ----
@@ -87,5 +138,20 @@ datasources:
   default:
     password: ${DB_PASSWORD}
 ----
+
+Legacy bootstrap-based distributed configuration remains available for migration, but it is deprecated. The old bootstrap path requires:
+
+[configuration]
+----
+micronaut:
+  config-client:
+    enabled: true
+oci:
+  vault:
+    config:
+      enabled: true
+----
+
+That legacy path now emits a deprecation warning and should be replaced with importer-first configuration.
 
 TIP: See the guide for https://guides.micronaut.io/latest/micronaut-cloud-secrets-oracle.html[Securely Store Micronaut Application Secrets in Oracle Cloud Vault] to learn more.
