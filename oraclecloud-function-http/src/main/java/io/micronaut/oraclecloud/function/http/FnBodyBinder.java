@@ -141,10 +141,9 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         return () -> conversionService.convert(form.get().asMap(), context);
     }
 
-    @SuppressWarnings("unchecked")
-    private MessageBodyReader<Object> findReader(Argument<?> type, MediaType mediaType) {
-        return (MessageBodyReader<Object>) messageBodyHandlerRegistry
-            .findReader((Argument<Object>) (Argument<?>) type, mediaType)
+    private <R> MessageBodyReader<R> findReader(Argument<R> type, MediaType mediaType) {
+        return messageBodyHandlerRegistry
+            .findReader(type, mediaType)
             .orElse(null);
     }
 
@@ -157,7 +156,7 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         HttpRequest<?> source
     ) {
         Argument<?> requiredArg = type.isArray() ? Argument.listOf(type.getComponentType()) : argument;
-        MessageBodyReader<Object> reader = findReader(requiredArg, mediaType);
+        MessageBodyReader<?> reader = findReader((Argument) requiredArg, mediaType);
         if (reader == null) {
             return BindingResult.empty();
         }
@@ -175,7 +174,7 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                 throw new CodecException("Error decoding JSON stream for type [JsonNode]: " + e.getMessage(), e);
             }
         } else {
-            converted = reader.read((Argument<Object>) requiredArg, mediaType, source.getHeaders(), inputStream);
+            converted = ((MessageBodyReader) reader).read(requiredArg, mediaType, source.getHeaders(), inputStream);
         }
 
         if (converted == null) {
@@ -199,11 +198,11 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
     ) {
         final Argument<?> typeArg = argument.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
         if (Publishers.isSingle(type)) {
-            MessageBodyReader<Object> reader = findReader(typeArg, mediaType);
+            MessageBodyReader<?> reader = findReader((Argument) typeArg, mediaType);
             if (reader == null) {
                 return BindingResult.empty();
             }
-            Object decoded = reader.read((Argument<Object>) typeArg, mediaType, source.getHeaders(), inputStream);
+            Object decoded = ((MessageBodyReader) reader).read(typeArg, mediaType, source.getHeaders(), inputStream);
             if (decoded == null) {
                 return BindingResult.empty();
             }
@@ -212,8 +211,8 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
             final T converted = conversionService.convertRequired(publisher, type);
             return () -> Optional.of(converted);
         } else {
-            final Argument<List<?>> containerType = (Argument<List<?>>) Argument.listOf(typeArg.getType());
-            MessageBodyReader<Object> reader = findReader(containerType, mediaType);
+            final Argument<List<?>> containerType = (Argument<List<?>>) Argument.listOf(typeArg);
+            MessageBodyReader<List<?>> reader = findReader(containerType, mediaType);
             if (reader instanceof JsonMessageHandler<?> jsonHandler) {
                 try {
                     JsonNode node = jsonHandler.getJsonMapper().readValue(inputStream, JsonNode.class);
@@ -233,20 +232,20 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                 }
             }
             if (reader != null) {
-                Object decoded = reader.read((Argument<Object>) containerType, mediaType, source.getHeaders(), inputStream);
+                List<?> decoded = reader.read(containerType, mediaType, source.getHeaders(), inputStream);
                 if (decoded == null) {
                     return BindingResult.empty();
                 }
                 LOG.trace("Decoded object from function body: {}", decoded);
-                Flux<?> flux = Flux.fromIterable((Iterable<?>) decoded);
+                Flux<?> flux = Flux.fromIterable(decoded);
                 final T converted = Publishers.convertPublisher(conversionService, flux, type);
                 return () -> Optional.of(converted);
             }
-            MessageBodyReader<Object> elementReader = findReader(typeArg, mediaType);
+            MessageBodyReader<?> elementReader = findReader((Argument) typeArg, mediaType);
             if (elementReader == null) {
                 return BindingResult.empty();
             }
-            Object element = elementReader.read((Argument<Object>) typeArg, mediaType, source.getHeaders(), inputStream);
+            Object element = ((MessageBodyReader) elementReader).read(typeArg, mediaType, source.getHeaders(), inputStream);
             if (element == null) {
                 return BindingResult.empty();
             }

@@ -28,6 +28,7 @@ import io.micronaut.http.bind.binders.DefaultBodyAnnotationBinder;
 import io.micronaut.http.bind.binders.RequestArgumentBinder;
 import io.micronaut.http.bind.binders.TypedRequestArgumentBinder;
 import io.micronaut.http.body.MessageBodyHandlerRegistry;
+import io.micronaut.json.JsonMapper;
 import io.micronaut.servlet.http.ServletBinderRegistry;
 
 import jakarta.inject.Singleton;
@@ -54,8 +55,9 @@ class FnBinderRegistry extends ServletBinderRegistry {
                             ConversionService conversionService,
                             List<RequestArgumentBinder> binders,
                             RuntimeContext runtimeContext,
-                            DefaultBodyAnnotationBinder<?> defaultBodyAnnotationBinder) {
-        super(messageBodyHandlerRegistry, conversionService, binders, defaultBodyAnnotationBinder);
+                            DefaultBodyAnnotationBinder<?> defaultBodyAnnotationBinder,
+                            JsonMapper jsonMapper) {
+        super(messageBodyHandlerRegistry, conversionService, binders, defaultBodyAnnotationBinder, jsonMapper);
         this.runtimeContext = runtimeContext;
 
         this.byAnnotation.put(Body.class, new FnBodyBinder<>(conversionService, messageBodyHandlerRegistry, defaultBodyAnnotationBinder));

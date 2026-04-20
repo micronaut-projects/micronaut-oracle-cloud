@@ -171,7 +171,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             }
         }
 
-        MessageBodyReader<Object> reader = findReader(arg, contentType);
+        MessageBodyReader<T> reader = findReader(arg, contentType);
         if (reader == null) {
             return Optional.empty();
         }
@@ -179,15 +179,13 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             if (cachedBody instanceof ConvertibleValues<?> convertible) {
                 return (Optional<T>) Optional.of(convertible);
             }
-            Object decoded = consumeBody(inputStream -> reader.read((Argument<Object>) arg, contentType, getHeaders(), inputStream));
+            Object decoded = consumeBody(inputStream -> reader.read(arg, contentType, getHeaders(), inputStream));
             if (decoded == null) {
                 return Optional.empty();
             }
             ConvertibleValues<?> result;
             if (decoded instanceof ConvertibleValues<?> convertible) {
                 result = convertible;
-            } else if (decoded instanceof Map<?, ?> map) {
-                result = ConvertibleValues.of(map);
             } else {
                 Optional<Map<String, Object>> convertedMap = conversionService.convert(decoded, Argument.mapOf(String.class, Object.class));
                 if (convertedMap.isEmpty()) {
@@ -201,7 +199,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         if (cachedBody != null && type.isInstance(cachedBody)) {
             return Optional.of((T) cachedBody);
         }
-        final T value = consumeBody(inputStream -> (T) reader.read((Argument<Object>) arg, contentType, getHeaders(), inputStream));
+        final T value = consumeBody(inputStream -> reader.read(arg, contentType, getHeaders(), inputStream));
         if (value != null) {
             cachedBody = value;
             return Optional.of(value);
@@ -209,10 +207,9 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         return Optional.empty();
     }
 
-    @SuppressWarnings("unchecked")
-    private MessageBodyReader<Object> findReader(Argument<?> argument, MediaType mediaType) {
-        return (MessageBodyReader<Object>) messageBodyHandlerRegistry
-            .findReader((Argument<Object>) (Argument<?>) argument, mediaType)
+    private <T> MessageBodyReader<T> findReader(Argument<T> argument, MediaType mediaType) {
+        return messageBodyHandlerRegistry
+            .findReader(argument, mediaType)
             .orElse(null);
     }
 
