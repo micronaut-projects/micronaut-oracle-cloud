@@ -30,7 +30,6 @@ import static io.micronaut.security.rules.SecurityRule.IS_ANONYMOUS
 
 
 @MicronautTest
-@Property(name="micronaut.server.ssl.enabled", value = "false")
 @Property(name="test.certificates.server", value = "OracleCloudCertificateMTLSSpec")
 @Property(name="micronaut.security.enabled", value = "false")
 @Property(name="micronaut.server.ssl.enabled", value = "true")
