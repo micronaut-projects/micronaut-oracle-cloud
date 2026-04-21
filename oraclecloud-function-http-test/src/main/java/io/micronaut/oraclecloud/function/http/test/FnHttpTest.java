@@ -31,11 +31,15 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.codec.MediaTypeCodec;
-import io.micronaut.http.codec.MediaTypeCodecRegistry;
+import io.micronaut.http.body.MessageBodyHandlerRegistry;
+import io.micronaut.http.body.MessageBodyReader;
+import io.micronaut.http.body.MessageBodyWriter;
+import io.micronaut.http.simple.SimpleHttpHeaders;
 import io.micronaut.oraclecloud.function.http.FnMultiValueMap;
 import io.micronaut.oraclecloud.function.http.HttpFunction;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -152,7 +156,7 @@ public final class FnHttpTest {
                                                 Argument<O> resultType,
                                                 List<Class<?>> sharedClasses) {
         try (ApplicationContext ctx = ApplicationContext.run()) {
-            final MediaTypeCodecRegistry codecRegistry = ctx.getBean(MediaTypeCodecRegistry.class);
+            final MessageBodyHandlerRegistry messageBodyHandlerRegistry = ctx.getBean(MessageBodyHandlerRegistry.class);
             final ConversionService conversionService = ctx.getBean(ConversionService.class);
             Objects.requireNonNull(request, "The request cannot be null");
             Objects.requireNonNull(resultType, "The result type cannot be null");
@@ -183,9 +187,20 @@ public final class FnHttpTest {
                         b.toString().getBytes(request.getCharacterEncoding())
                 );
             } else if (b != null) {
-                final MediaTypeCodec codec = request.getContentType().flatMap(codecRegistry::findCodec).orElse(null);
-                if (codec != null) {
-                    eventBuilder.withBody(codec.encode(b));
+                MediaType mediaType = request.getContentType().orElse(MediaType.APPLICATION_JSON_TYPE);
+                @SuppressWarnings("unchecked")
+                Argument<Object> bodyArgument = (Argument<Object>) Argument.of((Class<Object>) b.getClass());
+                Optional<MessageBodyWriter<Object>> writer = messageBodyHandlerRegistry.findWriter(bodyArgument, List.of(mediaType));
+                if (writer.isPresent() && writer.get().isWriteable(bodyArgument, mediaType)) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    writer.get().writeTo(
+                        bodyArgument,
+                        mediaType,
+                        b,
+                        new SimpleHttpHeaders(conversionService),
+                        outputStream
+                    );
+                    eventBuilder.withBody(outputStream.toByteArray());
                 } else {
                     eventBuilder.withBody(conversionService.convertRequired(b, byte[].class));
                 }
@@ -195,7 +210,7 @@ public final class FnHttpTest {
             fn.thenRun(HttpFunction.class, "handleRequest");
             FnResult fnResult = fn.getOnlyResult();
 
-            return new FnHttpResponse<>(fnResult, resultType, codecRegistry, conversionService);
+            return new FnHttpResponse<>(fnResult, resultType, messageBodyHandlerRegistry, conversionService);
         }
     }
 
@@ -207,17 +222,17 @@ public final class FnHttpTest {
         private final FnResult outputEvent;
         private final FnHeaders fnHeaders;
         private final Argument<B> resultType;
-        private final MediaTypeCodecRegistry codecRegistry;
+        private final MessageBodyHandlerRegistry messageBodyHandlerRegistry;
 
         private final ConversionService conversionService;
         private MutableConvertibleValues<Object> attributes;
 
         public FnHttpResponse(FnResult outputEvent, Argument<B> resultType,
-                              MediaTypeCodecRegistry codecRegistry,
+                              MessageBodyHandlerRegistry messageBodyHandlerRegistry,
                               ConversionService conversionService) {
             this.outputEvent = outputEvent;
             this.resultType = resultType;
-            this.codecRegistry = codecRegistry;
+            this.messageBodyHandlerRegistry = messageBodyHandlerRegistry;
             this.conversionService = conversionService;
             Map<String, List<String>> headers = new LinkedHashMap<>();
             outputEvent.getHeaders().asMap().forEach((key, strings) -> {
@@ -283,14 +298,22 @@ public final class FnHttpTest {
             if (CharSequence.class.isAssignableFrom(resultType.getType())) {
                 return (Optional<B>) Optional.of(outputEvent.getBodyAsString());
             } else {
-                final MediaTypeCodec codec = getContentType().flatMap(codecRegistry::findCodec).orElse(null);
                 final byte[] bodyAsBytes = outputEvent.getBodyAsBytes();
-                if (codec != null) {
-                    final B result = codec.decode(resultType, bodyAsBytes);
+                Optional<MediaType> mediaType = getContentType();
+                @SuppressWarnings("unchecked")
+                MessageBodyReader<Object> reader = (MessageBodyReader<Object>) messageBodyHandlerRegistry
+                    .findReader((Argument<Object>) (Argument<?>) resultType, mediaType.orElse(null))
+                    .orElse(null);
+                if (reader != null) {
+                    final B result = (B) reader.read(
+                        (Argument<Object>) (Argument<?>) resultType,
+                        mediaType.orElse(null),
+                        fnHeaders,
+                        new ByteArrayInputStream(bodyAsBytes)
+                    );
                     return Optional.ofNullable(result);
-                } else {
-                    return conversionService.convert(bodyAsBytes, resultType);
                 }
+                return conversionService.convert(bodyAsBytes, resultType);
             }
         }
 

@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.function.http;
 
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.async.publisher.Publishers;
 import io.micronaut.core.convert.ArgumentConversionContext;
 import io.micronaut.core.convert.ConversionError;
@@ -28,16 +29,15 @@ import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.bind.binders.AnnotatedRequestArgumentBinder;
 import io.micronaut.http.bind.binders.DefaultBodyAnnotationBinder;
+import io.micronaut.http.body.MessageBodyHandlerRegistry;
+import io.micronaut.http.body.MessageBodyReader;
 import io.micronaut.http.codec.CodecException;
-import io.micronaut.http.codec.MediaTypeCodec;
-import io.micronaut.http.codec.MediaTypeCodecRegistry;
-import io.micronaut.json.codec.MapperMediaTypeCodec;
 import io.micronaut.json.tree.JsonNode;
+import io.micronaut.json.body.JsonMessageHandler;
 import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -56,7 +56,7 @@ import java.util.Optional;
 @Internal
 final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
     private static final Logger LOG = LoggerFactory.getLogger(FnBodyBinder.class);
-    private final MediaTypeCodecRegistry mediaTypeCodeRegistry;
+    private final MessageBodyHandlerRegistry messageBodyHandlerRegistry;
     private final DefaultBodyAnnotationBinder<T> defaultBodyBinder;
     private final ConversionService conversionService;
 
@@ -68,10 +68,10 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
      */
     protected FnBodyBinder(
             ConversionService conversionService,
-            MediaTypeCodecRegistry mediaTypeCodecRegistry,
+            MessageBodyHandlerRegistry messageBodyHandlerRegistry,
             DefaultBodyAnnotationBinder<T> defaultBodyAnnotationBinder) {
         this.defaultBodyBinder = defaultBodyAnnotationBinder;
-        this.mediaTypeCodeRegistry = mediaTypeCodecRegistry;
+        this.messageBodyHandlerRegistry = messageBodyHandlerRegistry;
         this.conversionService = conversionService;
     }
 
@@ -101,26 +101,27 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
                     return bindFormData(servletHttpRequest, name, context);
                 }
 
-                final MediaTypeCodec codec = mediaTypeCodeRegistry
-                        .findCodec(mediaType, type)
-                        .orElse(null);
-
-                if (codec != null) {
-                    LOG.trace("Decoding function body with codec: {}", codec.getClass().getSimpleName());
-                    return servletHttpRequest.consumeBody(inputStream -> {
-                        try {
-                            if (Publishers.isConvertibleToPublisher(type)) {
-                                return bindPublisher(argument, type, codec, inputStream);
-                            } else {
-                                return bindPojo(argument, type, codec, inputStream, name);
-                            }
-                        } catch (CodecException e) {
-                            LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
-                            return new ConversionFailedBindingResult<>(e);
+                BindingResult<T> bindingResult = servletHttpRequest.consumeBody(inputStream -> {
+                    try {
+                        if (Publishers.isConvertibleToPublisher(type)) {
+                            return bindPublisher(argument, type, mediaType, inputStream, source);
+                        } else {
+                            return bindPojo(argument, type, mediaType, inputStream, name, source);
                         }
-                    });
+                    } catch (CodecException e) {
+                        LOG.trace("Error occurred decoding function body: {}", e.getMessage(), e);
+                        return new ConversionFailedBindingResult<>(e);
+                    }
+                });
+                if (bindingResult instanceof ConversionFailedBindingResult<?>) {
+                    return bindingResult;
                 }
-
+                Optional<T> decoded = bindingResult.getValue();
+                if (decoded.isEmpty()) {
+                    LOG.trace("No message body reader matched type {}, falling back to default body decoding", argument);
+                    return defaultBodyBinder.bind(context, source);
+                }
+                return bindingResult;
             }
         }
         LOG.trace("Not a function request, falling back to default body decoding");
@@ -140,27 +141,44 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
         return () -> conversionService.convert(form.get().asMap(), context);
     }
 
+    private <R> MessageBodyReader<R> findReader(Argument<R> type, MediaType mediaType) {
+        return messageBodyHandlerRegistry
+            .findReader(type, mediaType)
+            .orElse(null);
+    }
+
     private BindingResult<T> bindPojo(
-        Argument<T> argument, Class<?> type, MediaTypeCodec codec, InputStream inputStream, String name
+        Argument<T> argument,
+        Class<?> type,
+        MediaType mediaType,
+        InputStream inputStream,
+        @Nullable String name,
+        HttpRequest<?> source
     ) {
         Argument<?> requiredArg = type.isArray() ? Argument.listOf(type.getComponentType()) : argument;
-        Object converted;
+        MessageBodyReader<?> reader = findReader((Argument) requiredArg, mediaType);
+        if (reader == null) {
+            return BindingResult.empty();
+        }
 
-        if (name != null && codec instanceof MapperMediaTypeCodec jsonCodec) {
-            // Special case where a particular part of body is required
+        Object converted;
+        if (name != null && reader instanceof JsonMessageHandler<?> jsonHandler) {
             try {
-                JsonNode node = jsonCodec.getJsonMapper()
-                    .readValue(inputStream, JsonNode.class);
+                JsonNode node = jsonHandler.getJsonMapper().readValue(inputStream, JsonNode.class);
                 JsonNode field = node.get(name);
                 if (field == null) {
-                    return Optional::empty;
+                    return BindingResult.empty();
                 }
-                converted = jsonCodec.decode(requiredArg, field);
+                converted = jsonHandler.getJsonMapper().readValueFromTree(field, (Argument<Object>) requiredArg);
             } catch (IOException e) {
                 throw new CodecException("Error decoding JSON stream for type [JsonNode]: " + e.getMessage(), e);
             }
         } else {
-            converted = codec.decode(argument, inputStream);
+            converted = ((MessageBodyReader) reader).read(requiredArg, mediaType, source.getHeaders(), inputStream);
+        }
+
+        if (converted == null) {
+            return BindingResult.empty();
         }
 
         if (type.isArray()) {
@@ -172,46 +190,68 @@ final class FnBodyBinder<T> implements AnnotatedRequestArgumentBinder<Body, T> {
     }
 
     private BindingResult<T> bindPublisher(
-        Argument<T> argument, Class<T> type, MediaTypeCodec codec, InputStream inputStream
+        Argument<T> argument,
+        Class<T> type,
+        MediaType mediaType,
+        InputStream inputStream,
+        HttpRequest<?> source
     ) {
         final Argument<?> typeArg = argument.getFirstTypeVariable().orElse(Argument.OBJECT_ARGUMENT);
         if (Publishers.isSingle(type)) {
-            T content = (T) codec.decode(typeArg, inputStream);
-            final Publisher<T> publisher = Publishers.just(content);
-            LOG.trace("Decoded object from function body: {}", content);
+            MessageBodyReader<?> reader = findReader((Argument) typeArg, mediaType);
+            if (reader == null) {
+                return BindingResult.empty();
+            }
+            Object decoded = ((MessageBodyReader) reader).read(typeArg, mediaType, source.getHeaders(), inputStream);
+            if (decoded == null) {
+                return BindingResult.empty();
+            }
+            final Publisher<?> publisher = Publishers.just(decoded);
+            LOG.trace("Decoded object from function body: {}", decoded);
             final T converted = conversionService.convertRequired(publisher, type);
             return () -> Optional.of(converted);
         } else {
-            final Argument<? extends List<?>> containerType = Argument.listOf(typeArg.getType());
-            if (codec instanceof MapperMediaTypeCodec jsonCodec) {
-                // Special JSON case: we can accept both array and a single value
+            final Argument<List<?>> containerType = (Argument<List<?>>) Argument.listOf(typeArg);
+            MessageBodyReader<List<?>> reader = findReader(containerType, mediaType);
+            if (reader instanceof JsonMessageHandler<?> jsonHandler) {
                 try {
-                    JsonNode node = jsonCodec.getJsonMapper()
-                        .readValue(inputStream, JsonNode.class);
-                    T converted;
+                    JsonNode node = jsonHandler.getJsonMapper().readValue(inputStream, JsonNode.class);
+                    Iterable<?> iterable;
                     if (node.isArray()) {
-                        converted = Publishers.convertPublisher(
-                            conversionService,
-                            Flux.fromIterable(node.values())
-                                .map(itemNode -> jsonCodec.decode(typeArg, itemNode)),
-                            type
-                        );
+                        iterable = (Iterable<?>) jsonHandler.getJsonMapper().readValueFromTree(node, (Argument) containerType);
                     } else {
-                        converted = Publishers.convertPublisher(
-                            conversionService,
-                            Mono.just(jsonCodec.decode(typeArg, node)),
-                            type
-                        );
+                        Object single = jsonHandler.getJsonMapper().readValueFromTree(node, (Argument<Object>) typeArg);
+                        iterable = List.of(single);
                     }
+                    LOG.trace("Decoded object from function body: {}", iterable);
+                    Flux<?> flux = Flux.fromIterable(iterable);
+                    final T converted = Publishers.convertPublisher(conversionService, flux, type);
                     return () -> Optional.of(converted);
                 } catch (IOException e) {
                     throw new CodecException("Error decoding JSON stream for type [JsonNode]: " + e.getMessage(), e);
                 }
             }
-            T content = (T) codec.decode(containerType, inputStream);
-            LOG.trace("Decoded object from function body: {}", content);
-            final Flux flowable = Flux.fromIterable((Iterable) content);
-            final T converted = conversionService.convertRequired(flowable, type);
+            if (reader != null) {
+                List<?> decoded = reader.read(containerType, mediaType, source.getHeaders(), inputStream);
+                if (decoded == null) {
+                    return BindingResult.empty();
+                }
+                LOG.trace("Decoded object from function body: {}", decoded);
+                Flux<?> flux = Flux.fromIterable(decoded);
+                final T converted = Publishers.convertPublisher(conversionService, flux, type);
+                return () -> Optional.of(converted);
+            }
+            MessageBodyReader<?> elementReader = findReader((Argument) typeArg, mediaType);
+            if (elementReader == null) {
+                return BindingResult.empty();
+            }
+            Object element = ((MessageBodyReader) elementReader).read(typeArg, mediaType, source.getHeaders(), inputStream);
+            if (element == null) {
+                return BindingResult.empty();
+            }
+            LOG.trace("Decoded object from function body: {}", element);
+            Flux<?> flux = Flux.just(element);
+            final T converted = Publishers.convertPublisher(conversionService, flux, type);
             return () -> Optional.of(converted);
         }
     }

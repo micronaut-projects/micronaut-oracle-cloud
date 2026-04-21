@@ -39,8 +39,8 @@ import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.ServerHttpRequest;
 import io.micronaut.http.body.ByteBody;
 import io.micronaut.http.body.ByteBody.SplitBackpressureMode;
-import io.micronaut.http.codec.MediaTypeCodec;
-import io.micronaut.http.codec.MediaTypeCodecRegistry;
+import io.micronaut.http.body.MessageBodyHandlerRegistry;
+import io.micronaut.http.body.MessageBodyReader;
 import io.micronaut.http.cookie.Cookie;
 import io.micronaut.http.cookie.Cookies;
 import io.micronaut.http.netty.cookies.NettyCookie;
@@ -95,7 +95,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
     private final ConversionService conversionService;
     private MutableConvertibleValues<Object> attributes;
     private Cookies cookies;
-    private final MediaTypeCodecRegistry codecRegistry;
+    private final MessageBodyHandlerRegistry messageBodyHandlerRegistry;
     private final ByteBody byteBody;
     private Object cachedBody;
     private URI uri;
@@ -106,14 +106,14 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
         FnServletResponse<Object> response,
         HTTPGatewayContext gatewayContext,
         ConversionService conversionService,
-        MediaTypeCodecRegistry codecRegistry
+        MessageBodyHandlerRegistry messageBodyHandlerRegistry
     ) {
         this.byteBody = byteBody;
         this.inputEvent = inputEvent;
         this.response = response;
         this.gatewayContext = gatewayContext;
         this.conversionService = conversionService;
-        this.codecRegistry = codecRegistry;
+        this.messageBodyHandlerRegistry = messageBodyHandlerRegistry;
     }
 
     @Override
@@ -171,26 +171,46 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             }
         }
 
-        final MediaTypeCodec codec = codecRegistry.findCodec(contentType, type).orElse(null);
-        if (codec == null) {
+        MessageBodyReader<T> reader = findReader(arg, contentType);
+        if (reader == null) {
             return Optional.empty();
         }
         if (ConvertibleValues.class == type || Object.class == type) {
-            if (cachedBody instanceof ConvertibleValues) {
-                return Optional.of((T) cachedBody);
+            if (cachedBody instanceof ConvertibleValues<?> convertible) {
+                return (Optional<T>) Optional.of(convertible);
             }
-            final Map map = codec.decode(Map.class, byteBody.toInputStream());
-            ConvertibleValues result = ConvertibleValues.of(map);
+            Object decoded = consumeBody(inputStream -> reader.read(arg, contentType, getHeaders(), inputStream));
+            if (decoded == null) {
+                return Optional.empty();
+            }
+            ConvertibleValues<?> result;
+            if (decoded instanceof ConvertibleValues<?> convertible) {
+                result = convertible;
+            } else {
+                Optional<Map<String, Object>> convertedMap = conversionService.convert(decoded, Argument.mapOf(String.class, Object.class));
+                if (convertedMap.isEmpty()) {
+                    return Optional.empty();
+                }
+                result = ConvertibleValues.of(convertedMap.get());
+            }
             cachedBody = result;
-            return Optional.of((T) result);
-        } else {
-            if (cachedBody != null && cachedBody.getClass().isAssignableFrom(type)) {
-                return Optional.of((T) cachedBody);
-            }
-            final T value = consumeBody(inputStream -> codec.decode(arg, inputStream));
+            return (Optional<T>) Optional.of(result);
+        }
+        if (cachedBody != null && type.isInstance(cachedBody)) {
+            return Optional.of((T) cachedBody);
+        }
+        final T value = consumeBody(inputStream -> reader.read(arg, contentType, getHeaders(), inputStream));
+        if (value != null) {
             cachedBody = value;
             return Optional.of(value);
         }
+        return Optional.empty();
+    }
+
+    private <T> MessageBodyReader<T> findReader(Argument<T> argument, MediaType mediaType) {
+        return messageBodyHandlerRegistry
+            .findReader(argument, mediaType)
+            .orElse(null);
     }
 
     @Override
@@ -373,7 +393,7 @@ final class FnServletRequest<B> implements ServletHttpRequest<InputEvent, B>, Se
             response,
             gatewayContext,
             conversionService,
-            codecRegistry
+            messageBodyHandlerRegistry
         );
         request.cookies = cookies;
         request.attributes = attributes;
