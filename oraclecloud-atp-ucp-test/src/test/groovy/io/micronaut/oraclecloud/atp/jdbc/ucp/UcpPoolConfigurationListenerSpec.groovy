@@ -1,7 +1,14 @@
 package io.micronaut.oraclecloud.atp.jdbc.ucp
 
+import io.micronaut.configuration.jdbc.ucp.DatasourceConfiguration
+import io.micronaut.context.BeanLocator
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.event.BeanInitializingEvent
 import io.micronaut.context.env.Environment
+import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration
+import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider
+import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource
+import io.micronaut.oraclecloud.atp.wallet.datasource.OracleDataSourceAttributes
 import oracle.ucp.jdbc.PoolDataSource
 import spock.lang.PendingFeature
 import spock.lang.Requires
@@ -11,6 +18,7 @@ import spock.lang.Specification
 import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.ResultSet
+import java.util.Optional
 
 @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
 class UcpPoolConfigurationListenerSpec extends Specification {
@@ -70,5 +78,33 @@ class UcpPoolConfigurationListenerSpec extends Specification {
 
         cleanup:
         context.close()
+    }
+
+    void "test it configures datasource when wallet password is omitted"() {
+        given:
+        BeanLocator beanLocator = Mock()
+        OracleWalletArchiveProvider walletArchiveProvider = Mock()
+        CanConfigureOracleDataSource walletArchive = Stub() {
+            configure(_ as OracleDataSourceAttributes) >> { OracleDataSourceAttributes attributes ->
+                attributes.url("jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet")
+            }
+        }
+        UcpPoolConfigurationListener listener = new UcpPoolConfigurationListener(walletArchiveProvider, beanLocator)
+        DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration("default")
+        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = new AutonomousDatabaseConfiguration()
+        autonomousDatabaseConfiguration.setOcid("ocid1.autonomousdatabase.oc1..example")
+        BeanInitializingEvent<DatasourceConfiguration> event = Stub() {
+            getBean() >> datasourceConfiguration
+        }
+
+        beanLocator.findBean(AutonomousDatabaseConfiguration, _) >> Optional.of(autonomousDatabaseConfiguration)
+
+        when:
+        listener.onInitialized(event)
+
+        then:
+        1 * walletArchiveProvider.loadWalletArchive(autonomousDatabaseConfiguration) >> walletArchive
+        datasourceConfiguration.getUrl() == "jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet"
+        datasourceConfiguration.getConfiguredDriverClassName() == UcpPoolConfigurationListener.ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE
     }
 }
