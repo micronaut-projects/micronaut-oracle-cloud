@@ -18,10 +18,13 @@ package io.micronaut.oraclecloud.atp.jdbc;
 import com.oracle.bmc.database.Database;
 import com.oracle.bmc.database.requests.GenerateAutonomousDatabaseWalletRequest;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Proxy;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -67,6 +70,28 @@ class OracleWalletArchiveProviderTest {
     }
 
     @ParameterizedTest
+    @MethodSource("invalidConfiguredWalletPasswordCases")
+    void rejectsInvalidConfiguredWalletPassword(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+
+        assertThrows(IllegalArgumentException.class, () -> cfg.setWalletPassword(configuredPassword));
+    }
+
+    @ParameterizedTest
+    @MethodSource("missingWalletPasswordCases")
+    void generatesSameWalletPasswordForConcurrentAccess(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+        cfg.setWalletPassword(configuredPassword);
+
+        Set<String> walletPasswords = IntStream.range(0, 64)
+            .parallel()
+            .mapToObj(i -> cfg.getWalletPassword())
+            .collect(Collectors.toSet());
+
+        assertEquals(1, walletPasswords.size());
+    }
+
+    @ParameterizedTest
     @MethodSource("missingWalletPasswordCases")
     void sendsGeneratedWalletPasswordToWalletRequest(String configuredPassword) {
         AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
@@ -97,8 +122,17 @@ class OracleWalletArchiveProviderTest {
     private static Stream<Arguments> configuredWalletPasswordCases() {
         return Stream.of(
             Arguments.of("micronaut.1"),
-            Arguments.of("short1"),
+            Arguments.of("micronaut!"),
             Arguments.of("abcdefghijklmnopqrstuvwxyz123456")
+        );
+    }
+
+    private static Stream<Arguments> invalidConfiguredWalletPasswordCases() {
+        return Stream.of(
+            Arguments.of("short1"),
+            Arguments.of("abcdefgh"),
+            Arguments.of("12345678"),
+            Arguments.of("abcdefg ")
         );
     }
 

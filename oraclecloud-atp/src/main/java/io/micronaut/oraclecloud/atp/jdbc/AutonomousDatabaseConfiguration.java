@@ -32,13 +32,15 @@ import java.security.SecureRandom;
 @Context
 public class AutonomousDatabaseConfiguration {
 
-    private static final int GENERATED_WALLET_PASSWORD_LENGTH = 32;
+    private static final int GENERATED_WALLET_SECRET_LENGTH = 32;
 
-    private static final char[] GENERATED_WALLET_PASSWORD_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+    private static final int MIN_WALLET_SECRET_LENGTH = 8;
 
-    private static final char[] GENERATED_WALLET_PASSWORD_NUMBERS = "0123456789".toCharArray();
+    private static final char[] GENERATED_WALLET_SECRET_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
-    private static final char[] GENERATED_WALLET_PASSWORD_CHARS =
+    private static final char[] GENERATED_WALLET_SECRET_NUMBERS = "0123456789".toCharArray();
+
+    private static final char[] GENERATED_WALLET_SECRET_CHARS =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
 
     private static final SecureRandom SECURE_RANDOM = new SecureRandom();
@@ -75,7 +77,7 @@ public class AutonomousDatabaseConfiguration {
     /**
      * @return wallet password
      */
-    public String getWalletPassword() {
+    public synchronized String getWalletPassword() {
         if (walletPassword == null || walletPassword.isBlank()) {
             walletPassword = generateWalletPassword();
         }
@@ -85,7 +87,10 @@ public class AutonomousDatabaseConfiguration {
     /**
      * @param walletPassword wallet password
      */
-    public void setWalletPassword(String walletPassword) {
+    public synchronized void setWalletPassword(String walletPassword) {
+        if (walletPassword != null && !walletPassword.isBlank()) {
+            validateConfiguredWalletSecret(walletPassword);
+        }
         this.walletPassword = walletPassword;
     }
 
@@ -132,14 +137,27 @@ public class AutonomousDatabaseConfiguration {
     }
 
     private static String generateWalletPassword() {
-        char[] password = new char[GENERATED_WALLET_PASSWORD_LENGTH];
-        password[0] = randomChar(GENERATED_WALLET_PASSWORD_LETTERS);
-        password[1] = randomChar(GENERATED_WALLET_PASSWORD_NUMBERS);
+        char[] password = new char[GENERATED_WALLET_SECRET_LENGTH];
+        password[0] = randomChar(GENERATED_WALLET_SECRET_LETTERS);
+        password[1] = randomChar(GENERATED_WALLET_SECRET_NUMBERS);
         for (int i = 2; i < password.length; i++) {
-            password[i] = randomChar(GENERATED_WALLET_PASSWORD_CHARS);
+            password[i] = randomChar(GENERATED_WALLET_SECRET_CHARS);
         }
         shuffle(password);
         return new String(password);
+    }
+
+    private static void validateConfiguredWalletSecret(String walletPassword) {
+        if (walletPassword.length() < MIN_WALLET_SECRET_LENGTH
+                || walletPassword.chars().noneMatch(Character::isLetter)
+                || walletPassword.chars().noneMatch(AutonomousDatabaseConfiguration::isNumberOrSpecialCharacter)) {
+            throw new IllegalArgumentException(
+                    "wallet-password must be at least eight characters long and include at least one letter and one numeric or special character");
+        }
+    }
+
+    private static boolean isNumberOrSpecialCharacter(int character) {
+        return Character.isDigit(character) || (!Character.isLetterOrDigit(character) && !Character.isWhitespace(character));
     }
 
     private static char randomChar(char[] chars) {
