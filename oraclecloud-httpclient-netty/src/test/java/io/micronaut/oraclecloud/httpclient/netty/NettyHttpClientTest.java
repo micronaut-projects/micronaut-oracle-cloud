@@ -21,11 +21,31 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
 
 class NettyHttpClientTest {
+    @Test
+    public void unmanagedClientUsesDaemonThreads() throws Exception {
+        Assertions.assertEquals(
+            OciNettyDaemonThreadFactory.class,
+            NettyHttpClient.unmanagedClientConfiguration(Collections.emptyMap()).getThreadFactory().orElseThrow()
+        );
+        Assertions.assertTrue(new OciNettyDaemonThreadFactory().newThread(() -> {
+        }).isDaemon());
+
+        NettyHttpClient client = (NettyHttpClient) new NettyHttpClientBuilder(null)
+            .baseUri("http://localhost")
+            .build();
+        try {
+            Assertions.assertTrue(client.blockingIoExecutor.submit(() -> Thread.currentThread().isDaemon()).get());
+        } finally {
+            client.close();
+        }
+    }
+
     @Test
     public void simple() throws Exception {
         Map<String, Object> properties = new java.util.HashMap<>();
