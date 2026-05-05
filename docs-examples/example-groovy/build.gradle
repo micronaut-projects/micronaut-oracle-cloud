@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    annotationProcessor(mnSerde.micronaut.serde.processor)
     compileOnly(mnSerde.micronaut.serde.processor)
     implementation(mn.micronaut.http.server.netty)
     implementation(mnReactor.micronaut.reactor)

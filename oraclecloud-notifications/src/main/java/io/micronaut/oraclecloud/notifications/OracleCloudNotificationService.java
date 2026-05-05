@@ -15,16 +15,20 @@
  */
 package io.micronaut.oraclecloud.notifications;
 
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider;
 import com.oracle.bmc.ons.NotificationControlPlane;
 import com.oracle.bmc.ons.NotificationDataPlane;
+import com.oracle.bmc.ons.NotificationDataPlaneClient;
 import com.oracle.bmc.ons.model.MessageDetails;
 import com.oracle.bmc.ons.requests.GetTopicRequest;
 import com.oracle.bmc.ons.requests.PublishMessageRequest;
 import com.oracle.bmc.ons.responses.PublishMessageResponse;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.util.ArgumentUtils;
 import io.micronaut.core.util.StringUtils;
+import jakarta.annotation.PreDestroy;
 import jakarta.inject.Singleton;
 import org.jspecify.annotations.NonNull;
 
@@ -38,26 +42,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Singleton
 @Requires(bean = NotificationControlPlane.class)
-@Requires(bean = NotificationDataPlane.class)
+@Requires(bean = NotificationDataPlaneFactory.class)
 @Requires(property = OracleCloudNotificationsConfiguration.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
 public class OracleCloudNotificationService {
 
     private final NotificationControlPlane notificationControlPlane;
-    private final NotificationDataPlane notificationDataPlane;
+    private final NotificationDataPlaneFactory notificationDataPlaneFactory;
     private final OracleCloudNotificationsConfiguration configuration;
     private final Map<String, String> topicEndpoints = new ConcurrentHashMap<>();
+    private final Map<String, NotificationDataPlane> notificationDataPlanes = new ConcurrentHashMap<>();
 
     /**
      * @param notificationControlPlane The OCI Notifications control plane client.
-     * @param notificationDataPlane The OCI Notifications data plane client.
+     * @param notificationDataPlaneFactory The OCI Notifications data plane client factory.
      * @param configuration The Notifications configuration.
      */
     public OracleCloudNotificationService(
             NotificationControlPlane notificationControlPlane,
-            NotificationDataPlane notificationDataPlane,
+            NotificationDataPlaneFactory notificationDataPlaneFactory,
             OracleCloudNotificationsConfiguration configuration) {
         this.notificationControlPlane = notificationControlPlane;
-        this.notificationDataPlane = notificationDataPlane;
+        this.notificationDataPlaneFactory = notificationDataPlaneFactory;
         this.configuration = configuration;
     }
 
@@ -104,16 +109,26 @@ public class OracleCloudNotificationService {
         String topicId = request.getTopicId();
         requireNotEmpty("request.topicId", topicId);
         String topicEndpoint = topicEndpoints.computeIfAbsent(topicId, this::resolveTopicEndpoint);
-        synchronized (notificationDataPlane) {
-            String previousEndpoint = notificationDataPlane.getEndpoint();
+        NotificationDataPlane notificationDataPlane = notificationDataPlanes.computeIfAbsent(topicEndpoint, notificationDataPlaneFactory::create);
+        return notificationDataPlane.publishMessage(request);
+    }
+
+    @PreDestroy
+    void close() throws Exception {
+        Exception failure = null;
+        for (NotificationDataPlane notificationDataPlane : notificationDataPlanes.values()) {
             try {
-                notificationDataPlane.setEndpoint(topicEndpoint);
-                return notificationDataPlane.publishMessage(request);
-            } finally {
-                if (previousEndpoint != null) {
-                    notificationDataPlane.setEndpoint(previousEndpoint);
+                notificationDataPlane.close();
+            } catch (Exception e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
                 }
             }
+        }
+        if (failure != null) {
+            throw failure;
         }
     }
 
@@ -140,5 +155,32 @@ public class OracleCloudNotificationService {
         if (StringUtils.isEmpty(value)) {
             throw new IllegalArgumentException("Argument [" + name + "] cannot be empty");
         }
+    }
+}
+
+@Internal
+@Singleton
+@Requires(bean = NotificationDataPlaneClient.Builder.class)
+@Requires(bean = AbstractAuthenticationDetailsProvider.class)
+final class DefaultNotificationDataPlaneFactory implements NotificationDataPlaneFactory {
+    private final NotificationDataPlaneClient.Builder notificationDataPlaneBuilder;
+    private final AbstractAuthenticationDetailsProvider authenticationDetailsProvider;
+
+    DefaultNotificationDataPlaneFactory(
+            NotificationDataPlaneClient.Builder notificationDataPlaneBuilder,
+            AbstractAuthenticationDetailsProvider authenticationDetailsProvider) {
+        this.notificationDataPlaneBuilder = notificationDataPlaneBuilder;
+        this.authenticationDetailsProvider = authenticationDetailsProvider;
+    }
+
+    @Override
+    public NotificationDataPlane create(String endpoint) {
+        NotificationDataPlaneClient.Builder endpointBuilder = NotificationDataPlaneClient.builder();
+        synchronized (notificationDataPlaneBuilder) {
+            endpointBuilder.copyFrom(notificationDataPlaneBuilder);
+        }
+        return endpointBuilder
+            .endpoint(endpoint)
+            .build(authenticationDetailsProvider);
     }
 }
