@@ -68,6 +68,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
     private int maxBatchSize = DEFAULT_MAX_BATCH_SIZE;
     private Appender<ILoggingEvent> emergencyAppender;
     private boolean configuredSuccessfully = false;
+    private boolean missingLogIdStatusReported = false;
 
     public int getQueueSize() {
         return queueSize;
@@ -258,11 +259,16 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             return;
         }
         if (logId == null) {
+            if (emergencyAppender == null) {
+                if (!missingLogIdStatusReported) {
+                    addError("LogId is null and no emergency appender is configured. Events will remain queued until a logId is available");
+                    missingLogIdStatusReported = true;
+                }
+                return;
+            }
             while (!deque.isEmpty()) {
                 ILoggingEvent event = deque.takeFirst();
-                if (emergencyAppender != null) {
-                    emergencyAppender.doAppend(event);
-                }
+                emergencyAppender.doAppend(event);
             }
             return;
         }
