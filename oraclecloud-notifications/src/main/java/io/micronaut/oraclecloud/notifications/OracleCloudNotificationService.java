@@ -15,8 +15,8 @@
  */
 package io.micronaut.oraclecloud.notifications;
 
-import com.oracle.bmc.ons.NotificationDataPlane;
 import com.oracle.bmc.ons.NotificationControlPlane;
+import com.oracle.bmc.ons.NotificationDataPlane;
 import com.oracle.bmc.ons.model.MessageDetails;
 import com.oracle.bmc.ons.requests.GetTopicRequest;
 import com.oracle.bmc.ons.requests.PublishMessageRequest;

@@ -2,6 +2,7 @@ package io.micronaut.oraclecloud.notifications
 
 import com.oracle.bmc.ons.NotificationControlPlane
 import com.oracle.bmc.ons.NotificationDataPlane
+import com.oracle.bmc.ons.model.MessageDetails
 import com.oracle.bmc.ons.model.NotificationTopic
 import com.oracle.bmc.ons.requests.GetTopicRequest
 import com.oracle.bmc.ons.requests.PublishMessageRequest
@@ -76,6 +77,10 @@ class OracleCloudNotificationServiceSpec extends Specification {
         def service = new OracleCloudNotificationService(controlPlane, dataPlane, new OracleCloudNotificationsConfiguration())
         def request = PublishMessageRequest.builder()
                 .topicId('ocid1.onstopic.oc1.phx.test')
+                .messageDetails(MessageDetails.builder()
+                        .title('Test title')
+                        .body('Test body')
+                        .build())
                 .build()
 
         when:
