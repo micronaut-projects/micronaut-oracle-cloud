@@ -38,6 +38,7 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 
 import java.util.Properties;
+import java.util.function.Supplier;
 
 /**
  * Configures Micronaut Kafka defaults for OCI Streaming.
@@ -55,6 +56,7 @@ public class OracleCloudStreamingKafkaConfiguration
     private static final String DEFAULT_SECOND_LEVEL_DOMAIN = "oraclecloud.com";
     private static final String BOOTSTRAP_SERVERS_TEMPLATE = "streaming.%s.oci.%s:9092";
     private static final String KAFKA_PREFIX = "kafka.";
+    private static final String DEFAULT_BOOTSTRAP_SERVERS = "localhost:9092";
     private static final String SECURITY_PROTOCOL = "SASL_SSL";
     private static final String SASL_PLAIN = "PLAIN";
     private static final String PLAIN_LOGIN_MODULE = "org.apache.kafka.common.security.plain.PlainLoginModule";
@@ -90,13 +92,13 @@ public class OracleCloudStreamingKafkaConfiguration
     @Override
     public KafkaDefaultConfiguration onCreated(BeanCreatedEvent<KafkaDefaultConfiguration> event) {
         Properties kafkaProperties = event.getBean().getConfig();
-        putIfNotConfigured(kafkaProperties, ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, resolveBootstrapServers());
-        putIfNotConfigured(kafkaProperties, CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SECURITY_PROTOCOL);
-        putIfNotConfigured(kafkaProperties, SaslConfigs.SASL_MECHANISM, resolveSaslMechanism());
-        putIfNotConfigured(kafkaProperties, SaslConfigs.SASL_JAAS_CONFIG, resolveJaasConfig());
-        putIfNotConfigured(kafkaProperties, ProducerConfig.RETRIES_CONFIG, RETRIES);
-        putIfNotConfigured(kafkaProperties, ProducerConfig.MAX_REQUEST_SIZE_CONFIG, MAX_REQUEST_SIZE);
-        putIfNotConfigured(kafkaProperties, ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, MAX_REQUEST_SIZE);
+        putIfNotConfigured(kafkaProperties, ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, this::resolveBootstrapServers);
+        putIfNotConfigured(kafkaProperties, CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, () -> SECURITY_PROTOCOL);
+        putIfNotConfigured(kafkaProperties, SaslConfigs.SASL_MECHANISM, this::resolveSaslMechanism);
+        putIfNotConfigured(kafkaProperties, SaslConfigs.SASL_JAAS_CONFIG, this::resolveJaasConfig);
+        putIfNotConfigured(kafkaProperties, ProducerConfig.RETRIES_CONFIG, () -> RETRIES);
+        putIfNotConfigured(kafkaProperties, ProducerConfig.MAX_REQUEST_SIZE_CONFIG, () -> MAX_REQUEST_SIZE);
+        putIfNotConfigured(kafkaProperties, ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, () -> MAX_REQUEST_SIZE);
         return event.getBean();
     }
 
@@ -227,10 +229,16 @@ public class OracleCloudStreamingKafkaConfiguration
         }
     }
 
-    private void putIfNotConfigured(Properties properties, String key, String value) {
-        if (!environment.containsProperty(KAFKA_PREFIX + key)) {
-            properties.setProperty(key, value);
+    private void putIfNotConfigured(Properties properties, String key, Supplier<String> value) {
+        if (!isConfigured(properties, key) && !environment.containsProperty(KAFKA_PREFIX + key)) {
+            properties.setProperty(key, value.get());
         }
+    }
+
+    private static boolean isConfigured(Properties properties, String key) {
+        return properties.containsKey(key) &&
+            !(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG.equals(key) &&
+                DEFAULT_BOOTSTRAP_SERVERS.equals(properties.getProperty(key)));
     }
 
     private static String escapeJaas(String value) {
