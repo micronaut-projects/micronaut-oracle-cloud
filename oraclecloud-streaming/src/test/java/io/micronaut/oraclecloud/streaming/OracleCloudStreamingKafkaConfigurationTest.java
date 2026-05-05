@@ -18,7 +18,12 @@ package io.micronaut.oraclecloud.streaming;
 import io.micronaut.configuration.kafka.config.KafkaDefaultConfiguration;
 import io.micronaut.configuration.kafka.config.KafkaHealthConfigurationProperties;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.event.BeanCreatedEvent;
+import io.micronaut.context.event.BeanCreatedEventListener;
 import io.micronaut.context.exceptions.ConfigurationException;
+import io.micronaut.core.order.Ordered;
+import jakarta.inject.Singleton;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -191,6 +196,11 @@ class OracleCloudStreamingKafkaConfigurationTest {
         try (ApplicationContext context = ApplicationContext.run(Map.of(
             "kafka.bootstrap.servers", "custom.example.com:9092",
             "kafka.security.protocol", "PLAINTEXT",
+            "kafka.sasl.mechanism", "CUSTOM",
+            "kafka.sasl.jaas.config", "custom.LoginModule required;",
+            "kafka.retries", "9",
+            "kafka.max.request.size", "2097152",
+            "kafka.max.partition.fetch.bytes", "3145728",
             "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
             "oci.streaming.stream-pool-id", STREAM_POOL_ID,
             "oci.streaming.auth-mode", "resource-principal"
@@ -199,7 +209,29 @@ class OracleCloudStreamingKafkaConfigurationTest {
 
             assertEquals("custom.example.com:9092", properties.getProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
             assertEquals("PLAINTEXT", properties.getProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG));
-            assertEquals("OCI-RSA-SHA256", properties.getProperty(SaslConfigs.SASL_MECHANISM));
+            assertEquals("CUSTOM", properties.getProperty(SaslConfigs.SASL_MECHANISM));
+            assertEquals("custom.LoginModule required;", properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
+            assertEquals("9", properties.getProperty(ProducerConfig.RETRIES_CONFIG));
+            assertEquals("2097152", properties.getProperty(ProducerConfig.MAX_REQUEST_SIZE_CONFIG));
+            assertEquals("3145728", properties.getProperty(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG));
+        }
+    }
+
+    @Test
+    void preservesProgrammaticKafkaProperties() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "spec.name", "preserves-programmatic-kafka-properties",
+            "oci.streaming.stream-pool-id", STREAM_POOL_ID
+        ))) {
+            Properties properties = context.getBean(KafkaDefaultConfiguration.class).getConfig();
+
+            assertEquals("programmatic.example.com:9092", properties.getProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
+            assertEquals("PLAINTEXT", properties.getProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG));
+            assertEquals("PROGRAMMATIC", properties.getProperty(SaslConfigs.SASL_MECHANISM));
+            assertEquals("programmatic.LoginModule required;", properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
+            assertEquals("13", properties.getProperty(ProducerConfig.RETRIES_CONFIG));
+            assertEquals("4194304", properties.getProperty(ProducerConfig.MAX_REQUEST_SIZE_CONFIG));
+            assertEquals("5242880", properties.getProperty(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG));
         }
     }
 
@@ -257,5 +289,28 @@ class OracleCloudStreamingKafkaConfigurationTest {
             cause = cause.getCause();
         }
         return cause;
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = "preserves-programmatic-kafka-properties")
+    static final class ProgrammaticKafkaConfiguration implements BeanCreatedEventListener<KafkaDefaultConfiguration>, Ordered {
+
+        @Override
+        public int getOrder() {
+            return Ordered.HIGHEST_PRECEDENCE;
+        }
+
+        @Override
+        public KafkaDefaultConfiguration onCreated(BeanCreatedEvent<KafkaDefaultConfiguration> event) {
+            Properties properties = event.getBean().getConfig();
+            properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "programmatic.example.com:9092");
+            properties.setProperty(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "PLAINTEXT");
+            properties.setProperty(SaslConfigs.SASL_MECHANISM, "PROGRAMMATIC");
+            properties.setProperty(SaslConfigs.SASL_JAAS_CONFIG, "programmatic.LoginModule required;");
+            properties.setProperty(ProducerConfig.RETRIES_CONFIG, "13");
+            properties.setProperty(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "4194304");
+            properties.setProperty(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "5242880");
+            return event.getBean();
+        }
     }
 }
