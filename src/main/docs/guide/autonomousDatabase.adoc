@@ -58,7 +58,7 @@ datasources:
     password: bar
 ----
 - `ocid` specifies the Autonomous Database id
-- `wallet-password` is optional; it encrypts the keys inside the wallet. If it is not set, Micronaut automatically generates one. If set, it must be at least eight characters long, include at least one letter, and either one numeric character or one special character.
+- `wallet-password` is optional; it encrypts the keys inside the wallet. If it is not set or is blank, Micronaut automatically generates one. If set, it must be at least eight characters long, include at least one letter, and either one numeric character or one special character.
 - specify the database `username` and `password`
 - optionally `service-alias-suffix` controls the suffix used when computing the default service alias using database name and given service alias suffix; defaults to `high` (e.g., set to `tp`)
 
