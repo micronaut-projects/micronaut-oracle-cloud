@@ -21,6 +21,9 @@ import com.oracle.bmc.functions.requests.InvokeFunctionRequest
 import com.oracle.bmc.functions.responses.InvokeFunctionResponse
 import com.oracle.bmc.responses.AsyncHandler
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.annotation.Factory
+import io.micronaut.context.annotation.Replaces
+import io.micronaut.context.annotation.Requires
 import io.micronaut.core.async.annotation.SingleResult
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
@@ -34,10 +37,17 @@ import org.reactivestreams.Publisher
 import reactor.core.publisher.Mono
 import spock.lang.Specification
 
+import jakarta.inject.Singleton
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.CompletableFuture
 
 class OciFunctionClientSpec extends Specification {
+
+    private static final String MOCK_CLIENTS_PROPERTY = 'spec.name'
+    private static final String MOCK_CLIENTS_PROPERTY_VALUE = 'OciFunctionClientSpec'
+
+    private static FunctionsInvokeClient mockSyncClient
+    private static FunctionsInvokeAsyncClient mockAsyncClient
 
     void "configures OCI function definitions"() {
         given:
@@ -74,6 +84,8 @@ class OciFunctionClientSpec extends Specification {
         given:
         FunctionsInvokeClient syncClient = Mock()
         FunctionsInvokeAsyncClient asyncClient = Mock()
+        mockSyncClient = syncClient
+        mockAsyncClient = asyncClient
         InvokeFunctionRequest capturedRequest
         syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { InvokeFunctionRequest request ->
             capturedRequest = request
@@ -81,11 +93,11 @@ class OciFunctionClientSpec extends Specification {
         }
         ApplicationContext applicationContext = ApplicationContext.builder()
             .properties([
+                (MOCK_CLIENTS_PROPERTY): MOCK_CLIENTS_PROPERTY_VALUE,
                 'oci.functions.micronaut-function.function-id': 'ocid1.fnfunc.oc1..sync',
                 'oci.functions.micronaut-function.fn-intent': 'Httprequest',
                 'oci.functions.micronaut-function.fn-invoke-type': 'Sync'
             ])
-            .singletons(syncClient, asyncClient)
             .start()
 
         when:
@@ -101,6 +113,8 @@ class OciFunctionClientSpec extends Specification {
 
         cleanup:
         applicationContext.close()
+        mockSyncClient = null
+        mockAsyncClient = null
     }
 
     void "invokes OCI function reactively"() {
@@ -163,5 +177,22 @@ class OciFunctionClientSpec extends Specification {
 
         @SingleResult
         Publisher<Map<String, Object>> reactiveFunction(@Body Map<String, Object> book)
+    }
+
+    @Factory
+    @Requires(property = MOCK_CLIENTS_PROPERTY, value = MOCK_CLIENTS_PROPERTY_VALUE)
+    static class MockFunctionClients {
+
+        @Singleton
+        @Replaces(FunctionsInvokeClient)
+        FunctionsInvokeClient syncClient() {
+            mockSyncClient
+        }
+
+        @Singleton
+        @Replaces(FunctionsInvokeAsyncClient)
+        FunctionsInvokeAsyncClient asyncClient() {
+            mockAsyncClient
+        }
     }
 }
