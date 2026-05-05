@@ -30,11 +30,25 @@ import java.util.Map;
  */
 @Internal
 public final class OracleCloudJsonFormatter implements JsonFormatter {
+    private volatile ObjectMapper objectMapper;
+
     @Override
     public String toJsonString(Map m) throws IOException {
-        try (ObjectMapper.CloseableObjectMapper objectMapper = ObjectMapper.create(Map.of())) {
-            return objectMapper.writeValueAsString(m);
+        return objectMapper().writeValueAsString(m);
+    }
+
+    private ObjectMapper objectMapper() {
+        ObjectMapper mapper = objectMapper;
+        if (mapper == null) {
+            synchronized (this) {
+                mapper = objectMapper;
+                if (mapper == null) {
+                    mapper = ObjectMapper.create(Map.of());
+                    objectMapper = mapper;
+                }
+            }
         }
+        return mapper;
     }
 
 }

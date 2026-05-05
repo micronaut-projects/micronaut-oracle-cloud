@@ -2,11 +2,7 @@ package io.micronaut.oraclecloud.logging
 
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.Property
-import io.micronaut.context.annotation.Requires
-import io.micronaut.context.annotation.Value
 import io.micronaut.context.env.Environment
-import io.micronaut.core.io.Readable
-import jakarta.inject.Singleton
 import spock.lang.Specification
 
 @Property(name = "spec.name", value = "OracleCloudLoggingClientSpec")
@@ -45,14 +41,17 @@ class OracleCloudLoggingClientSpec extends Specification {
         context.close()
     }
 
-    @Requires(property = "spec.name", value = "OracleCloudLoggingClientSpec")
-    @Singleton
-    static class ReadableConfiguration {
-        final Readable readable
+    def "json formatter reuses isolated object mapper"() {
+        given:
+        OracleCloudJsonFormatter formatter = new OracleCloudJsonFormatter()
 
-        ReadableConfiguration(@Value('${app.filepath}') Readable readable) {
-            this.readable = readable
-        }
+        when:
+        formatter.toJsonString([message: "starting"])
+        def objectMapper = formatter.@objectMapper
+        formatter.toJsonString([message: "started"])
+
+        then:
+        formatter.@objectMapper.is(objectMapper)
     }
 
 }
