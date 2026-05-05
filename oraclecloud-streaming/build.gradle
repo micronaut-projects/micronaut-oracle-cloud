@@ -1,0 +1,14 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+dependencies {
+    api(mnKafka.micronaut.kafka)
+    api(projects.micronautOraclecloudCommon)
+    api(projects.micronautOraclecloudBmcStreaming)
+    implementation(libs.oci.sasl)
+}
+
+micronautBuild {
+    binaryCompatibility.enabledAfter("6.0.0")
+}

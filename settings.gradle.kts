@@ -35,6 +35,7 @@ include("oraclecloud-logging")
 include("oraclecloud-micrometer")
 include("oraclecloud-oke-kubernetes-client")
 include("oraclecloud-oke-workload-identity")
+include("oraclecloud-streaming")
 include("oraclecloud-sdk-base")
 include("oraclecloud-sdk")
 include("oraclecloud-sdk-rxjava2")
@@ -74,6 +75,7 @@ configure<io.micronaut.build.MicronautBuildSettingsExtension> {
     importMicronautCatalog("micronaut-validation")
     importMicronautCatalog("micronaut-discovery-client")
     importMicronautCatalog("micronaut-kubernetes")
+    importMicronautCatalog("micronaut-kafka")
 }
 
 val libs = Toml.parse(File(rootProject.projectDir.absoluteFile, "gradle/libs.versions.toml").toPath())!!
