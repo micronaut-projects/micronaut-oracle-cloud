@@ -13,7 +13,9 @@ import com.oracle.bmc.loggingingestion.responses.PutLogsResponse
 import io.micronaut.context.annotation.Property
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
+import io.micronaut.context.annotation.Value
 import io.micronaut.context.event.ApplicationEventPublisher
+import io.micronaut.core.io.Readable
 import io.micronaut.runtime.ApplicationConfiguration
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.runtime.server.event.ServerStartupEvent
@@ -27,6 +29,7 @@ import spock.util.concurrent.PollingConditions
 @MicronautTest
 @Property(name = "spec.name", value = "OracleCloudLoggingSpec")
 @Property(name = "oci.logging.logId", value = "test-logId-from-application-config")
+@Property(name = "app.filepath", value = "classpath:data/addresses.csv")
 class OracleCloudLoggingSpec extends Specification {
 
     @Inject
@@ -37,6 +40,9 @@ class OracleCloudLoggingSpec extends Specification {
 
     @Inject
     ApplicationConfiguration applicationConfiguration
+
+    @Inject
+    ReadableConfiguration readableConfiguration
 
     void "test oracle cloud logging"() {
         given:
@@ -70,7 +76,7 @@ class OracleCloudLoggingSpec extends Specification {
         }
 
         def list = ((MockLogging) logging).getPutLogsRequestList()
-        list.stream().allMatch(x -> x.logId == 'test-logId-from-application-config')
+        list.stream().allMatch(x -> x.logId == 'test-log-id')
         def logEntries = new ArrayList<LogEntry>()
         def logEntryBatch = new ArrayList<LogEntryBatch>()
         list.putLogsDetails.logEntryBatches.forEach(
@@ -87,6 +93,8 @@ class OracleCloudLoggingSpec extends Specification {
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.oraclecloud.logging.OracleCloudLoggingSpec'))
         logEntries.stream().anyMatch(x -> x.data.contains(logMessage))
         logEntries.stream().anyMatch(x -> x.data.contains('Established active environments'))
+        readableConfiguration.readable.exists()
+        readableConfiguration.readable.name.endsWith("addresses.csv")
         listAppender.list.size() == 0
 
         when:
@@ -168,6 +176,16 @@ class OracleCloudLoggingSpec extends Specification {
         @Override
         void close() throws Exception {
 
+        }
+    }
+
+    @Requires(property = "spec.name", value = "OracleCloudLoggingSpec")
+    @Singleton
+    static class ReadableConfiguration {
+        final Readable readable
+
+        ReadableConfiguration(@Value('${app.filepath}') Readable readable) {
+            this.readable = readable
         }
     }
 

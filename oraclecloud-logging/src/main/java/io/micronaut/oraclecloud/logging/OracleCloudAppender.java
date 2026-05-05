@@ -161,7 +161,6 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
         if (logId == null) {
             addWarn("LogId is not specified in logback configuration it might be fetch from application configuration if available");
-            return;
         }
 
         if (emergencyAppender != null && !emergencyAppender.isStarted()) {
@@ -240,7 +239,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             subject = appName;
         }
 
-        if (logIdFromAppConfig != null) {
+        if (logId == null && logIdFromAppConfig != null) {
             addInfo("Using logId from application configuration");
             logId = logIdFromAppConfig;
         }
@@ -256,6 +255,15 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     private void dispatchEvents() throws InterruptedException {
         if (!configuredSuccessfully && !tryToConfigure()) {
+            return;
+        }
+        if (logId == null) {
+            while (!deque.isEmpty()) {
+                ILoggingEvent event = deque.takeFirst();
+                if (emergencyAppender != null) {
+                    emergencyAppender.doAppend(event);
+                }
+            }
             return;
         }
 
