@@ -1,0 +1,36 @@
+To use https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm[OCI Streaming] through Micronaut Kafka, add the following dependency:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-streaming[]
+
+The module adds Micronaut Kafka and the OCI Streaming SDK module, configures Kafka compatibility defaults, and switches Kafka health checks to restricted mode by default. Restricted health checks verify connectivity without cluster-wide Kafka admin permissions.
+
+For auth-token authentication, configure the stream pool, region, user, and token:
+
+[configuration]
+----
+oci:
+  streaming:
+    region: us-phoenix-1
+    stream-pool-id: ocid1.streampool.oc1.phx...
+    tenancy-name: mytenancy
+    domain-name: Default
+    user-name: stream-user
+    auth-token: ${OCI_STREAMING_AUTH_TOKEN}
+----
+
+If you already have the full OCI Streaming Kafka username, set `oci.streaming.username` instead of `tenancy-name`, `domain-name`, and `user-name`.
+
+Instance, resource, and user principal authentication are also supported:
+
+[configuration]
+----
+oci:
+  streaming:
+    region: us-phoenix-1
+    stream-pool-id: ocid1.streampool.oc1.phx...
+    auth-mode: instance-principal
+----
+
+The supported `auth-mode` values are `auth-token`, `instance-principal`, `resource-principal`, and `user-principal`. For user principals, set `config-file` and `profile` when the default OCI SDK config file or profile should not be used.
+
+The module only fills in Kafka properties that are not already configured. You can override any generated Kafka value under the `kafka` prefix, including `kafka.bootstrap.servers`, `kafka.security.protocol`, `kafka.sasl.mechanism`, and `kafka.sasl.jaas.config`.
