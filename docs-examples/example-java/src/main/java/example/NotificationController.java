@@ -3,6 +3,7 @@ package example;
 // tag::imports[]
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.oraclecloud.notifications.OracleCloudNotificationService;
 import io.micronaut.serde.annotation.Serdeable;
@@ -24,7 +25,8 @@ class NotificationController {
 // end::class[]
 
     // tag::explicit-topic[]
-    void publish(String topicId, NotificationMessage message) {
+    @Post("/{topicId}")
+    void publish(@PathVariable String topicId, @Body NotificationMessage message) {
         notificationService.publish(topicId, message.title(), message.body()); // <1>
     }
     // end::explicit-topic[]

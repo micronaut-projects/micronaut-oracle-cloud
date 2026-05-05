@@ -11,7 +11,7 @@ oci:
     topic-id: ocid1.onstopic.oc1..aaaaaaaaexample
 ----
 
-Then inject api:oci.notifications.OracleCloudNotificationService[] and publish a message:
+Then inject api:io.micronaut.oraclecloud.notifications.OracleCloudNotificationService[] and publish a message:
 
 snippet::example.NotificationController[project-base="docs-examples/example", source="main", tags="imports,class"]
 
