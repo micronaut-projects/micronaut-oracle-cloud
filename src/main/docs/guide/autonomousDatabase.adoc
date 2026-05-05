@@ -3,11 +3,11 @@ Oracle Cloud Autonomous Database connection information and credentials are stor
 Micronaut can automatically generate and download the Wallet and configure the data source.
 
 First, you need the correct version of the Oracle Database driver and required modules.
-To ensure you are using the correct version, apply the 21.1.0.0 or above Oracle Database BOM with Gradle:
+To ensure you are using the correct version, apply the 23.x Oracle Database BOM with Gradle:
 
 [source,groovy]
 ----
-implementation platform("com.oracle.database.jdbc:ojdbc-bom:21.1.0.0")
+implementation platform("com.oracle.database.jdbc:ojdbc-bom:23.26.1.0.0")
 ----
 
 Or with Maven:
@@ -19,7 +19,7 @@ Or with Maven:
       <dependency>
         <groupId>com.oracle.database.jdbc</groupId>
         <artifactId>ojdbc-bom</artifactId>
-        <version>21.1.0.0</version>
+        <version>23.26.1.0.0</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
