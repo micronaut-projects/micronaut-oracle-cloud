@@ -46,7 +46,6 @@ public class OracleCloudStreamingConfiguration implements Toggleable {
     private String region;
     private String streamPoolId;
     private String tenancyName;
-    private String userName;
     private String username;
 
     @Override
@@ -207,20 +206,6 @@ public class OracleCloudStreamingConfiguration implements Toggleable {
     }
 
     /**
-     * @return User name for auth-token usernames
-     */
-    public String getUserName() {
-        return userName;
-    }
-
-    /**
-     * @param userName User name for auth-token usernames
-     */
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    /**
      * @return Full OCI Streaming Kafka username
      */
     public String getUsername() {
@@ -232,6 +217,28 @@ public class OracleCloudStreamingConfiguration implements Toggleable {
      */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /**
+     * Auth-token username parts configuration.
+     */
+    @ConfigurationProperties("")
+    public static class AuthTokenUsernameConfiguration {
+        private String userName;
+
+        /**
+         * @return User name for auth-token usernames
+         */
+        public String getUserName() {
+            return userName;
+        }
+
+        /**
+         * @param userName User name for auth-token usernames
+         */
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
     }
 
     /**

@@ -62,18 +62,22 @@ public class OracleCloudStreamingKafkaConfiguration
     private static final String RETRIES = "5";
 
     private final OracleCloudStreamingConfiguration streamingConfiguration;
+    private final OracleCloudStreamingConfiguration.AuthTokenUsernameConfiguration authTokenUsernameConfiguration;
     private final RegionProvider regionProvider;
     private final Environment environment;
 
     /**
      * @param streamingConfiguration The OCI Streaming configuration
+     * @param authTokenUsernameConfiguration The auth-token username parts configuration
      * @param regionProvider The OCI region provider
      * @param environment The environment
      */
     public OracleCloudStreamingKafkaConfiguration(OracleCloudStreamingConfiguration streamingConfiguration,
+                                                  OracleCloudStreamingConfiguration.AuthTokenUsernameConfiguration authTokenUsernameConfiguration,
                                                   @Nullable RegionProvider regionProvider,
                                                   Environment environment) {
         this.streamingConfiguration = streamingConfiguration;
+        this.authTokenUsernameConfiguration = authTokenUsernameConfiguration;
         this.regionProvider = regionProvider;
         this.environment = environment;
     }
@@ -172,7 +176,7 @@ public class OracleCloudStreamingKafkaConfiguration
             return streamingConfiguration.getUsername();
         }
         if (StringUtils.isEmpty(streamingConfiguration.getTenancyName()) ||
-            StringUtils.isEmpty(streamingConfiguration.getUserName())) {
+            StringUtils.isEmpty(authTokenUsernameConfiguration.getUserName())) {
             throw new ConfigurationException("OCI Streaming auth-token mode requires either [" +
                 OracleCloudStreamingConfiguration.PREFIX + ".username] or both [" +
                 OracleCloudStreamingConfiguration.PREFIX + ".tenancy-name] and [" +
@@ -181,11 +185,11 @@ public class OracleCloudStreamingKafkaConfiguration
         if (StringUtils.isNotEmpty(streamingConfiguration.getDomainName())) {
             return streamingConfiguration.getTenancyName() + "/" +
                 streamingConfiguration.getDomainName() + "/" +
-                streamingConfiguration.getUserName() + "/" +
+                authTokenUsernameConfiguration.getUserName() + "/" +
                 streamingConfiguration.getStreamPoolId();
         }
         return streamingConfiguration.getTenancyName() + "/" +
-            streamingConfiguration.getUserName() + "/" +
+            authTokenUsernameConfiguration.getUserName() + "/" +
             streamingConfiguration.getStreamPoolId();
     }
 
