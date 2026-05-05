@@ -92,6 +92,22 @@ class OracleCloudStreamingKafkaConfigurationTest {
     }
 
     @Test
+    void configuresKafkaForFullAuthTokenUsername() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
+            "oci.streaming.stream-pool-id", STREAM_POOL_ID,
+            "oci.streaming.username", "exampletenant/streamuser/" + STREAM_POOL_ID,
+            "oci.streaming.auth-token", "secret"
+        ))) {
+            Properties properties = context.getBean(KafkaDefaultConfiguration.class).getConfig();
+
+            assertEquals("org.apache.kafka.common.security.plain.PlainLoginModule required " +
+                    "username=\"exampletenant/streamuser/" + STREAM_POOL_ID + "\" password=\"secret\";",
+                properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
+        }
+    }
+
+    @Test
     void configuresBootstrapServersForRegionRealm() {
         try (ApplicationContext context = ApplicationContext.run(Map.of(
             "oci.streaming.region", "us-gov-phoenix-1",
