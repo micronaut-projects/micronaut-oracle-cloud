@@ -1,0 +1,22 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+dependencies {
+    annotationProcessor(mn.micronaut.inject.java)
+
+    api(mn.micronaut.function.client)
+    api(projects.micronautOraclecloudBmcFunctions)
+    implementation(mn.micronaut.json.core)
+    implementation(mn.reactor)
+
+    testAnnotationProcessor(mn.micronaut.inject.java)
+    testImplementation(mn.micronaut.inject.java)
+    testImplementation(mnTest.micronaut.test.spock)
+}
+
+micronautBuild {
+    binaryCompatibility {
+        enabled.set(false)
+    }
+}
