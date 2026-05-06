@@ -1,7 +1,9 @@
 package io.micronaut.oraclecloud.notifications
 
+import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider
 import com.oracle.bmc.ons.NotificationControlPlane
 import com.oracle.bmc.ons.NotificationDataPlane
+import com.oracle.bmc.ons.NotificationDataPlaneClient
 import com.oracle.bmc.ons.model.MessageDetails
 import com.oracle.bmc.ons.model.NotificationTopic
 import com.oracle.bmc.ons.requests.GetTopicRequest
@@ -79,6 +81,23 @@ class OracleCloudNotificationServiceSpec extends Specification {
         context?.close()
         NotificationsTestFactory.controlPlane = null
         NotificationsTestFactory.dataPlaneFactoryBean = null
+    }
+
+    void "wires service from application context with default endpoint factory"() {
+        given:
+        DefaultFactoryTestFactory.controlPlane = Mock(NotificationControlPlane)
+        ApplicationContext context = ApplicationContext.run([
+                'spec.name': 'OracleCloudNotificationServiceDefaultFactorySpec',
+                'oci.notifications.topic-id': 'ocid1.onstopic.oc1.phx.test'
+        ])
+
+        expect:
+        context.containsBean(DefaultNotificationDataPlaneFactory)
+        context.containsBean(OracleCloudNotificationService)
+
+        cleanup:
+        context?.close()
+        DefaultFactoryTestFactory.controlPlane = null
     }
 
     void "publishes message to explicit topic"() {
@@ -263,6 +282,29 @@ class OracleCloudNotificationServiceSpec extends Specification {
         @Replaces(DefaultNotificationDataPlaneFactory)
         NotificationDataPlaneFactory notificationDataPlaneFactory() {
             dataPlaneFactoryBean
+        }
+    }
+
+    @Factory
+    @Requires(property = 'spec.name', value = 'OracleCloudNotificationServiceDefaultFactorySpec')
+    static class DefaultFactoryTestFactory {
+        static NotificationControlPlane controlPlane
+
+        @Bean
+        @Replaces(NotificationControlPlane)
+        NotificationControlPlane notificationControlPlane() {
+            controlPlane
+        }
+
+        @Bean
+        NotificationDataPlaneClient.Builder notificationDataPlaneBuilder() {
+            NotificationDataPlaneClient.builder()
+        }
+
+        @Bean
+        AbstractAuthenticationDetailsProvider authenticationDetailsProvider() {
+            new AbstractAuthenticationDetailsProvider() {
+            }
         }
     }
 
