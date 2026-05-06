@@ -1,6 +1,7 @@
 package io.micronaut.oraclecloud.notifications
 
 import com.oracle.bmc.auth.AbstractAuthenticationDetailsProvider
+import com.oracle.bmc.auth.BasicAuthenticationDetailsProvider
 import com.oracle.bmc.ons.NotificationControlPlane
 import com.oracle.bmc.ons.NotificationDataPlane
 import com.oracle.bmc.ons.NotificationDataPlaneClient
@@ -212,6 +213,20 @@ class OracleCloudNotificationServiceSpec extends Specification {
         'ocid1.onstopic.oc1.phx.test' | 'Test title' | ''
     }
 
+    void "default data plane factory creates endpoint client"() {
+        given:
+        def factory = new DefaultNotificationDataPlaneFactory(NotificationDataPlaneClient.builder(), new TestAuthenticationDetailsProvider())
+
+        when:
+        def dataPlane = factory.create('https://cell1.notification.us-phoenix-1.oci.oraclecloud.com')
+
+        then:
+        dataPlane.endpoint == 'https://cell1.notification.us-phoenix-1.oci.oraclecloud.com'
+
+        cleanup:
+        dataPlane?.close()
+    }
+
     void "closes cached endpoint clients"() {
         given:
         def controlPlane = Mock(NotificationControlPlane)
@@ -331,6 +346,40 @@ class OracleCloudNotificationServiceSpec extends Specification {
 
         List<String> getEndpoints() {
             endpoints
+        }
+    }
+
+    private static final class TestAuthenticationDetailsProvider implements BasicAuthenticationDetailsProvider {
+        private final byte[] privateKey = createPrivateKey()
+
+        @Override
+        String getKeyId() {
+            'test-key-id'
+        }
+
+        @Override
+        InputStream getPrivateKey() {
+            new ByteArrayInputStream(privateKey)
+        }
+
+        @Override
+        String getPassPhrase() {
+            null
+        }
+
+        @Override
+        char[] getPassphraseCharacters() {
+            null
+        }
+
+        private static byte[] createPrivateKey() {
+            def keyPairGenerator = java.security.KeyPairGenerator.getInstance('RSA')
+            keyPairGenerator.initialize(2048)
+            def encoded = Base64.mimeEncoder.encodeToString(keyPairGenerator.generateKeyPair().private.encoded)
+            """-----BEGIN PRIVATE KEY-----
+${encoded}
+-----END PRIVATE KEY-----
+""".bytes
         }
     }
 
