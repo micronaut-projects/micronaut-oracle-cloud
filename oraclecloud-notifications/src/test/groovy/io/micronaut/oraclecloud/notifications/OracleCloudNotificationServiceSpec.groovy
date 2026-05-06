@@ -176,6 +176,23 @@ class OracleCloudNotificationServiceSpec extends Specification {
         thrown ConfigurationException
     }
 
+    void "requires non-empty publish arguments"(String topicId, String title, String body) {
+        given:
+        def service = new OracleCloudNotificationService(Mock(NotificationControlPlane), dataPlaneFactory(Mock(NotificationDataPlane)), new OracleCloudNotificationsConfiguration())
+
+        when:
+        service.publish(topicId, title, body)
+
+        then:
+        thrown IllegalArgumentException
+
+        where:
+        topicId                       | title        | body
+        ''                            | 'Test title' | 'Test body'
+        'ocid1.onstopic.oc1.phx.test' | ''           | 'Test body'
+        'ocid1.onstopic.oc1.phx.test' | 'Test title' | ''
+    }
+
     void "closes cached endpoint clients"() {
         given:
         def controlPlane = Mock(NotificationControlPlane)
@@ -274,4 +291,5 @@ class OracleCloudNotificationServiceSpec extends Specification {
             endpoints
         }
     }
+
 }
