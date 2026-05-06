@@ -114,7 +114,7 @@ public class OracleCloudNotificationService {
     }
 
     @PreDestroy
-    void close() throws Exception {
+    final void close() throws Exception {
         Exception failure = null;
         for (NotificationDataPlane notificationDataPlane : notificationDataPlanes.values()) {
             try {
