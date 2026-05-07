@@ -47,11 +47,11 @@ class OracleCloudLoggingClientSpec extends Specification {
 
         when:
         formatter.toJsonString([message: "starting"])
-        def objectMapper = formatter.@objectMapper
+        def objectMapper = formatter.@objectMapper.get()
         formatter.toJsonString([message: "started"])
 
         then:
-        formatter.@objectMapper.is(objectMapper)
+        formatter.@objectMapper.get().is(objectMapper)
     }
 
 }
