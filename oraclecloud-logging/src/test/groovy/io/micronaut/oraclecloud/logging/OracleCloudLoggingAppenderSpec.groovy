@@ -218,6 +218,38 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         oracleCloudLogsClient.putLogsRequestList.isEmpty()
     }
 
+    void 'drops events when retained queue reaches capacity without log id or emergency appender'() {
+        given:
+        appender.queueSize = 1
+        appender.publishPeriod = 50
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggingEvent firstEvent = createEvent("name", Level.INFO, "firstMessage", System.currentTimeMillis())
+        LoggingEvent secondEvent = createEvent("name", Level.INFO, "secondMessage", System.currentTimeMillis())
+
+        when:
+        appender.start()
+        appender.doAppend(firstEvent)
+
+        then:
+        conditions.eventually {
+            appender.@deque.size() == 1
+            context.statusManager.copyOfStatusList.find {
+                it.message == "LogId is null and no emergency appender is configured. Events will remain queued until a logId is available"
+            }
+        }
+
+        when:
+        appender.doAppend(secondEvent)
+
+        then:
+        appender.@deque.size() == 1
+        appender.@deque.peekFirst().message == "firstMessage"
+        context.statusManager.copyOfStatusList.find {
+            it.message == "Dropping event due to timeout limit of [100 milliseconds] being exceeded"
+        }
+        oracleCloudLogsClient.putLogsRequestList.isEmpty()
+    }
+
     void 'register multiple emergency appender'() {
         when:
         def logId = "testLogId"
