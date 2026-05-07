@@ -226,8 +226,6 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
         String host = OracleCloudLoggingClient.getHost();
         String appName = OracleCloudLoggingClient.getAppName();
-        String logIdFromAppConfig = OracleCloudLoggingClient.getLogId();
-
         if (type == null) {
             type = String.format("%s.%s", host, appName);
         }
@@ -240,10 +238,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
             subject = appName;
         }
 
-        if (logId == null && logIdFromAppConfig != null) {
-            addInfo("Using logId from application configuration");
-            logId = logIdFromAppConfig;
-        }
+        tryToConfigureLogId();
 
         if (logId == null) {
             addError("LogId is null. Everything will be sent to emergency appender if set");
@@ -254,9 +249,20 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
         return true;
     }
 
+    private void tryToConfigureLogId() {
+        String logIdFromAppConfig = OracleCloudLoggingClient.getLogId();
+        if (logId == null && logIdFromAppConfig != null) {
+            addInfo("Using logId from application configuration");
+            logId = logIdFromAppConfig;
+        }
+    }
+
     private void dispatchEvents() throws InterruptedException {
         if (!configuredSuccessfully && !tryToConfigure()) {
             return;
+        }
+        if (logId == null) {
+            tryToConfigureLogId();
         }
         if (logId == null) {
             if (emergencyAppender == null) {

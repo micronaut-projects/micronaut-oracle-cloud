@@ -144,6 +144,40 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         oracleCloudLogsClient.putLogsRequestList.get(0).logId == logIdFromApplicationConfiguration
     }
 
+    void 'sends queued events when application configuration log id becomes available after initial configuration'() {
+        given:
+        def testMessage = "testMessage"
+        def logIdFromApplicationConfiguration = "testLogIdFromApplicationConfiguration"
+        def config = Stub(ApplicationConfiguration) {
+            getName() >> Optional.of("my-awesome-app")
+        }
+        def instance = Mock(EmbeddedServer.class)
+        instance.getHost() >> "testHost"
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggingEvent event = createEvent("name", Level.INFO, testMessage, System.currentTimeMillis())
+
+        when:
+        appender.start()
+        appender.doAppend(event)
+
+        then:
+        conditions.eventually {
+            appender.@configuredSuccessfully
+            appender.@deque.size() == 1
+        }
+        oracleCloudLogsClient.putLogsRequestList.isEmpty()
+
+        when:
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config, logIdFromApplicationConfiguration)
+                .onApplicationEvent(new ServerStartupEvent(instance))
+
+        then:
+        conditions.eventually {
+            oracleCloudLogsClient.putLogsRequestList.size() == 1
+        }
+        oracleCloudLogsClient.putLogsRequestList.get(0).logId == logIdFromApplicationConfiguration
+    }
+
     void 'sends events to emergency appender when log id is not available'() {
         given:
         def testMessage = "testMessage"
