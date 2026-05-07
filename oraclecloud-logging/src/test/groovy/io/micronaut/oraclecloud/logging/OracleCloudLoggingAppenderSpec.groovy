@@ -19,7 +19,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
     LoggerContext context
     PatternLayout layout
     LayoutWrappingEncoder encoder
-    OracleCloudLoggingSpec.MockLogging oracleCloudLogsClient
+    MockLogging oracleCloudLogsClient
 
     def setup() {
         context = new LoggerContext()
@@ -40,7 +40,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         instance.getHost() >> "testHost"
         def serverStartupEvent = new ServerStartupEvent(instance)
 
-        oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
+        oracleCloudLogsClient = new MockLogging()
 
         new OracleCloudLoggingClient(oracleCloudLogsClient, config, null).onApplicationEvent(serverStartupEvent)
 
