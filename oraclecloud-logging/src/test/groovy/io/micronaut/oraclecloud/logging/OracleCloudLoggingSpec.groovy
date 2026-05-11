@@ -125,6 +125,11 @@ class OracleCloudLoggingSpec extends Specification {
 
         }
 
+        @Override
+        void enableDualStackEndpoints(boolean use) {
+
+        }
+
         boolean getSuccess() {
             return success
         }
