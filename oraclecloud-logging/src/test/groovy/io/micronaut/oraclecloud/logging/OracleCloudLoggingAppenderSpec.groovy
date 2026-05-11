@@ -28,7 +28,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
     LoggerContext context
     PatternLayout layout
     LayoutWrappingEncoder encoder
-    OracleCloudLoggingSpec.MockLogging oracleCloudLogsClient
+    MockLogging oracleCloudLogsClient
 
     def setupSpec() {
         logbackOracleAppender = findLogbackOracleAppender()
@@ -61,7 +61,7 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         instance.getHost() >> "testHost"
         def serverStartupEvent = new ServerStartupEvent(instance)
 
-        oracleCloudLogsClient = new OracleCloudLoggingSpec.MockLogging()
+        oracleCloudLogsClient = new MockLogging()
 
         new OracleCloudLoggingClient(oracleCloudLogsClient, config, null).onApplicationEvent(serverStartupEvent)
 
@@ -137,6 +137,72 @@ class OracleCloudLoggingAppenderSpec extends Specification {
         then:
         def statuses = context.getStatusManager().getCopyOfStatusList()
         statuses.find { it.message == "LogId is not specified in logback configuration it might be fetch from application configuration if available" }
+        appender.isStarted()
+    }
+
+    void 'uses log id from application configuration when logback log id is not set'() {
+        given:
+        def testMessage = "testMessage"
+        def logIdFromApplicationConfiguration = "testLogIdFromApplicationConfiguration"
+        def config = Stub(ApplicationConfiguration) {
+            getName() >> Optional.of("my-awesome-app")
+        }
+        def instance = Mock(EmbeddedServer.class)
+        instance.getHost() >> "testHost"
+        new OracleCloudLoggingClient(oracleCloudLogsClient, config, logIdFromApplicationConfiguration)
+                .onApplicationEvent(new ServerStartupEvent(instance))
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggingEvent event = createEvent("name", Level.INFO, testMessage, System.currentTimeMillis())
+
+        when:
+        appender.start()
+        appender.doAppend(event)
+
+        then:
+        conditions.eventually {
+            oracleCloudLogsClient.putLogsRequestList.size() == 1
+        }
+        oracleCloudLogsClient.putLogsRequestList.get(0).logId == logIdFromApplicationConfiguration
+    }
+
+    void 'sends events to emergency appender when log id is not available'() {
+        given:
+        def testMessage = "testMessage"
+        def mockAppender = new ListAppender()
+        appender.addAppender(mockAppender)
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggingEvent event = createEvent("name", Level.INFO, testMessage, System.currentTimeMillis())
+
+        when:
+        appender.start()
+        appender.doAppend(event)
+
+        then:
+        conditions.eventually {
+            mockAppender.list.size() == 1
+        }
+        mockAppender.list.get(0).message == testMessage
+        oracleCloudLogsClient.putLogsRequestList.isEmpty()
+    }
+
+    void 'keeps events queued and reports error when log id is not available without emergency appender'() {
+        given:
+        def testMessage = "testMessage"
+        PollingConditions conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        LoggingEvent event = createEvent("name", Level.INFO, testMessage, System.currentTimeMillis())
+
+        when:
+        appender.start()
+        appender.doAppend(event)
+
+        then:
+        conditions.eventually {
+            appender.@deque.size() == 1
+            context.statusManager.copyOfStatusList.find {
+                it.message == "LogId is null and no emergency appender is configured. Events will remain queued until a logId is available"
+            }
+        }
+        oracleCloudLogsClient.putLogsRequestList.isEmpty()
     }
 
     void 'register multiple emergency appender'() {
