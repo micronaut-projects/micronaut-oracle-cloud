@@ -15,9 +15,6 @@
  */
 package io.micronaut.oraclecloud.httpclient.apache.core.serde;
 
-import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.serde.config.SerializationConfiguration;
@@ -26,10 +23,7 @@ import io.micronaut.serde.config.annotation.SerdeConfig;
 /**
  * OCI-specific serialization configuration.
  */
-@ConfigurationProperties("oci.serde.serialization")
-@Bean(typed = OciSerializationConfiguration.class)
 @Internal
-@BootstrapContextCompatible
 public interface OciSerializationConfiguration extends SerializationConfiguration {
     @Bindable(defaultValue = "NON_NULL")
     @Override

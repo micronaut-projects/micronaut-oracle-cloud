@@ -15,40 +15,14 @@
  */
 package io.micronaut.oraclecloud.httpclient.apache.core.serde;
 
-import com.oracle.bmc.auth.internal.GetResourcePrincipalSessionTokenRequest;
-import com.oracle.bmc.auth.internal.JWK;
-import com.oracle.bmc.auth.internal.X509FederationClient;
-import com.oracle.bmc.auth.okeworkloadidentity.internal.GetOkeResourcePrincipalSessionTokenDetails;
-import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeResourcePrincipalSessionToken;
-import com.oracle.bmc.encryption.internal.EncryptionHeader;
-import com.oracle.bmc.encryption.internal.EncryptionKey;
-import com.oracle.bmc.http.internal.ResponseHelper;
-import com.oracle.bmc.model.RegionSchema;
-import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.bind.annotation.Bindable;
-import io.micronaut.serde.annotation.SerdeImport;
 import io.micronaut.serde.config.SerdeConfiguration;
 
 /**
  * OCI-specific serde configuration.
  */
-@ConfigurationProperties("oci.serde")
-@Bean(typed = OciSerdeConfiguration.class)
 @Internal
-@BootstrapContextCompatible
-@SerdeImport(GetResourcePrincipalSessionTokenRequest.class)
-@SerdeImport(JWK.class)
-@SerdeImport(RegionSchema.class)
-@SerdeImport(ResponseHelper.ErrorCodeAndMessage.class)
-@SerdeImport(X509FederationClient.SecurityToken.class)
-@SerdeImport(X509FederationClient.X509FederationRequest.class)
-@SerdeImport(GetOkeResourcePrincipalSessionTokenDetails.class)
-@SerdeImport(OkeResourcePrincipalSessionToken.class)
-@SerdeImport(value = EncryptionHeader.class, deserializable = false)
-@SerdeImport(EncryptionKey.class)
 public interface OciSerdeConfiguration extends SerdeConfiguration {
     @Override
     @Bindable(defaultValue = "false")

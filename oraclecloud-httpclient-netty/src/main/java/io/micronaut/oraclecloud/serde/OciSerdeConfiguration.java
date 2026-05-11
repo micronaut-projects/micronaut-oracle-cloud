@@ -15,17 +15,14 @@
  */
 package io.micronaut.oraclecloud.serde;
 
-import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.bind.annotation.Bindable;
 import io.micronaut.serde.config.SerdeConfiguration;
 
-@ConfigurationProperties("oci.serde")
-@Bean(typed = OciSerdeConfiguration.class)
+/**
+ * OCI-specific serde configuration.
+ */
 @Internal
-@BootstrapContextCompatible
 public interface OciSerdeConfiguration extends SerdeConfiguration {
     @Override
     @Bindable(defaultValue = "false")

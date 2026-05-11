@@ -1,6 +1,7 @@
 package io.micronaut.oraclecloud.logging
 
 import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.Logger
 import ch.qos.logback.classic.LoggerContext
 import ch.qos.logback.classic.PatternLayout
 import ch.qos.logback.classic.spi.LoggingEvent
@@ -9,17 +10,37 @@ import ch.qos.logback.core.read.ListAppender
 import io.micronaut.runtime.ApplicationConfiguration
 import io.micronaut.runtime.server.EmbeddedServer
 import io.micronaut.runtime.server.event.ServerStartupEvent
+import org.slf4j.LoggerFactory
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
 
 class OracleCloudLoggingAppenderSpec extends Specification {
 
+    @Shared
+    OracleCloudAppender logbackOracleAppender
+
+    @Shared
+    boolean logbackOracleAppenderStarted
+
     OracleCloudAppender appender
     LoggerContext context
     PatternLayout layout
     LayoutWrappingEncoder encoder
     OracleCloudLoggingSpec.MockLogging oracleCloudLogsClient
+
+    def setupSpec() {
+        logbackOracleAppender = findLogbackOracleAppender()
+        logbackOracleAppenderStarted = logbackOracleAppender?.started ?: false
+        logbackOracleAppender?.stop()
+    }
+
+    def cleanupSpec() {
+        if (logbackOracleAppenderStarted) {
+            logbackOracleAppender.start()
+        }
+    }
 
     def setup() {
         context = new LoggerContext()
@@ -228,5 +249,19 @@ class OracleCloudLoggingAppenderSpec extends Specification {
             event.timeStamp = time
         }
         return event
+    }
+
+    private static OracleCloudAppender findLogbackOracleAppender() {
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory()
+        for (Logger logger : loggerContext.loggerList) {
+            def iterator = logger.iteratorForAppenders()
+            while (iterator.hasNext()) {
+                def appender = iterator.next()
+                if (appender.name == 'ORACLE' && appender instanceof OracleCloudAppender) {
+                    return (OracleCloudAppender) appender
+                }
+            }
+        }
+        return null
     }
 }
