@@ -1,6 +1,6 @@
 [versions]
-micronaut-platform = "5.0.0-M3"
 micronaut = "5.0.0"
+micronaut-platform = "5.0.0-RC1"
 fn = '1.1.12'
 graal-svm = "25.0.3"
 javapoet = '1.13.0'
