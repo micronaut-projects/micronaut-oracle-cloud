@@ -120,6 +120,45 @@ class OciFunctionClientSpec extends Specification {
         mockAsyncClient = null
     }
 
+    void "invokes OCI function reactively with FunctionClient"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        FunctionsInvokeAsyncClient asyncClient = Mock()
+        mockSyncClient = syncClient
+        mockAsyncClient = asyncClient
+        InvokeFunctionRequest capturedRequest
+        ApplicationContext applicationContext = ApplicationContext.builder()
+            .properties([
+                (MOCK_CLIENTS_PROPERTY): MOCK_CLIENTS_PROPERTY_VALUE,
+                'oci.functions.reactive-function.function-id': 'ocid1.fnfunc.oc1..reactive',
+                'oci.functions.reactive-function.fn-intent': 'Httprequest',
+                'oci.functions.reactive-function.fn-invoke-type': 'Sync'
+            ])
+            .start()
+
+        when:
+        BookClient client = applicationContext.getBean(BookClient)
+        Map<String, Object> result = Mono.from(client.reactiveFunction([title: 'The Stand'])).block()
+
+        then:
+        1 * asyncClient.invokeFunction(_ as InvokeFunctionRequest, _ as AsyncHandler) >> { InvokeFunctionRequest request, AsyncHandler handler ->
+            capturedRequest = request
+            handler.onSuccess(request, response('{"title":"THE STAND"}'))
+            CompletableFuture.completedFuture(null)
+        }
+        0 * syncClient.invokeFunction(_ as InvokeFunctionRequest)
+        result == [title: 'THE STAND']
+        capturedRequest.functionId == 'ocid1.fnfunc.oc1..reactive'
+        capturedRequest.fnIntent == InvokeFunctionRequest.FnIntent.Httprequest
+        capturedRequest.fnInvokeType == InvokeFunctionRequest.FnInvokeType.Sync
+        new String(capturedRequest.invokeFunctionBody.readAllBytes(), StandardCharsets.UTF_8) == '{"title":"The Stand"}'
+
+        cleanup:
+        applicationContext.close()
+        mockSyncClient = null
+        mockAsyncClient = null
+    }
+
     void "invokes OCI function reactively"() {
         given:
         FunctionsInvokeClient syncClient = Mock()
@@ -311,6 +350,20 @@ class OciFunctionClientSpec extends Specification {
         then:
         FunctionExecutionException e = thrown()
         e.message == 'Error decoding OCI Function [books] response body: decoding failed'
+    }
+
+    void "maps synchronous OCI invocation errors"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { throw new IllegalStateException('remote failure') }
+        OciFunctionInvoker invoker = invoker(syncClient, Mock(FunctionsInvokeAsyncClient))
+
+        when:
+        invoker.invoke(definition(), [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        FunctionExecutionException e = thrown()
+        e.message == 'Error executing OCI Function [books]: remote failure'
     }
 
     void "chooses invoker only for OCI function definitions"() {
