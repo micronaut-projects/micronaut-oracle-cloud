@@ -20,7 +20,6 @@ import java.sql.Connection
 import java.sql.ResultSet
 import java.util.Optional
 
-@Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
 class UcpPoolConfigurationListenerSpec extends Specification {
 
     @Shared
@@ -32,6 +31,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
     @Shared
     String atpId = System.getenv("ATP_OCID")
 
+    @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
     void "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
@@ -55,6 +55,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
     }
 
     @PendingFeature(reason = "Requires CI config?")
+    @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
     void "test it skips datasource without ocid field"() {
         given:
         ApplicationContext context = ApplicationContext.run([
@@ -90,7 +91,7 @@ class UcpPoolConfigurationListenerSpec extends Specification {
             }
         }
         UcpPoolConfigurationListener listener = new UcpPoolConfigurationListener(walletArchiveProvider, beanLocator)
-        DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration("default")
+        DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration("default", Mock(Environment))
         AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = new AutonomousDatabaseConfiguration()
         autonomousDatabaseConfiguration.setOcid("ocid1.autonomousdatabase.oc1..example")
         BeanInitializingEvent<DatasourceConfiguration> event = Stub() {

@@ -18,7 +18,6 @@ import java.sql.Connection
 import java.sql.ResultSet
 import java.util.Optional
 
-@Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
 class HikariPoolConfigurationListenerSpec extends Specification {
 
     @Shared
@@ -30,6 +29,7 @@ class HikariPoolConfigurationListenerSpec extends Specification {
     @Shared
     String atpId = System.getenv("ATP_OCID")
 
+    @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
     void "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
@@ -52,6 +52,7 @@ class HikariPoolConfigurationListenerSpec extends Specification {
         context.close()
     }
 
+    @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
     void "test it skips datasource without ocid field"() {
         given:
         ApplicationContext context = ApplicationContext.run([
