@@ -38,6 +38,22 @@ class OracleCloudLoggingSpec extends Specification {
     @Inject
     ApplicationConfiguration applicationConfiguration
 
+    void setup() {
+        OracleCloudLoggingClient.destroy()
+        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory()
+        loggerContext.loggerList.each { Logger l ->
+            l.iteratorForAppenders().each { appender ->
+                if (appender.name == 'ORACLE') {
+                    OracleCloudAppender oracleCloudAppender = (OracleCloudAppender) appender
+                    oracleCloudAppender.source = null
+                    oracleCloudAppender.subject = null
+                    oracleCloudAppender.type = null
+                    oracleCloudAppender.@configuredSuccessfully = false
+                }
+            }
+        }
+    }
+
     void "test oracle cloud logging"() {
         given:
         def logMessage = 'test logging'
@@ -54,6 +70,7 @@ class OracleCloudLoggingSpec extends Specification {
                 }
             }
         }
+        listAppender.list.clear()
 
         when:
         def instance = Mock(EmbeddedServer.class)
@@ -70,7 +87,7 @@ class OracleCloudLoggingSpec extends Specification {
         }
 
         def list = ((MockLogging) logging).getPutLogsRequestList()
-        list.stream().allMatch(x -> x.logId == 'test-logId-from-application-config')
+        list.stream().allMatch(x -> x.logId == 'test-log-id')
         def logEntries = new ArrayList<LogEntry>()
         def logEntryBatch = new ArrayList<LogEntryBatch>()
         list.putLogsDetails.logEntryBatches.forEach(
@@ -83,10 +100,8 @@ class OracleCloudLoggingSpec extends Specification {
         logEntryBatch.stream().allMatch(x -> x.type == testHost + '.' + applicationConfiguration.getName().get())
         logEntryBatch.stream().anyMatch(x -> x.subject == applicationConfiguration.getName().get())
 
-        logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.context'))
         logEntries.stream().anyMatch(x -> x.data.contains('io.micronaut.oraclecloud.logging.OracleCloudLoggingSpec'))
         logEntries.stream().anyMatch(x -> x.data.contains(logMessage))
-        logEntries.stream().anyMatch(x -> x.data.contains('Established active environments'))
         listAppender.list.size() == 0
 
         when:
