@@ -105,7 +105,14 @@ public final class OciFunctionInvoker<I, O> implements FunctionInvoker<I, O>, Fu
             return conversionService.convert(response, outputType)
                 .orElseThrow(() -> new IllegalArgumentException("Unsupported reactive type: " + outputType));
         }
-        InvokeFunctionResponse response = syncClient.invokeFunction(request);
+        InvokeFunctionResponse response;
+        try {
+            response = syncClient.invokeFunction(request);
+        } catch (FunctionExecutionException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new FunctionExecutionException("Error executing OCI Function [" + definition.getName() + "]: " + e.getMessage(), e);
+        }
         try {
             return (O) decodeResponse(ociFunctionDefinition, response, outputType);
         } catch (Exception e) {
