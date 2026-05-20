@@ -87,6 +87,11 @@ You can find a client’s service ID by checking the factory class that creates 
 
 NOTE: Choose either `micronaut.http.services.oci` or `oci.client` to configure your OCI client; supplying both will cause a `NonUniqueBeanException`.
 
+#### Blocking calls
+
+Synchronous OCI SDK calls that use this Netty client must not be executed on a Netty event-loop thread.
+If a blocking call is needed from a controller or other request-handling code, move it to a blocking executor, for example with `@ExecuteOn(TaskExecutors.BLOCKING)`, or use a reactive client API.
+
 #### Logging
 
 To enable logging of all requests, set the `micronaut.http.services.oci.log-level` or `oci.client.log-level` property to `INFO`.
