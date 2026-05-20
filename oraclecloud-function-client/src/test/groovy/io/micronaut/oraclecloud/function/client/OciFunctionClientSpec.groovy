@@ -227,6 +227,25 @@ class OciFunctionClientSpec extends Specification {
         capturedRequest.invokeFunctionBody == null
     }
 
+    void "rejects missing OCI function id before invocation"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        OciFunctionDefinition definition = new OciFunctionDefinition('books')
+        definition.functionId = functionId
+        OciFunctionInvoker invoker = invoker(syncClient, Mock(FunctionsInvokeAsyncClient))
+
+        when:
+        invoker.invoke(definition, [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        FunctionExecutionException e = thrown()
+        e.message == 'Missing required configuration [oci.functions.books.function-id]'
+        0 * syncClient.invokeFunction(_ as InvokeFunctionRequest)
+
+        where:
+        functionId << [null, '', '  ']
+    }
+
     void "returns null for empty OCI function responses"() {
         given:
         FunctionsInvokeClient syncClient = Mock()
@@ -238,6 +257,37 @@ class OciFunctionClientSpec extends Specification {
 
         where:
         responseBody << [null, '']
+    }
+
+    void "returns null for detached OCI function responses without function output"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        InvokeFunctionRequest capturedRequest
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { InvokeFunctionRequest request ->
+            capturedRequest = request
+            response('', 202)
+        }
+        OciFunctionDefinition definition = definition()
+        definition.fnInvokeType = InvokeFunctionRequest.FnInvokeType.Detached
+        OciFunctionInvoker invoker = invoker(syncClient, Mock(FunctionsInvokeAsyncClient))
+
+        expect:
+        invoker.invoke(definition, [title: 'The Stand'], Argument.mapOf(String, Object)) == null
+        capturedRequest.fnInvokeType == InvokeFunctionRequest.FnInvokeType.Detached
+    }
+
+    void "requires JSON response bodies for non empty output"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> response('plain text')
+        OciFunctionInvoker invoker = invoker(syncClient, Mock(FunctionsInvokeAsyncClient))
+
+        when:
+        invoker.invoke(definition(), [title: 'The Stand'], Argument.STRING)
+
+        then:
+        FunctionExecutionException e = thrown()
+        e.message.startsWith('Error executing OCI Function [books]: Error decoding OCI Function [books] response body:')
     }
 
     void "closes response body for void output"() {
@@ -391,12 +441,20 @@ class OciFunctionClientSpec extends Specification {
     }
 
     private static InvokeFunctionResponse response(String body) {
-        responseStream(body == null ? null : new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)))
+        response(body, 200)
+    }
+
+    private static InvokeFunctionResponse response(String body, int statusCode) {
+        responseStream(body == null ? null : new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8)), statusCode)
     }
 
     private static InvokeFunctionResponse responseStream(InputStream body) {
+        responseStream(body, 200)
+    }
+
+    private static InvokeFunctionResponse responseStream(InputStream body, int statusCode) {
         InvokeFunctionResponse.builder()
-            .__httpStatusCode__(200)
+            .__httpStatusCode__(statusCode)
             .inputStream(body)
             .build()
     }

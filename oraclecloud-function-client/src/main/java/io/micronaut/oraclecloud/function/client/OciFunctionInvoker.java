@@ -130,8 +130,14 @@ public final class OciFunctionInvoker<I, O> implements FunctionInvoker<I, O>, Fu
     }
 
     private InvokeFunctionRequest createRequest(OciFunctionDefinition definition, @Nullable I input) {
+        String functionId = definition.getFunctionId();
+        if (functionId == null || functionId.isBlank()) {
+            throw new FunctionExecutionException(
+                "Missing required configuration [" + OciFunctionDefinition.PREFIX + "." + definition.getName() + ".function-id]"
+            );
+        }
         return InvokeFunctionRequest.builder()
-            .functionId(definition.getFunctionId())
+            .functionId(functionId)
             .fnIntent(definition.getFnIntent())
             .fnInvokeType(definition.getFnInvokeType())
             .opcRequestId(definition.getOpcRequestId())
