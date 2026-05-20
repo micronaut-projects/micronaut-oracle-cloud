@@ -15,6 +15,8 @@
  */
 package io.micronaut.oraclecloud.streaming;
 
+import com.oracle.bmc.Region;
+import com.oracle.bmc.auth.RegionProvider;
 import io.micronaut.configuration.kafka.config.KafkaDefaultConfiguration;
 import io.micronaut.configuration.kafka.config.KafkaHealthConfigurationProperties;
 import io.micronaut.context.ApplicationContext;
@@ -127,6 +129,21 @@ class OracleCloudStreamingKafkaConfigurationTest {
     }
 
     @Test
+    void configuresBootstrapServersFromRegionProvider() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "spec.name", "configures-bootstrap-servers-from-region-provider",
+            "oci.config.enabled", false,
+            "oci.streaming.stream-pool-id", STREAM_POOL_ID,
+            "oci.streaming.auth-mode", "resource-principal"
+        ))) {
+            Properties properties = context.getBean(KafkaDefaultConfiguration.class).getConfig();
+
+            assertEquals("streaming.eu-jovanovac-1.oci.oraclecloud20.com:9092",
+                properties.getProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG));
+        }
+    }
+
+    @Test
     void configuresKafkaForInstancePrincipals() {
         try (ApplicationContext context = ApplicationContext.run(Map.of(
             "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
@@ -161,6 +178,22 @@ class OracleCloudStreamingKafkaConfigurationTest {
     }
 
     @Test
+    void escapesAuthTokenJaasValues() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
+            "oci.streaming.stream-pool-id", STREAM_POOL_ID,
+            "oci.streaming.username", "exampletenant/stream\\\"user/" + STREAM_POOL_ID,
+            "oci.streaming.auth-token", "sec\\\"ret"
+        ))) {
+            Properties properties = context.getBean(KafkaDefaultConfiguration.class).getConfig();
+
+            assertEquals("org.apache.kafka.common.security.plain.PlainLoginModule required " +
+                    "username=\"exampletenant/stream\\\\\\\"user/" + STREAM_POOL_ID + "\" password=\"sec\\\\\\\"ret\";",
+                properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
+        }
+    }
+
+    @Test
     void configuresKafkaForUserPrincipals() {
         try (ApplicationContext context = ApplicationContext.run(Map.of(
             "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
@@ -175,6 +208,41 @@ class OracleCloudStreamingKafkaConfigurationTest {
             assertEquals("com.oracle.bmc.auth.sasl.UserPrincipalsLoginModule required " +
                     "intent=\"streamPoolId:" + STREAM_POOL_ID + "\" " +
                     "config=\"/home/user/.oci/config\" profile=\"STREAMING\";",
+                properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
+        }
+    }
+
+    @Test
+    void escapesInstancePrincipalJaasValues() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
+            "oci.streaming.stream-pool-id", "ocid1.streampool.oc1.phx.stream\\\"pool",
+            "oci.streaming.auth-mode", "instance-principal",
+            "oci.streaming.metadata-base-url", "http://metadata.example.com/opc/\\\"v2"
+        ))) {
+            Properties properties = context.getBean(KafkaDefaultConfiguration.class).getConfig();
+
+            assertEquals("com.oracle.bmc.auth.sasl.InstancePrincipalsLoginModule required " +
+                    "intent=\"streamPoolId:ocid1.streampool.oc1.phx.stream\\\\\\\"pool\" " +
+                    "metadataBaseUrl=\"http://metadata.example.com/opc/\\\\\\\"v2\";",
+                properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
+        }
+    }
+
+    @Test
+    void escapesUserPrincipalJaasValues() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "oci.streaming.bootstrap-servers", "streaming.example.com:9092",
+            "oci.streaming.stream-pool-id", STREAM_POOL_ID,
+            "oci.streaming.auth-mode", "user-principal",
+            "oci.streaming.config-file", "/home/user/.oci/str\\\"eaming",
+            "oci.streaming.profile", "STR\\\"EAMING"
+        ))) {
+            Properties properties = context.getBean(KafkaDefaultConfiguration.class).getConfig();
+
+            assertEquals("com.oracle.bmc.auth.sasl.UserPrincipalsLoginModule required " +
+                    "intent=\"streamPoolId:" + STREAM_POOL_ID + "\" " +
+                    "config=\"/home/user/.oci/str\\\\\\\"eaming\" profile=\"STR\\\\\\\"EAMING\";",
                 properties.getProperty(SaslConfigs.SASL_JAAS_CONFIG));
         }
     }
@@ -238,6 +306,7 @@ class OracleCloudStreamingKafkaConfigurationTest {
     @Test
     void failsWhenBootstrapServersAndRegionAreMissing() {
         try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "oci.config.enabled", false,
             "oci.streaming.stream-pool-id", STREAM_POOL_ID,
             "oci.streaming.auth-mode", "resource-principal"
         ))) {
@@ -247,6 +316,22 @@ class OracleCloudStreamingKafkaConfigurationTest {
             Throwable cause = rootCause(exception);
             assertTrue(cause instanceof ConfigurationException);
             assertTrue(cause.getMessage().contains("bootstrap-servers"));
+        }
+    }
+
+    @Test
+    void failsWhenConfiguredRegionIsInvalid() {
+        try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "oci.streaming.region", "not-a-region",
+            "oci.streaming.stream-pool-id", STREAM_POOL_ID,
+            "oci.streaming.auth-mode", "resource-principal"
+        ))) {
+            RuntimeException exception = assertThrows(RuntimeException.class,
+                () -> context.getBean(KafkaDefaultConfiguration.class));
+
+            ConfigurationException cause = findCause(exception, ConfigurationException.class);
+            assertTrue(cause.getMessage().contains("oci.streaming.region"));
+            assertTrue(cause.getMessage().contains("not-a-region"));
         }
     }
 
@@ -291,6 +376,17 @@ class OracleCloudStreamingKafkaConfigurationTest {
         return cause;
     }
 
+    private static <T extends Throwable> T findCause(Throwable throwable, Class<T> type) {
+        Throwable cause = throwable;
+        while (cause != null) {
+            if (type.isInstance(cause)) {
+                return type.cast(cause);
+            }
+            cause = cause.getCause();
+        }
+        throw new AssertionError("Could not find cause of type " + type.getName(), throwable);
+    }
+
     @Singleton
     @Requires(property = "spec.name", value = "preserves-programmatic-kafka-properties")
     static final class ProgrammaticKafkaConfiguration implements BeanCreatedEventListener<KafkaDefaultConfiguration>, Ordered {
@@ -311,6 +407,16 @@ class OracleCloudStreamingKafkaConfigurationTest {
             properties.setProperty(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, "4194304");
             properties.setProperty(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, "5242880");
             return event.getBean();
+        }
+    }
+
+    @Singleton
+    @Requires(property = "spec.name", value = "configures-bootstrap-servers-from-region-provider")
+    static final class TestRegionProvider implements RegionProvider {
+
+        @Override
+        public Region getRegion() {
+            return Region.EU_JOVANOVAC_1;
         }
     }
 }

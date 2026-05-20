@@ -120,7 +120,12 @@ public class OracleCloudStreamingKafkaConfiguration
 
     private Region resolveRegion() {
         if (StringUtils.isNotEmpty(streamingConfiguration.getRegion())) {
-            return Region.fromRegionCodeOrId(streamingConfiguration.getRegion());
+            try {
+                return Region.fromRegionCodeOrId(streamingConfiguration.getRegion());
+            } catch (IllegalArgumentException e) {
+                throw new ConfigurationException("Invalid OCI Streaming region [" +
+                    OracleCloudStreamingConfiguration.PREFIX + ".region]: " + streamingConfiguration.getRegion(), e);
+            }
         }
         if (regionProvider != null) {
             return regionProvider.getRegion();
