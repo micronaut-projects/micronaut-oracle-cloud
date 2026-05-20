@@ -6,6 +6,7 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-client[]
 
 Define one or more configured OCI functions under `oci.functions`.
 The map key is the logical name used by `@FunctionClient`.
+The `function-id` value is required and must be the OCID of the OCI Function to invoke.
 
 [configuration]
 ----
@@ -34,5 +35,9 @@ By default, the method name is hyphenated to resolve the configured function nam
 You can use `@jakarta.inject.Named` on a method to invoke a differently named function definition.
 
 The request body is serialized to JSON and sent with `InvokeFunctionRequest`.
-The response stream is decoded as JSON to the method return type.
+For non-void return types, a non-empty response stream is decoded as JSON to the method return type.
+Plain text and binary response bodies are not passed through directly; functions should return JSON-compatible payloads for client methods that expect a value.
 Reactive return types are supported when Micronaut can convert from a Reactive Streams `Publisher`.
+
+When `fn-invoke-type` is set to `Detached`, OCI Functions returns after starting the function and does not return function output to the client.
+Use `void`, `Void`, or nullable/reactive-null-aware return handling for detached client methods.
