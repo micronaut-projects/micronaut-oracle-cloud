@@ -36,3 +36,5 @@ oci:
 The supported `auth-mode` values are `auth-token`, `instance-principal`, `resource-principal`, and `user-principal`. For user principals, set `config-file` and `profile` when the default OCI SDK config file or profile should not be used.
 
 The module only fills in Kafka properties that are not already configured. You can override any generated Kafka value under the `kafka` prefix, including `kafka.bootstrap.servers`, `kafka.security.protocol`, `kafka.sasl.mechanism`, and `kafka.sasl.jaas.config`. Programmatic `KafkaDefaultConfiguration` customizations are also preserved when they run before the OCI Streaming listener.
+
+By default, the module derives the public regional OCI Streaming Kafka endpoint from the configured region or OCI `RegionProvider`. Set `oci.streaming.bootstrap-servers` when your stream pool requires a private, custom, or nonstandard Kafka endpoint.
