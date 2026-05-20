@@ -18,7 +18,6 @@ package io.micronaut.oraclecloud.atp.jdbc;
 import com.oracle.bmc.database.Database;
 import com.oracle.bmc.database.model.GenerateAutonomousDatabaseWalletDetails;
 import com.oracle.bmc.database.requests.GenerateAutonomousDatabaseWalletRequest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -28,9 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class OracleWalletArchiveProviderTest {
@@ -46,10 +43,12 @@ class OracleWalletArchiveProviderTest {
         assertEquals(expected, result);
     }
 
-    @Test
-    void buildsWalletRequestWhenPasswordIsOmitted() {
+    @ParameterizedTest
+    @MethodSource("walletPasswordCases")
+    void buildsWalletRequestWithExpectedPassword(String walletPassword, String expectedPassword, boolean explicitlySet) {
         AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
         cfg.setOcid("ocid1.autonomousdatabase.oc1..example");
+        cfg.setWalletPassword(walletPassword);
 
         AtomicReference<GenerateAutonomousDatabaseWalletRequest> walletRequest = new AtomicReference<>();
         Database database = (Database) Proxy.newProxyInstance(
@@ -70,8 +69,8 @@ class OracleWalletArchiveProviderTest {
         assertNotNull(request);
         assertEquals("ocid1.autonomousdatabase.oc1..example", request.getAutonomousDatabaseId());
         GenerateAutonomousDatabaseWalletDetails details = request.getGenerateAutonomousDatabaseWalletDetails();
-        assertNull(details.getPassword());
-        assertFalse(details.wasPropertyExplicitlySet("password"));
+        assertEquals(expectedPassword, details.getPassword());
+        assertEquals(explicitlySet, details.wasPropertyExplicitlySet("password"));
     }
 
     private static Stream<Arguments> aliasCases() {
@@ -79,6 +78,14 @@ class OracleWalletArchiveProviderTest {
             Arguments.of(null, null, "mydb", "mydb_high"),
             Arguments.of(null, "tp", "mydb", "mydb_tp"),
             Arguments.of("custom_alias", "tp", "mydb", "custom_alias")
+        );
+    }
+
+    private static Stream<Arguments> walletPasswordCases() {
+        return Stream.of(
+            Arguments.of(null, null, false),
+            Arguments.of("", null, false),
+            Arguments.of("FooBar.123", "FooBar.123", true)
         );
     }
 

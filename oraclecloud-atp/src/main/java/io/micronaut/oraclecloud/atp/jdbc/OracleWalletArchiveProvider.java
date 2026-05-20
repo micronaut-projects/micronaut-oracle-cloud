@@ -78,7 +78,7 @@ public class OracleWalletArchiveProvider {
     public CanConfigureOracleDataSource loadWalletArchive(AutonomousDatabaseConfiguration autonomousDatabaseConfiguration) {
         GenerateAutonomousDatabaseWalletDetails.Builder builder = GenerateAutonomousDatabaseWalletDetails.builder();
 
-        if (autonomousDatabaseConfiguration.getWalletPassword() != null) {
+        if (StringUtils.isNotEmpty(autonomousDatabaseConfiguration.getWalletPassword())) {
             builder.password(autonomousDatabaseConfiguration.getWalletPassword());
         }
 

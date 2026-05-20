@@ -58,7 +58,7 @@ datasources:
     password: bar
 ----
 - `ocid` specifies the Autonomous Database id
-- the optional `wallet-password` property encrypts the keys inside the wallet. When set, it must be at least eight characters long, include at least one letter, and either one numeric character or one special character
+- the optional `wallet-password` property encrypts the keys inside the wallet. When set to a non-empty value, it must be at least eight characters long, include at least one letter, and either one numeric character or one special character
 - specify the database `username` and `password`
 - optionally `service-alias-suffix` controls the suffix used when computing the default service alias using database name and given service alias suffix; defaults to `high` (e.g., set to `tp`)
 

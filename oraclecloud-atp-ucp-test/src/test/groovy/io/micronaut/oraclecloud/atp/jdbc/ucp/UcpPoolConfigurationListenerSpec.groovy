@@ -83,29 +83,41 @@ class UcpPoolConfigurationListenerSpec extends Specification {
 
     void "test it configures datasource when wallet password is omitted"() {
         given:
+        String walletUrl = "jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet"
         BeanLocator beanLocator = Mock()
         OracleWalletArchiveProvider walletArchiveProvider = Mock()
-        CanConfigureOracleDataSource walletArchive = Stub() {
-            configure(_ as OracleDataSourceAttributes) >> { OracleDataSourceAttributes attributes ->
-                attributes.url("jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet")
-            }
-        }
-        UcpPoolConfigurationListener listener = new UcpPoolConfigurationListener(walletArchiveProvider, beanLocator)
         DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration("default", Mock(Environment))
-        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = new AutonomousDatabaseConfiguration()
-        autonomousDatabaseConfiguration.setOcid("ocid1.autonomousdatabase.oc1..example")
-        BeanInitializingEvent<DatasourceConfiguration> event = Stub() {
-            getBean() >> datasourceConfiguration
-        }
+        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = autonomousDatabaseConfiguration()
 
         beanLocator.findBean(AutonomousDatabaseConfiguration, _) >> Optional.of(autonomousDatabaseConfiguration)
 
         when:
-        listener.onInitialized(event)
+        new UcpPoolConfigurationListener(walletArchiveProvider, beanLocator)
+                .onInitialized(initializing(datasourceConfiguration))
 
         then:
-        1 * walletArchiveProvider.loadWalletArchive(autonomousDatabaseConfiguration) >> walletArchive
-        datasourceConfiguration.getUrl() == "jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet"
+        1 * walletArchiveProvider.loadWalletArchive(autonomousDatabaseConfiguration) >> walletArchiveWithUrl(walletUrl)
+        datasourceConfiguration.getUrl() == walletUrl
         datasourceConfiguration.getConfiguredDriverClassName() == UcpPoolConfigurationListener.ORACLE_JDBC_POOL_ORACLE_DATA_SOURCE
+    }
+
+    private CanConfigureOracleDataSource walletArchiveWithUrl(String walletUrl) {
+        Stub(CanConfigureOracleDataSource) {
+            configure(_ as OracleDataSourceAttributes) >> { OracleDataSourceAttributes attributes ->
+                attributes.url(walletUrl)
+            }
+        }
+    }
+
+    private static AutonomousDatabaseConfiguration autonomousDatabaseConfiguration() {
+        AutonomousDatabaseConfiguration configuration = new AutonomousDatabaseConfiguration()
+        configuration.setOcid("ocid1.autonomousdatabase.oc1..example")
+        configuration
+    }
+
+    private BeanInitializingEvent<DatasourceConfiguration> initializing(DatasourceConfiguration datasourceConfiguration) {
+        Stub(BeanInitializingEvent) {
+            getBean() >> datasourceConfiguration
+        }
     }
 }
