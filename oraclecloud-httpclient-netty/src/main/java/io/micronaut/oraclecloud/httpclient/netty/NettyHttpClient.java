@@ -82,8 +82,7 @@ final class NettyHttpClient implements HttpClient {
     private static final String BLOCKING_EVENT_LOOP_MESSAGE = "You are trying to run a BlockingHttpClient operation on a netty event "
         + "loop thread. This is a common cause for bugs: Event loops should never be blocked. "
         + "You can either mark your controller as @ExecuteOn(TaskExecutors.BLOCKING), or use the reactive HTTP client "
-        + "to resolve this bug. There is also a configuration option to disable this check if you are certain a "
-        + "blocking operation is fine here.";
+        + "to resolve this bug.";
 
     final boolean legacyNettyClient;
     final boolean hasContext;
@@ -181,7 +180,10 @@ final class NettyHttpClient implements HttpClient {
     }
 
     static boolean isBlockingOperationOnEventLoop(Executor offloadExecutor) {
-        return offloadExecutor != null && Thread.currentThread() instanceof FastThreadLocalThread;
+        Thread thread = Thread.currentThread();
+        return offloadExecutor != null
+            && thread instanceof FastThreadLocalThread fastThreadLocalThread
+            && !fastThreadLocalThread.permitBlockingCalls();
     }
 
     static HttpClientException blockingOperationOnEventLoopException() {
