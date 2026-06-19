@@ -24,6 +24,8 @@ import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.inject.ast.ClassElement;
+import io.micronaut.inject.ast.MethodElement;
+import io.micronaut.inject.ast.ParameterElement;
 import io.micronaut.inject.visitor.TypeElementQuery;
 import io.micronaut.inject.visitor.TypeElementVisitor;
 import io.micronaut.inject.visitor.VisitorContext;
@@ -44,6 +46,7 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 
 import javax.lang.model.element.Modifier;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -134,7 +137,7 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
                 .addAnnotation(Factory.class)
                 .addAnnotation(requiresAnn)
                 .addAnnotation(AnnotationDef.builder(SerdeImport.class)
-                    .addMember("packageName", clientElement.getPackageName() + ".model")
+                    .addMember("packageName", resolveModelPackageName(clientElement, context))
                     .build())
                 .superclass(TypeDef.parameterized(FACTORY_TYPE, clientBuilderDef, clientDef));
 
@@ -259,5 +262,40 @@ public class SdkImportVisitor implements TypeElementVisitor<Object, Object> {
             serviceId = simpleName.toLowerCase(Locale.ENGLISH);
         }
         return serviceId;
+    }
+
+    private static String resolveModelPackageName(ClassElement clientElement, VisitorContext context) {
+        String inferredModelPackageName = inferModelPackageName(clientElement);
+        if (inferredModelPackageName != null) {
+            return inferredModelPackageName;
+        }
+        String clientPackageName = clientElement.getPackageName();
+        String standardModelPackageName = clientPackageName + ".model";
+        String clientModelPackageName = clientPackageName + ".client.model";
+        if (context.getClassElements(standardModelPackageName).length == 0
+            && context.getClassElements(clientModelPackageName).length > 0) {
+            return clientModelPackageName;
+        }
+        return standardModelPackageName;
+    }
+
+    private static String inferModelPackageName(ClassElement clientElement) {
+        Set<String> candidates = new LinkedHashSet<>();
+        String clientPackageName = clientElement.getPackageName();
+        for (MethodElement method : clientElement.getMethods()) {
+            addModelPackageCandidate(candidates, clientPackageName, method.getReturnType());
+            for (ParameterElement parameter : method.getParameters()) {
+                addModelPackageCandidate(candidates, clientPackageName, parameter.getType());
+            }
+        }
+        return candidates.stream().findFirst().orElse(null);
+    }
+
+    private static void addModelPackageCandidate(Set<String> candidates, String clientPackageName, ClassElement element) {
+        String packageName = element.getPackageName();
+        if ((packageName.endsWith(".requests") || packageName.endsWith(".responses"))
+            && packageName.startsWith(clientPackageName + ".")) {
+            candidates.add(packageName.substring(0, packageName.lastIndexOf('.')) + ".model");
+        }
     }
 }
