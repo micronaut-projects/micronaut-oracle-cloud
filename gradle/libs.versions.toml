@@ -13,7 +13,7 @@ shadow = '9.4.1'
 slf4j-jcl = '2.0.17'
 jackson2 = "2.21.3"
 
-managed-apache-http-core5 = "5.4.2"
+managed-apache-http-core5 = "5.4.3"
 micronaut-discovery-client = "5.0.0"
 micronaut-gradle-plugin = "5.0.0-M1"
 micronaut-groovy = "5.0.0"
