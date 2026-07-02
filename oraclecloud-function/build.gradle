@@ -10,7 +10,6 @@ dependencies {
     api(projects.micronautOraclecloudCommon)
     compileOnly(libs.graal.svm)
     compileOnly(mn.micronaut.jackson.databind)
-    compileOnly(libs.jackson2.databind)
     testImplementation(libs.fn.testing.junit4)
     testImplementation(mnTest.micronaut.test.spock)
     testImplementation(projects.micronautOraclecloudBmcObjectstorage)

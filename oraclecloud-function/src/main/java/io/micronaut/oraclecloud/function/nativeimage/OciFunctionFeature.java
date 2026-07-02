@@ -15,9 +15,6 @@
  */
 package io.micronaut.oraclecloud.function.nativeimage;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fnproject.fn.api.FnConfiguration;
 import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Introspected;
@@ -29,6 +26,7 @@ import org.graalvm.nativeimage.hosted.RuntimeClassInitialization;
 import org.graalvm.nativeimage.hosted.RuntimeJNIAccess;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
@@ -48,6 +46,12 @@ final class OciFunctionFeature implements Feature {
 
     private static final String UNIX_SOCKET_NATIVE = "com.fnproject.fn.runtime.ntv.UnixSocketNative";
     private static final String FN_HANDLER = "fn.handler";
+    private static final String JACKSON_2_JSON_TYPE_INFO = "com.fasterxml.jackson.annotation.JsonTypeInfo";
+    private static final String JACKSON_2_JSON_SUB_TYPES = "com.fasterxml.jackson.annotation.JsonSubTypes";
+    private static final String JACKSON_2_JSON_DESERIALIZE = "com.fasterxml.jackson.databind.annotation.JsonDeserialize";
+    private static final String JACKSON_3_JSON_TYPE_INFO = "tools.jackson.annotation.JsonTypeInfo";
+    private static final String JACKSON_3_JSON_SUB_TYPES = "tools.jackson.annotation.JsonSubTypes";
+    private static final String JACKSON_3_JSON_DESERIALIZE = "tools.jackson.databind.annotation.JsonDeserialize";
 
     @Override
     public void beforeAnalysis(BeforeAnalysisAccess access) {
@@ -117,49 +121,67 @@ final class OciFunctionFeature implements Feature {
         }
 
         checkDeserialize(type);
-        final JsonTypeInfo ti = type.getAnnotation(JsonTypeInfo.class);
-        if (ti != null) {
-            final Class<?> di = ti.defaultImpl();
-            if (di != JsonTypeInfo.class) {
-                registerIfNecessary(di);
-            }
-        }
-
-        final JsonSubTypes subTypes = type.getAnnotation(JsonSubTypes.class);
-        if (subTypes != null) {
-            final JsonSubTypes.Type[] types = subTypes.value();
-            if (ArrayUtils.isNotEmpty(types)) {
-                for (JsonSubTypes.Type t : types) {
-                    final Class<?> v = t.value();
-                    registerIfNecessary(v);
-                }
-            }
-        }
+        checkJsonTypeInfo(type, JACKSON_2_JSON_TYPE_INFO);
+        checkJsonTypeInfo(type, JACKSON_3_JSON_TYPE_INFO);
+        checkJsonSubTypes(type, JACKSON_2_JSON_SUB_TYPES);
+        checkJsonSubTypes(type, JACKSON_3_JSON_SUB_TYPES);
     }
 
     private static void checkDeserialize(AnnotatedElement type) {
+        checkDeserialize(type, JACKSON_2_JSON_DESERIALIZE);
+        checkDeserialize(type, JACKSON_3_JSON_DESERIALIZE);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void checkDeserialize(AnnotatedElement type, String annotationName) {
         try {
-            var deser = type.getAnnotation(JsonDeserialize.class);
+            Class<? extends Annotation> annotationType = (Class<? extends Annotation>) Class.forName(annotationName);
+            Annotation deser = type.getAnnotation(annotationType);
             if (deser != null) {
-                registerIfNecessary(deser.builder());
-                registerIfNecessary(deser.as());
-                registerIfNecessary(deser.contentAs());
-                registerIfNecessary(deser.keyAs());
-                registerIfNecessary(deser.using());
+                registerIfNecessary(annotationValue(deser, "builder"));
+                registerIfNecessary(annotationValue(deser, "as"));
+                registerIfNecessary(annotationValue(deser, "contentAs"));
+                registerIfNecessary(annotationValue(deser, "keyAs"));
+                registerIfNecessary(annotationValue(deser, "using"));
             }
-        } catch (LinkageError ignored) {
+        } catch (ReflectiveOperationException | LinkageError ignored) {
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void checkJsonTypeInfo(AnnotatedElement type, String annotationName) {
         try {
-            var deser = type.getAnnotation(tools.jackson.databind.annotation.JsonDeserialize.class);
-            if (deser != null) {
-                registerIfNecessary(deser.builder());
-                registerIfNecessary(deser.as());
-                registerIfNecessary(deser.contentAs());
-                registerIfNecessary(deser.keyAs());
-                registerIfNecessary(deser.using());
+            Class<? extends Annotation> annotationType = (Class<? extends Annotation>) Class.forName(annotationName);
+            Annotation typeInfo = type.getAnnotation(annotationType);
+            if (typeInfo != null) {
+                Class<?> defaultImpl = annotationValue(typeInfo, "defaultImpl");
+                if (defaultImpl != annotationType) {
+                    registerIfNecessary(defaultImpl);
+                }
             }
-        } catch (LinkageError ignored) {
+        } catch (ReflectiveOperationException | LinkageError ignored) {
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void checkJsonSubTypes(AnnotatedElement type, String annotationName) {
+        try {
+            Class<? extends Annotation> annotationType = (Class<? extends Annotation>) Class.forName(annotationName);
+            Annotation subTypes = type.getAnnotation(annotationType);
+            if (subTypes != null) {
+                Annotation[] subTypeValues = (Annotation[]) subTypes.annotationType().getMethod("value").invoke(subTypes);
+                if (ArrayUtils.isNotEmpty(subTypeValues)) {
+                    for (Annotation subType : subTypeValues) {
+                        registerIfNecessary(annotationValue(subType, "value"));
+                    }
+                }
+            }
+        } catch (ReflectiveOperationException | LinkageError ignored) {
+        }
+    }
+
+    private static Class<?> annotationValue(Annotation annotation, String member) throws ReflectiveOperationException {
+        return (Class<?>) annotation.annotationType().getMethod(member).invoke(annotation);
     }
 
     private static void registerIfNecessary(Class<?> t) {

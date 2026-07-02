@@ -11,7 +11,6 @@ oci = "3.86.1"
 protobuf = '0.9.6'
 shadow = '9.4.1'
 slf4j-jcl = '2.0.17'
-jackson2 = "2.21.3"
 
 managed-apache-http-core5 = "5.4.2"
 micronaut-discovery-client = "5.0.0"
@@ -80,7 +79,6 @@ oracle-security-core = { module = "com.oracle.database.security:osdt_core", vers
 oracle-security-oraclepki = { module = 'com.oracle.database.security:oraclepki' }
 oracle-xml-xdb = { module = 'com.oracle.database.xml:xdb' }
 slf4j-jcl = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j-jcl' }
-jackson2-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson2' }
 
 #plugins
 micronaut-gradle-plugin = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref="micronaut-gradle-plugin" }
