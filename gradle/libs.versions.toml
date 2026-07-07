@@ -1,7 +1,7 @@
 [versions]
-micronaut = "5.0.0"
-micronaut-platform = "5.0.0-RC1"
-fn = '1.1.12'
+micronaut = "5.1.3"
+micronaut-platform = "5.0.3"
+fn = '1.1.14'
 graal-svm = "25.0.3"
 javapoet = '1.13.0'
 logback-json-classic = '0.1.5'
@@ -9,26 +9,26 @@ objenesis = "3.5"
 oracle-database-security = "21.21.0.0"
 oci = "3.91.0"
 protobuf = '0.9.6'
-shadow = '9.4.1'
-slf4j-jcl = '2.0.17'
-jackson2 = "2.21.3"
+shadow = '9.5.1'
+slf4j-jcl = '2.0.18'
+jackson2 = "2.22.0"
 
-managed-apache-http-core5 = "5.4.2"
+managed-apache-http-core5 = "5.4.3"
 micronaut-discovery-client = "5.0.0"
-micronaut-gradle-plugin = "5.0.0-M1"
+micronaut-gradle-plugin = "5.0.2"
 micronaut-groovy = "5.0.0"
 micronaut-kotlin = "5.0.0"
-micronaut-kubernetes = "8.0.0"
-micronaut-reactor = "4.0.0"
+micronaut-kubernetes = "8.1.0"
+micronaut-reactor = "4.1.0"
 micronaut-rxjava2 = "2.9.0"
-micronaut-serde = "3.0.0"
+micronaut-serde = "3.1.0"
 micronaut-servlet = "6.0.0"
-micronaut-sql = "7.0.1"
-micronaut-micrometer = "6.0.0"
-micronaut-security = "5.0.0"
-micronaut-sourcegen = "2.0.0"
+micronaut-sql = "7.0.2"
+micronaut-micrometer = "6.0.1"
+micronaut-security = "5.2.0"
+micronaut-sourcegen = "2.1.0"
 micronaut-test = "5.0.0"
-micronaut-logging = "2.0.0"
+micronaut-logging = "2.1.0"
 micronaut-validation = "5.0.0"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
