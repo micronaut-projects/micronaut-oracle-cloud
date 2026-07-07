@@ -11,7 +11,7 @@ oci = "3.86.1"
 protobuf = '0.9.6'
 shadow = '9.5.1'
 slf4j-jcl = '2.0.18'
-jackson2 = "2.21.3"
+jackson2 = "2.22.0"
 
 managed-apache-http-core5 = "5.4.3"
 micronaut-discovery-client = "5.0.0"
