@@ -27,7 +27,7 @@ micronaut-sql = "7.0.2"
 micronaut-micrometer = "6.0.1"
 micronaut-security = "5.2.0"
 micronaut-sourcegen = "2.1.0"
-micronaut-test = "5.0.0"
+micronaut-test = "5.0.1"
 micronaut-logging = "2.1.0"
 micronaut-validation = "5.0.0"
 
