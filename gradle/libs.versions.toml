@@ -9,7 +9,7 @@ objenesis = "3.5"
 oracle-database-security = "21.21.0.0"
 oci = "3.86.1"
 protobuf = '0.9.6'
-shadow = '9.4.1'
+shadow = '9.5.1'
 slf4j-jcl = '2.0.17'
 jackson2 = "2.21.3"
 
