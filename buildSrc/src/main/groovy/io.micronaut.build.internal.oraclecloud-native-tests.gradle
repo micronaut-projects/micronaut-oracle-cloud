@@ -14,6 +14,7 @@ graalvmNative {
     toolchainDetection = false
     metadataRepository {
         enabled = true
+        excludedModules.add("com.fasterxml.jackson.core:jackson-databind")
     }
     binaries {
         configureEach {
