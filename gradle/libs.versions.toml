@@ -15,7 +15,7 @@ oci = "3.77.2"
 oracle-database-security = "21.20.0.0"
 protobuf = '0.9.5'
 
-managed-apache-http-core5 = "5.3.6"
+managed-apache-http-core5 = "5.4.3"
 micronaut-gradle-plugin = "4.6.1"
 micronaut-groovy = "4.7.0"
 micronaut-kotlin = "4.7.0"
