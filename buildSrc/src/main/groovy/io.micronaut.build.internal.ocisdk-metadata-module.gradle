@@ -6,6 +6,11 @@ plugins {
 }
 
 dependencies {
+    constraints {
+        implementation(libs.jackson2.databind)
+        runtimeOnly(libs.jackson2.databind)
+    }
+
     annotationProcessor(projects.micronautOraclecloudSerdeInternalProcessor)
     // The dependency is required for annotations and their metadata
     implementation(mnSerde.micronaut.serde.api)

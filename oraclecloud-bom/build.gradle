@@ -5,6 +5,7 @@ plugins {
 
 dependencies {
     constraints {
+        api(libs.jackson2.databind)
         for (name in gradle.ociArtifacts) {
             api "com.oracle.oci.sdk:$name:$gradle.ociVersion"
         }

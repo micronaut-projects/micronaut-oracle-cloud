@@ -7,6 +7,13 @@ repositories {
 }
 
 dependencies {
+    constraints {
+        implementation(libs.jackson2.databind)
+        compileOnly(libs.jackson2.databind)
+        testImplementation(libs.jackson2.databind)
+        testRuntimeOnly(libs.jackson2.databind)
+    }
+
     testAnnotationProcessor(mn.micronaut.inject.java)
     testImplementation(mnTest.junit.platform.launcher)
     testImplementation(mnTest.micronaut.test.junit5)
