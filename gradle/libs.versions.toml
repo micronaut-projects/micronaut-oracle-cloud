@@ -1,5 +1,5 @@
 [versions]
-micronaut = "5.1.5"
+micronaut = "5.1.6"
 micronaut-platform = "5.0.4"
 fn = '1.1.14'
 graal-svm = "25.0.3"
