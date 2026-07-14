@@ -71,6 +71,7 @@ final class ApacheCoreHttpClientBuilder implements HttpClientBuilder {
         } else if (key == StandardClientProperties.READ_TIMEOUT
             || key == StandardClientProperties.CONNECT_TIMEOUT
             || key == StandardClientProperties.ASYNC_POOL_SIZE
+            || key == StandardClientProperties.ASYNC_POOL_CORE_THREAD_TIMEOUT_ENABLED
         ) {
             // Those properties are set in by unmanaged clients sometimes
             LOG.debug("Attempted to set standard client property '{}' that is not supported for apache core client.", key.getName());
