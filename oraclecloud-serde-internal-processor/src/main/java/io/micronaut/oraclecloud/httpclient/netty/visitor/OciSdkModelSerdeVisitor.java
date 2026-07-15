@@ -51,6 +51,8 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
     private static final String OCI_SDK_ENUM_CLASS_NAME = "com.oracle.bmc.http.internal.BmcEnum";
     private static final String OCI_SDK_ENUM_CREATOR_NAME = "create";
     private static final String INTROSPECTION_PACKAGE = ".introspection";
+    private static final String JSON_SUB_TYPES = "com.fasterxml.jackson.annotation.JsonSubTypes";
+    private static final String JSON_TYPE_INFO = "com.fasterxml.jackson.annotation.JsonTypeInfo";
 
     private boolean visitingOciSdkModel;
     private boolean visitingOciSdkEnum;
@@ -72,6 +74,7 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
         visitingOciSdkEnum = isOciSdkEnum(element);
 
         if (visitingOciSdkModel) {
+            removeInheritedTypeInfo(element);
             makeSerdeable(element);
             // Ignore the validation because the Deserialize(builder=) is not supported
             ignoreMicronautSerdeValidation(element);
@@ -112,6 +115,14 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
     private static void makeElementNullable(TypedElement element) {
         if (!element.isNonNull() && !element.isDeclaredNullable()) {
             element.annotate(AnnotationUtil.NULLABLE);
+        }
+    }
+
+    private static void removeInheritedTypeInfo(ClassElement element) {
+        if (element.hasDeclaredAnnotation(JSON_TYPE_INFO)
+            && !element.hasDeclaredAnnotation(JSON_SUB_TYPES)) {
+            element.removeAnnotation(JSON_TYPE_INFO);
+            element.removeAnnotation(SerdeConfig.SerSubtyped.class);
         }
     }
 
