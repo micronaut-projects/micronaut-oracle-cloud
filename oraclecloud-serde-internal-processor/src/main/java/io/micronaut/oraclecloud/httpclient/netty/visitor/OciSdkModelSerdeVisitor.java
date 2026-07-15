@@ -119,9 +119,10 @@ public class OciSdkModelSerdeVisitor implements TypeElementVisitor<Object, Objec
     }
 
     private static void removeInheritedTypeInfo(ClassElement element) {
-        if (!element.hasDeclaredAnnotation(JSON_SUB_TYPES)
-            && element.getSuperType().map(parent -> parent.hasAnnotation(JSON_TYPE_INFO)).orElse(false)) {
+        if (element.hasDeclaredAnnotation(JSON_TYPE_INFO)
+            && !element.hasDeclaredAnnotation(JSON_SUB_TYPES)) {
             element.removeAnnotation(JSON_TYPE_INFO);
+            element.removeAnnotation(SerdeConfig.SerSubtyped.class);
         }
     }
 
