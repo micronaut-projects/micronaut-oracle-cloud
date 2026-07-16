@@ -15,7 +15,7 @@ jackson2 = "2.21.5"
 
 managed-apache-http-core5 = "5.4.2"
 micronaut-discovery-client = "5.0.0"
-micronaut-gradle-plugin = "5.0.0-M1"
+micronaut-gradle-plugin = "5.0.2"
 micronaut-groovy = "5.0.0"
 micronaut-kotlin = "5.0.0"
 micronaut-kubernetes = "8.0.0"
