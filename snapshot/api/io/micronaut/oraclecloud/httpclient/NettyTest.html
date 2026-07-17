@@ -77,6 +77,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#customize(com.oracle.bmc.common.ClientBuilderBase)" tabindex="0">customize(ClientBuilderBase)</a></li>
 <li><a href="#setupBootstrap(io.netty.bootstrap.ServerBootstrap)" tabindex="0">setupBootstrap(ServerBootstrap)</a></li>
 <li><a href="#getServerChannel()" tabindex="0">getServerChannel()</a></li>
+<li><a href="#copiedInputStreamBodyUsesResetStream()" tabindex="0">copiedInputStreamBodyUsesResetStream()</a></li>
 <li><a href="#simpleRequest()" tabindex="0">simpleRequest()</a></li>
 <li><a href="#textBodyTwice()" tabindex="0">textBodyTwice()</a></li>
 <li><a href="#streamingRequestBuffered()" tabindex="0">streamingRequestBuffered()</a></li>
@@ -95,6 +96,7 @@ loadScripts(document, 'script');</script>
 <li><a href="#fullSetupErrorParseFailure()" tabindex="0">fullSetupErrorParseFailure()</a></li>
 <li><a href="#fullSetupTestManagedCustomProperties()" tabindex="0">fullSetupTestManagedCustomProperties()</a></li>
 <li><a href="#functionsClientTest()" tabindex="0">functionsClientTest()</a></li>
+<li><a href="#functionsClientRetriesInputStreamBodyUsesResetStream()" tabindex="0">functionsClientRetriesInputStreamBodyUsesResetStream()</a></li>
 <li><a href="#streamModelTest()" tabindex="0">streamModelTest()</a></li>
 <li><a href="#inclusionTest()" tabindex="0">inclusionTest()</a></li>
 <li><a href="#timeoutRetryTest()" tabindex="0">timeoutRetryTest()</a></li>
@@ -208,38 +210,44 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#continueStream()" class="member-name-link">continueStream</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#customize(com.oracle.bmc.common.ClientBuilderBase)" class="member-name-link">customize</a><wbr>(com.oracle.bmc.common.ClientBuilderBase&lt;?,<wbr>?&gt;&nbsp;client)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#dateFormatTest()" class="member-name-link">dateFormatTest</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#emptyJsonBody()" class="member-name-link">emptyJsonBody</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#copiedInputStreamBodyUsesResetStream()" class="member-name-link">copiedInputStreamBodyUsesResetStream</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#customize(com.oracle.bmc.common.ClientBuilderBase)" class="member-name-link">customize</a><wbr>(com.oracle.bmc.common.ClientBuilderBase&lt;?,<wbr>?&gt;&nbsp;client)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#dateFormatTest()" class="member-name-link">dateFormatTest</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#encryptionSdk()" class="member-name-link">encryptionSdk</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#endpoint()" class="member-name-link">endpoint</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#errorCodeAndMessageTest()" class="member-name-link">errorCodeAndMessageTest</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#emptyJsonBody()" class="member-name-link">emptyJsonBody</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#explicitlySetTest()" class="member-name-link">explicitlySetTest</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#encryptionSdk()" class="member-name-link">encryptionSdk</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>protected abstract <a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#endpoint()" class="member-name-link">endpoint</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#errorCodeAndMessageTest()" class="member-name-link">errorCodeAndMessageTest</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupConnectionDiesMidError()" class="member-name-link">fullSetupConnectionDiesMidError</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#explicitlySetTest()" class="member-name-link">explicitlySetTest</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupErrorParseFailure()" class="member-name-link">fullSetupErrorParseFailure</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupConnectionDiesMidError()" class="member-name-link">fullSetupConnectionDiesMidError</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupTest()" class="member-name-link">fullSetupTest</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupErrorParseFailure()" class="member-name-link">fullSetupErrorParseFailure</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupTestManagedCustomProperties()" class="member-name-link">fullSetupTestManagedCustomProperties</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupTest()" class="member-name-link">fullSetupTest</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#fullSetupTestManagedCustomProperties()" class="member-name-link">fullSetupTestManagedCustomProperties</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#functionsClientRetriesInputStreamBodyUsesResetStream()" class="member-name-link">functionsClientRetriesInputStreamBodyUsesResetStream</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#functionsClientTest()" class="member-name-link">functionsClientTest</a>()</code></div>
@@ -411,6 +419,20 @@ loadScripts(document, 'script');</script>
 <h3>getServerChannel</h3>
 <div class="horizontal-scroll">
 <div class="member-signature"><span class="modifiers">protected final</span>&nbsp;<span class="return-type">io.netty.channel.Channel</span>&nbsp;<span class="element-name">getServerChannel</span>()</div>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="copiedInputStreamBodyUsesResetStream()">
+<h3>copiedInputStreamBodyUsesResetStream</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@Test
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">copiedInputStreamBodyUsesResetStream</span>()
+                                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></span></div>
+<dl class="notes">
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Exception.html" title="class or interface in java.lang" class="external-link">Exception</a></code></dd>
+</dl>
 </div>
 </section>
 </li>
@@ -662,6 +684,20 @@ loadScripts(document, 'script');</script>
 <div class="member-signature"><span class="annotations">@Test
 </span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">functionsClientTest</span>()
                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateException.html" title="class or interface in java.security.cert" class="external-link">CertificateException</a></span></div>
+<dl class="notes">
+<dt>Throws:</dt>
+<dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateException.html" title="class or interface in java.security.cert" class="external-link">CertificateException</a></code></dd>
+</dl>
+</div>
+</section>
+</li>
+<li>
+<section class="detail" id="functionsClientRetriesInputStreamBodyUsesResetStream()">
+<h3>functionsClientRetriesInputStreamBodyUsesResetStream</h3>
+<div class="horizontal-scroll">
+<div class="member-signature"><span class="annotations">@Test
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">functionsClientRetriesInputStreamBodyUsesResetStream</span>()
+                                                          throws <span class="exceptions"><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateException.html" title="class or interface in java.security.cert" class="external-link">CertificateException</a></span></div>
 <dl class="notes">
 <dt>Throws:</dt>
 <dd><code><a href="https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/CertificateException.html" title="class or interface in java.security.cert" class="external-link">CertificateException</a></code></dd>
