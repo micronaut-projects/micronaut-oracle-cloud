@@ -29,6 +29,10 @@ import java.util.List;
 public final class OracleCloudCounter extends StepCounter implements OracleCloudDatapointProducer {
     private final DataPointProvider dataPointProvider;
 
+    public OracleCloudCounter(Id id, Clock clock, long stepMillis) {
+        this(id, clock, stepMillis, DataPointProvider.DEFAULT_MAX_BUFFERED_DATAPOINTS);
+    }
+
     public OracleCloudCounter(Id id, Clock clock, long stepMillis, int maxBufferedDatapoints) {
         super(id, clock, stepMillis);
         dataPointProvider = new DataPointProvider(maxBufferedDatapoints);

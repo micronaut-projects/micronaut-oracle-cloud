@@ -32,6 +32,10 @@ public class OracleCloudTimer extends StepTimer implements OracleCloudDatapointP
     private final TimeUnit timeUnit;
     private final DataPointProvider dataPointProvider;
 
+    public OracleCloudTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepDurationMillis, boolean supportsAggregablePercentiles) {
+        this(id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepDurationMillis, supportsAggregablePercentiles, DataPointProvider.DEFAULT_MAX_BUFFERED_DATAPOINTS);
+    }
+
     public OracleCloudTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepDurationMillis, boolean supportsAggregablePercentiles, int maxBufferedDatapoints) {
         super(id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepDurationMillis, supportsAggregablePercentiles);
         this.timeUnit = baseTimeUnit;

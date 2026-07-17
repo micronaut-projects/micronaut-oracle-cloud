@@ -47,12 +47,16 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     private final Logger logger = LoggerFactory.getLogger(AbstractOracleCloudMeterRegistry.class);
     private final WarnThenDebugLogger warnThenDebugLogger = new WarnThenDebugLogger(OracleCloudMetricsNamingConvention.class);
     private final Provider<MonitoringIngestionClient> monitoringIngestionClientProvider;
+    private final RetryConfiguration retryConfiguration;
     private MonitoringIngestionClient monitoringIngestionClient;
 
     protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
         super(oracleCloudConfig, clock);
         this.monitoringIngestionClientProvider = monitoringIngestionClientProvider;
         this.oracleCloudConfig = oracleCloudConfig;
+        this.retryConfiguration = RetryConfiguration.builder()
+            .terminationStrategy(new MaxAttemptsTerminationStrategy(oracleCloudConfig.retryAttempts() + 1))
+            .build();
         config().namingConvention(new OracleCloudMetricsNamingConvention());
         config().commonTags("application", this.oracleCloudConfig.applicationName());
         start(threadFactory);
@@ -114,9 +118,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
 
                 PostMetricDataResponse postMetricDataResponse = monitoringIngestionClient.postMetricData(PostMetricDataRequest.builder()
                     .postMetricDataDetails(builder.build())
-                    .retryConfiguration(RetryConfiguration.builder()
-                        .terminationStrategy(new MaxAttemptsTerminationStrategy(oracleCloudConfig.retryAttempts() + 1))
-                        .build())
+                    .retryConfiguration(retryConfiguration)
                     .build());
 
                 if (logger.isDebugEnabled() && !postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().isEmpty()) {

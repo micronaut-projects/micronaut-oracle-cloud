@@ -27,9 +27,17 @@ import java.util.concurrent.LinkedBlockingQueue;
  * DataPointProvider stores the {@link Datapoint}.
  */
 final class DataPointProvider {
+    static final int DEFAULT_MAX_BUFFERED_DATAPOINTS = 1000;
     private final BlockingQueue<Datapoint> datapoints;
 
+    DataPointProvider() {
+        this(DEFAULT_MAX_BUFFERED_DATAPOINTS);
+    }
+
     DataPointProvider(int maxBufferedDatapoints) {
+        if (maxBufferedDatapoints < 1) {
+            throw new IllegalArgumentException("maxBufferedDatapoints must be greater than 0");
+        }
         datapoints = new LinkedBlockingQueue<>(maxBufferedDatapoints);
     }
 
@@ -39,7 +47,7 @@ final class DataPointProvider {
      *
      * @return list of {@link Datapoint}
      */
-    List<Datapoint> produceDatapoints() {
+    synchronized List<Datapoint> produceDatapoints() {
         List<Datapoint> datapointsToReturn = new ArrayList<>();
         datapoints.drainTo(datapointsToReturn);
         return datapointsToReturn;
@@ -50,7 +58,7 @@ final class DataPointProvider {
      * @param value of the datapoint
      */
     void createDataPoint(Double value) {
-        datapoints.offer(Datapoint.builder().timestamp(new Date()).value(value).build());
+        add(Datapoint.builder().timestamp(new Date()).value(value).build());
     }
 
     /**
@@ -59,6 +67,13 @@ final class DataPointProvider {
      * @param count of the datapoint
      */
     void createDataPoint(Double value, Integer count) {
-        datapoints.offer(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
+        add(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
+    }
+
+    private synchronized void add(Datapoint datapoint) {
+        if (!datapoints.offer(datapoint)) {
+            datapoints.poll();
+            datapoints.offer(datapoint);
+        }
     }
 }
