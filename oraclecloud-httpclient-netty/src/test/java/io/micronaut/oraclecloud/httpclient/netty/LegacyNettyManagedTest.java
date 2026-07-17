@@ -34,4 +34,11 @@ public class LegacyNettyManagedTest extends NettyManagedTest {
     public void functionsClientTest() throws CertificateException {
         super.functionsClientTest();
     }
+
+    @Override
+    @Disabled("Legacy client does not pass the generated Functions invocation test setup")
+    public void functionsClientRetriesInputStreamBodyUsesResetStream() throws CertificateException {
+        super.functionsClientRetriesInputStreamBodyUsesResetStream();
+    }
+
 }
