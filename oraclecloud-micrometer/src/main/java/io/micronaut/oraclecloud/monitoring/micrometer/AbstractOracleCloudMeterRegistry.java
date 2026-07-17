@@ -19,7 +19,9 @@ import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import com.oracle.bmc.monitoring.model.PostMetricDataDetails;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
 import com.oracle.bmc.monitoring.responses.PostMetricDataResponse;
+import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.util.internal.StringUtils;
+import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
@@ -112,6 +114,9 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
 
                 PostMetricDataResponse postMetricDataResponse = monitoringIngestionClient.postMetricData(PostMetricDataRequest.builder()
                     .postMetricDataDetails(builder.build())
+                    .retryConfiguration(RetryConfiguration.builder()
+                        .terminationStrategy(new MaxAttemptsTerminationStrategy(oracleCloudConfig.retryAttempts() + 1))
+                        .build())
                     .build());
 
                 if (logger.isDebugEnabled() && !postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().isEmpty()) {

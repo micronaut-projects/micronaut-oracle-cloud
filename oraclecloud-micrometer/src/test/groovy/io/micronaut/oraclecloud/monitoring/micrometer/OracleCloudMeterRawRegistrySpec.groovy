@@ -133,6 +133,43 @@ class OracleCloudMeterRawRegistrySpec extends Specification {
         data.datapoints[1].value == 1
     }
 
+    def "test raw datapoints are bounded"() {
+        given:
+        def counter = cloudMeterRegistry.counter("bounded-counter")
+
+        when:
+        (oracleCloudConfig.maxBufferedDatapoints() + 1).times { counter.increment() }
+        def data = cloudMeterRegistry.trackRawData(counter).findFirst().get()
+
+        then:
+        data.datapoints.size() == oracleCloudConfig.maxBufferedDatapoints()
+    }
+
+    def "test failed post discards raw datapoints after one retry"() {
+        given:
+        def client = Mock(MonitoringIngestionClient) {
+            postMetricData(_) >> { throw new RuntimeException("unavailable") }
+        }
+        def registry = new OracleCloudRawMeterRegistry(oracleCloudConfig, mockClock, new Provider<MonitoringIngestionClient>() {
+            @Override
+            MonitoringIngestionClient get() {
+                client
+            }
+        })
+        def counter = registry.counter("discarded-counter")
+        counter.increment()
+
+        when:
+        registry.publish()
+
+        then:
+        1 * client.postMetricData({ it.retryConfiguration.terminationStrategy.maxAttempts == 2 })
+        registry.trackRawData(counter).findFirst().empty
+
+        cleanup:
+        registry.close()
+    }
+
     def "test it can track timer"() {
         given:
         def timer = cloudMeterRegistry.timer("timer")

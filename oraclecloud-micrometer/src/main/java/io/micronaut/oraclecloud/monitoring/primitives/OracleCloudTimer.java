@@ -30,11 +30,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class OracleCloudTimer extends StepTimer implements OracleCloudDatapointProducer {
     private final TimeUnit timeUnit;
-    private final DataPointProvider dataPointProvider = new DataPointProvider();
+    private final DataPointProvider dataPointProvider;
 
-    public OracleCloudTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepDurationMillis, boolean supportsAggregablePercentiles) {
+    public OracleCloudTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepDurationMillis, boolean supportsAggregablePercentiles, int maxBufferedDatapoints) {
         super(id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepDurationMillis, supportsAggregablePercentiles);
         this.timeUnit = baseTimeUnit;
+        dataPointProvider = new DataPointProvider(maxBufferedDatapoints);
     }
 
     @Override

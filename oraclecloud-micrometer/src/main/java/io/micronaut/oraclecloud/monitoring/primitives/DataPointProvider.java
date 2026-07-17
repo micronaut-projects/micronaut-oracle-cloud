@@ -27,7 +27,11 @@ import java.util.concurrent.LinkedBlockingQueue;
  * DataPointProvider stores the {@link Datapoint}.
  */
 final class DataPointProvider {
-    private final BlockingQueue<Datapoint> datapoints = new LinkedBlockingQueue<>();
+    private final BlockingQueue<Datapoint> datapoints;
+
+    DataPointProvider(int maxBufferedDatapoints) {
+        datapoints = new LinkedBlockingQueue<>(maxBufferedDatapoints);
+    }
 
     /**
      * Produces the list of datapoints that will be sent. It will also perform cleanup
@@ -46,7 +50,7 @@ final class DataPointProvider {
      * @param value of the datapoint
      */
     void createDataPoint(Double value) {
-        datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).build());
+        datapoints.offer(Datapoint.builder().timestamp(new Date()).value(value).build());
     }
 
     /**
@@ -55,6 +59,6 @@ final class DataPointProvider {
      * @param count of the datapoint
      */
     void createDataPoint(Double value, Integer count) {
-        datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
+        datapoints.offer(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
     }
 }
