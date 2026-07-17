@@ -118,6 +118,12 @@ public class ApacheNettyTest extends NettyTest {
         super.functionsClientTest();
     }
 
+    @Override
+    @Disabled // not implemented
+    public void functionsClientRetriesInputStreamBodyUsesResetStream() throws CertificateException {
+        super.functionsClientRetriesInputStreamBodyUsesResetStream();
+    }
+
     @Test
     public void location() throws Exception {
         netty.handleOneRequest((ctx, request) -> {

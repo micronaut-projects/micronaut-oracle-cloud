@@ -79,6 +79,7 @@ final class MicronautHttpRequest implements HttpRequest {
 
     private boolean expectContinue;
     private Object returningBody;
+    private long inputStreamContentLength = UNKNOWN_CONTENT_LENGTH;
     @Nullable
     private CloseableByteBody byteBody;
 
@@ -120,8 +121,16 @@ final class MicronautHttpRequest implements HttpRequest {
         this.blockHint = from.blockHint;
         this.expectContinue = from.expectContinue;
 
-        this.returningBody = from.returningBody;
-        this.byteBody = from.byteBody == null ? null : from.byteBody.split(ByteBody.SplitBackpressureMode.FASTEST); // todo
+        if (from.byteBody == null) {
+            this.returningBody = from.returningBody;
+            this.inputStreamContentLength = from.inputStreamContentLength;
+            this.byteBody = null;
+        } else if (from.returningBody instanceof InputStream inputStream) {
+            body(inputStream, from.inputStreamContentLength);
+        } else {
+            this.returningBody = from.returningBody;
+            this.byteBody = from.byteBody.split(ByteBody.SplitBackpressureMode.FASTEST); // todo
+        }
     }
 
     private static MutableHttpRequest<?> copyRequest(io.micronaut.http.HttpRequest<?> original) {
@@ -156,11 +165,13 @@ final class MicronautHttpRequest implements HttpRequest {
         if (body instanceof String s) {
             byteBody = AvailableByteArrayBody.create(READ_BUFFER_FACTORY.copyOf(s, StandardCharsets.UTF_8));
             returningBody = body;
+            inputStreamContentLength = UNKNOWN_CONTENT_LENGTH;
         } else if (body instanceof InputStream) {
             body((InputStream) body, UNKNOWN_CONTENT_LENGTH);
         } else if (body == null) {
             byteBody = AvailableByteArrayBody.create(READ_BUFFER_FACTORY.createEmpty());
             returningBody = "";
+            inputStreamContentLength = UNKNOWN_CONTENT_LENGTH;
         } else {
             // todo: would be better to write directly to ByteBuf here, but RequestSignerImpl does not yet support
             //  anything but String
@@ -172,6 +183,7 @@ final class MicronautHttpRequest implements HttpRequest {
             }
             byteBody = AvailableByteArrayBody.create(READ_BUFFER_FACTORY.copyOf(json, StandardCharsets.UTF_8));
             returningBody = json;
+            inputStreamContentLength = UNKNOWN_CONTENT_LENGTH;
         }
         return this;
     }
@@ -185,6 +197,7 @@ final class MicronautHttpRequest implements HttpRequest {
             ByteBodyFactory.createDefault(ByteArrayBufferFactory.INSTANCE)
         );
         returningBody = body;
+        inputStreamContentLength = contentLength;
         return this;
     }
 
