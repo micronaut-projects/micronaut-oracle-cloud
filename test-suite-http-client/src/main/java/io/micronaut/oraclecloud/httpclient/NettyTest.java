@@ -121,6 +121,7 @@ public abstract class NettyTest {
             ByteArrayInputStream body = new ByteArrayInputStream("abcdef".getBytes(StandardCharsets.UTF_8));
             HttpRequest request = client.createRequest(Method.POST)
                 .appendPathPart("foo")
+                .header("content-type", "text/plain")
                 .body(body);
 
             try {
