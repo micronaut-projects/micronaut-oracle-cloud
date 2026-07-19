@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,8 @@ final class NettyHttpClient implements HttpClient {
     private static final boolean LEGACY_NETTY_CLIENT = Boolean.getBoolean("io.micronaut.oraclecloud.httpclient.netty.legacy-netty-client");
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyHttpClient.class);
+
+    private static final ThreadFactory DAEMON_BLOCKING_IO_THREAD_FACTORY = new OciNettyDaemonThreadFactory("oci-netty-blocking");
 
     final boolean legacyNettyClient;
     final boolean hasContext;
@@ -102,18 +105,9 @@ final class NettyHttpClient implements HttpClient {
         if (builder.managedProvider == null) {
             hasContext = false;
             ownsThreadPool = true;
-            DefaultHttpClientConfiguration cfg = new DefaultHttpClientConfiguration();
-            // Configure proxy via system properties for OCI use-cases
-            applyProxyFromSystemProperties(cfg, LOG);
-
-            if (builder.properties.containsKey(StandardClientProperties.CONNECT_TIMEOUT)) {
-                cfg.setConnectTimeout((Duration) builder.properties.get(StandardClientProperties.CONNECT_TIMEOUT));
-            }
-            if (builder.properties.containsKey(StandardClientProperties.READ_TIMEOUT)) {
-                cfg.setReadTimeout((Duration) builder.properties.get(StandardClientProperties.READ_TIMEOUT));
-            }
+            DefaultHttpClientConfiguration cfg = unmanagedClientConfiguration(builder.properties);
             mnClient = RawHttpClient.create(null, cfg);
-            blockingIoExecutor = Executors.newCachedThreadPool();
+            blockingIoExecutor = Executors.newCachedThreadPool(DAEMON_BLOCKING_IO_THREAD_FACTORY);
             jsonMapper = OciSdkMicronautSerializer.getDefaultObjectMapper();
         } else {
             hasContext = true;
@@ -155,6 +149,21 @@ final class NettyHttpClient implements HttpClient {
         }
 
         this.buffered = builder.buffered;
+    }
+
+    static DefaultHttpClientConfiguration unmanagedClientConfiguration(Map<ClientProperty<?>, Object> properties) {
+        DefaultHttpClientConfiguration cfg = new DefaultHttpClientConfiguration();
+        cfg.setThreadFactory(OciNettyDaemonThreadFactory.class);
+        // Configure proxy via system properties for OCI use-cases
+        applyProxyFromSystemProperties(cfg, LOG);
+
+        if (properties.containsKey(StandardClientProperties.CONNECT_TIMEOUT)) {
+            cfg.setConnectTimeout((Duration) properties.get(StandardClientProperties.CONNECT_TIMEOUT));
+        }
+        if (properties.containsKey(StandardClientProperties.READ_TIMEOUT)) {
+            cfg.setReadTimeout((Duration) properties.get(StandardClientProperties.READ_TIMEOUT));
+        }
+        return cfg;
     }
 
     ByteBufAllocator alloc() {
