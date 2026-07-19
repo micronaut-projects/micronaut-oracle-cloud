@@ -24,9 +24,12 @@ import com.oracle.bmc.monitoring.MonitoringClient;
 import com.oracle.bmc.monitoring.model.CreateAlarmDetails;
 import com.oracle.bmc.monitoring.requests.CreateAlarmRequest;
 import com.oracle.bmc.monitoring.requests.DeleteAlarmRequest;
+import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.streaming.model.PutMessagesDetails;
 import com.oracle.bmc.streaming.model.PutMessagesDetailsEntry;
 import com.oracle.bmc.streaming.model.PutMessagesResult;
+import com.oracle.bmc.waiter.FixedTimeDelayStrategy;
+import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
 import io.micronaut.serde.annotation.SerdeImport;
@@ -97,6 +100,46 @@ public abstract class NettyTest {
 
     protected final Channel getServerChannel() {
         return netty.serverChannel;
+    }
+
+    @Test
+    public void copiedInputStreamBodyUsesResetStream() throws Exception {
+        List<String> receivedBodies = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            netty.handleOneRequest((ctx, request) -> {
+                Assertions.assertEquals(HttpMethod.POST, request.method());
+                Assertions.assertEquals("/foo", request.uri());
+                receivedBodies.add(((FullHttpRequest) request).content().toString(StandardCharsets.UTF_8));
+
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+                computeContentLength(response);
+                ctx.writeAndFlush(response);
+            });
+        }
+
+        try (HttpClient client = newBuilder().build()) {
+            ByteArrayInputStream body = new ByteArrayInputStream("abcdef".getBytes(StandardCharsets.UTF_8));
+            HttpRequest request = client.createRequest(Method.POST)
+                .appendPathPart("foo")
+                .header("content-type", "text/plain")
+                .body(body);
+
+            try {
+                for (int i = 0; i < 3; i++) {
+                    if (i > 0) {
+                        body.reset();
+                    }
+                    HttpRequest requestAttempt = request.copy();
+                    try (HttpResponse response = requestAttempt.execute().toCompletableFuture().get()) {
+                        Assertions.assertEquals(200, response.status());
+                    }
+                }
+            } finally {
+                request.discard();
+            }
+        }
+
+        Assertions.assertEquals(List.of("abcdef", "abcdef", "abcdef"), receivedBodies);
     }
 
     @Test
@@ -700,6 +743,65 @@ public abstract class NettyTest {
                 .fnIntent(InvokeFunctionRequest.FnIntent.Httprequest)
                 .fnInvokeType(InvokeFunctionRequest.FnInvokeType.Sync)
                 .invokeFunctionBody(new KeepOpenInputStream(new ByteArrayInputStream(body)))
+                .build());
+        }
+    }
+
+    @Test
+    public void functionsClientRetriesInputStreamBodyUsesResetStream() throws CertificateException {
+        SelfSignedCertificate ssc = new SelfSignedCertificate();
+        byte[] body = new byte[10];
+        ThreadLocalRandom.current().nextBytes(body);
+
+        for (int i = 0; i < 3; i++) {
+            int attempt = i;
+            netty.handleOneRequest((ctx, request) -> {
+                Assertions.assertEquals(HttpMethod.POST, request.method());
+                Assertions.assertEquals("/20181201/functions/function-id/actions/invoke", request.uri());
+                Assertions.assertTrue(request.headers().get(HttpHeaderNames.AUTHORIZATION).contains("content-length"));
+
+                SignatureV1.verify((FullHttpRequest) request, ssc.cert().getPublicKey());
+
+                Assertions.assertArrayEquals(body, ByteBufUtil.getBytes(((FullHttpRequest) request).content()));
+
+                HttpResponseStatus status = attempt < 2 ? HttpResponseStatus.INTERNAL_SERVER_ERROR : HttpResponseStatus.OK;
+                DefaultFullHttpResponse response = new DefaultFullHttpResponse(
+                    HttpVersion.HTTP_1_1, status,
+                    Unpooled.copiedBuffer("{}", StandardCharsets.UTF_8)
+                );
+                response.headers().add("Content-Type", "application/json");
+                computeContentLength(response);
+                ctx.writeAndFlush(response);
+            });
+        }
+
+        FunctionsInvokeClient.Builder builder = FunctionsInvokeClient.builder();
+        customize(builder);
+        try (FunctionsInvokeClient invokeClient = builder
+            .build(SimpleAuthenticationDetailsProvider.builder()
+                .tenantId("tenantId")
+                .userId("userId")
+                .fingerprint("fingerprint")
+                .passPhrase("")
+                .region(Region.US_PHOENIX_1)
+                .privateKeySupplier(() -> {
+                    try {
+                        return new FileInputStream(ssc.privateKey());
+                    } catch (FileNotFoundException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .build())) {
+
+            invokeClient.invokeFunction(InvokeFunctionRequest.builder()
+                .functionId("function-id")
+                .fnIntent(InvokeFunctionRequest.FnIntent.Httprequest)
+                .fnInvokeType(InvokeFunctionRequest.FnInvokeType.Sync)
+                .invokeFunctionBody(new ByteArrayInputStream(body))
+                .retryConfiguration(RetryConfiguration.builder()
+                    .terminationStrategy(new MaxAttemptsTerminationStrategy(3))
+                    .delayStrategy(new FixedTimeDelayStrategy(0))
+                    .build())
                 .build());
         }
     }
