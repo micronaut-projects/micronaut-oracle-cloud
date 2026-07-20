@@ -27,7 +27,19 @@ import java.util.concurrent.LinkedBlockingQueue;
  * DataPointProvider stores the {@link Datapoint}.
  */
 final class DataPointProvider {
-    private final BlockingQueue<Datapoint> datapoints = new LinkedBlockingQueue<>();
+    static final int DEFAULT_MAX_BUFFERED_DATAPOINTS = 1000;
+    private final BlockingQueue<Datapoint> datapoints;
+
+    DataPointProvider() {
+        this(DEFAULT_MAX_BUFFERED_DATAPOINTS);
+    }
+
+    DataPointProvider(int maxBufferedDatapoints) {
+        if (maxBufferedDatapoints < 1) {
+            throw new IllegalArgumentException("maxBufferedDatapoints must be greater than 0");
+        }
+        datapoints = new LinkedBlockingQueue<>(maxBufferedDatapoints);
+    }
 
     /**
      * Produces the list of datapoints that will be sent. It will also perform cleanup
@@ -35,7 +47,7 @@ final class DataPointProvider {
      *
      * @return list of {@link Datapoint}
      */
-    List<Datapoint> produceDatapoints() {
+    synchronized List<Datapoint> produceDatapoints() {
         List<Datapoint> datapointsToReturn = new ArrayList<>();
         datapoints.drainTo(datapointsToReturn);
         return datapointsToReturn;
@@ -46,7 +58,7 @@ final class DataPointProvider {
      * @param value of the datapoint
      */
     void createDataPoint(Double value) {
-        datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).build());
+        add(Datapoint.builder().timestamp(new Date()).value(value).build());
     }
 
     /**
@@ -55,6 +67,13 @@ final class DataPointProvider {
      * @param count of the datapoint
      */
     void createDataPoint(Double value, Integer count) {
-        datapoints.add(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
+        add(Datapoint.builder().timestamp(new Date()).value(value).count(count).build());
+    }
+
+    private synchronized void add(Datapoint datapoint) {
+        if (!datapoints.offer(datapoint)) {
+            datapoints.poll();
+            datapoints.add(datapoint);
+        }
     }
 }

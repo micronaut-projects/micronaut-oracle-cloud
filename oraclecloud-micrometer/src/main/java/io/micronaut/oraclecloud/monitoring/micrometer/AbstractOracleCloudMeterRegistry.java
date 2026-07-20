@@ -19,7 +19,9 @@ import com.oracle.bmc.monitoring.model.MetricDataDetails;
 import com.oracle.bmc.monitoring.model.PostMetricDataDetails;
 import com.oracle.bmc.monitoring.requests.PostMetricDataRequest;
 import com.oracle.bmc.monitoring.responses.PostMetricDataResponse;
+import com.oracle.bmc.retrier.RetryConfiguration;
 import com.oracle.bmc.util.internal.StringUtils;
+import com.oracle.bmc.waiter.MaxAttemptsTerminationStrategy;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
@@ -45,12 +47,16 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
     private final Logger logger = LoggerFactory.getLogger(AbstractOracleCloudMeterRegistry.class);
     private final WarnThenDebugLogger warnThenDebugLogger = new WarnThenDebugLogger(OracleCloudMetricsNamingConvention.class);
     private final Provider<MonitoringIngestionClient> monitoringIngestionClientProvider;
+    private final RetryConfiguration retryConfiguration;
     private MonitoringIngestionClient monitoringIngestionClient;
 
     protected AbstractOracleCloudMeterRegistry(OracleCloudConfig oracleCloudConfig, Clock clock, Provider<MonitoringIngestionClient> monitoringIngestionClientProvider, ThreadFactory threadFactory) {
         super(oracleCloudConfig, clock);
         this.monitoringIngestionClientProvider = monitoringIngestionClientProvider;
         this.oracleCloudConfig = oracleCloudConfig;
+        this.retryConfiguration = RetryConfiguration.builder()
+            .terminationStrategy(new MaxAttemptsTerminationStrategy(oracleCloudConfig.retryAttempts() + 1))
+            .build();
         config().namingConvention(new OracleCloudMetricsNamingConvention());
         config().commonTags("application", this.oracleCloudConfig.applicationName());
         start(threadFactory);
@@ -112,6 +118,7 @@ abstract class AbstractOracleCloudMeterRegistry extends StepMeterRegistry {
 
                 PostMetricDataResponse postMetricDataResponse = monitoringIngestionClient.postMetricData(PostMetricDataRequest.builder()
                     .postMetricDataDetails(builder.build())
+                    .retryConfiguration(retryConfiguration)
                     .build());
 
                 if (logger.isDebugEnabled() && !postMetricDataResponse.getPostMetricDataResponseDetails().getFailedMetrics().isEmpty()) {
