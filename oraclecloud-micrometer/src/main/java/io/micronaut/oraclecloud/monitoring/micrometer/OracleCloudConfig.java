@@ -101,6 +101,20 @@ public interface OracleCloudConfig extends StepRegistryConfig {
         return getInteger(this, "batchSize").orElse(50);
     }
 
+    /**
+     * @return number of retries for a failed metrics request, defaults to 1.
+     */
+    default int retryAttempts() {
+        return getInteger(this, "retryAttempts").orElse(1);
+    }
+
+    /**
+     * @return maximum raw datapoints retained per meter before the next publish, defaults to 1000.
+     */
+    default int maxBufferedDatapoints() {
+        return getInteger(this, "maxBufferedDatapoints").orElse(1000);
+    }
+
     @Override
     default Validated<?> validate() {
         return MeterRegistryConfigValidator.checkAll(this,
@@ -112,6 +126,12 @@ public interface OracleCloudConfig extends StepRegistryConfig {
                                 InvalidReason.MALFORMED);
                     }
                     return Validated.valid(prefix() + ".namespace", namespace());
-                });
+                },
+                c -> retryAttempts() < 0
+                    ? Validated.invalid(prefix() + ".retryAttempts", retryAttempts(), "must be greater than or equal to 0", InvalidReason.MALFORMED)
+                    : Validated.valid(prefix() + ".retryAttempts", retryAttempts()),
+                c -> maxBufferedDatapoints() < 1
+                    ? Validated.invalid(prefix() + ".maxBufferedDatapoints", maxBufferedDatapoints(), "must be greater than 0", InvalidReason.MALFORMED)
+                    : Validated.valid(prefix() + ".maxBufferedDatapoints", maxBufferedDatapoints()));
     }
 }
