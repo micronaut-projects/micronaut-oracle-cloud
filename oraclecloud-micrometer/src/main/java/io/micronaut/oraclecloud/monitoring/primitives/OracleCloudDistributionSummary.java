@@ -27,10 +27,15 @@ import java.util.List;
  */
 public class OracleCloudDistributionSummary extends StepDistributionSummary implements OracleCloudDatapointProducer {
 
-    private final DataPointProvider dataPointProvider = new DataPointProvider();
+    private final DataPointProvider dataPointProvider;
 
     public OracleCloudDistributionSummary(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, double scale, long stepMillis, boolean supportsAggregablePercentiles) {
+        this(id, clock, distributionStatisticConfig, scale, stepMillis, supportsAggregablePercentiles, DataPointProvider.DEFAULT_MAX_BUFFERED_DATAPOINTS);
+    }
+
+    public OracleCloudDistributionSummary(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig, double scale, long stepMillis, boolean supportsAggregablePercentiles, int maxBufferedDatapoints) {
         super(id, clock, distributionStatisticConfig, scale, stepMillis, supportsAggregablePercentiles);
+        dataPointProvider = new DataPointProvider(maxBufferedDatapoints);
     }
 
     @Override

@@ -79,7 +79,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
     public Timer newTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig,
                           PauseDetector pauseDetector) {
         Timer timer = new OracleCloudTimer(id, clock, distributionStatisticConfig, pauseDetector, getBaseTimeUnit(),
-            this.oracleCloudConfig.step().toMillis(), false);
+            this.oracleCloudConfig.step().toMillis(), false, oracleCloudConfig.maxBufferedDatapoints());
         HistogramGauges.registerWithCommonFormat(timer, this);
         return timer;
     }
@@ -90,7 +90,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
      */
     @Override
     public Counter newCounter(Meter.Id id) {
-        return new OracleCloudCounter(id, clock, oracleCloudConfig.step().toMillis());
+        return new OracleCloudCounter(id, clock, oracleCloudConfig.step().toMillis(), oracleCloudConfig.maxBufferedDatapoints());
     }
 
     /**
@@ -104,7 +104,7 @@ public class OracleCloudRawMeterRegistry extends AbstractOracleCloudMeterRegistr
     public DistributionSummary newDistributionSummary(Meter.Id id,
                                                          DistributionStatisticConfig distributionStatisticConfig, double scale) {
         DistributionSummary summary = new OracleCloudDistributionSummary(id, clock, distributionStatisticConfig, scale,
-            oracleCloudConfig.step().toMillis(), false);
+            oracleCloudConfig.step().toMillis(), false, oracleCloudConfig.maxBufferedDatapoints());
         HistogramGauges.registerWithCommonFormat(summary, this);
         return summary;
     }
