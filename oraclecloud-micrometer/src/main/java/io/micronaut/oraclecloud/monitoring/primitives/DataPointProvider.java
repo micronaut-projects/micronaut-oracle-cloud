@@ -73,7 +73,7 @@ final class DataPointProvider {
     private synchronized void add(Datapoint datapoint) {
         if (!datapoints.offer(datapoint)) {
             datapoints.poll();
-            datapoints.offer(datapoint);
+            datapoints.add(datapoint);
         }
     }
 }

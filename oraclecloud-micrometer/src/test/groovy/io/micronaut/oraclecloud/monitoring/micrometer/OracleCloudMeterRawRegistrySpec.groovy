@@ -2,13 +2,19 @@ package io.micronaut.oraclecloud.monitoring.micrometer
 
 import com.oracle.bmc.monitoring.model.Datapoint
 import io.micrometer.core.instrument.*
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig
+import io.micrometer.core.instrument.distribution.pause.NoPauseDetector
 import io.micronaut.oraclecloud.monitoring.MonitoringIngestionClient
+import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudCounter
+import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudDistributionSummary
+import io.micronaut.oraclecloud.monitoring.primitives.OracleCloudTimer
 import jakarta.inject.Provider
 import spock.lang.AutoCleanup
 import spock.lang.Shared
 import spock.lang.Specification
 
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 import java.util.stream.Collectors
 
 class OracleCloudMeterRawRegistrySpec extends Specification {
@@ -145,6 +151,25 @@ class OracleCloudMeterRawRegistrySpec extends Specification {
         data.datapoints.size() == oracleCloudConfig.maxBufferedDatapoints()
         data.datapoints.first().value == 2
         data.datapoints.last().value == oracleCloudConfig.maxBufferedDatapoints() + 1
+    }
+
+    def "test legacy primitive constructors use the default buffer size"() {
+        when:
+        new OracleCloudCounter(new Meter.Id("counter", Tags.empty(), null, null, Meter.Type.COUNTER), mockClock, oracleCloudConfig.step().toMillis())
+        new OracleCloudDistributionSummary(new Meter.Id("summary", Tags.empty(), null, null, Meter.Type.DISTRIBUTION_SUMMARY), mockClock, DistributionStatisticConfig.DEFAULT, 1, oracleCloudConfig.step().toMillis(), false)
+        new OracleCloudTimer(new Meter.Id("timer", Tags.empty(), null, null, Meter.Type.TIMER), mockClock, DistributionStatisticConfig.DEFAULT, new NoPauseDetector(), TimeUnit.MILLISECONDS, oracleCloudConfig.step().toMillis(), false)
+
+        then:
+        noExceptionThrown()
+    }
+
+    def "test primitive buffer size must be positive"() {
+        when:
+        new OracleCloudCounter(new Meter.Id("counter", Tags.empty(), null, null, Meter.Type.COUNTER), mockClock, oracleCloudConfig.step().toMillis(), 0)
+
+        then:
+        def exception = thrown(IllegalArgumentException)
+        exception.message == "maxBufferedDatapoints must be greater than 0"
     }
 
     def "test failed post discards raw datapoints and configures retries"() {
