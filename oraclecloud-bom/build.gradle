@@ -26,5 +26,6 @@ micronautBom {
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-aianomalydetection")
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-servicemesh")
         acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-dts")
+        acceptedLibraryRegressions.add("micronaut-oraclecloud-bmc-globallydistributeddatabase")
     }
 }
