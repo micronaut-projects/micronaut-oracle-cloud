@@ -80,10 +80,13 @@ final class OracleCloudLoggingClient implements ApplicationEventListener<ServerS
     }
 
     static synchronized void destroy() throws Exception {
-        OracleCloudLoggingClient.logging.close();
+        if (OracleCloudLoggingClient.logging != null) {
+            OracleCloudLoggingClient.logging.close();
+        }
         OracleCloudLoggingClient.logging = null;
         OracleCloudLoggingClient.host = null;
         OracleCloudLoggingClient.appName = null;
+        OracleCloudLoggingClient.logId = null;
     }
 
     static synchronized boolean putLogs(PutLogsRequest putLogsRequest) {
