@@ -51,6 +51,11 @@ public class CustomLogging implements Logging {
     }
 
     @Override
+    public void enableDualStackEndpoints(boolean b) {
+
+    }
+
+    @Override
     public PutLogsResponse putLogs(PutLogsRequest request) {
         for (LogEntryBatch batch : request.getPutLogsDetails().getLogEntryBatches()) {
             for (LogEntry logEntry : batch.getEntries()) {

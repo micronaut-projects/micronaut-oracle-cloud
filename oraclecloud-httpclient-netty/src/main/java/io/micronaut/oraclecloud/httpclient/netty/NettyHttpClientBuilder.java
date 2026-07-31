@@ -68,6 +68,7 @@ final class NettyHttpClientBuilder implements HttpClientBuilder {
         if (key == StandardClientProperties.READ_TIMEOUT ||
             key == StandardClientProperties.CONNECT_TIMEOUT ||
             key == StandardClientProperties.ASYNC_POOL_SIZE ||
+            key == StandardClientProperties.ASYNC_POOL_CORE_THREAD_TIMEOUT_ENABLED ||
             key == OCI_NETTY_CLIENT_FILTERS_KEY) {
             properties.put(key, value);
         } else if (key == StandardClientProperties.BUFFER_REQUEST) {

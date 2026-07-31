@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Future;
@@ -60,14 +61,17 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
     private Future<?> task;
     private BlockingDeque<ILoggingEvent> deque;
     private String logId;
+    private String configuredLogId;
     private String source;
+    private String configuredSource;
     private String subject;
+    private String configuredSubject;
     private String type;
+    private String configuredType;
     private int queueSize = DEFAULT_QUEUE_SIZE;
     private long publishPeriod = DEFAULT_PUBLISH_PERIOD;
     private int maxBatchSize = DEFAULT_MAX_BATCH_SIZE;
     private Appender<ILoggingEvent> emergencyAppender;
-    private boolean configuredSuccessfully = false;
 
     public int getQueueSize() {
         return queueSize;
@@ -95,6 +99,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     public void setLogId(String logId) {
         this.logId = logId;
+        this.configuredLogId = logId;
     }
 
     public String getSource() {
@@ -103,6 +108,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     public void setSource(String source) {
         this.source = source;
+        this.configuredSource = source;
     }
 
     public String getSubject() {
@@ -111,6 +117,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     public void setSubject(String subject) {
         this.subject = subject;
+        this.configuredSubject = subject;
     }
 
     public int getMaxBatchSize() {
@@ -127,6 +134,7 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
 
     public void setType(String type) {
         this.type = type;
+        this.configuredType = type;
     }
 
     @Override
@@ -228,34 +236,28 @@ public final class OracleCloudAppender extends AppenderBase<ILoggingEvent> imple
         String appName = OracleCloudLoggingClient.getAppName();
         String logIdFromAppConfig = OracleCloudLoggingClient.getLogId();
 
-        if (type == null) {
-            type = String.format("%s.%s", host, appName);
-        }
-
-        if (source == null) {
-            source = host;
-        }
-
-        if (subject == null) {
-            subject = appName;
-        }
+        type = configuredType != null ? configuredType : String.format("%s.%s", host, appName);
+        source = configuredSource != null ? configuredSource : host;
+        subject = configuredSubject != null ? configuredSubject : appName;
 
         if (logIdFromAppConfig != null) {
-            addInfo("Using logId from application configuration");
+            if (!Objects.equals(logId, logIdFromAppConfig)) {
+                addInfo("Using logId from application configuration");
+            }
             logId = logIdFromAppConfig;
+        } else {
+            logId = configuredLogId;
         }
 
         if (logId == null) {
             addError("LogId is null. Everything will be sent to emergency appender if set");
         }
 
-        configuredSuccessfully = true;
-
         return true;
     }
 
     private void dispatchEvents() throws InterruptedException {
-        if (!configuredSuccessfully && !tryToConfigure()) {
+        if (!tryToConfigure()) {
             return;
         }
 

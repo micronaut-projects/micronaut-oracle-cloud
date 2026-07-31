@@ -219,6 +219,40 @@ class OracleCloudLoggingAppenderSpec extends Specification {
 
     }
 
+    void 'refreshes configuration after the logging client is reinitialized'() {
+        given:
+        appender.logId = "fallback-log-id"
+        appender.start()
+        appender.doAppend(createEvent("name", Level.INFO, "first message", System.currentTimeMillis()))
+        def conditions = new PollingConditions(timeout: 10, initialDelay: 1.5, factor: 1.25)
+        conditions.eventually {
+            oracleCloudLogsClient.putLogsRequestList.size() == 1
+        }
+
+        and:
+        def replacementLoggingClient = new OracleCloudLoggingSpec.MockLogging()
+        def config = Stub(ApplicationConfiguration) {
+            getName() >> Optional.of("reconfigured-app")
+        }
+        def instance = Mock(EmbeddedServer.class)
+        instance.getHost() >> "reconfigured-host"
+        new OracleCloudLoggingClient(replacementLoggingClient, config, "configured-log-id")
+                .onApplicationEvent(new ServerStartupEvent(instance))
+
+        when:
+        appender.doAppend(createEvent("name", Level.INFO, "second message", System.currentTimeMillis()))
+
+        then:
+        conditions.eventually {
+            replacementLoggingClient.putLogsRequestList.size() == 1
+        }
+        def request = replacementLoggingClient.putLogsRequestList.get(0)
+        request.logId == "configured-log-id"
+        request.putLogsDetails.logEntryBatches.get(0).source == "reconfigured-host"
+        request.putLogsDetails.logEntryBatches.get(0).subject == "reconfigured-app"
+        request.putLogsDetails.logEntryBatches.get(0).type == "reconfigured-host.reconfigured-app"
+    }
+
     LoggingEvent createEvent(String name, Level level, String message, Long time) {
         LoggingEvent event = new LoggingEvent()
         event.loggerName = name

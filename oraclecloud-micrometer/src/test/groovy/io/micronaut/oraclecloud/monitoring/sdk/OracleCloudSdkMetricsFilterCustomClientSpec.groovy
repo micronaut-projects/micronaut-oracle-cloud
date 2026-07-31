@@ -9,7 +9,6 @@ import com.oracle.bmc.http.client.Method
 import com.oracle.bmc.http.internal.BaseSyncClient
 import com.oracle.bmc.http.signing.SigningStrategy
 import com.oracle.bmc.http.signing.internal.DefaultRequestSignerFactory
-import com.oracle.bmc.internal.Alloy
 import com.oracle.bmc.monitoring.model.Alarm
 import com.oracle.bmc.monitoring.requests.GetAlarmRequest
 import com.oracle.bmc.monitoring.responses.GetAlarmResponse
@@ -136,7 +135,6 @@ class OracleCloudSdkMetricsFilterCustomClientSpec extends Specification {
 
          CustomMetricsClientBuilder(@Nullable HttpProvider httpProvider) {
              super(SERVICE)
-             Alloy.throwDisabledServiceExceptionIfAppropriate("monitoring")
              this.requestSignerFactory = new DefaultRequestSignerFactory(SigningStrategy.STANDARD)
              this.httpProvider(httpProvider)
          }

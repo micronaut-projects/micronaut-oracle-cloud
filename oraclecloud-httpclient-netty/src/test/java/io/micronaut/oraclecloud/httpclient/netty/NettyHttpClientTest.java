@@ -27,6 +27,16 @@ import java.util.concurrent.CompletionStage;
 
 class NettyHttpClientTest {
     @Test
+    void supportsAsyncPoolCoreThreadTimeoutProperty() {
+        try (HttpClient client = new NettyHttpClientBuilder(null)
+                .property(StandardClientProperties.ASYNC_POOL_CORE_THREAD_TIMEOUT_ENABLED, true)
+                .baseUri("http://localhost")
+                .build()) {
+            Assertions.assertNotNull(client);
+        }
+    }
+
+    @Test
     public void simple() throws Exception {
         Map<String, Object> properties = new java.util.HashMap<>();
         properties.put("micronaut.server.port", "-1");
