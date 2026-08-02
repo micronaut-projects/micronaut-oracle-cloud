@@ -1,0 +1,43 @@
+The `micronaut-oraclecloud-function-client` module lets you invoke Oracle Cloud Functions from a Micronaut application with `@FunctionClient`.
+
+Add the following dependency:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-client[]
+
+Define one or more configured OCI functions under `oci.functions`.
+The map key is the logical name used by `@FunctionClient`.
+The `function-id` value is required and must be the OCID of the OCI Function to invoke.
+
+[configuration]
+----
+oci:
+  functions:
+    list-books:
+      function-id: ocid1.fnfunc.oc1..example
+      fn-intent: Httprequest
+      fn-invoke-type: Sync
+----
+
+Then create a function client interface:
+
+[source,java]
+----
+import io.micronaut.function.client.FunctionClient;
+import io.micronaut.http.annotation.Body;
+
+@FunctionClient
+interface BooksClient {
+    Book listBooks(@Body BookRequest request);
+}
+----
+
+By default, the method name is hyphenated to resolve the configured function name.
+You can use `@jakarta.inject.Named` on a method to invoke a differently named function definition.
+
+The request body is serialized to JSON and sent with `InvokeFunctionRequest`.
+For non-void return types, a non-empty response stream is decoded as JSON to the method return type.
+Plain text and binary response bodies are not passed through directly; functions should return JSON-compatible payloads for client methods that expect a value.
+Reactive return types are supported when Micronaut can convert from a Reactive Streams `Publisher`.
+
+When `fn-invoke-type` is set to `Detached`, OCI Functions returns after starting the function and does not return function output to the client.
+Use `void`, `Void`, or nullable/reactive-null-aware return handling for detached client methods.
