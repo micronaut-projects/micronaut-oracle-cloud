@@ -92,8 +92,7 @@ NOTE: Choose either `micronaut.http.services.oci` or `oci.client` to configure y
 To enable logging of all requests, set the `micronaut.http.services.oci.log-level` or `oci.client.log-level` property to `INFO`.
 Log messages  will appear at `INFO` level.
 
-WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging
-purposes.
+WARNING: This logging includes sensitive data such as authentication tokens, and should only be enabled for debugging purposes.
 
 ### Proxy configuration via system properties (unmanaged Netty client)
 

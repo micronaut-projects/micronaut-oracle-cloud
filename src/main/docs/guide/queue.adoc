@@ -1,0 +1,106 @@
+https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm[OCI Queue] is a fully managed service that you can use in Micronaut applications and functions for messaging between microservices, decoupling for event-driven architectures, and asynchronous processing. As in other messaging implementations like Kafka, JMS, etc., you can publish messages to queues from one or more publishers and consume messages with one or more consumers.
+
+The Queue service lets you define how long a message is available, when and how long it is visible to other consumers, and supports a dead letter queue (DLQ) for undelivered messages. The service also supports channels within queues to support partitioning messages within a queue.
+
+To get started with https://docs.oracle.com/en-us/iaas/Content/queue/overview.htm[OCI Queue], add the following dependency to your project:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-queue[]
+
+=== Queue Configuration and Beans
+
+Configuring publishing to and/or consuming from a queue involves three steps. First, define the queue name, OCID, and other properties in your application configuration:
+
+[configuration]
+----
+oci:
+  queue:
+    compartment-ocid: ocid1.compartment.oc1..... # <1>
+    namespace: my_namespace                      # <2>
+    queues:
+      - name: queue1                             # <3>
+        ocid: ocid1.queue.oc1.....               # <4>
+        enabled: true                            # <5>
+      - name: queue2                             # <3>
+        ocid: ocid1.queue.oc1.....               # <4>
+        enabled: true                            # <5>
+        listener:
+          enabled: true                          # <6>
+----
+<1> The default compartment OCID for admin methods `createQueue` and `listQueues` when no OCID is specified
+<2> The namespace is used as the prefix for channel filters, when auto-channel is enabled
+<3> The unique name of the queue; does not have to correspond to the display name of the Queue
+<4> The OCID of the Queue
+<5> Whether to enable access to the Queue. Can be used to enable/disable per-environment
+<6> Whether to enable a listener that periodically looks for new messages
+
+Refer to the following tables for details on available configuration settings.
+
+include::{includedir}configurationProperties/io.micronaut.oraclecloud.queue.OracleQueueConfiguration.adoc[]
+
+include::{includedir}configurationProperties/io.micronaut.oraclecloud.queue.OracleQueueConfiguration$QueueConfig.adoc[]
+
+include::{includedir}configurationProperties/io.micronaut.oraclecloud.queue.OracleQueueConfiguration$QueueConfig$ListenerConfig.adoc[]
+
+Then create application bean classes that will provide access to message publishing and consuming methods.
+
+==== Queue Beans
+
+There are two annotations that mark a class as a queue-related bean, link:{api}/io/micronaut/oraclecloud/queue/annotation/Queue.html[`@Queue`] and link:{api}/io/micronaut/oraclecloud/queue/annotation/QueueListener.html[`@QueueListener`], and two interfaces that your beans must implement, link:{api}/io/micronaut/oraclecloud/queue/GenericQueue.html[`GenericQueue`] and link:{api}/io/micronaut/oraclecloud/queue/GenericQueueListener.html[`GenericQueueListener`].
+
+Both annotations and interfaces provide similar functionality, but `@QueueListener` and `GenericQueueListener` let you additionally configure automatic message retrieval.
+
+Since most of the methods in your bean classes are implemented by delegating to methods in link:{api}/io/micronaut/oraclecloud/queue/service/QueueService.html[`QueueService`], your bean classes can be interfaces or abstract classes.
+
+For example, this class will be registered as a Micronaut queue bean, and will use config settings for the queue named `queue1`:
+
+[source,java]
+----
+import io.micronaut.oraclecloud.queue.GenericQueue;
+import io.micronaut.oraclecloud.queue.annotation.Queue;
+
+@Queue(name = "queue1")       // <1>
+public interface Queue1       // <2>
+       extends GenericQueue { // <3>
+}
+----
+<1> The `Queue` annotation triggers registration as a non-listener bean
+<2> The bean is declared as an interface since only the methods in `GenericQueue` are needed
+<3> The interface extends `GenericQueue` to inherit the non-listener methods
+
+This class will be registered as a Micronaut queue listener bean, and will use config settings for the queue named `queue2`:
+
+[source,java]
+----
+import com.oracle.bmc.queue.model.GetMessage;
+import io.micronaut.oraclecloud.queue.GenericQueueListener;
+import io.micronaut.oraclecloud.queue.annotation.QueueListener;
+
+@QueueListener(                          // <1>
+        name = "queue2",
+        autoExtendLease = true,          // <2>
+        autoExtendLeaseSeconds = 60,     // <3>
+        autoDelete = true)               // <4>
+public abstract class Queue2             // <5>
+       implements GenericQueueListener { // <6>
+
+    @Override
+    public void onMessageReceived(GetMessage message) { // <7>
+        // process the message
+    }
+}
+----
+<1> The `QueueListener` annotation triggers registration as a listener bean
+<2> Override the default value to enable auto-extending the lease
+<3> Override the default value to change the lease seconds value
+<4> Set `autoDelete` to `true` to delete the message after invoking the `onMessageReceived` callback
+<5> The bean is declared as an abstract class to allow defining the `onMessageReceived` method implementation
+<6> The class implements `GenericQueueListener` to inherit the non-listener methods and the `onMessageReceived` method
+<7> Implement the `onMessageReceived` method to process messages as they are received
+
+NOTE: Neither of the previous examples is annotated with `@Singleton` or another bean scope annotation because `@Queue` and  `@QueueListener` are meta-annotated with `@MessageListener` which is annotated with `@DefaultScope(Singleton.class)`. So all queue and queue listener beans are automatically registered as singleton beans, and you can specify a different scope if you want, and add additional annotations such as `@Qualifier`.
+
+==== QueueService
+
+Methods in queue and queue listener beans are intercepted using Micronaut AOT, delegating the work to methods in link:{api}/io/micronaut/oraclecloud/queue/service/QueueService.html[`QueueService`].
+
+You should generally call methods in your application's bean classes, but you can inject the service into your classes and use it directly. The service includes admin methods to get, list, create, delete, purge, and update queues, in addition to the message-related methods that are used by the application beans.
