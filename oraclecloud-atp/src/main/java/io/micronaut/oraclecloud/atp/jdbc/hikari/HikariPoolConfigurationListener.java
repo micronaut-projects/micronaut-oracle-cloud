@@ -86,8 +86,8 @@ public class HikariPoolConfigurationListener implements BeanInitializedEventList
 
         if (autonomousDatabaseConfiguration == null) {
             LOG.trace("No AutonomousDatabaseConfiguration for [{}] datasource", beanName);
-        } else if (autonomousDatabaseConfiguration.getOcid() == null || autonomousDatabaseConfiguration.getWalletPassword() == null) {
-            LOG.trace("Skipping configuration of Oracle Wallet due to missin ocid or wallet password in " +
+        } else if (autonomousDatabaseConfiguration.getOcid() == null) {
+            LOG.trace("Skipping configuration of Oracle Wallet due to missing ocid in " +
                     "AutonomousDatabaseConfiguration for [{}] datasource", beanName);
         } else {
 

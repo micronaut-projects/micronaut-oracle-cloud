@@ -1,7 +1,14 @@
 package io.micronaut.oraclecloud.atp.jdbc.hikari
 
+import io.micronaut.configuration.jdbc.hikari.DatasourceConfiguration
+import io.micronaut.context.BeanLocator
+import io.micronaut.context.event.BeanInitializingEvent
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
+import io.micronaut.oraclecloud.atp.jdbc.AutonomousDatabaseConfiguration
+import io.micronaut.oraclecloud.atp.jdbc.OracleWalletArchiveProvider
+import io.micronaut.oraclecloud.atp.wallet.datasource.CanConfigureOracleDataSource
+import oracle.jdbc.datasource.impl.OracleDataSource
 import spock.lang.Requires
 import spock.lang.Shared
 import spock.lang.Specification
@@ -9,8 +16,8 @@ import spock.lang.Specification
 import javax.sql.DataSource
 import java.sql.Connection
 import java.sql.ResultSet
+import java.util.Optional
 
-@Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
 class HikariPoolConfigurationListenerSpec extends Specification {
 
     @Shared
@@ -22,6 +29,7 @@ class HikariPoolConfigurationListenerSpec extends Specification {
     @Shared
     String atpId = System.getenv("ATP_OCID")
 
+    @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
     void "test it connects to database"() {
         given:
         ApplicationContext context = ApplicationContext.run([
@@ -44,6 +52,7 @@ class HikariPoolConfigurationListenerSpec extends Specification {
         context.close()
     }
 
+    @Requires({ System.getenv("ATP_USER") && System.getenv("ATP_PASS") && System.getenv("ATP_OCID") })
     void "test it skips datasource without ocid field"() {
         given:
         ApplicationContext context = ApplicationContext.run([
@@ -63,5 +72,33 @@ class HikariPoolConfigurationListenerSpec extends Specification {
 
         cleanup:
         context.close()
+    }
+
+    void "test it configures datasource when wallet password is omitted"() {
+        given:
+        BeanLocator beanLocator = Mock()
+        OracleWalletArchiveProvider walletArchiveProvider = Mock()
+        CanConfigureOracleDataSource walletArchive = Stub() {
+            configure(_ as OracleDataSource) >> { OracleDataSource dataSource ->
+                dataSource.setURL("jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet")
+            }
+        }
+        HikariPoolConfigurationListener listener = new HikariPoolConfigurationListener(walletArchiveProvider, beanLocator)
+        DatasourceConfiguration datasourceConfiguration = new DatasourceConfiguration("default")
+        AutonomousDatabaseConfiguration autonomousDatabaseConfiguration = new AutonomousDatabaseConfiguration()
+        autonomousDatabaseConfiguration.setOcid("ocid1.autonomousdatabase.oc1..example")
+        BeanInitializingEvent<DatasourceConfiguration> event = Stub() {
+            getBean() >> datasourceConfiguration
+        }
+
+        beanLocator.findBean(AutonomousDatabaseConfiguration, _) >> Optional.of(autonomousDatabaseConfiguration)
+
+        when:
+        listener.onInitialized(event)
+
+        then:
+        1 * walletArchiveProvider.loadWalletArchive(autonomousDatabaseConfiguration) >> walletArchive
+        datasourceConfiguration.getUrl() == "jdbc:oracle:thin:@db_high?TNS_ADMIN=/tmp/wallet"
+        datasourceConfiguration.getDriverClassName() == HikariPoolConfigurationListener.ORACLE_JDBC_ORACLE_DRIVER
     }
 }
