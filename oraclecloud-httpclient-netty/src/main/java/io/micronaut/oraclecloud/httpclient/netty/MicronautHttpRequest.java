@@ -307,6 +307,10 @@ final class MicronautHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        if (NettyHttpClient.isBlockingOperationOnEventLoop(offloadExecutor)) {
+            return CompletableFuture.failedFuture(NettyHttpClient.blockingOperationOnEventLoopException());
+        }
+
         for (RequestInterceptor interceptor : client.requestInterceptors) {
             interceptor.intercept(this);
         }

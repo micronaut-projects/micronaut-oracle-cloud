@@ -16,6 +16,7 @@
 package io.micronaut.oraclecloud.certificates.ssl;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.EachBean;
 import io.micronaut.context.exceptions.ConfigurationException;
 import io.micronaut.core.annotation.Internal;
@@ -48,6 +49,7 @@ import java.util.List;
 @EachBean(OracleCloudCertificateProperties.class)
 @BootstrapContextCompatible
 @Singleton
+@Context
 final class OracleCloudCertificateProvider implements CertificateProvider, ApplicationEventListener<CertificateEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(OracleCloudCertificateProvider.class);

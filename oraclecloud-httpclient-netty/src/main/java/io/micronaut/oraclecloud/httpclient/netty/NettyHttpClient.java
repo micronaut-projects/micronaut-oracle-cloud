@@ -28,6 +28,7 @@ import io.micronaut.core.order.OrderUtil;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpVersionSelection;
 import io.micronaut.http.client.RawHttpClient;
+import io.micronaut.http.client.exceptions.HttpClientException;
 import io.micronaut.http.client.exceptions.ResponseClosedException;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.http.client.netty.DefaultHttpClient;
@@ -36,6 +37,7 @@ import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelException;
 import io.netty.handler.codec.PrematureChannelClosureException;
+import io.netty.util.concurrent.FastThreadLocalThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +57,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -73,6 +76,10 @@ final class NettyHttpClient implements HttpClient {
     private static final boolean LEGACY_NETTY_CLIENT = Boolean.getBoolean("io.micronaut.oraclecloud.httpclient.netty.legacy-netty-client");
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyHttpClient.class);
+    private static final String BLOCKING_EVENT_LOOP_MESSAGE = "You are trying to run a BlockingHttpClient operation on a netty event "
+        + "loop thread. This is a common cause for bugs: Event loops should never be blocked. "
+        + "You can either mark your controller as @ExecuteOn(TaskExecutors.BLOCKING), or use the reactive HTTP client "
+        + "to resolve this bug.";
 
     final boolean legacyNettyClient;
     final boolean hasContext;
@@ -159,6 +166,17 @@ final class NettyHttpClient implements HttpClient {
 
     ByteBufAllocator alloc() {
         return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
+    }
+
+    static boolean isBlockingOperationOnEventLoop(Executor offloadExecutor) {
+        Thread thread = Thread.currentThread();
+        return offloadExecutor != null
+            && thread instanceof FastThreadLocalThread fastThreadLocalThread
+            && !fastThreadLocalThread.permitBlockingCalls();
+    }
+
+    static HttpClientException blockingOperationOnEventLoopException() {
+        return new HttpClientException(BLOCKING_EVENT_LOOP_MESSAGE);
     }
 
     String baseUri() {

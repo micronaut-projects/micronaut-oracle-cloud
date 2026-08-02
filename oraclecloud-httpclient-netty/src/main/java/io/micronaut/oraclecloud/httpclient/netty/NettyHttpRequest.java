@@ -268,6 +268,10 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        if (NettyHttpClient.isBlockingOperationOnEventLoop(offloadExecutor)) {
+            return CompletableFuture.failedFuture(NettyHttpClient.blockingOperationOnEventLoopException());
+        }
+
         // jersey client buffers even when BUFFER_REQUEST is off, if the content length is not explicitly set.
         if (blockingBody != null && (client.buffered || blockingContentLength == UNKNOWN_CONTENT_LENGTH) && !expectContinue) {
 

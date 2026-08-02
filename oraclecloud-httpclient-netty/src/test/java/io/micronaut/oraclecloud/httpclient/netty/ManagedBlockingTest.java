@@ -14,6 +14,8 @@ import io.micronaut.http.client.BlockingHttpClient;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.exceptions.HttpClientException;
 import io.micronaut.runtime.server.EmbeddedServer;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.util.concurrent.FastThreadLocalThread;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,6 +25,9 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 
 public class ManagedBlockingTest {
     private static final Logger LOG = LoggerFactory.getLogger(ManagedBlockingTest.class);
@@ -41,8 +46,90 @@ public class ManagedBlockingTest {
             BmcException exception = ctx.getBean(MyCtrl.class).exc;
             Throwable cause = exception.getCause();
             Assertions.assertInstanceOf(HttpClientException.class, cause);
-            // Client 'oci': Connect Error: Failed to perform blocking request on the event loop because request execution would be dispatched on the same event loop. This would lead to a deadlock. Either configure the HTTP client to use a different event loop, or use the reactive HTTP client. https://docs.micronaut.io/latest/guide/index.html#clientConfiguration
-            Assertions.assertTrue(cause.getMessage().contains("blocking request"));
+            Assertions.assertTrue(cause.getMessage().contains("BlockingHttpClient operation on a netty event loop"));
+        }
+    }
+
+    @Test
+    public void testBlockingFromUnrelatedEventLoop() throws Exception {
+        assertBlockingFromUnrelatedEventLoop(false);
+    }
+
+    @Test
+    public void testBlockingFromUnrelatedEventLoopWithLegacyClient() throws Exception {
+        assertBlockingFromUnrelatedEventLoop(true);
+    }
+
+    @Test
+    public void testPermittedFastThreadLocalThreadIsNotRejected() throws Exception {
+        Executor offloadExecutor = Runnable::run;
+        FutureTask<Boolean> task = new FutureTask<>(() -> NettyHttpClient.isBlockingOperationOnEventLoop(offloadExecutor));
+        FastThreadLocalThread thread = new FastThreadLocalThread(task, "permitted-fast-thread-local") {
+            @Override
+            public boolean permitBlockingCalls() {
+                return true;
+            }
+        };
+
+        thread.start();
+
+        Assertions.assertFalse(task.get(10, TimeUnit.SECONDS));
+    }
+
+    @Test
+    public void testBlockingFromRegularThreadSucceeds() throws Exception {
+        try (ApplicationContext ctx = ApplicationContext.run(Map.of(
+            "spec.name", "ManagedBlockingTest",
+            "micronaut.server.port", 0
+        )); EmbeddedServer server = ctx.getBean(EmbeddedServer.class)) {
+            server.start();
+            try (com.oracle.bmc.http.client.HttpClient cl = new NettyHttpProvider().newBuilder()
+                .baseUri(server.getURI())
+                .build()) {
+                FakeResponse response = ClientCall.builder(cl, new FakeRequest(), FakeResponse.Builder::new)
+                    .logger(LOG, "ManagedBlockingTest")
+                    .method(Method.GET)
+                    .appendPathPart("/managed-blocking/simple")
+                    .callSync();
+
+                Assertions.assertEquals(200, response.get__httpStatusCode__());
+            }
+        }
+    }
+
+    private static void assertBlockingFromUnrelatedEventLoop(boolean legacyNettyClient) throws Exception {
+        try (ApplicationContext ctx = ApplicationContext.run(Map.of(
+            "spec.name", "ManagedBlockingTest",
+            "micronaut.server.port", 0,
+            "oci.netty.legacy-netty-client", legacyNettyClient
+        )); EmbeddedServer server = ctx.getBean(EmbeddedServer.class)) {
+            server.start();
+            NioEventLoopGroup eventLoopGroup = new NioEventLoopGroup(1);
+            HttpProvider httpProvider = legacyNettyClient ? ctx.getBean(HttpProvider.class) : new NettyHttpProvider();
+            try (com.oracle.bmc.http.client.HttpClient cl = httpProvider.newBuilder()
+                .baseUri(server.getURI())
+                .build()) {
+                Assertions.assertEquals(legacyNettyClient, ((NettyHttpClient) cl).legacyNettyClient);
+                BmcException exception = eventLoopGroup.next().submit(() -> {
+                    try {
+                        ClientCall.builder(cl, new FakeRequest(), FakeResponse.Builder::new)
+                            .logger(LOG, "ManagedBlockingTest")
+                            .method(Method.GET)
+                            .appendPathPart("/managed-blocking/simple")
+                            .callSync();
+                    } catch (BmcException e) {
+                        return e;
+                    }
+                    return null;
+                }).get(10, TimeUnit.SECONDS);
+
+                Assertions.assertNotNull(exception);
+                Throwable cause = exception.getCause();
+                Assertions.assertInstanceOf(HttpClientException.class, cause);
+                Assertions.assertTrue(cause.getMessage().contains("BlockingHttpClient operation on a netty event loop"));
+            } finally {
+                eventLoopGroup.shutdownGracefully().sync();
+            }
         }
     }
 
