@@ -75,6 +75,23 @@ class OracleCloudMeterRegistryFactoryTest extends Specification {
         context.close()
     }
 
+    def "factory is NOT present when both global and oraclecloud metrics are disabled"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "micronaut.metrics.export.oraclecloud.namespace"      : "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.applicationName": "micronaut_test",
+                "micronaut.metrics.export.oraclecloud.enabled"        : "false",
+                "micronaut.metrics.enabled"                           : "false",
+        ], Environment.ORACLE_CLOUD)
+
+        expect:
+        !context.containsBean(OracleCloudMeterRegistryFactory)  // factory must NOT exist
+
+        cleanup:
+        context.close()
+
+    }
+
     def "test raw metrics meter registry loads when both are true"() {
         given:
         ApplicationContext context = ApplicationContext.run([
