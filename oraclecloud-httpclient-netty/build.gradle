@@ -31,6 +31,7 @@ dependencies {
     testRuntimeOnly mn.micronaut.runtime
 
     testImplementation mn.micronaut.inject.java.test
+    testImplementation libs.oci.oke.workload.identity
     testImplementation mnSerde.micronaut.serde.processor
     testImplementation projects.micronautOraclecloudSerdeProcessor
     testImplementation projects.micronautOraclecloudSerdeInternalProcessor
