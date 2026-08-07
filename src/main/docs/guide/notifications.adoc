@@ -1,0 +1,26 @@
+== Oracle Cloud Notifications
+
+To publish messages to https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm[Oracle Cloud Notifications] topics, add the following dependency to your project:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-notifications[]
+
+Configure the default topic OCID:
+
+[configuration]
+----
+oci:
+  notifications:
+    topic-id: ocid1.onstopic.oc1..aaaaaaaaexample
+----
+
+Then inject api:io.micronaut.oraclecloud.notifications.OracleCloudNotificationService[] and publish a message:
+
+snippet::example.NotificationController[project-base="docs-examples/example", source="main", tags="imports,class"]
+
+<1> The `OracleCloudNotificationService` publishes to the configured topic.
+
+You can also provide the topic OCID for each message:
+
+snippet::example.NotificationController[project-base="docs-examples/example", source="main", tags="explicit-topic", indent="0"]
+
+<1> Passing a topic OCID overrides the configured default topic for that request.

@@ -1,0 +1,13 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-module'
+}
+
+dependencies {
+    api(mn.micronaut.inject)
+    api(projects.micronautOraclecloudBmcOns)
+    testImplementation(mnTest.micronaut.test.spock)
+}
+
+micronautBuild {
+    binaryCompatibility.enabledAfter("6.0.0")
+}
