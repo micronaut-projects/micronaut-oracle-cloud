@@ -14,7 +14,7 @@ slf4j-jcl = '2.0.18'
 jackson2 = "2.22.1"
 
 managed-apache-http-core5 = "5.4.3"
-micronaut-discovery-client = "5.0.0"
+micronaut-discovery-client = "5.1.0"
 micronaut-gradle-plugin = "5.0.2"
 micronaut-groovy = "5.0.0"
 micronaut-kotlin = "5.0.0"
