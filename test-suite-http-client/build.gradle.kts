@@ -28,7 +28,8 @@ dependencies {
     ).forEach { implementation(it) }
 
     testImplementation(libs.oci.common.httpclient.jersey3)
-}
+    // for self-signed certs
+    testImplementation("org.bouncycastle:bcpkix-jdk15on:1.70")}
 
 java {
     sourceCompatibility = JavaVersion.toVersion("17")
