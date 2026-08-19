@@ -31,7 +31,7 @@ micronaut-sql = "6.3.4"
 micronaut-test = "4.10.3"
 micronaut-logging = "1.7.5"
 micronaut-validation = "4.12.0"
-micronaut-discovery-client = "4.7.1"
+micronaut-discovery-client = "4.7.2"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
