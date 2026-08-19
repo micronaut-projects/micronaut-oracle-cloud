@@ -2,13 +2,6 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-base'
     id 'io.micronaut.build.internal.module'
 }
-
-ossIndexAudit {
-    excludeCoordinates = ["org.eclipse.jetty:jetty-http@9.4.58.v20250814",
-                          // HdrHistogram has no patched release
-                          "org.hdrhistogram:HdrHistogram:2.2.2"
-    ]
-}
 dependencies {
     api platform(libs.oci.bom)
     annotationProcessor mn.micronaut.inject.java
