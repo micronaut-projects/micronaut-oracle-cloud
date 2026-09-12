@@ -56,7 +56,7 @@ class MockKubernetesSpec extends Specification {
         V1NamespaceList list = coreV1Api.listNamespace(
                 null, null, null, null,
                 null, null, null, null,
-                null, null, null
+                null, null, null, null
         )
 
         then:

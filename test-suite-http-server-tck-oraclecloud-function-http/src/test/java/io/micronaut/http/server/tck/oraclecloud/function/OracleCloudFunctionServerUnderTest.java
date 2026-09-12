@@ -59,7 +59,7 @@ public class OracleCloudFunctionServerUnderTest implements ServerUnderTest {
         properties.put("micronaut.server.context-path", "/");
         properties.putIfAbsent("micronaut.propagation", "thread-local");
         properties.put("endpoints.health.service-ready-indicator-enabled", StringUtils.FALSE);
-        properties.put("endpoints.refresh.enabled", StringUtils.FALSE);
+        properties.putIfAbsent("endpoints.refresh.enabled", StringUtils.FALSE);
         properties.putAll(properties.entrySet().stream().collect(Collectors.toMap(
                 // Set the configured properties for the fn fork
                 e -> "fn.test.config." + e.getKey(), Entry::getValue
