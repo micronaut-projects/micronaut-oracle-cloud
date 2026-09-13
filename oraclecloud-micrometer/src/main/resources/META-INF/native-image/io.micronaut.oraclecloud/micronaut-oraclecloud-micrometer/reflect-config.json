@@ -1,0 +1,13 @@
+[
+  {
+    "name": "com.sun.management.OperatingSystemMXBean",
+    "methods": [
+      {
+        "name": "getProcessCpuTime",
+        "parameterTypes": [
+
+        ]
+      }
+    ]
+  }
+]
