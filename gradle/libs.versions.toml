@@ -10,7 +10,7 @@ oracle-database-security = "21.21.0.0"
 oci = "3.91.0"
 protobuf = '0.10.0'
 shadow = '9.5.1'
-slf4j-jcl = '2.0.18'
+slf4j-jcl = '2.0.19'
 jackson2 = "2.22.1"
 
 managed-apache-http-core5 = "5.4.3"
