@@ -16,15 +16,21 @@ If an OCI SDK client exists that is built with OCI SDK v3 or above but not compi
 
 First, add an annotation processor dependency:
 
-dependency:io.micronaut.oraclecloud:oraclecloud-serde-processor[scope="annotationProcessor"]
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-serde-processor[scope="annotationProcessor"]
+
+The processor generates the client factory with https://micronaut-projects.github.io/micronaut-sourcegen/latest/guide/[Micronaut SourceGen], so the source generator for your language must also be on the annotation processor path, for example:
+
+dependency:io.micronaut.sourcegen:micronaut-sourcegen-generator-java[scope="annotationProcessor"]
 
 Then declare `@SdkImport` on any class, specifying the type of the client you wish to import. For example:
 
-.Declaring `@SdkImport`
-[source,java]
-----
-@SdkImport(DisasterRecoveryClient.class)
-----
+snippet::example.SdkImports[project-base="docs-examples/example", source="main", tags="imports,class", title="Declaring `@SdkImport`"]
+
+[.lang-groovy]
+NOTE: The client factory is generated at compile time by Micronaut SourceGen, which does not support Groovy, so `@SdkImport` has no effect on a Groovy class. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Groovy code.
+
+[.lang-python]
+NOTE: The client factory is generated at compile time by Micronaut SourceGen, which has no Python source generator yet, so `@SdkImport` cannot be processed on a Python class. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Python code.
 
 ### Migrate
 
