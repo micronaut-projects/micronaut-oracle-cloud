@@ -78,6 +78,9 @@ snippet::example.ListBucketsFunction[project-base="docs-examples/example-functio
 <1> A public class with a no argument constructor annotated with `@Singleton` and extending from api:oci.function.OciFunction[]
 <2> You can use the `@Inject` annotation to inject SDK components
 
+[.lang-python]
+WARNING: The Fn runtime instantiates the function class itself, before any Micronaut application context, and with it the Python runtime, exists, and a Python class cannot subclass api:oci.function.OciFunction[], which starts the application context. A Python function class like the one above is therefore only usable as a bean of a running application (for example in a test); the class deployed as the Oracle Function entry point must be written in Java, Kotlin or Groovy.
+
 Once you have defined the function, define a public method to be the function handler, e.g.:
 
 snippet::example.ListBucketsFunction[project-base="docs-examples/example-function", source="main", tags="method", indent="0"]
