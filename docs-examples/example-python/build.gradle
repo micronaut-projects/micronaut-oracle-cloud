@@ -1,0 +1,28 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-python-example'
+}
+
+dependencies {
+    // TODO(python): the @SdkImport processor (micronaut-oraclecloud-serde-processor) generates the client factory
+    // with Micronaut SourceGen, which has no source generator for Python, so the processor fails the compilation
+    // of example.SdkImports ("Cannot process @SdkImport(). Missing SourceGenerator module") and is left off the
+    // Python compile classpath; see DISABLED_TESTS.md
+    implementation(mn.micronaut.http.server.netty)
+    implementation(mnReactor.micronaut.reactor)
+    implementation(mnSerde.micronaut.serde.jackson)
+    implementation(mnSerde.micronaut.serde.support)
+    implementation(projects.micronautOraclecloudBmcDatabase)
+    implementation(projects.micronautOraclecloudBmcObjectstorage)
+    implementation(projects.micronautOraclecloudBmcVault)
+    implementation(libs.oci.disasterrecovery) {
+        exclude group: 'org.javassist', module: 'javassist'
+    }
+    runtimeOnly(mn.snakeyaml)
+    runtimeOnly(mnLogging.logback.classic)
+}
+
+// A Python Micronaut application is launched by the Python runtime, there is no Java main class to
+// package a distribution for
+tasks.named("startScripts") { enabled = false }
+tasks.named("distZip") { enabled = false }
+tasks.named("distTar") { enabled = false }
