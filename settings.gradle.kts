@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 plugins {
-    id("io.micronaut.build.shared.settings") version "8.0.2"
+    id("io.micronaut.build.shared.settings") version "8.1.2"
     id("me.champeau.includegit") version "0.3.2"
     id("io.micronaut.build.internal.ocisdk")
 }
@@ -44,12 +44,15 @@ include("oraclecloud-vault")
 include("docs-examples:example-java")
 include("docs-examples:example-groovy")
 include("docs-examples:example-kotlin")
+include("docs-examples:example-python")
 include("docs-examples:example-function-java")
 include("docs-examples:example-function-groovy")
 include("docs-examples:example-function-kotlin")
+include("docs-examples:example-function-python")
 include("docs-examples:example-http-function-java")
 include("docs-examples:example-http-function-groovy")
 include("docs-examples:example-http-function-kotlin")
+include("docs-examples:example-http-function-python")
 include("test-suite-java")
 include("test-suite-graal-function")
 include("test-suite-graal-logging")

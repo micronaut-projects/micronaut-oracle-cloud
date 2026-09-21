@@ -1,0 +1,30 @@
+// The examples of the guide in Python, compiled by the Python compiler (micronaut-inject-python).
+// The Python tests only run with -Ppython-ci (the "Python CI" workflow), the regular CI compiles them.
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-example'
+    id 'io.micronaut.build.internal.python'
+}
+
+dependencies {
+    // The Java test helpers of src/test/java (the mock OCI clients) are processed by javac
+    testAnnotationProcessor(mn.micronaut.inject.java)
+
+    // The Python compiler takes the (jar-resolved) compile classpath as its annotation processor path,
+    // so the Micronaut processors are regular dependencies rather than annotationProcessor ones (with the
+    // serde api the serde processor loads, a runtime-only dependency the compile classpath does not resolve)
+    implementation(mnValidation.micronaut.validation.processor)
+    implementation(mnSerde.micronaut.serde.processor)
+    implementation(mnSerde.micronaut.serde.api)
+
+    testImplementation(mn.micronaut.inject.python.test)
+    testImplementation(mn.micronaut.context.python)
+    testImplementation(mnTest.micronaut.test.junit5)
+    testRuntimeOnly(mnTest.junit.jupiter.engine)
+    testRuntimeOnly(mnTest.junit.platform.launcher)
+    testRuntimeOnly(mnLogging.logback.classic)
+}
+
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+    systemProperty "micronaut.python.pool.enabled", "false"
+}
