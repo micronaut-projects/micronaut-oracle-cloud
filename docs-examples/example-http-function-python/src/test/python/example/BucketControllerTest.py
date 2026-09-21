@@ -1,19 +1,17 @@
 from micronaut.http import HttpRequest, HttpStatus
+from micronaut.oraclecloud.function.http.test import FnHttpTest
 from micronaut.test.extensions.junit5.annotation import MicronautTest
 from mock import MockData
 from org.junit.jupiter.api import AfterEach, Disabled, MethodOrderer, Order, Test, TestMethodOrder
-from support import FnHttpInvoker
 
 TEST_BUCKET = "__mn_oci_test_bucket"
 CREATE_DELETE_URI = "/os/buckets/" + TEST_BUCKET
+SHARED_CLASSES = [MockData]
 
 
-# The function is invoked through the Fn testing harness by the Java helper support.FnHttpInvoker of src/test/java
-# (TODO(python): FnHttpTest.invoke starts and closes a nested application context, which tears down the GraalPy
-# runtime of this test). The OCI Object Storage client and the authentication are replaced by the Java mocks of
-# src/test/java (package mock).
+# The OCI Object Storage client and the authentication are replaced by the Java mocks of src/test/java (package mock).
 @MicronautTest
-@TestMethodOrder(value=MethodOrderer.OrderAnnotation)
+@TestMethodOrder(MethodOrderer.OrderAnnotation)
 # avoid running this test in parallel as the interactions with Object Storage
 # can step on each other causing issues
 class BucketControllerTest:
@@ -24,7 +22,7 @@ class BucketControllerTest:
         MockData.bucketNames.add("b1")
         MockData.bucketNames.add("b2")
 
-        response = FnHttpInvoker.invoke(HttpRequest.GET("/os/buckets"), [MockData])
+        response = FnHttpTest.invoke(HttpRequest.GET("/os/buckets"), SHARED_CLASSES)
 
         assert response.status() == HttpStatus.OK
         assert response.body() == '["b1","b2"]'
@@ -37,7 +35,7 @@ class BucketControllerTest:
     @Test
     @Order(2)
     def test_create_bucket(self) -> None:
-        response = FnHttpInvoker.invoke(HttpRequest.POST(CREATE_DELETE_URI, ""), [MockData])
+        response = FnHttpTest.invoke(HttpRequest.POST(CREATE_DELETE_URI, ""), SHARED_CLASSES)
 
         assert response.status() == HttpStatus.OK
         assert response.body() == MockData.bucketLocation
@@ -48,7 +46,7 @@ class BucketControllerTest:
         MockData.objectNames.add("o1")
         MockData.objectNames.add("o2")
 
-        response = FnHttpInvoker.invoke(HttpRequest.GET("/os/objects/" + TEST_BUCKET), [MockData])
+        response = FnHttpTest.invoke(HttpRequest.GET("/os/objects/" + TEST_BUCKET), SHARED_CLASSES)
 
         assert response.status() == HttpStatus.OK
         assert '"objects":["o1","o2"]' in response.body()
@@ -56,7 +54,7 @@ class BucketControllerTest:
     @Test
     @Order(4)
     def test_delete_bucket(self) -> None:
-        response = FnHttpInvoker.invoke(HttpRequest.DELETE(CREATE_DELETE_URI), [MockData])
+        response = FnHttpTest.invoke(HttpRequest.DELETE(CREATE_DELETE_URI), SHARED_CLASSES)
 
         assert response.status() == HttpStatus.OK
         assert response.body() == "true"

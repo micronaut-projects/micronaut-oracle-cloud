@@ -10,9 +10,11 @@ dependencies {
     testAnnotationProcessor(mn.micronaut.inject.java)
 
     // The Python compiler takes the (jar-resolved) compile classpath as its annotation processor path,
-    // so the Micronaut processors are regular dependencies rather than annotationProcessor ones
+    // so the Micronaut processors are regular dependencies rather than annotationProcessor ones (with the
+    // serde api the serde processor loads, a runtime-only dependency the compile classpath does not resolve)
     implementation(mnValidation.micronaut.validation.processor)
     implementation(mnSerde.micronaut.serde.processor)
+    implementation(mnSerde.micronaut.serde.api)
 
     testImplementation(mn.micronaut.inject.python.test)
     testImplementation(mn.micronaut.context.python)
@@ -22,39 +24,7 @@ dependencies {
     testRuntimeOnly(mnLogging.logback.classic)
 }
 
-// The OCI SDK modules of this build (micronaut-oraclecloud-bmc-*) publish their generated client factories and
-// their dependencies (micronaut-oraclecloud-common, ...) through the metadataElements variant, which carries the
-// java-runtime usage: the Python compile classpath requests the java-api usage and would resolve the stripped
-// apiElements variant instead, so it requests java-runtime like a consumer of the published modules
-configurations.matching { it.name.endsWith("PythonCompileClasspath") }.configureEach {
-    attributes {
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
-    }
-}
-
-// TODO(python): the examples live in src/main/python (the `source="main"` snippets of the guide) and the tests
-// in src/test/python. Compiling them separately yields two GraalPy VFS roots whose generated shim modules shadow
-// each other at test time, and the Python compiler resolves the imports of a source file only within its own
-// source root, so both roots are merged into one directory compiled with the tests.
-def mergePythonSources = tasks.register("mergePythonSources", Sync) {
-    from(layout.projectDirectory.dir("src/main/python"))
-    from(layout.projectDirectory.dir("src/test/python"))
-    into(layout.buildDirectory.dir("merged-python-sources"))
-}
-tasks.named("compilePython") {
-    enabled = false
-}
-tasks.named("compileTestPython") {
-    dependsOn(mergePythonSources)
-    source.setFrom(mergePythonSources.map { it.destinationDir })
-    // The Python sources reference the Java mock clients of src/test/java
-    dependsOn("compileTestJava")
-    classpath.from(sourceSets.test.java.classesDirectory)
-}
-
 tasks.withType(Test).configureEach {
     useJUnitPlatform()
     systemProperty "micronaut.python.pool.enabled", "false"
-    // Gradle enables assertions in test JVMs; an internal Truffle host-interop assertion trips on varargs overloads
-    enableAssertions = false
 }

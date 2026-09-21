@@ -8,10 +8,12 @@ from org.junit.jupiter.api import Test
 from example.ListBucketsFunction import ListBucketsFunction
 
 
-# The Fn runtime instantiates the function class itself, so unlike the Java test this test does not run the
-# function through the Fn testing harness (com.fnproject.fn.testing.FnTestingRule): a Python function class is a
-# bean of the running application context. The OCI Object Storage client and the authentication are replaced by
-# the Java mocks of src/test/java (package mock).
+# TODO(python): unlike the Java test this test does not run the function through the Fn testing harness
+# (com.fnproject.fn.testing.FnTestingRule): the harness instantiates the function class reflectively before any
+# application context exists, and the generated class of the Python function has several public constructors
+# ("The function class example.ListBucketsFunction cannot be instantiated as it has multiple public constructors"),
+# see DISABLED_TESTS.md. The function is obtained as a bean of the running application context instead. The OCI
+# Object Storage client and the authentication are replaced by the Java mocks of src/test/java (package mock).
 @MicronautTest(environments=["function", "oraclecloud"])
 class ListBucketsFunctionTest:
     function: Annotated[ListBucketsFunction, Inject]

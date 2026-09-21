@@ -4,12 +4,10 @@ from jakarta.validation import Valid
 from jakarta.validation.constraints import NotBlank, NotNull
 from micronaut.http import HttpResponse
 from micronaut.http.annotation import Body, Controller, Delete, Get, Post
-from micronaut.validation import Validated
 
 from example.Book import Book
 
 
-@Validated
 @Controller("/books")
 class BookController:
 

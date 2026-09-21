@@ -6,12 +6,13 @@ from com.oracle.bmc.objectstorage.requests import GetNamespaceRequest, ListBucke
 from jakarta.inject import Inject, Singleton
 from micronaut.core.annotation import ReflectiveAccess
 from micronaut.oraclecloud.core import TenancyIdProvider
+from micronaut.oraclecloud.function import OciFunction
 # end::imports[]
 
 
 # tag::class[]
 @Singleton
-class ListBucketsFunction:  # <1>
+class ListBucketsFunction(OciFunction):  # <1>
 
     object_storage_client: Annotated[ObjectStorageClient, Inject]  # <2>
 

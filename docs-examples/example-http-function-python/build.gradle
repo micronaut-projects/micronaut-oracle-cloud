@@ -3,11 +3,6 @@ plugins {
     id 'io.micronaut.build.internal.oraclecloud-python-example'
 }
 
-dependencies {
-    // The Java helper support.FnHttpInvoker (src/test/java) invokes the function through the Fn testing harness
-    testImplementation(libs.fn.testing.junit4)
-}
-
 tasks.withType(Test).configureEach {
     // Every function invocation of the tests starts a GraalPy runtime in a new Fn classloader
     maxHeapSize = '3g'
