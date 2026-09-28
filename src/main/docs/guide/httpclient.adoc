@@ -147,7 +147,7 @@ The managed Netty client reads `oci.netty.*` settings:
 
 Example (application.yml):
 
-[source,yaml]
+[configuration]
 ----
 oci:
   netty:
