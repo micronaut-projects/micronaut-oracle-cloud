@@ -9,6 +9,12 @@ dependencies {
     implementation(mnSerde.micronaut.serde.support)
     implementation(projects.micronautOraclecloudBmcDatabase)
     implementation(projects.micronautOraclecloudBmcObjectstorage)
+    implementation(projects.micronautOraclecloudBmcVault)
+    // The client imported by example.SdkImports; @SdkImport is only processed for Java and Kotlin sources
+    // (the client factory is generated with Micronaut SourceGen, which does not support Groovy)
+    implementation(libs.oci.disasterrecovery) {
+        exclude group: 'org.javassist', module: 'javassist'
+    }
     runtimeOnly(mn.snakeyaml)
     runtimeOnly(mnLogging.logback.classic)
     testImplementation(libs.commons.lang3)

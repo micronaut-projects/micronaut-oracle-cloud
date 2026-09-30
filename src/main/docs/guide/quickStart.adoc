@@ -5,9 +5,7 @@ Then add dependencies on the Micronaut Oracle Cloud modules corresponding to OCI
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-bmc-vault[]
 
 Use Micronaut Injection to get an instance of the client in your application, e.g.:
-```java
-@Inject
-Vault vault
-```
+
+snippet::example.VaultService[project-base="docs-examples/example", source="main", tags="inject", indent="0"]
 
 All OCI SDK clients are supported.

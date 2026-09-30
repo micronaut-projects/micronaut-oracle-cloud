@@ -1,5 +1,5 @@
 [versions]
-micronaut = "5.2.1"
+micronaut = "5.2.9"
 micronaut-platform = "5.1.5"
 fn = '1.1.14'
 graal-svm = "25.0.3"
@@ -11,7 +11,7 @@ oci = "3.91.0"
 protobuf = '0.10.0'
 shadow = '9.5.1'
 slf4j-jcl = '2.0.19'
-jackson2 = "2.22.1"
+jackson2 = "2.22.3"
 
 managed-apache-http-core5 = "5.4.3"
 micronaut-discovery-client = "5.1.0"
