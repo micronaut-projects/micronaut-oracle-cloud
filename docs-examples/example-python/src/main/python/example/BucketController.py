@@ -6,7 +6,6 @@ from com.oracle.bmc.objectstorage.model import CreateBucketDetails
 from com.oracle.bmc.objectstorage.requests import CreateBucketRequest, DeleteBucketRequest, GetNamespaceRequest, \
     ListBucketsRequest
 from jakarta.annotation import Nullable
-from java.util.stream import Collectors
 from micronaut.core.async_.annotation import SingleResult
 from micronaut.http.annotation import Controller, Delete, Get, PathVariable, Post
 from micronaut.oraclecloud.clients.reactor.objectstorage import ObjectStorageReactorClient
@@ -40,10 +39,8 @@ class BucketController:
                                     .compartmentId(compartment_ocid)
                                     .build())
             return (self.object_storage.listBuckets(list_buckets_request)
-                    .map(lambda list_buckets_response: list_buckets_response.getItems()
-                         .stream()
-                         .map(lambda bucket: bucket.getName())
-                         .collect(Collectors.toList())))
+                    .map(lambda list_buckets_response:
+                         [bucket.getName() for bucket in list_buckets_response.getItems()]))
 
         return self.object_storage.getNamespace(get_namespace_request).flatMap(list_buckets)
 
