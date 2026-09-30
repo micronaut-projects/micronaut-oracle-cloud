@@ -2,8 +2,7 @@
 from typing import Annotated
 
 from com.oracle.bmc.objectstorage import ObjectStorage
-from com.oracle.bmc.objectstorage.model import CreateBucketDetails
-from com.oracle.bmc.objectstorage.requests import CreateBucketRequest, DeleteBucketRequest, GetNamespaceRequest, \
+from com.oracle.bmc.objectstorage.requests import DeleteBucketRequest, GetNamespaceRequest, \
     ListBucketsRequest, ListObjectsRequest
 from jakarta.annotation import Nullable
 from micronaut.http import MediaType
@@ -72,27 +71,6 @@ class BucketController:
             "nextStart": next_start if next_start is not None else "",
             "objects": objects
         }
-
-    # tag::method[]
-    @Post("/buckets/{name}")
-    def create_bucket(self, name: Annotated[str, PathVariable]) -> str:
-
-        tenancy_id = self.tenancy_id_provider.getTenancyId()
-
-        get_namespace_request = GetNamespaceRequest.builder().compartmentId(tenancy_id).build()
-        namespace = self.object_storage.getNamespace(get_namespace_request).getValue()  # <1>
-
-        create_bucket_request = (CreateBucketRequest.builder()
-                                 .namespaceName(namespace)
-                                 .createBucketDetails(CreateBucketDetails.builder()
-                                                      .compartmentId(tenancy_id)
-                                                      .name(name)
-                                                      .build())
-                                 .build())
-
-        return (self.object_storage.createBucket(create_bucket_request)  # <2>
-                .getLocation())  # <3>
-    # end::method[]
 
     @Delete("/buckets/{name}")
     def delete_bucket(self, name: Annotated[str, PathVariable]) -> bool:

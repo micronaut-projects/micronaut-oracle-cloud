@@ -24,13 +24,13 @@ dependency:io.micronaut.sourcegen:micronaut-sourcegen-generator-java[scope="anno
 
 Then declare `@SdkImport` on any class, specifying the type of the client you wish to import. For example:
 
-snippet::example.SdkImports[project-base="docs-examples/example", source="main", tags="imports,class", title="Declaring `@SdkImport`"]
+snippet::example.SdkImports[project-base="docs-examples/example", source="main", tags="imports,class", title="Declaring `@SdkImport`", languages="java,kotlin,groovy"]
 
 [.lang-groovy]
 NOTE: The client factory is generated at compile time by Micronaut SourceGen, which does not support Groovy, so `@SdkImport` has no effect on a Groovy class. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Groovy code.
 
 [.lang-python]
-NOTE: The client factory is generated at compile time by Micronaut SourceGen, which has no Python source generator yet, so `@SdkImport` cannot be processed on a Python class. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Python code.
+NOTE: `@SdkImport` is not supported in Python: the client factory is generated at compile time by Micronaut SourceGen, which has no Python source generator. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Python code.
 
 ### Migrate
 

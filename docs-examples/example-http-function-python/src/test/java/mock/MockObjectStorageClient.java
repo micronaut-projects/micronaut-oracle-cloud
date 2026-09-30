@@ -5,12 +5,10 @@ import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import com.oracle.bmc.objectstorage.model.BucketSummary;
 import com.oracle.bmc.objectstorage.model.ListObjects;
 import com.oracle.bmc.objectstorage.model.ObjectSummary;
-import com.oracle.bmc.objectstorage.requests.CreateBucketRequest;
 import com.oracle.bmc.objectstorage.requests.DeleteBucketRequest;
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest;
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest;
 import com.oracle.bmc.objectstorage.requests.ListObjectsRequest;
-import com.oracle.bmc.objectstorage.responses.CreateBucketResponse;
 import com.oracle.bmc.objectstorage.responses.DeleteBucketResponse;
 import com.oracle.bmc.objectstorage.responses.GetNamespaceResponse;
 import com.oracle.bmc.objectstorage.responses.ListBucketsResponse;
@@ -32,15 +30,6 @@ public class MockObjectStorageClient extends ObjectStorageClient {
     @Override
     public GetNamespaceResponse getNamespace(GetNamespaceRequest request) {
         return GetNamespaceResponse.builder().value(MockData.namespace).build();
-    }
-
-    @Override
-    public CreateBucketResponse createBucket(CreateBucketRequest request) {
-        MockData.bucketNames.add(request.getCreateBucketDetails().getName());
-
-        return CreateBucketResponse.builder()
-                .location(MockData.bucketLocation)
-                .build();
     }
 
     @Override
