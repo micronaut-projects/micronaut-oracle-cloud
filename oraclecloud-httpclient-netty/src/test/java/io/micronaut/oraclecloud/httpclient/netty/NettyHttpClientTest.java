@@ -137,9 +137,10 @@ class NettyHttpClientTest {
             Assertions.assertEquals(initialRefCnt, root.refCnt());
             request.discard();
             Assertions.assertEquals(0, root.refCnt());
+        } finally {
+            embeddedServer.close();
+            ctx.close();
         }
-        embeddedServer.close();
-        ctx.close();
     }
 
     private static ByteBuf bodyRoot(HttpRequest request) throws ReflectiveOperationException {
