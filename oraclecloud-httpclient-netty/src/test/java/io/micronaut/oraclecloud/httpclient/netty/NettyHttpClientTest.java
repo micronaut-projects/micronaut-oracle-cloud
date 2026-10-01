@@ -1,16 +1,20 @@
 package io.micronaut.oraclecloud.httpclient.netty;
 
 import com.oracle.bmc.http.client.HttpClient;
+import com.oracle.bmc.http.client.HttpRequest;
 import com.oracle.bmc.http.client.HttpResponse;
 import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.StandardClientProperties;
+import io.micronaut.buffer.netty.NettyReadBufferFactory;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Post;
+import io.micronaut.http.body.stream.AvailableByteArrayBody;
 import io.micronaut.http.client.exceptions.ReadTimeoutException;
 import io.micronaut.runtime.server.EmbeddedServer;
+import io.netty.buffer.ByteBuf;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.reactivestreams.Publisher;
@@ -19,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Map;
@@ -103,6 +108,48 @@ class NettyHttpClientTest {
         }
         embeddedServer.close();
         ctx.close();
+    }
+
+    @Test
+    public void executedCopiesReleaseBody() throws Exception {
+        Map<String, Object> properties = new java.util.HashMap<>();
+        properties.put("micronaut.server.port", "-1");
+        ApplicationContext ctx = ApplicationContext.run(properties);
+        EmbeddedServer embeddedServer = ctx.getBean(EmbeddedServer.class);
+        embeddedServer.start();
+
+        try (HttpClient client = new NettyHttpClientBuilder(null)
+                .baseUri(embeddedServer.getURI())
+                .build()) {
+            HttpRequest request = client.createRequest(Method.POST)
+                    .appendPathPart("/echo")
+                    .body("abcdef");
+            ByteBuf root = bodyRoot(request);
+            int initialRefCnt = root.refCnt();
+
+            // like the OCI SDK ClientCall, execute copies and never discard them
+            for (int i = 0; i < 5; i++) {
+                try (HttpResponse response = request.copy().execute().toCompletableFuture().get()) {
+                    Assertions.assertEquals("abcdef", response.textBody().toCompletableFuture().get());
+                }
+            }
+
+            Assertions.assertEquals(initialRefCnt, root.refCnt());
+            request.discard();
+            Assertions.assertEquals(0, root.refCnt());
+        }
+        embeddedServer.close();
+        ctx.close();
+    }
+
+    private static ByteBuf bodyRoot(HttpRequest request) throws ReflectiveOperationException {
+        Field field = MicronautHttpRequest.class.getDeclaredField("byteBody");
+        field.setAccessible(true);
+        AvailableByteArrayBody body = (AvailableByteArrayBody) field.get(request);
+        ByteBuf duplicate = NettyReadBufferFactory.toByteBuf(body.peek().duplicate());
+        ByteBuf root = duplicate.unwrap();
+        duplicate.release();
+        return root;
     }
 
     @Test
