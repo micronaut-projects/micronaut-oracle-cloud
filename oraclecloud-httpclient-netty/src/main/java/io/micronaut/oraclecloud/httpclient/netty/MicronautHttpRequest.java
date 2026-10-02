@@ -328,12 +328,20 @@ final class MicronautHttpRequest implements HttpRequest {
         finalizeRequest();
 
         List<Object> filterState = new ArrayList<>(client.nettyClientFilter.size());
-        for (OciNettyClientFilter<?> filter : client.nettyClientFilter) {
-            filterState.add(filter.beforeRequest(this));
+        try {
+            for (OciNettyClientFilter<?> filter : client.nettyClientFilter) {
+                filterState.add(filter.beforeRequest(this));
+            }
+        } catch (Throwable t) {
+            // the OCI SDK does not discard executed requests, so release the body here
+            discard();
+            throw t;
         }
 
-        // Split outgoing body to avoid claim conflicts when multiple readers (e.g. request signing + send) need access
-        CloseableByteBody toSend = byteBody == null ? null : byteBody.split(ByteBody.SplitBackpressureMode.FASTEST);
+        // Transfer body ownership to the raw client, which releases it once sent. The OCI SDK does
+        // not discard executed requests, so this request must not keep a reference of its own.
+        CloseableByteBody toSend = byteBody;
+        byteBody = null;
 
         return Mono.from(client.upstreamHttpClient.exchange(mnRequest, toSend, blockHint))
             .toFuture()
