@@ -704,7 +704,7 @@ public abstract class NettyTest {
 
         netty.handleOneRequest((ctx, request) -> {
             Assertions.assertEquals(HttpMethod.POST, request.method());
-            Assertions.assertEquals("/20181201/functions/function-id/actions/invoke", request.uri());
+            Assertions.assertEquals("/20260325/functions/function-id/actions/invoke", request.uri());
             Assertions.assertTrue(request.headers().get(HttpHeaderNames.AUTHORIZATION).contains("content-length"));
 
             SignatureV1.verify((FullHttpRequest) request, ssc.cert().getPublicKey());
@@ -757,7 +757,7 @@ public abstract class NettyTest {
             int attempt = i;
             netty.handleOneRequest((ctx, request) -> {
                 Assertions.assertEquals(HttpMethod.POST, request.method());
-                Assertions.assertEquals("/20181201/functions/function-id/actions/invoke", request.uri());
+                Assertions.assertEquals("/20260325/functions/function-id/actions/invoke", request.uri());
                 Assertions.assertTrue(request.headers().get(HttpHeaderNames.AUTHORIZATION).contains("content-length"));
 
                 SignatureV1.verify((FullHttpRequest) request, ssc.cert().getPublicKey());
