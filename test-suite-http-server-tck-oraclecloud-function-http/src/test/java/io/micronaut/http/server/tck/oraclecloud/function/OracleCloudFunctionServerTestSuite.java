@@ -16,6 +16,7 @@
 package io.micronaut.http.server.tck.oraclecloud.function;
 
 import org.junit.platform.suite.api.ExcludeClassNamePatterns;
+import org.junit.platform.suite.api.ExcludeTags;
 import org.junit.platform.suite.api.SelectPackages;
 import org.junit.platform.suite.api.Suite;
 import org.junit.platform.suite.api.SuiteDisplayName;
@@ -25,6 +26,8 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "io.micronaut.http.server.tck.tests"
 })
 @SuiteDisplayName("HTTP Server TCK for Oracle Cloud Function")
+// The Fn function does not enforce micronaut.server.max-request-size and assumes a request without a content length has a body
+@ExcludeTags({"max-request-size", "body-without-content-length"})
 @ExcludeClassNamePatterns({
     "io.micronaut.http.server.tck.tests.MiscTest",
     "io.micronaut.http.server.tck.tests.BodyTest",
@@ -41,9 +44,7 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "io.micronaut.http.server.tck.tests.forms.UploadTest",
     "io.micronaut.http.server.tck.tests.cors.CorsSimpleRequestTest",
     "io.micronaut.http.server.tck.tests.forms.FormBindingDeadlockTest",
-    "io.micronaut.http.server.tck.tests.filter.FilterMutatedRequestTest", // Function requests do not support replacing the body or preserving connection metadata on mutation
-    "io.micronaut.http.server.tck.tests.BodyWithoutContentLengthTest", // Function body binding does not yet detect empty bodies with unknown length
-    "io.micronaut.http.server.tck.tests.MaxRequestSizeTest" // Function input streams do not yet enforce micronaut.server.max-request-size
+    "io.micronaut.http.server.tck.tests.filter.FilterMutatedRequestTest" // the mutable request view a filter continues with loses the connection and the body
 })
 public class OracleCloudFunctionServerTestSuite {
 }
