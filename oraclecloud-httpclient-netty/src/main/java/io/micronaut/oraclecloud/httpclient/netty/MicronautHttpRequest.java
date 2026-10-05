@@ -307,8 +307,18 @@ final class MicronautHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
-        for (RequestInterceptor interceptor : client.requestInterceptors) {
-            interceptor.intercept(this);
+        try {
+            for (RequestInterceptor interceptor : client.requestInterceptors) {
+                interceptor.intercept(this);
+            }
+        } catch (Throwable t) {
+            // the OCI SDK does not discard a request whose execute() throws, so release the body here
+            try {
+                discard();
+            } catch (Throwable suppressed) {
+                t.addSuppressed(suppressed);
+            }
+            throw t;
         }
         return execute0();
     }

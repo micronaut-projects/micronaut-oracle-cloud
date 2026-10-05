@@ -143,6 +143,33 @@ class NettyHttpClientTest {
         }
     }
 
+    @Test
+    public void interceptorFailureReleasesBody() throws Exception {
+        IllegalStateException failure = new IllegalStateException("signing failed");
+        try (HttpClient client = new NettyHttpClientBuilder(null)
+                .baseUri(java.net.URI.create("http://localhost:1"))
+                .registerRequestInterceptor(0, r -> {
+                    throw failure;
+                })
+                .build()) {
+            HttpRequest request = client.createRequest(Method.POST)
+                    .appendPathPart("/echo")
+                    .body("abcdef");
+            ByteBuf root = bodyRoot(request);
+            int initialRefCnt = root.refCnt();
+
+            // like the OCI SDK ClientCall, execute copies and never discard them when execute() throws
+            for (int i = 0; i < 5; i++) {
+                HttpRequest copy = request.copy();
+                Assertions.assertSame(failure, Assertions.assertThrows(IllegalStateException.class, copy::execute));
+            }
+
+            Assertions.assertEquals(initialRefCnt, root.refCnt());
+            request.discard();
+            Assertions.assertEquals(0, root.refCnt());
+        }
+    }
+
     private static ByteBuf bodyRoot(HttpRequest request) throws ReflectiveOperationException {
         Field field = MicronautHttpRequest.class.getDeclaredField("byteBody");
         field.setAccessible(true);
