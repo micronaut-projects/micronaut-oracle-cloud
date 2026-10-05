@@ -29,6 +29,8 @@ dependencies {
     ).forEach { implementation(it) }
 
     testImplementation(libs.oci.common.httpclient.jersey3)
+    // Netty's self-signed certificate generator needs Bouncy Castle on Java 25.
+    testRuntimeOnly("org.bouncycastle:bcpkix-jdk15on:1.70")
 }
 
 tasks.named<Test>("test") {
