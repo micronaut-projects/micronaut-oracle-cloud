@@ -272,10 +272,27 @@ runtime = [
 <div class="paragraph">
 <p>Use Micronaut Injection to get an instance of the client in your application, e.g.:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Inject
-Vault vault</code></pre>
+Vaults vault;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">vault: Annotated[Vaults, Inject]</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Inject
+lateinit var vault: Vaults</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Inject
+Vaults vault</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1438,7 +1455,7 @@ runtime = [
 <p>        <div class="listingblock multi-language-sample">
 <div class="title"></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">annotationProcessor(<span class="hljs-string">"io.micronaut.oraclecloud:oraclecloud-serde-processor")</span></code></pre>
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">annotationProcessor(<span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-serde-processor")</span></code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -1447,7 +1464,7 @@ runtime = [
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;annotationProcessorPaths&gt;
     &lt;path&gt;
         &lt;groupId&gt;io.micronaut.oraclecloud&lt;/groupId&gt;
-        &lt;artifactId&gt;oraclecloud-serde-processor&lt;/artifactId&gt;
+        &lt;artifactId&gt;micronaut-oraclecloud-serde-processor&lt;/artifactId&gt;
     &lt;/path&gt;
 &lt;/annotationProcessorPaths&gt;</code></pre>
 </div>
@@ -1457,7 +1474,39 @@ runtime = [
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
 build = [
-    <span class="hljs-string">"io.micronaut.oraclecloud:oraclecloud-serde-processor"</span>,
+    <span class="hljs-string">"io.micronaut.oraclecloud:micronaut-oraclecloud-serde-processor"</span>,
+]</code></pre>
+</div>
+</div>
+</p>
+</div>
+<div class="paragraph">
+<p>The processor generates the client factory with <a href="https://micronaut-projects.github.io/micronaut-sourcegen/latest/guide/">Micronaut SourceGen</a>, so the source generator for your language must also be on the annotation processor path, for example:</p>
+</div>
+<div class="paragraph">
+<p>        <div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="gradle">annotationProcessor(<span class="hljs-string">"io.micronaut.sourcegen:micronaut-sourcegen-generator-java")</span></code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="maven">&lt;annotationProcessorPaths&gt;
+    &lt;path&gt;
+        &lt;groupId&gt;io.micronaut.sourcegen&lt;/groupId&gt;
+        &lt;artifactId&gt;micronaut-sourcegen-generator-java&lt;/artifactId&gt;
+    &lt;/path&gt;
+&lt;/annotationProcessorPaths&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title"></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="pyronaut">[tool.pyronaut.dependencies]
+build = [
+    <span class="hljs-string">"io.micronaut.sourcegen:micronaut-sourcegen-generator-java"</span>,
 ]</code></pre>
 </div>
 </div>
@@ -1466,11 +1515,61 @@ build = [
 <div class="paragraph">
 <p>Then declare <code>@SdkImport</code> on any class, specifying the type of the client you wish to import. For example:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="title">Declaring <code>@SdkImport</code></div>
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@SdkImport(DisasterRecoveryClient.class)</code></pre>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">import com.oracle.bmc.disasterrecovery.DisasterRecoveryClient;
+import io.micronaut.oraclecloud.core.sdk.SdkImport;
+
+@SdkImport(DisasterRecoveryClient.class)
+public class SdkImports {
+}</code></pre>
 </div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title">Declaring <code>@SdkImport</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.disasterrecovery.DisasterRecoveryClient
+import io.micronaut.oraclecloud.core.sdk.SdkImport
+
+@SdkImport(DisasterRecoveryClient::class)
+class SdkImports</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="title">Declaring <code>@SdkImport</code></div>
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">import com.oracle.bmc.disasterrecovery.DisasterRecoveryClient
+import io.micronaut.oraclecloud.core.sdk.SdkImport
+
+@SdkImport(DisasterRecoveryClient)
+class SdkImports {
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note lang-groovy">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The client factory is generated at compile time by Micronaut SourceGen, which does not support Groovy, so <code>@SdkImport</code> has no effect on a Groovy class. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Groovy code.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note lang-python">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>@SdkImport</code> is not supported in Python: the client factory is generated at compile time by Micronaut SourceGen, which has no Python source generator. Declare it on a Java or Kotlin class of your application; the imported client can then be injected into Python code.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -1841,6 +1940,31 @@ public class BucketController implements BucketOperations {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">import os
+from typing import Annotated
+
+from com.oracle.bmc.objectstorage.model import CreateBucketDetails
+from com.oracle.bmc.objectstorage.requests import CreateBucketRequest, DeleteBucketRequest, GetNamespaceRequest, \
+    ListBucketsRequest
+from jakarta.annotation import Nullable
+from micronaut.core.async_.annotation import SingleResult
+from micronaut.http.annotation import Controller, Delete, Get, PathVariable, Post
+from micronaut.oraclecloud.clients.reactor.objectstorage import ObjectStorageReactorClient
+from micronaut.oraclecloud.core import TenancyIdProvider
+from org.reactivestreams import Publisher
+
+@Controller("/os")
+class BucketController:
+
+    def __init__(self, object_storage: ObjectStorageReactorClient,
+                 tenancy_id_provider: TenancyIdProvider):  # <b class="conum">(1)</b>
+        self.object_storage = object_storage
+        self.tenancy_id_provider = tenancy_id_provider
+        self.default_compartment_id = os.environ.get("COMPARTMENT_OCID")</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import io.micronaut.oraclecloud.clients.reactor.objectstorage.ObjectStorageReactorClient
 import io.micronaut.oraclecloud.core.TenancyIdProvider
 import io.micronaut.http.annotation.Get
@@ -1937,6 +2061,33 @@ public Mono&lt;String&gt; createBucket(String name) {
                         .map(CreateBucketResponse::getLocation); // <b class="conum">(3)</b>
             });
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@Post("/buckets/{name}")
+@SingleResult
+def create_bucket(self, name: str) -&gt; Publisher[str]:
+
+    compartment_id = self.default_compartment_id if self.default_compartment_id is not None \
+        else self.tenancy_id_provider.getTenancyId()
+
+    get_namespace_request = GetNamespaceRequest.builder().compartmentId(compartment_id).build()
+    namespace = self.object_storage.getNamespace(get_namespace_request)  # <b class="conum">(1)</b>
+
+    def create_bucket(namespace_response):
+        create_bucket_request = (CreateBucketRequest.builder()
+                                 .namespaceName(namespace_response.getValue())
+                                 .createBucketDetails(CreateBucketDetails.builder()
+                                                      .compartmentId(compartment_id)
+                                                      .name(name)
+                                                      .build())
+                                 .build())
+
+        return (self.object_storage.createBucket(create_bucket_request)  # <b class="conum">(2)</b>
+                .map(lambda create_bucket_response: create_bucket_response.getLocation()))  # <b class="conum">(3)</b>
+
+    return namespace.flatMap(create_bucket)</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2156,6 +2307,25 @@ public class ListBucketsFunction extends OciFunction { // <b class="conum">(1)</
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from typing import Annotated
+
+from com.oracle.bmc.objectstorage import ObjectStorageClient
+from com.oracle.bmc.objectstorage.requests import GetNamespaceRequest, ListBucketsRequest
+from jakarta.inject import Inject, Singleton
+from micronaut.core.annotation import ReflectiveAccess
+from micronaut.oraclecloud.core import TenancyIdProvider
+from micronaut.oraclecloud.function import OciFunction
+
+@Singleton
+class ListBucketsFunction(OciFunction):  # <b class="conum">(1)</b>
+
+    object_storage_client: Annotated[ObjectStorageClient, Inject]  # <b class="conum">(2)</b>
+
+    tenant_id_provider: Annotated[TenancyIdProvider, Inject]</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorageClient
 import com.oracle.bmc.objectstorage.requests.GetNamespaceRequest
 import com.oracle.bmc.objectstorage.requests.ListBucketsRequest
@@ -2215,6 +2385,18 @@ class ListBucketsFunction extends OciFunction { // <b class="conum">(1)</b>
 </tr>
 </table>
 </div>
+<div class="admonitionblock warning lang-python">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The Fn runtime instantiates the function class itself, before any Micronaut application context, and with it the Python runtime, exists. A Python function class like the one above is therefore only usable as a bean of a running application (for example in a test); the class deployed as the Oracle Function entry point must be written in Java, Kotlin or Groovy.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>Once you have defined the function, define a public method to be the function handler, e.g.:</p>
 </div>
@@ -2236,6 +2418,24 @@ public List&lt;String&gt; handleRequest() {
             .getItems().stream().map(BucketSummary::getName)
             .collect(Collectors.toList());
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@ReflectiveAccess
+def handle_request(self) -&gt; list[str]:
+
+    get_namespace_request = (GetNamespaceRequest.builder()
+                             .compartmentId(self.tenant_id_provider.getTenancyId()).build())
+    namespace = self.object_storage_client.getNamespace(get_namespace_request).getValue()
+
+    list_buckets_request = (ListBucketsRequest.builder()
+                            .namespaceName(namespace)
+                            .compartmentId(self.tenant_id_provider.getTenancyId())
+                            .build())
+
+    return [bucket.getName() for bucket in
+            self.object_storage_client.listBuckets(list_buckets_request).getItems()]</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -2420,6 +2620,27 @@ public class BucketController {
 </div>
 <div class="listingblock multi-language-sample">
 <div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">from typing import Annotated
+
+from com.oracle.bmc.objectstorage import ObjectStorage
+from com.oracle.bmc.objectstorage.requests import DeleteBucketRequest, GetNamespaceRequest, \
+    ListBucketsRequest, ListObjectsRequest
+from jakarta.annotation import Nullable
+from micronaut.http import MediaType
+from micronaut.http.annotation import Controller, Delete, Get, PathVariable, Post, QueryValue
+from micronaut.oraclecloud.core import TenancyIdProvider
+
+@Controller("/os")
+class BucketController:
+
+    def __init__(self, object_storage: ObjectStorage,
+                 tenancy_id_provider: TenancyIdProvider):  # <b class="conum">(1)</b>
+        self.object_storage = object_storage
+        self.tenancy_id_provider = tenancy_id_provider</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
 <pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">import com.oracle.bmc.objectstorage.ObjectStorage
 import com.oracle.bmc.objectstorage.model.CreateBucketDetails
 import com.oracle.bmc.objectstorage.requests.CreateBucketRequest
@@ -2513,6 +2734,25 @@ public List&lt;String&gt; listBuckets(@PathVariable @Nullable String compartment
             .map(BucketSummary::getName)
             .collect(Collectors.toList());
 }</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@Get("/buckets{/compartmentId}")
+def list_buckets(self, compartmentId: Annotated[str | None, PathVariable, Nullable]) -&gt; list[str]:
+
+    compartment_ocid = compartmentId if compartmentId is not None else self.tenancy_id_provider.getTenancyId()
+
+    get_namespace_request = GetNamespaceRequest.builder().compartmentId(compartment_ocid).build()
+    namespace = self.object_storage.getNamespace(get_namespace_request).getValue()
+
+    list_buckets_request = (ListBucketsRequest.builder()
+                            .namespaceName(namespace)
+                            .compartmentId(compartment_ocid)
+                            .build())
+
+    return [bucket.getName() for bucket in
+            self.object_storage.listBuckets(list_buckets_request).getItems()]</code></pre>
 </div>
 </div>
 <div class="listingblock multi-language-sample">
@@ -4383,17 +4623,47 @@ Oracle Cloud Vault import in this module is startup-load only. This change does 
 <div class="paragraph">
 <p>If you create a secret with the name <code>SECRET_ONE</code> in Oracle Cloud Vault, it is available like any standard configuration variable:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Value("${SECRET_ONE}") String secretOne;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>You can also use <code>@Property</code>:</p>
-</div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Property(name = "SECRET_ONE") String secretOne;</code></pre>
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">secret_one: Annotated[str, Value("${SECRET_ONE}")]</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@Value("\${SECRET_ONE}") lateinit var secretOne: String</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Value('${SECRET_ONE}') String secretOne</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use <code>@Property</code> (here for a second secret named <code>SECRET_TWO</code>):</p>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Property(name = "SECRET_TWO") String secretTwo;</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">secret_two: Annotated[str, Property(name="SECRET_TWO")]</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@field:Property(name = "SECRET_TWO") lateinit var secretTwo: String</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@Property(name = "SECRET_TWO") String secretTwo</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4439,14 +4709,47 @@ Oracle Cloud Vault import in this module is startup-load only. This change does 
 <div class="paragraph">
 <p>You can bind them like this:</p>
 </div>
-<div class="listingblock">
+<div class="listingblock multi-language-sample">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@ConfigurationProperties("my-secrets")
-public record Config(String one,
-                     String two,
-                     boolean three,
-                     int four,
-                     Double five) {
+public record MySecretsConfig(String one,
+                              String two,
+                              boolean three,
+                              int four,
+                              Double five) {
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-python hljs" data-lang="python">@ConfigurationProperties("my-secrets")
+class MySecretsConfig:
+    one: str | None = None
+    two: str | None = None
+    three: bool = False
+    four: int = 0
+    five: float | None = None</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-kotlin hljs" data-lang="kotlin">@ConfigurationProperties("my-secrets")
+data class MySecretsConfig @ConfigurationInject constructor(val one: String,
+                                                            val two: String,
+                                                            val three: Boolean,
+                                                            val four: Int,
+                                                            val five: Double)</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy hljs" data-lang="groovy">@ConfigurationProperties("my-secrets")
+class MySecretsConfig {
+    String one
+    String two
+    boolean three
+    int four
+    Double five
 }</code></pre>
 </div>
 </div>
