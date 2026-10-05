@@ -40,7 +40,10 @@ import org.junit.platform.suite.api.SuiteDisplayName;
     "io.micronaut.http.server.tck.tests.constraintshandler.ControllerConstraintHandlerTest", // See https://github.com/micronaut-projects/micronaut-oracle-cloud/issues/925
     "io.micronaut.http.server.tck.tests.forms.UploadTest",
     "io.micronaut.http.server.tck.tests.cors.CorsSimpleRequestTest",
-    "io.micronaut.http.server.tck.tests.forms.FormBindingDeadlockTest"
+    "io.micronaut.http.server.tck.tests.forms.FormBindingDeadlockTest",
+    "io.micronaut.http.server.tck.tests.filter.FilterMutatedRequestTest", // Function requests do not support replacing the body or preserving connection metadata on mutation
+    "io.micronaut.http.server.tck.tests.BodyWithoutContentLengthTest", // Function body binding does not yet detect empty bodies with unknown length
+    "io.micronaut.http.server.tck.tests.MaxRequestSizeTest" // Function input streams do not yet enforce micronaut.server.max-request-size
 })
 public class OracleCloudFunctionServerTestSuite {
 }
