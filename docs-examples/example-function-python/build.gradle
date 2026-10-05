@@ -1,0 +1,4 @@
+plugins {
+    id 'io.micronaut.build.internal.oraclecloud-example-function'
+    id 'io.micronaut.build.internal.oraclecloud-python-example'
+}

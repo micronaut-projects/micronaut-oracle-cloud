@@ -81,17 +81,11 @@ NOTE: Oracle Cloud Vault import in this module is startup-load only. This change
 
 If you create a secret with the name `SECRET_ONE` in Oracle Cloud Vault, it is available like any standard configuration variable:
 
-[source,java]
-----
-@Value("${SECRET_ONE}") String secretOne;
-----
+snippet::example.VaultSecrets[project-base="docs-examples/example", source="main", tags="value", indent="0"]
 
-You can also use `@Property`:
+You can also use `@Property` (here for a second secret named `SECRET_TWO`):
 
-[source,java]
-----
-@Property(name = "SECRET_ONE") String secretOne;
-----
+snippet::example.VaultSecrets[project-base="docs-examples/example", source="main", tags="property", indent="0"]
 
 Values from Vault are stored as strings, but you can still bind them into strongly typed configuration using `@ConfigurationProperties`.
 
@@ -119,16 +113,7 @@ So if your Oracle Cloud Vault contains secrets like:
 
 You can bind them like this:
 
-[source,java]
-----
-@ConfigurationProperties("my-secrets")
-public record Config(String one,
-                     String two,
-                     boolean three,
-                     int four,
-                     Double five) {
-}
-----
+snippet::example.MySecretsConfig[project-base="docs-examples/example", source="main", tags="class"]
 
 Another option is to inject Vault-backed values into other configuration entries, such as datasource passwords or API keys:
 
