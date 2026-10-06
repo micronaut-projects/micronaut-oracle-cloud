@@ -25,6 +25,8 @@ import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.core.util.StringUtils;
+import io.micronaut.oraclecloud.core.OracleCloudSigningConfigurationProperties;
 import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -59,6 +61,7 @@ public class OkeWorkloadIdentityFactory {
      */
     @Singleton
     @Requires(beans = OkeWorkloadIdentityConfiguration.class)
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
     protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {

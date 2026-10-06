@@ -118,6 +118,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(condition = OracleCloudConfigCondition.class)
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Requires(missingBeans = SessionTokenAuthenticationDetailsProvider.class)
@@ -147,6 +148,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingBeans = SessionTokenAuthenticationDetailsProvider.class)
     @Requires(missingBeans = ConfigFileAuthenticationDetailsProvider.class)
     @Requires(property = OracleCloudAuthConfigurationProperties.TENANT_ID)
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @BootstrapContextCompatible
     protected SimpleAuthenticationDetailsProvider simpleAuthenticationDetailsProvider(
             OracleCloudAuthConfigurationProperties config) {
@@ -164,6 +166,7 @@ public class OracleCloudCoreFactory {
     @Requires(missingProperty = InstancePrincipalConfiguration.PREFIX)
     @Requires(missingProperty = OracleCloudCoreFactory.OKE_WORKLOAD_IDENTITY_PREFIX)
     @Requires(property = "OCI_RESOURCE_PRINCIPAL_VERSION")
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
     protected ResourcePrincipalAuthenticationDetailsProvider resourcePrincipalAuthenticationDetailsProvider() {
@@ -184,6 +187,7 @@ public class OracleCloudCoreFactory {
      */
     @Singleton
     @Requires(beans = InstancePrincipalConfiguration.class)
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
     protected InstancePrincipalsAuthenticationDetailsProvider instancePrincipalAuthenticationDetailsProvider(InstancePrincipalConfiguration instancePrincipalConfiguration) {
@@ -305,6 +309,7 @@ public class OracleCloudCoreFactory {
     @Singleton
     @Requires(condition = OracleCloudConfigCondition.class)
     @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".session-token", notEquals = StringUtils.FALSE, defaultValue = StringUtils.FALSE)
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Requires(property = OracleCloudConfigFileConfigurationProperties.PREFIX + ".enabled", notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
