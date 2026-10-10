@@ -4,6 +4,26 @@ The following authentication providers are supported in this module:
 * <<simple-auth, SimpleAuthenticationDetailsProvider>>
 * <<instance-principals, InstancePrincipalsAuthenticationDetailsProvider>>
 * <<resource-principals, ResourcePrincipalAuthenticationDetailsProvider>>
+* <<proxy-signing, Forward proxy signing>>
+
+[#proxy-signing]
+== Forward proxy signing
+
+If a forward proxy signs OCI requests on behalf of the application, disable application-side request signing:
+
+[configuration]
+----
+oci:
+  signing:
+    enabled: false
+  region: us-phoenix-1
+----
+
+`oci.signing.enabled` defaults to `true`. When set to `false`, Micronaut supplies a credential-free authentication provider and a signer that adds no signing headers. The standard config file, session token, instance principal, resource principal, and OKE workload identity authentication providers are disabled. No OCI credentials are required in the application.
+
+Set `oci.region` so the SDK can resolve service endpoints. Configure the HTTP client separately to route requests to the signing proxy, such as the Graal Cloud Service forward proxy available over a Unix domain socket. This property does not configure proxy routing.
+
+Custom authentication providers and request signer factories supplied by the application continue to take precedence.
 
 [#config-auth]
 == ConfigFileAuthenticationDetailsProvider
