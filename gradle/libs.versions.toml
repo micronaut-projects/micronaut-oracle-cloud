@@ -1,13 +1,13 @@
 [versions]
-micronaut = "5.2.13"
-micronaut-platform = "5.2.1"
-fn = '1.1.28'
+micronaut = "5.2.15"
+micronaut-platform = "5.2.2"
+fn = '1.1.29'
 graal-svm = "25.0.4.1.1"
 javapoet = '1.13.0'
 logback-json-classic = '0.1.5'
 objenesis = "3.6"
 oracle-database-security = "21.23.0.0"
-oci = "3.97.0"
+oci = "3.97.2"
 protobuf = '0.10.0'
 shadow = '9.6.1'
 slf4j-jcl = '2.0.20'
@@ -25,7 +25,7 @@ micronaut-serde = "3.2.4"
 micronaut-servlet = "6.2.2"
 micronaut-sql = "7.2.0"
 micronaut-micrometer = "6.1.0"
-micronaut-security = "5.4.0"
+micronaut-security = "5.5.0"
 micronaut-sourcegen = "2.2.3"
 micronaut-test = "5.1.0"
 micronaut-logging = "2.1.0"
