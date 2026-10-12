@@ -10,7 +10,7 @@ import com.oracle.bmc.auth.SessionTokenAuthenticationDetailsProvider;
 import com.oracle.bmc.auth.SimpleAuthenticationDetailsProvider;
 import com.oracle.bmc.http.signing.RequestSignerFactory;
 import io.micronaut.context.ApplicationContext;
-import io.micronaut.context.exceptions.DependencyInjectionException;
+import io.micronaut.context.exceptions.BeanInstantiationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -77,9 +77,9 @@ class OracleCloudProxySigningTest {
 
     @Test
     void proxySigningRequiresARegion() {
-        try (ApplicationContext context = ApplicationContext.run(Map.of("oci.signing.enabled", false))) {
-            var failure = assertThrows(DependencyInjectionException.class, () -> context.getBean(AbstractAuthenticationDetailsProvider.class));
-            assertTrue(failure.getMessage().contains("oci.region"));
+        try (ApplicationContext context = ApplicationContext.run(Map.of("oci.signing.enabled", false, "oci.region", ""))) {
+            var failure = assertThrows(BeanInstantiationException.class, () -> context.getBean(AbstractAuthenticationDetailsProvider.class));
+            assertTrue(failure.getCause() instanceof IllegalArgumentException);
         }
     }
 
