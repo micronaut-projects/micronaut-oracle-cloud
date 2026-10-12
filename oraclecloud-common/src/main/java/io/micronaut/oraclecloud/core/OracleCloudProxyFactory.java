@@ -37,7 +37,7 @@ import java.util.Map;
 @Factory
 @Internal
 @BootstrapContextCompatible
-@Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, value = StringUtils.FALSE)
+@Requires(property = OracleCloudSigningConfigurationProperties.ENABLED_PROPERTY, value = StringUtils.FALSE)
 final class OracleCloudProxyFactory {
     @Singleton
     @BootstrapContextCompatible

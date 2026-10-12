@@ -30,7 +30,7 @@ import io.micronaut.core.util.Toggleable;
 @BootstrapContextCompatible
 public record OracleCloudSigningConfigurationProperties(@Bindable(defaultValue = "true") boolean enabled) implements Toggleable {
     public static final String PREFIX = OracleCloudCoreFactory.ORACLE_CLOUD + ".signing";
-    public static final String ENABLED = PREFIX + ".enabled";
+    public static final String ENABLED_PROPERTY = PREFIX + ".enabled";
 
     @Override
     public boolean isEnabled() {

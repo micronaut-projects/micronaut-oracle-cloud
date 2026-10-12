@@ -61,7 +61,7 @@ public class OkeWorkloadIdentityFactory {
      */
     @Singleton
     @Requires(beans = OkeWorkloadIdentityConfiguration.class)
-    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+    @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED_PROPERTY, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
     protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {
