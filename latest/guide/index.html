@@ -163,7 +163,7 @@
         <h1>Micronaut Oracle Cloud</h1>
         <p></p>
         <p>Provides integration between Micronaut and Oracle Cloud</p>
-        <p><strong>Version:</strong> 6.2.0 </p>
+        <p><strong>Version:</strong> 6.2.1 </p>
     </div>
     
 <h1 id="introduction"><a class="anchor" href="#introduction"></a>1 Introduction</h1>
@@ -325,7 +325,88 @@ Vaults vault</code></pre>
 <li>
 <p><a href="#resource-principals">ResourcePrincipalAuthenticationDetailsProvider</a></p>
 </li>
+<li>
+<p><a href="#proxy-signing">Forward proxy signing</a></p>
+</li>
 </ul>
+</div>
+<div class="sect1">
+<h2 id="proxy-signing">Forward proxy signing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If a forward proxy signs OCI requests on behalf of the application, disable application-side request signing:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-properties hljs" data-lang="properties">oci.signing.enabled=false
+oci.region=us-phoenix-1</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-yaml hljs" data-lang="yaml">oci:
+  signing:
+    enabled: false
+  region: us-phoenix-1</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-toml hljs" data-lang="toml">[oci]
+region = "us-phoenix-1"
+
+[oci.signing]
+enabled = false</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-groovy-config hljs" data-lang="groovy-config">oci {
+  signing {
+    enabled = false
+  }
+  region = "us-phoenix-1"
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-hocon hljs" data-lang="hocon">{
+  oci {
+    signing {
+      enabled = false
+    }
+    region = "us-phoenix-1"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock multi-language-sample">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json-config hljs" data-lang="json-config">{
+  "oci": {
+    "signing": {
+      "enabled": false
+    },
+    "region": "us-phoenix-1"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><code>oci.signing.enabled</code> defaults to <code>true</code>. When set to <code>false</code>, Micronaut supplies a credential-free authentication provider and a signer that adds no signing headers. The standard config file, session token, instance principal, resource principal, and OKE workload identity authentication providers are disabled. No OCI credentials are required in the application.</p>
+</div>
+<div class="paragraph">
+<p>Set <code>oci.region</code> so the SDK can resolve service endpoints. Configure the HTTP client separately to route requests to the signing proxy, such as the Graal Cloud Service forward proxy available over a Unix domain socket. This property does not configure proxy routing.</p>
+</div>
+<div class="paragraph">
+<p>Custom authentication providers and request signer factories supplied by the application continue to take precedence.</p>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="config-auth">ConfigFileAuthenticationDetailsProvider</h2>
