@@ -24,6 +24,7 @@ import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.client.RequestInterceptor;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.core.annotation.Internal;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpVersionSelection;
@@ -55,6 +56,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -159,6 +163,14 @@ final class NettyHttpClient implements HttpClient {
 
     ByteBufAllocator alloc() {
         return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
+    }
+
+    static <T> CompletionStage<T> offloadFailure(CompletionStage<T> stage, @Nullable Executor executor) {
+        if (executor == null) {
+            return stage;
+        }
+        // Failed stages must also use the sync caller: OCI retry callbacks can sleep.
+        return stage.exceptionallyComposeAsync(CompletableFuture::failedFuture, executor);
     }
 
     String baseUri() {

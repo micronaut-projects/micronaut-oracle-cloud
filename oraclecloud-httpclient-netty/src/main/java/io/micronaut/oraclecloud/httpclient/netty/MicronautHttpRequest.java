@@ -310,7 +310,7 @@ final class MicronautHttpRequest implements HttpRequest {
         for (RequestInterceptor interceptor : client.requestInterceptors) {
             interceptor.intercept(this);
         }
-        return execute0();
+        return NettyHttpClient.offloadFailure(execute0(), offloadExecutor);
     }
 
     private CompletionStage<HttpResponse> execute0() {
