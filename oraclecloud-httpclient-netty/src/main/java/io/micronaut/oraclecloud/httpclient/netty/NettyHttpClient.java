@@ -36,6 +36,7 @@ import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelException;
 import io.netty.handler.codec.PrematureChannelClosureException;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
@@ -159,6 +163,14 @@ final class NettyHttpClient implements HttpClient {
 
     ByteBufAllocator alloc() {
         return connectionManager == null ? ByteBufAllocator.DEFAULT : connectionManager.alloc();
+    }
+
+    static <T> CompletionStage<T> offloadFailure(CompletionStage<T> stage, @Nullable Executor executor) {
+        if (executor == null) {
+            return stage;
+        }
+        // Failed stages must also use the sync caller: OCI retry callbacks can sleep.
+        return stage.exceptionallyComposeAsync(CompletableFuture::failedFuture, executor);
     }
 
     String baseUri() {
