@@ -20,6 +20,7 @@ import com.oracle.bmc.auth.RegionProvider;
 import io.micronaut.configuration.kafka.config.KafkaDefaultConfiguration;
 import io.micronaut.configuration.kafka.config.KafkaHealthConfigurationProperties;
 import io.micronaut.context.ApplicationContext;
+import io.micronaut.context.annotation.Primary;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.event.BeanCreatedEvent;
 import io.micronaut.context.event.BeanCreatedEventListener;
@@ -306,6 +307,7 @@ class OracleCloudStreamingKafkaConfigurationTest {
     @Test
     void failsWhenBootstrapServersAndRegionAreMissing() {
         try (ApplicationContext context = ApplicationContext.run(Map.of(
+            "spec.name", "fails-when-bootstrap-servers-and-region-are-missing",
             "oci.config.enabled", false,
             "oci.streaming.stream-pool-id", STREAM_POOL_ID,
             "oci.streaming.auth-mode", "resource-principal"
@@ -410,6 +412,12 @@ class OracleCloudStreamingKafkaConfigurationTest {
         }
     }
 
+    /**
+     * Marked {@link Primary} so that a {@link RegionProvider} supplied by the environment (for example the
+     * {@code SimpleAuthenticationDetailsProvider} created from {@code OCI_*} variables on the OCI CI runners)
+     * cannot make the injection point ambiguous.
+     */
+    @Primary
     @Singleton
     @Requires(property = "spec.name", value = "configures-bootstrap-servers-from-region-provider")
     static final class TestRegionProvider implements RegionProvider {
@@ -417,6 +425,21 @@ class OracleCloudStreamingKafkaConfigurationTest {
         @Override
         public Region getRegion() {
             return Region.EU_JOVANOVAC_1;
+        }
+    }
+
+    /**
+     * A {@link RegionProvider} that cannot determine a region, so the missing-region failure is exercised
+     * regardless of whether the environment running the test supplies OCI credentials with a region.
+     */
+    @Primary
+    @Singleton
+    @Requires(property = "spec.name", value = "fails-when-bootstrap-servers-and-region-are-missing")
+    static final class MissingRegionProvider implements RegionProvider {
+
+        @Override
+        public Region getRegion() {
+            return null;
         }
     }
 }
