@@ -304,7 +304,7 @@ final class NettyHttpRequest implements HttpRequest {
             }
         });
 
-        return result;
+        return NettyHttpClient.offloadFailure(result, offloadExecutor);
     }
 
     private void bufferBody() {
