@@ -20,10 +20,12 @@ io.micronaut.oraclecloud.discovery.vault
 io.micronaut.oraclecloud.function
 io.micronaut.oraclecloud.function.http
 io.micronaut.oraclecloud.function.http.test
+io.micronaut.oraclecloud.httpclient
 io.micronaut.oraclecloud.httpclient.apache.core
 io.micronaut.oraclecloud.httpclient.apache.core.serde
 io.micronaut.oraclecloud.httpclient.netty
 io.micronaut.oraclecloud.httpclient.netty.visitor
+io.micronaut.oraclecloud.info
 io.micronaut.oraclecloud.logging
 io.micronaut.oraclecloud.monitoring
 io.micronaut.oraclecloud.monitoring.micrometer
