@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class OracleCloudVaultImporterContextFactoryIsolationSpec extends Specification {
 
-    void 'import context resolves OCI clients without importing optional monitoring integration'() {
+    void 'import context resolves OCI clients without optional monitoring integration, deduceEnvironment=#deduceEnvironment'() {
         given:
         def signatures = new CopyOnWriteArrayList<String>()
         HttpServer server = HttpServer.create(new InetSocketAddress('localhost', 0), 0)
@@ -37,11 +37,11 @@ class OracleCloudVaultImporterContextFactoryIsolationSpec extends Specification 
             exchange.close()
         }
         server.start()
-        ApplicationContext parent = ApplicationContext.run(authenticationProperties() + [
+        ApplicationContext parent = ApplicationContext.builder(authenticationProperties() + [
             'micronaut.metrics.enabled': 'true',
             'micronaut.metrics.export.oraclecloud.enabled': 'false',
             'oci.config.enabled': 'false'
-        ])
+        ]).deduceEnvironment(deduceEnvironment).start()
         def declaration = OracleCloudVaultImportConfiguration.of(
             'compartment', 'vault', [], [], null, null, [:]
         )
@@ -72,6 +72,9 @@ class OracleCloudVaultImporterContextFactoryIsolationSpec extends Specification 
         importerContext?.close()
         parent?.close()
         server.stop(0)
+
+        where:
+        deduceEnvironment << [true, false]
     }
 
     void 'import context propagates the OCI auth property names used by the core configuration'() {
@@ -84,7 +87,8 @@ class OracleCloudVaultImporterContextFactoryIsolationSpec extends Specification 
             'oci.passphrase': 'parent-passphrase',
             'oci.config.enabled': 'false',
             'oci.region': 'us-phoenix-1',
-            'oci.signing.enabled': 'false'
+            'oci.signing.enabled': 'false',
+            'micronaut.metrics.export.oraclecloud.enabled': false
         ])
         def declaration = OracleCloudVaultImportConfiguration.of(
             'compartment', 'vault', [], [], null, null,

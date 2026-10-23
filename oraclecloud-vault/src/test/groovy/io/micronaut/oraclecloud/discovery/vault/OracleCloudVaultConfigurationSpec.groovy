@@ -25,6 +25,7 @@ class OracleCloudVaultConfigurationSpec extends Specification {
 
     void "it parses configuration"() {
         ApplicationContext ctx = ApplicationContext.run([
+                'micronaut.metrics.export.oraclecloud.enabled': false,
                 'spec.name'                      : 'it parses configuration',
                 'micronaut.config-client.enabled': true,
                 'oci.vault.config.enabled'       : true,
@@ -58,6 +59,7 @@ class OracleCloudVaultConfigurationSpec extends Specification {
     void "it is missing vault configuration client bean when disabled"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
+                'micronaut.metrics.export.oraclecloud.enabled': false,
                 'micronaut.config-client.enabled': false,
                 'oci.config.enabled'             : false,
                 'oci.vault.config.enabled'       : false,
