@@ -28,6 +28,7 @@ class OracleCloudVaultConfigurationClientSpec extends Specification {
     void "it loads secret from vault"() {
         given:
         ApplicationContext ctx = ApplicationContext.run([
+                'micronaut.metrics.export.oraclecloud.enabled': false,
                 'micronaut.config-client.enabled': true,
                 'oci.vault.config.enabled': true,
                 'oci.vault.vaults': [

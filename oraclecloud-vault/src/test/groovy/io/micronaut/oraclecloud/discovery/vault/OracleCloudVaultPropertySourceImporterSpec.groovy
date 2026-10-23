@@ -97,7 +97,7 @@ class OracleCloudVaultPropertySourceImporterSpec extends Specification {
         def firstVaults = Stub(com.oracle.bmc.vault.Vaults)
         def secondSecrets = Stub(com.oracle.bmc.secrets.Secrets)
         def secondVaults = Stub(com.oracle.bmc.vault.Vaults)
-        def applicationContext = ApplicationContext.run()
+        def applicationContext = ApplicationContext.run(['micronaut.metrics.export.oraclecloud.enabled': false])
         def environment = applicationContext.environment
 
         when:
