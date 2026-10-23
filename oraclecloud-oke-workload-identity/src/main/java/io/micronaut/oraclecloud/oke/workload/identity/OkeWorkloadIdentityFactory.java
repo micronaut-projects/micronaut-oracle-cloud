@@ -68,6 +68,7 @@ public class OkeWorkloadIdentityFactory {
     @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED_PROPERTY, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
+    @SuppressWarnings("java:S1181") // Preserve startup errors while still releasing the owned federation client.
     protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {
         OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder = okeWorkloadIdentityConfiguration.getBuilder();
         if (sessionKeySupplier != null) {

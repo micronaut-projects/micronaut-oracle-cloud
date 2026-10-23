@@ -8,6 +8,9 @@ import com.oracle.bmc.auth.okeworkloadidentity.internal.OkeTenancyOnlyAuthentica
 import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.HttpClient;
+import com.oracle.bmc.http.client.HttpProviderCapability;
+import com.oracle.bmc.http.client.HttpRequest;
+import com.oracle.bmc.http.client.Method;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -19,9 +22,16 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.CALLS_REAL_METHODS;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClientTest {
 
@@ -67,7 +77,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
         writer.flush();
         OkeNettyClientSslBuilder okeNettyClientSslBuilder = MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(file.getAbsolutePath());
 
-        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class)) {
+        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class, CALLS_REAL_METHODS)) {
             utilities.when(() -> MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.KUBERNETES_SERVICE_ACCOUNT_CERT_PATH)).thenReturn(okeNettyClientSslBuilder);
 
             try (MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient micronautOkeWorkloadIdentityResourcePrincipalsFederationClient = new MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
@@ -103,9 +113,120 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
         client.close();
         client.close();
 
-        Mockito.verify(delegate).close();
-        Mockito.verify(rawHttpClient).close();
-        Mockito.verify(ioExecutor).shutdown();
+        verify(delegate).close();
+        verify(rawHttpClient).close();
+        verify(ioExecutor).shutdown();
+    }
+
+    @Test
+    void delegatesHttpClientOperations() {
+        HttpClient delegate = mock(HttpClient.class);
+        Closeable rawHttpClient = mock(Closeable.class);
+        ExecutorService ioExecutor = mock(ExecutorService.class);
+        HttpRequest request = mock(HttpRequest.class);
+        HttpRequest requestWithOptions = mock(HttpRequest.class);
+        Method method = Method.GET;
+        Map<String, Object> requiredParameters = Map.of("request", "value");
+        Map<String, Boolean> options = Map.of("option", true);
+        Exception exception = new IOException("request failed");
+        HttpProviderCapability capability = mock(HttpProviderCapability.class);
+
+        when(delegate.createRequest(method)).thenReturn(request);
+        when(delegate.createRequest(method, requiredParameters, options)).thenReturn(requestWithOptions);
+        when(delegate.isProcessingException(exception)).thenReturn(true);
+        when(delegate.hasCapability(capability)).thenReturn(true);
+
+        try (HttpClient client = MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.ownedHttpClient(
+            delegate,
+            rawHttpClient,
+            ioExecutor
+        )) {
+            Assertions.assertSame(request, client.createRequest(method));
+            Assertions.assertSame(requestWithOptions, client.createRequest(method, requiredParameters, options));
+            Assertions.assertTrue(client.isProcessingException(exception));
+            Assertions.assertTrue(client.hasCapability(capability));
+            client.updateEndpoint("https://example.com");
+        }
+
+        verify(delegate).createRequest(method);
+        verify(delegate).createRequest(method, requiredParameters, options);
+        verify(delegate).isProcessingException(exception);
+        verify(delegate).hasCapability(capability);
+        verify(delegate).updateEndpoint("https://example.com");
+    }
+
+    @Test
+    void preservesRuntimeFailureAndClosesEveryOwnedResource() throws Exception {
+        HttpClient delegate = mock(HttpClient.class);
+        AutoCloseable rawHttpClient = mock(AutoCloseable.class);
+        ExecutorService ioExecutor = mock(ExecutorService.class);
+        RuntimeException delegateFailure = new RuntimeException("delegate close failed");
+        Error executorFailure = new AssertionError("executor close failed");
+        Exception rawFailure = new Exception("raw client close failed");
+        doThrow(delegateFailure).when(delegate).close();
+        doThrow(executorFailure).when(ioExecutor).shutdown();
+        doThrow(rawFailure).when(rawHttpClient).close();
+
+        HttpClient client = MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.ownedHttpClient(
+            delegate,
+            rawHttpClient,
+            ioExecutor
+        );
+
+        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, client::close);
+
+        Assertions.assertSame(delegateFailure, thrown);
+        Assertions.assertArrayEquals(new Throwable[]{executorFailure, rawFailure}, thrown.getSuppressed());
+        verify(delegate).close();
+        verify(ioExecutor).shutdown();
+        verify(rawHttpClient).close();
+    }
+
+    @Test
+    void preservesErrorFailureAndWrapsCheckedFailure() throws Exception {
+        HttpClient delegate = mock(HttpClient.class);
+        AutoCloseable rawHttpClient = mock(AutoCloseable.class);
+        ExecutorService ioExecutor = mock(ExecutorService.class);
+        Error delegateFailure = new AssertionError("delegate close failed");
+        Exception rawFailure = new Exception("raw client close failed");
+        doThrow(delegateFailure).when(delegate).close();
+        doThrow(rawFailure).when(rawHttpClient).close();
+
+        HttpClient client = MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.ownedHttpClient(
+            delegate,
+            rawHttpClient,
+            ioExecutor
+        );
+
+        Error thrown = Assertions.assertThrows(Error.class, client::close);
+
+        Assertions.assertSame(delegateFailure, thrown);
+        Assertions.assertArrayEquals(new Throwable[]{rawFailure}, thrown.getSuppressed());
+        verify(delegate).close();
+        verify(ioExecutor).shutdown();
+        verify(rawHttpClient).close();
+    }
+
+    @Test
+    void wrapsCheckedFailureAfterClosingAllOwnedResources() throws Exception {
+        HttpClient delegate = mock(HttpClient.class);
+        AutoCloseable rawHttpClient = mock(AutoCloseable.class);
+        ExecutorService ioExecutor = mock(ExecutorService.class);
+        Exception rawFailure = new Exception("raw client close failed");
+        doThrow(rawFailure).when(rawHttpClient).close();
+
+        HttpClient client = MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.ownedHttpClient(
+            delegate,
+            rawHttpClient,
+            ioExecutor
+        );
+
+        IllegalStateException thrown = Assertions.assertThrows(IllegalStateException.class, client::close);
+
+        Assertions.assertSame(rawFailure, thrown.getCause());
+        verify(delegate).close();
+        verify(ioExecutor).shutdown();
+        verify(rawHttpClient).close();
     }
 
     @Test
@@ -120,8 +241,72 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
             failure
         );
 
-        Mockito.verify(rawHttpClient).close();
-        Mockito.verify(ioExecutor).shutdownNow();
+        verify(rawHttpClient).close();
+        verify(ioExecutor).shutdownNow();
+    }
+
+    @Test
+    void closesResourcesWhenClientCreationHasNoAllocatedResources() {
+        RuntimeException failure = new RuntimeException("client creation failed");
+
+        Assertions.assertDoesNotThrow(() ->
+            MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.closeOwnedResources(null, null, failure)
+        );
+    }
+
+    @Test
+    void doesNotSelfSuppressStartupFailureWhenResourceCloseRepeatsIt() throws Exception {
+        AutoCloseable rawHttpClient = mock(AutoCloseable.class);
+        RuntimeException failure = new RuntimeException("client creation failed");
+        doThrow(failure).when(rawHttpClient).close();
+
+        MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.closeOwnedResources(
+            rawHttpClient,
+            null,
+            failure
+        );
+
+        Assertions.assertEquals(0, failure.getSuppressed().length);
+        verify(rawHttpClient).close();
+    }
+
+    @Test
+    void closesResourcesWhenActualClientConstructionFails() throws IOException {
+        File file = File.createTempFile("temp", ".ca");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            writer.write(CERTIFICATE_STRING);
+        }
+        OkeNettyClientSslBuilder sslBuilder =
+            MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(file.getAbsolutePath());
+        RuntimeException failure = new IllegalStateException("client customization failed");
+        ClientConfigurator clientConfigurator = builder -> {
+            throw failure;
+        };
+
+        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities =
+                 Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class, CALLS_REAL_METHODS)) {
+            utilities.when(() -> MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(
+                MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.KUBERNETES_SERVICE_ACCOUNT_CERT_PATH
+            )).thenReturn(sslBuilder);
+
+            Assertions.assertSame(
+                failure,
+                Assertions.assertThrows(
+                    RuntimeException.class,
+                    () -> new MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient(
+                        mock(SessionKeySupplier.class),
+                        new DefaultServiceAccountTokenProvider(file.getAbsolutePath()),
+                        mock(OkeTenancyOnlyAuthenticationDetailsProvider.class),
+                        clientConfigurator,
+                        mock(CircuitBreakerConfiguration.class),
+                        new ArrayList<>(),
+                        new ArrayList<>()
+                    )
+                )
+            );
+        } finally {
+            file.delete();
+        }
     }
 
     @Test
@@ -144,7 +329,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
             }
         };
 
-        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class)) {
+        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class, CALLS_REAL_METHODS)) {
             utilities.when(() -> MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.KUBERNETES_SERVICE_ACCOUNT_CERT_PATH)).thenReturn(sslBuilder);
 
             OkeWorkloadIdentityFactory factory = new OkeWorkloadIdentityFactory();
@@ -152,6 +337,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
             MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient client = builder.getMicronautFederationClient();
             Assertions.assertFalse(client.isClosed());
 
+            factory.close();
             factory.close();
 
             Assertions.assertTrue(client.isClosed());
@@ -179,7 +365,7 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
             }
         };
 
-        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class)) {
+        try (MockedStatic<MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient> utilities = Mockito.mockStatic(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class, CALLS_REAL_METHODS)) {
             utilities.when(() -> MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.okeNettyClientSslBuilder(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.KUBERNETES_SERVICE_ACCOUNT_CERT_PATH)).thenReturn(sslBuilder);
 
             OkeWorkloadIdentityFactory factory = new OkeWorkloadIdentityFactory();
@@ -199,12 +385,64 @@ IgQuEdz+6WvdabYC1igIWN9od6fnoNI3NSRwuttvnJVWX4FkVnhu1YRdGdNkGg==
         var builder = mock(OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder.class);
         var configuration = mock(OkeWorkloadIdentityConfiguration.class);
         var provider = mock(OkeWorkloadIdentityAuthenticationDetailsProvider.class);
-        Mockito.when(configuration.getBuilder()).thenReturn(builder);
-        Mockito.when(builder.build()).thenReturn(provider);
+        when(configuration.getBuilder()).thenReturn(builder);
+        when(builder.build()).thenReturn(provider);
 
         var factory = new OkeWorkloadIdentityFactory();
         Assertions.assertSame(provider, factory.okeWorkloadIdentityAuthenticationDetailsProvider(configuration));
         factory.close();
+    }
+
+    @Test
+    void externalSdkBuilderFailureIsPropagated() {
+        var builder = mock(OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder.class);
+        var configuration = mock(OkeWorkloadIdentityConfiguration.class);
+        var failure = new IllegalStateException("provider startup failed");
+        when(configuration.getBuilder()).thenReturn(builder);
+        when(builder.build()).thenThrow(failure);
+
+        var factory = new OkeWorkloadIdentityFactory();
+
+        Assertions.assertSame(
+            failure,
+            Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> factory.okeWorkloadIdentityAuthenticationDetailsProvider(configuration)
+            )
+        );
+        factory.close();
+    }
+
+    @Test
+    void factoryPreservesProviderFailureWhenFederationCleanupFails() {
+        var builder = spy(new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder());
+        var federationClient = mock(MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient.class);
+        var configuration = mock(OkeWorkloadIdentityConfiguration.class);
+        var providerFailure = new IllegalStateException("provider startup failed");
+        var cleanupFailure = new IllegalStateException("federation cleanup failed");
+        doReturn(federationClient).when(builder).getMicronautFederationClient();
+        doThrow(providerFailure).when(builder).build();
+        doThrow(cleanupFailure).when(federationClient).close();
+        when(configuration.getBuilder()).thenReturn(builder);
+
+        var factory = new OkeWorkloadIdentityFactory();
+
+        IllegalStateException thrown = Assertions.assertThrows(
+            IllegalStateException.class,
+            () -> factory.okeWorkloadIdentityAuthenticationDetailsProvider(configuration)
+        );
+
+        Assertions.assertSame(providerFailure, thrown);
+        Assertions.assertArrayEquals(new Throwable[]{cleanupFailure}, thrown.getSuppressed());
+        verify(federationClient).close();
+    }
+
+    @Test
+    void builderWithoutFederationClientCanBeClosed() {
+        var builder = new MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder();
+
+        Assertions.assertNull(builder.getMicronautFederationClient());
+        Assertions.assertDoesNotThrow(builder::closeFederationClient);
     }
 
     private static final class FailingBuilder extends MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder {

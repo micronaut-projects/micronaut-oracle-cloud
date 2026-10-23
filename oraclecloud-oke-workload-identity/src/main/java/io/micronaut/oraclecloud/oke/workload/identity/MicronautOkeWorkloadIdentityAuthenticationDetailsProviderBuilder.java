@@ -25,6 +25,7 @@ import com.oracle.bmc.circuitbreaker.CircuitBreakerConfiguration;
 import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.client.StandardClientProperties;
 import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
     /** The configuration for the circuit breaker. */
     private CircuitBreakerConfiguration circuitBreakerConfig;
 
-    private ServiceAccountTokenSupplier serviceAccountTokenSupplier = new DefaultServiceAccountTokenProvider();
+    private final ServiceAccountTokenSupplier serviceAccountTokenSupplier = new DefaultServiceAccountTokenProvider();
 
     public static void setOkeHttpClientConfiguration(OkeHttpClientConfiguration okeHttpClientConfiguration) {
         MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.okeHttpClientConfiguration = okeHttpClientConfiguration;
@@ -89,7 +90,7 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
         );
     }
 
-    MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient getMicronautFederationClient() {
+    @Nullable MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient getMicronautFederationClient() {
         return federationClient instanceof MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient client
             ? client
             : null;

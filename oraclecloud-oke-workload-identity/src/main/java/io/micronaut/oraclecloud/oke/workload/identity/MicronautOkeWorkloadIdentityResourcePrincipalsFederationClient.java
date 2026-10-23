@@ -37,6 +37,7 @@ import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.http.client.netty.DefaultHttpClientBuilder;
 import io.micronaut.oraclecloud.httpclient.netty.ManagedNettyHttpProvider;
 import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
+import org.jspecify.annotations.Nullable;
 
 import javax.net.ssl.TrustManagerFactory;
 import java.io.FileInputStream;
@@ -150,6 +151,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient
     }
 
     @Override
+    @SuppressWarnings("java:S1181") // Release owned resources even when client initialization throws an Error.
     protected HttpClient makeClient(String endpoint, RequestSigner requestSigner) {
         if (StringUtils.isBlank(endpoint)) {
             // this is the case for the federation client, which isn't used in OKE workload identity
@@ -201,34 +203,11 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient
         if (!closed.compareAndSet(false, true)) {
             return;
         }
-        Throwable failure = null;
-        try {
-            if (resourcePrincipalTokenClient != null) {
-                resourcePrincipalTokenClient.close();
-            }
-        } catch (Throwable e) {
-            failure = e;
+        Throwable failure = closeResource(resourcePrincipalTokenClient, null);
+        if (federationClient != resourcePrincipalTokenClient) {
+            failure = closeResource(federationClient, failure);
         }
-        if (federationClient != null && federationClient != resourcePrincipalTokenClient) {
-            try {
-                federationClient.close();
-            } catch (Throwable e) {
-                if (failure == null) {
-                    failure = e;
-                } else {
-                    failure.addSuppressed(e);
-                }
-            }
-        }
-        if (failure instanceof RuntimeException runtimeException) {
-            throw runtimeException;
-        }
-        if (failure instanceof Error error) {
-            throw error;
-        }
-        if (failure != null) {
-            throw new RuntimeException(failure);
-        }
+        propagateFailure(failure);
     }
 
     boolean isClosed() {
@@ -243,22 +222,40 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient
     }
 
     static void closeOwnedResources(
-        AutoCloseable rawHttpClient,
-        ExecutorService ioExecutor,
+        @Nullable AutoCloseable rawHttpClient,
+        @Nullable ExecutorService ioExecutor,
         Throwable failure) {
-        try {
-            if (ioExecutor != null) {
-                ioExecutor.shutdownNow();
-            }
-        } catch (Throwable e) {
-            failure.addSuppressed(e);
+        closeResource(ioExecutor == null ? null : ioExecutor::shutdownNow, failure);
+        closeResource(rawHttpClient, failure);
+    }
+
+    @SuppressWarnings("java:S1181") // Every owned resource must close, including after another close throws an Error.
+    private static @Nullable Throwable closeResource(@Nullable AutoCloseable resource, @Nullable Throwable failure) {
+        if (resource == null) {
+            return failure;
         }
-        if (rawHttpClient != null) {
-            try {
-                rawHttpClient.close();
-            } catch (Throwable e) {
+        try {
+            resource.close();
+        } catch (Throwable e) {
+            if (failure == null) {
+                return e;
+            }
+            if (failure != e) {
                 failure.addSuppressed(e);
             }
+        }
+        return failure;
+    }
+
+    private static void propagateFailure(@Nullable Throwable failure) {
+        if (failure instanceof RuntimeException runtimeException) {
+            throw runtimeException;
+        }
+        if (failure instanceof Error error) {
+            throw error;
+        }
+        if (failure != null) {
+            throw new IllegalStateException("Failed to close OKE federation HTTP resources", failure);
         }
     }
 
@@ -310,39 +307,10 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient
             if (!closed.compareAndSet(false, true)) {
                 return;
             }
-            Throwable failure = null;
-            try {
-                delegate.close();
-            } catch (Throwable e) {
-                failure = e;
-            }
-            try {
-                ioExecutor.shutdown();
-            } catch (Throwable e) {
-                if (failure == null) {
-                    failure = e;
-                } else {
-                    failure.addSuppressed(e);
-                }
-            }
-            try {
-                rawHttpClient.close();
-            } catch (Throwable e) {
-                if (failure == null) {
-                    failure = e;
-                } else {
-                    failure.addSuppressed(e);
-                }
-            }
-            if (failure instanceof RuntimeException runtimeException) {
-                throw runtimeException;
-            }
-            if (failure instanceof Error error) {
-                throw error;
-            }
-            if (failure != null) {
-                throw new RuntimeException(failure);
-            }
+            Throwable failure = closeResource(delegate, null);
+            failure = closeResource(ioExecutor::shutdown, failure);
+            failure = closeResource(rawHttpClient, failure);
+            propagateFailure(failure);
         }
     }
 }
