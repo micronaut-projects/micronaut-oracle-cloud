@@ -23,6 +23,8 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.core.util.CollectionUtils;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.inject.BeanConfiguration;
+import io.micronaut.inject.BeanDefinition;
+import io.micronaut.inject.BeanDefinitionReference;
 import io.micronaut.inject.QualifiedBeanType;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.annotation.Internal;
@@ -52,6 +54,15 @@ final class OracleCloudVaultImporterContextFactory {
         "oci.auth.fingerprint",
         "oci.auth.private-key",
         "oci.auth.pass-phrase",
+        "oci.tenant-id",
+        "oci.user-id",
+        "oci.fingerprint",
+        "oci.private-key",
+        "oci.private-key-file",
+        "oci.passphrase",
+        "oci.pass-phrase",
+        "oci.signing.enabled",
+        "oci.config.session-token",
         "oci.session-token.token",
         "oci.region",
         "oci.config.use-instance-principal",
@@ -85,7 +96,9 @@ final class OracleCloudVaultImporterContextFactory {
         @Nullable Vaults vaults) {
         Set<String> activeNames = environment.getActiveNames();
         Map<String, Object> properties = importConfiguration.properties();
+        normalizeAuthProperties(properties);
         mergeParentAuthProperties(environment, properties);
+        normalizeAuthProperties(properties);
         ApplicationContextBuilder builder = ApplicationContext.builder(
             properties,
             activeNames.toArray(String[]::new)
@@ -96,37 +109,43 @@ final class OracleCloudVaultImporterContextFactory {
         builder.enableDefaultPropertySources(false);
         builder.eagerInitSingletons(false);
         builder.environmentPropertySource(false);
+        builder.configImport(false);
         builder.beanConfigurationsPredicate(vaultBeanConfigurations());
         builder.beansPredicate(vaultBeans());
         if (!singletonOverrides.isEmpty()) {
             builder.singletons(singletonOverrides.values().toArray());
         }
-        ApplicationContext applicationContext = builder.start();
-
-        if (secrets == null) {
-            secrets = applicationContext.getBean(Secrets.class);
+        ApplicationContext applicationContext = builder.build();
+        try {
+            applicationContext.start();
+            if (secrets == null) {
+                secrets = applicationContext.getBean(Secrets.class);
+            }
+            if (vaults == null) {
+                vaults = applicationContext.getBean(Vaults.class);
+            }
+            OracleCloudVaultConfiguration configuration = applicationContext.getBean(OracleCloudVaultConfiguration.class);
+            List<OracleCloudVaultConfiguration.OracleCloudVault> configVaults = configuration.getVaults();
+            if (!configVaults.isEmpty()) {
+                OracleCloudVaultConfiguration.OracleCloudVault v = configVaults.getFirst();
+                handleIncludesExcludes(importConfiguration, v);
+            } else {
+                OracleCloudVaultConfiguration.OracleCloudVault newVault = new OracleCloudVaultConfiguration.OracleCloudVault();
+                newVault.setCompartmentOcid(importConfiguration.compartmentId());
+                newVault.setOcid(importConfiguration.vaultOcid());
+                handleIncludesExcludes(importConfiguration, newVault);
+                configuration.setVaults(List.of(newVault));
+            }
+            return new OracleCloudVaultImporterContext(
+                applicationContext,
+                configuration,
+                secrets,
+                vaults
+            );
+        } catch (RuntimeException | Error e) {
+            applicationContext.close();
+            throw e;
         }
-        if (vaults == null) {
-            vaults = applicationContext.getBean(Vaults.class);
-        }
-        OracleCloudVaultConfiguration configuration = applicationContext.getBean(OracleCloudVaultConfiguration.class);
-        List<OracleCloudVaultConfiguration.OracleCloudVault> configVaults = configuration.getVaults();
-        if (!configVaults.isEmpty()) {
-            OracleCloudVaultConfiguration.OracleCloudVault v = configVaults.getFirst();
-            handleIncludesExcludes(importConfiguration, v);
-        } else {
-            OracleCloudVaultConfiguration.OracleCloudVault newVault = new OracleCloudVaultConfiguration.OracleCloudVault();
-            newVault.setCompartmentOcid(importConfiguration.compartmentId());
-            newVault.setOcid(importConfiguration.vaultOcid());
-            handleIncludesExcludes(importConfiguration, newVault);
-            configuration.setVaults(List.of(newVault));
-        }
-        return new OracleCloudVaultImporterContext(
-            applicationContext,
-            configuration,
-            secrets,
-            vaults
-        );
     }
 
     private static void mergeParentAuthProperties(Environment environment, Map<String, Object> properties) {
@@ -136,6 +155,21 @@ final class OracleCloudVaultImporterContextFactory {
             }
             environment.getProperty(key, Argument.OBJECT_ARGUMENT)
                 .ifPresent(value -> properties.put(key, value));
+        }
+    }
+
+    private static void normalizeAuthProperties(Map<String, Object> properties) {
+        copyIfMissing(properties, "oci.auth.tenant-id", "oci.tenant-id");
+        copyIfMissing(properties, "oci.auth.user-id", "oci.user-id");
+        copyIfMissing(properties, "oci.auth.fingerprint", "oci.fingerprint");
+        copyIfMissing(properties, "oci.auth.private-key", "oci.private-key");
+        copyIfMissing(properties, "oci.auth.pass-phrase", "oci.passphrase");
+        copyIfMissing(properties, "oci.session-token.token", "oci.config.session-token");
+    }
+
+    private static void copyIfMissing(Map<String, Object> properties, String source, String target) {
+        if (!properties.containsKey(target) && properties.containsKey(source)) {
+            properties.put(target, properties.get(source));
         }
     }
 
@@ -162,13 +196,31 @@ final class OracleCloudVaultImporterContextFactory {
             if (beanDefinition.getBeanType().getName().equals(LEGACY_VAULT_CONFIGURATION_CLIENT)) {
                 return false;
             }
-            String name = beanDefinition.getBeanType().getName();
-            return supportedPackages(name);
+            if (beanDefinition instanceof BeanDefinitionReference<?> reference) {
+                return supportedPackages(reference.getBeanDefinitionName());
+            }
+            if (beanDefinition instanceof BeanDefinition<?> definition) {
+                return definition.getDeclaringType()
+                    .map(factory -> supportedPackages(factory.getName()))
+                    .orElseGet(() -> supportedPackages(definition.getBeanType().getName()));
+            }
+            return supportedPackages(beanDefinition.getBeanType().getName());
         };
     }
 
     private static boolean supportedPackages(String name) {
-        return name.startsWith("io.micronaut.oraclecloud")
+        return (name.equals("io.micronaut.oraclecloud.core")
+                || name.startsWith("io.micronaut.oraclecloud.core.")
+                || name.equals("io.micronaut.oraclecloud.clients")
+                || name.startsWith("io.micronaut.oraclecloud.clients.")
+                || name.equals("io.micronaut.oraclecloud.httpclient")
+                || name.startsWith("io.micronaut.oraclecloud.httpclient.")
+                || name.equals("io.micronaut.oraclecloud.serde")
+                || name.startsWith("io.micronaut.oraclecloud.serde.")
+                || name.equals("io.micronaut.oraclecloud.oke.workload.identity")
+                || name.startsWith("io.micronaut.oraclecloud.oke.workload.identity.")
+                || name.equals("io.micronaut.oraclecloud.discovery.vault")
+                || name.startsWith("io.micronaut.oraclecloud.discovery.vault."))
             || name.startsWith("com.oracle.bmc")
             || name.startsWith("io.micronaut.discovery")
             || name.startsWith("io.micronaut.http")
@@ -176,6 +228,8 @@ final class OracleCloudVaultImporterContextFactory {
             || name.startsWith("io.micronaut.jackson")
             || name.startsWith("io.micronaut.json")
             || name.startsWith("io.micronaut.context")
+            || name.startsWith("io.micronaut.inject.provider.")
+            || name.startsWith("io.micronaut.retry.")
             || name.startsWith("io.micronaut.scheduling")
             || name.startsWith("io.micronaut.core")
             || name.startsWith("io.micronaut.aop")

@@ -41,6 +41,7 @@ import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CL
  * @author Nemanja Mikic
  */
 @Singleton
+@Requires(beans = MeterRegistry.class)
 @Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
 @Requires(property = SdkMetricsNettyClientFilter.MICRONAUT_METRICS_OCI_SDK_CLIENT_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
 public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.Sample> {

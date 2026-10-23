@@ -22,7 +22,10 @@ import io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory;
 import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.condition.Condition;
+import io.micronaut.context.condition.ConditionContext;
 import io.micronaut.context.event.ShutdownEvent;
+import io.micronaut.core.annotation.Internal;
 import io.micronaut.core.annotation.Order;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.core.TenancyIdProvider;
@@ -47,6 +50,8 @@ import static io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory
  * @since 1.2
  */
 @Factory
+@Requires(property = MeterRegistryFactory.MICRONAUT_METRICS_ENABLED, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
+@Requires(condition = OracleCloudMeterRegistryFactory.ExportEnabledCondition.class)
 public class OracleCloudMeterRegistryFactory {
 
     public static final Logger LOG = LoggerFactory.getLogger(OracleCloudMeterRegistryFactory.class);
@@ -148,4 +153,13 @@ public class OracleCloudMeterRegistryFactory {
         }
     }
 
+    /** Enable the factory when aggregated or raw OCI metrics are enabled. */
+    @Internal
+    public static final class ExportEnabledCondition implements Condition {
+        @Override
+        public boolean matches(ConditionContext context) {
+            return context.getProperty(ORACLECLOUD_METRICS_ENABLED, Boolean.class).orElse(true)
+                || context.getProperty(ORACLECLOUD_RAW_METRICS_ENABLED, Boolean.class).orElse(false);
+        }
+    }
 }

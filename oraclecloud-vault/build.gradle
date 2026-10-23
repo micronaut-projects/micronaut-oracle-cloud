@@ -9,5 +9,6 @@ dependencies {
     api(projects.micronautOraclecloudBmcVault)
     implementation(mn.reactor)
     implementation(mnDiscoveryClient.micronaut.discovery.client)
+    testImplementation(projects.micronautOraclecloudMicrometer)
     testImplementation(mnTest.micronaut.test.spock)
 }
