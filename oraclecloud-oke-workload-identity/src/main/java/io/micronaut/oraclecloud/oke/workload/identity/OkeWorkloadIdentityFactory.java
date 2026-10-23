@@ -30,6 +30,7 @@ import io.micronaut.oraclecloud.core.OracleCloudSigningConfigurationProperties;
 import org.jspecify.annotations.Nullable;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import jakarta.annotation.PreDestroy;
 
 /**
  * Sets up core beans for integration with Oracle cloud clients. The following beans are exposed:
@@ -51,6 +52,9 @@ public class OkeWorkloadIdentityFactory {
     @Nullable
     SessionKeySupplier sessionKeySupplier;
 
+    @Nullable
+    private MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient federationClient;
+
     /**
      * Configures a {@link OkeWorkloadIdentityAuthenticationDetailsProvider} if no other {@link AuthenticationDetailsProvider} is present and
      * the specified by the user with {@code oci.config.use-instance-principal}.
@@ -64,12 +68,35 @@ public class OkeWorkloadIdentityFactory {
     @Requires(property = OracleCloudSigningConfigurationProperties.ENABLED_PROPERTY, notEquals = StringUtils.FALSE, defaultValue = StringUtils.TRUE)
     @Primary
     @BootstrapContextCompatible
+    @SuppressWarnings("java:S1181") // Preserve startup errors while still releasing the owned federation client.
     protected OkeWorkloadIdentityAuthenticationDetailsProvider okeWorkloadIdentityAuthenticationDetailsProvider(OkeWorkloadIdentityConfiguration okeWorkloadIdentityConfiguration) {
         OkeWorkloadIdentityAuthenticationDetailsProvider.OkeWorkloadIdentityAuthenticationDetailsProviderBuilder builder = okeWorkloadIdentityConfiguration.getBuilder();
         if (sessionKeySupplier != null) {
             builder.sessionKeySupplier(sessionKeySupplier);
         }
-        return builder.build();
+        try {
+            OkeWorkloadIdentityAuthenticationDetailsProvider provider = builder.build();
+            if (builder instanceof MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder micronautBuilder) {
+                federationClient = micronautBuilder.getMicronautFederationClient();
+            }
+            return provider;
+        } catch (RuntimeException | Error e) {
+            if (builder instanceof MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder micronautBuilder) {
+                try {
+                    micronautBuilder.closeFederationClient();
+                } catch (RuntimeException | Error closeFailure) {
+                    e.addSuppressed(closeFailure);
+                }
+            }
+            throw e;
+        }
+    }
+
+    @PreDestroy
+    final void close() {
+        if (federationClient != null) {
+            federationClient.close();
+        }
     }
 
 }
