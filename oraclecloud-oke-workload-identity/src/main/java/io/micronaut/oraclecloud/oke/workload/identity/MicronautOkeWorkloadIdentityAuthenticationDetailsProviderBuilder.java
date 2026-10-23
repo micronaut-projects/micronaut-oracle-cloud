@@ -89,4 +89,17 @@ class MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder extends O
         );
     }
 
+    MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient getMicronautFederationClient() {
+        return federationClient instanceof MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient client
+            ? client
+            : null;
+    }
+
+    void closeFederationClient() {
+        MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient client = getMicronautFederationClient();
+        if (client != null) {
+            client.close();
+        }
+    }
+
 }

@@ -24,6 +24,9 @@ import com.oracle.bmc.http.ClientConfigurator;
 import com.oracle.bmc.http.Priorities;
 import com.oracle.bmc.http.client.HttpClient;
 import com.oracle.bmc.http.client.HttpClientBuilder;
+import com.oracle.bmc.http.client.HttpRequest;
+import com.oracle.bmc.http.client.HttpProviderCapability;
+import com.oracle.bmc.http.client.Method;
 import com.oracle.bmc.http.internal.AuthnClientFilter;
 import com.oracle.bmc.http.internal.ClientIdFilter;
 import com.oracle.bmc.http.internal.LogHeadersFilter;
@@ -52,11 +55,15 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.micronaut.oraclecloud.oke.workload.identity.MicronautOkeWorkloadIdentityAuthenticationDetailsProviderBuilder.getOkeHttpClientConfiguration;
 
-final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient extends OkeWorkloadIdentityResourcePrincipalsFederationClient {
+final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient
+    extends OkeWorkloadIdentityResourcePrincipalsFederationClient implements AutoCloseable {
 
     public static final String KUBERNETES_SERVICE_ACCOUNT_ERROR_MESSAGE = "Kubernetes service account ca cert doesn't exist.";
 
@@ -64,6 +71,7 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
         "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
 
     private final List<OciNettyClientFilter<?>> nettyClientFilters;
+    private final AtomicBoolean closed = new AtomicBoolean();
 
     /**
      * Constructor of OkeWorkloadIdentityResourcePrincipalsFederationClient.
@@ -148,24 +156,193 @@ final class MicronautOkeWorkloadIdentityResourcePrincipalsFederationClient exten
             return null;
         }
 
-        HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(defaultHttpClient(), Executors.newCachedThreadPool(), nettyClientFilters)
-                .newBuilder()
-                .baseUri(URI.create(endpoint))
-                .registerRequestInterceptor(
-                    Priorities.AUTHENTICATION,
-                    new AuthnClientFilter(requestSigner, Collections.emptyMap()))
-                .registerRequestInterceptor(
-                    Priorities.HEADER_DECORATOR, new ClientIdFilter())
-                .registerRequestInterceptor(Priorities.USER, new LogHeadersFilter());
+        DefaultHttpClient rawHttpClient = null;
+        ExecutorService ioExecutor = null;
+        try {
+            rawHttpClient = defaultHttpClient();
+            ioExecutor = Executors.newCachedThreadPool();
+            HttpClientBuilder rptBuilder = new ManagedNettyHttpProvider(
+                    rawHttpClient,
+                    ioExecutor,
+                    nettyClientFilters)
+                    .newBuilder()
+                    .baseUri(URI.create(endpoint))
+                    .registerRequestInterceptor(
+                        Priorities.AUTHENTICATION,
+                        new AuthnClientFilter(requestSigner, Collections.emptyMap()))
+                    .registerRequestInterceptor(
+                        Priorities.HEADER_DECORATOR, new ClientIdFilter())
+                    .registerRequestInterceptor(Priorities.USER, new LogHeadersFilter());
 
-        if (clientConfigurator != null) {
-            clientConfigurator.customizeClient(rptBuilder);
+            if (clientConfigurator != null) {
+                clientConfigurator.customizeClient(rptBuilder);
+            }
+
+            for (ClientConfigurator additionalConfigurator : additionalClientConfigurator) {
+                additionalConfigurator.customizeClient(rptBuilder);
+            }
+
+            return new OwnedHttpClient(rptBuilder.build(), rawHttpClient, ioExecutor);
+        } catch (RuntimeException | Error e) {
+            closeOwnedResources(rawHttpClient, ioExecutor, e);
+            throw e;
+        }
+    }
+
+    /**
+     * Closes the HTTP clients and executor created by this federation client.
+     *
+     * <p>The SDK does not expose a close contract for {@code FederationClient}. The managed OCI
+     * client also deliberately leaves the explicitly supplied Micronaut HTTP client and executor
+     * open, so this owner closes both resources when the authentication bean is destroyed.
+     */
+    @Override
+    public void close() {
+        if (!closed.compareAndSet(false, true)) {
+            return;
+        }
+        Throwable failure = null;
+        try {
+            if (resourcePrincipalTokenClient != null) {
+                resourcePrincipalTokenClient.close();
+            }
+        } catch (Throwable e) {
+            failure = e;
+        }
+        if (federationClient != null && federationClient != resourcePrincipalTokenClient) {
+            try {
+                federationClient.close();
+            } catch (Throwable e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+        }
+        if (failure instanceof RuntimeException runtimeException) {
+            throw runtimeException;
+        }
+        if (failure instanceof Error error) {
+            throw error;
+        }
+        if (failure != null) {
+            throw new RuntimeException(failure);
+        }
+    }
+
+    boolean isClosed() {
+        return closed.get();
+    }
+
+    static HttpClient ownedHttpClient(
+        HttpClient delegate,
+        AutoCloseable rawHttpClient,
+        ExecutorService ioExecutor) {
+        return new OwnedHttpClient(delegate, rawHttpClient, ioExecutor);
+    }
+
+    static void closeOwnedResources(
+        AutoCloseable rawHttpClient,
+        ExecutorService ioExecutor,
+        Throwable failure) {
+        try {
+            if (ioExecutor != null) {
+                ioExecutor.shutdownNow();
+            }
+        } catch (Throwable e) {
+            failure.addSuppressed(e);
+        }
+        if (rawHttpClient != null) {
+            try {
+                rawHttpClient.close();
+            } catch (Throwable e) {
+                failure.addSuppressed(e);
+            }
+        }
+    }
+
+    private static final class OwnedHttpClient implements HttpClient {
+        private final HttpClient delegate;
+        private final AutoCloseable rawHttpClient;
+        private final ExecutorService ioExecutor;
+        private final AtomicBoolean closed = new AtomicBoolean();
+
+        private OwnedHttpClient(
+            HttpClient delegate,
+            AutoCloseable rawHttpClient,
+            ExecutorService ioExecutor) {
+            this.delegate = delegate;
+            this.rawHttpClient = rawHttpClient;
+            this.ioExecutor = ioExecutor;
         }
 
-        for (ClientConfigurator additionalConfigurator : additionalClientConfigurator) {
-            additionalConfigurator.customizeClient(rptBuilder);
+        @Override
+        public HttpRequest createRequest(Method method) {
+            return delegate.createRequest(method);
         }
 
-        return rptBuilder.build();
+        @Override
+        public HttpRequest createRequest(
+            Method method,
+            Map<String, Object> requiredParametersMap,
+            Map<String, Boolean> optionsMap) {
+            return delegate.createRequest(method, requiredParametersMap, optionsMap);
+        }
+
+        @Override
+        public boolean isProcessingException(Exception e) {
+            return delegate.isProcessingException(e);
+        }
+
+        @Override
+        public boolean hasCapability(HttpProviderCapability capability) {
+            return delegate.hasCapability(capability);
+        }
+
+        @Override
+        public void updateEndpoint(String baseTarget) {
+            delegate.updateEndpoint(baseTarget);
+        }
+
+        @Override
+        public void close() {
+            if (!closed.compareAndSet(false, true)) {
+                return;
+            }
+            Throwable failure = null;
+            try {
+                delegate.close();
+            } catch (Throwable e) {
+                failure = e;
+            }
+            try {
+                ioExecutor.shutdown();
+            } catch (Throwable e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+            try {
+                rawHttpClient.close();
+            } catch (Throwable e) {
+                if (failure == null) {
+                    failure = e;
+                } else {
+                    failure.addSuppressed(e);
+                }
+            }
+            if (failure instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            }
+            if (failure instanceof Error error) {
+                throw error;
+            }
+            if (failure != null) {
+                throw new RuntimeException(failure);
+            }
+        }
     }
 }
