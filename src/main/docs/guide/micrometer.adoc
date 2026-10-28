@@ -48,6 +48,8 @@ TIP: See the guide for https://guides.micronaut.io/latest/micronaut-metrics-oci.
 
 If you are using OCI SDK clients instrumented by Micronaut, by default metrics will be collected for each request.
 
+Requests completed while the meter registry is being initialized are not recorded. This allows OCI calls needed to initialize datasources, such as wallet downloads, to complete without recursively creating the registry.
+
 |=======
 |*Name* |*Type* |*Description*
 |micronaut.metrics.oci.sdk.client.enabled | boolean |Whether to enable the OCI SDK client metrics. Default: `true`.
