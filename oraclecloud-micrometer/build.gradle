@@ -10,7 +10,6 @@ dependencies {
     api(projects.micronautOraclecloudBmcMonitoring)
     implementation(mn.micronaut.http.client)
     testImplementation(mn.micronaut.management)
-    testImplementation(mnSql.micronaut.jdbc)
     testImplementation(mnTest.micronaut.test.spock)
     testImplementation(projects.micronautOraclecloudHttpclientNetty)
     testImplementation(projects.micronautOraclecloudSdk)

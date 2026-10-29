@@ -15,7 +15,6 @@ import spock.lang.Specification
 @MicronautTest(contextBuilder = MyContextBuilder)
 @Property(name = "micronaut.config-client.enabled", value = "true")
 @Property(name = "oci.vault.config.enabled", value = "true")
-@Property(name = "micronaut.metrics.export.oraclecloud.enabled", value = "false")
 class OracleCloudVaultConfigurationClientNoConfigSpec extends Specification {
     @Inject ApplicationContext context
     void "context still starts"() {

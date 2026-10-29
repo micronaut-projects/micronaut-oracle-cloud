@@ -78,7 +78,6 @@ class OracleCloudVaultConfigurationClientSpecAll extends Specification {
         MyContextBuilder() {
             bootstrapEnvironment(true)
             properties([
-                    'micronaut.metrics.export.oraclecloud.enabled': false,
                     'micronaut.config-client.enabled': true,
                     'oci.vault.config.enabled'       : true,
                     'oci.vault.config.retry-attempts': 2,

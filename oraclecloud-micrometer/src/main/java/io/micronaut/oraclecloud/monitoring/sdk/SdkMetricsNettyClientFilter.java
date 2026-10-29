@@ -22,18 +22,15 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micronaut.configuration.metrics.micrometer.MeterRegistryFactory;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.event.StartupEvent;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.oraclecloud.httpclient.netty.OciNettyClientFilter;
-import io.micronaut.runtime.event.annotation.EventListener;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
@@ -61,30 +58,17 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
 
     private final Provider<MeterRegistry> meterRegistryProvider;
 
-    private final AtomicReference<@Nullable MeterRegistry> meterRegistry = new AtomicReference<>();
-
     public SdkMetricsNettyClientFilter(Provider<MeterRegistry> meterRegistryProvider) {
         this.meterRegistryProvider = meterRegistryProvider;
     }
 
-    @EventListener
-    final void onStartup(StartupEvent event) {
-        // Registry creation can make OCI requests while initializing datasource binders.
-        meterRegistry.set(meterRegistryProvider.get());
-    }
-
     @Override
     public Timer.Sample beforeRequest(@NonNull HttpRequest request) {
-        MeterRegistry registry = meterRegistry.get();
-        return registry == null ? Timer.start() : Timer.start(registry);
+        return Timer.start(meterRegistryProvider.get());
     }
 
     @Override
     public HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, Timer.@NonNull Sample timerSample) {
-        MeterRegistry registry = meterRegistry.get();
-        if (registry == null) {
-            return response;
-        }
 
         List<Tag> tags = new ArrayList<>(4);
 
@@ -101,7 +85,7 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
         final Timer timer = Timer.builder(METRICS_NAME)
             .description("oci sdk client metrics")
             .tags(tags)
-            .register(registry);
+            .register(meterRegistryProvider.get());
         timerSample.stop(timer);
         return response;
     }
