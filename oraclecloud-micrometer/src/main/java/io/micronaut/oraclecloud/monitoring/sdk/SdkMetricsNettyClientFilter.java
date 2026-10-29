@@ -33,6 +33,7 @@ import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME;
 
@@ -60,8 +61,7 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
 
     private final Provider<MeterRegistry> meterRegistryProvider;
 
-    @Nullable
-    private volatile MeterRegistry meterRegistry;
+    private final AtomicReference<@Nullable MeterRegistry> meterRegistry = new AtomicReference<>();
 
     public SdkMetricsNettyClientFilter(Provider<MeterRegistry> meterRegistryProvider) {
         this.meterRegistryProvider = meterRegistryProvider;
@@ -70,18 +70,18 @@ public class SdkMetricsNettyClientFilter implements OciNettyClientFilter<Timer.S
     @EventListener
     final void onStartup(StartupEvent event) {
         // Registry creation can make OCI requests while initializing datasource binders.
-        meterRegistry = meterRegistryProvider.get();
+        meterRegistry.set(meterRegistryProvider.get());
     }
 
     @Override
     public Timer.Sample beforeRequest(@NonNull HttpRequest request) {
-        MeterRegistry registry = meterRegistry;
+        MeterRegistry registry = meterRegistry.get();
         return registry == null ? Timer.start() : Timer.start(registry);
     }
 
     @Override
     public HttpResponse afterResponse(@NonNull HttpRequest request, @Nullable HttpResponse response, @Nullable Throwable throwable, Timer.@NonNull Sample timerSample) {
-        MeterRegistry registry = meterRegistry;
+        MeterRegistry registry = meterRegistry.get();
         if (registry == null) {
             return response;
         }

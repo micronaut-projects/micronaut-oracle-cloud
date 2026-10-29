@@ -14,9 +14,7 @@ class ProcessorMetricsTest {
         try {
             new ProcessorMetrics().bindTo(registry);
             var processCpuTime = registry.get("process.cpu.time").functionCounter();
-            assertDoesNotThrow(() -> {
-                processCpuTime.count();
-            });
+            assertDoesNotThrow(processCpuTime::count);
         } finally {
             registry.close();
         }
