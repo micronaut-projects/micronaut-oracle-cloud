@@ -48,7 +48,9 @@ TIP: See the guide for https://guides.micronaut.io/latest/micronaut-metrics-oci.
 
 If you are using OCI SDK clients instrumented by Micronaut, by default metrics will be collected for each request.
 
-Requests completed while the meter registry is being initialized are not recorded. This allows OCI calls needed to initialize datasources, such as wallet downloads, to complete without recursively creating the registry.
+SDK client metrics become active when the filter's `StartupEvent` listener initializes its registry. Requests completed earlier during application context startup are not recorded, including wallet downloads, eager bean initialization, and startup listeners that run before this filter. This avoids recursively creating the meter registry during datasource initialization.
+
+NOTE: The registry is initialized during application startup when SDK client metrics are enabled. If OCI export is also enabled, missing required exporter settings, such as `micronaut.metrics.export.oraclecloud.namespace`, fail application startup instead of failing on the first metrics use.
 
 |=======
 |*Name* |*Type* |*Description*

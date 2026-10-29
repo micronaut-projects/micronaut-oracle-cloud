@@ -2,6 +2,7 @@ package io.micronaut.oraclecloud.monitoring.sdk
 
 import com.oracle.bmc.http.client.HttpRequest
 import com.oracle.bmc.http.client.HttpResponse
+import com.oracle.bmc.http.client.Method
 import io.micrometer.core.instrument.MeterRegistry
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.EachProperty
@@ -12,12 +13,20 @@ import spock.lang.Specification
 
 import javax.sql.DataSource
 
+import static io.micronaut.oraclecloud.httpclient.netty.NettyClientProperties.CLASS_AND_METHOD_KEY_NAME
+
 class OracleCloudSdkMetricsDataSourceCycleSpec extends Specification {
 
     def "SDK metrics during datasource initialization do not recursively resolve the meter registry"() {
         given:
-        HttpRequest request = Stub()
-        HttpResponse response = Stub()
+        HttpRequest request = Stub() {
+            uri() >> URI.create("https://localhost/resource")
+            method() >> Method.GET
+            attribute(CLASS_AND_METHOD_KEY_NAME) >> "TestClient.getResource"
+        }
+        HttpResponse response = Stub() {
+            status() >> 200
+        }
         ApplicationContext context = ApplicationContext.builder().properties([
                 "micronaut.metrics.enabled": "true",
                 "micronaut.metrics.export.oraclecloud.enabled": "false",
@@ -34,6 +43,15 @@ class OracleCloudSdkMetricsDataSourceCycleSpec extends Specification {
         then:
         context.getBean(OciClientDataSourcePoolMetadata).bootstrapRequestCompleted
         meterRegistry.find("oci.sdk.client").timer() == null
+
+        when:
+        SdkMetricsNettyClientFilter metricsFilter = context.getBean(SdkMetricsNettyClientFilter)
+        def sample = metricsFilter.beforeRequest(request)
+        HttpResponse result = metricsFilter.afterResponse(request, response, null, sample)
+
+        then:
+        result.is(response)
+        meterRegistry.get("oci.sdk.client").tag("class_and_method", "TestClient.getResource").timer().count() == 1
 
         cleanup:
         context?.close()
