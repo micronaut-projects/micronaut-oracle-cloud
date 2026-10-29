@@ -52,6 +52,19 @@ SDK client metrics become active when the filter's `StartupEvent` listener initi
 
 NOTE: The registry is initialized during application startup when SDK client metrics are enabled. If OCI export is also enabled, missing required exporter settings, such as `micronaut.metrics.export.oraclecloud.namespace`, fail application startup instead of failing on the first metrics use.
 
+Micrometer's HTTP client metrics can also resolve the registry during ATP wallet loading with UCP. Until using a Micrometer release that defers JDBC pool metric binding until startup, disable JDBC pool metrics to avoid this additional initialization cycle:
+
+[configuration]
+----
+micronaut:
+  metrics:
+    binders:
+      jdbc:
+        enabled: false
+----
+
+This keeps HTTP and OCI SDK client metrics enabled. Disabling `micronaut.metrics.binders.web.enabled` is another workaround, but removes both HTTP server and client metrics and requires the https://github.com/micronaut-projects/micronaut-micrometer/pull/1296[Netty executor initialization fix]. For Micrometer 6.1.0 and 6.1.1, prefer disabling JDBC pool metrics.
+
 |=======
 |*Name* |*Type* |*Description*
 |micronaut.metrics.oci.sdk.client.enabled | boolean |Whether to enable the OCI SDK client metrics. Default: `true`.
