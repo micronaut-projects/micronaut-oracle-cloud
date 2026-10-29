@@ -48,7 +48,7 @@ TIP: See the guide for https://guides.micronaut.io/latest/micronaut-metrics-oci.
 
 If you are using OCI SDK clients instrumented by Micronaut, by default metrics will be collected for each request.
 
-OCI SDK and HTTP client metrics can resolve the registry during ATP wallet loading with UCP. When using a Micrometer version without the https://github.com/micronaut-projects/micronaut-micrometer/pull/1298[JDBC pool initialization fix], disable JDBC pool metrics to avoid this initialization cycle:
+Startup can fail with `Recursive update`, `StackOverflowError`, or a hang when UCP downloads an Autonomous Database wallet. Binding JDBC metrics while creating the registry can request the datasource again before its initialization finishes. For Micrometer versions without the https://github.com/micronaut-projects/micronaut-micrometer/pull/1298[JDBC pool initialization fix], disable JDBC pool metrics:
 
 [configuration]
 ----
@@ -59,7 +59,7 @@ micronaut:
         enabled: false
 ----
 
-This keeps HTTP and OCI SDK client metrics enabled. Disabling web metrics alone does not prevent the OCI SDK filter from resolving the registry.
+This keeps HTTP and OCI SDK client metrics enabled. Disabling web or OCI SDK client metrics alone leaves other registry lookups, including executor metrics, able to trigger the cycle.
 
 |=======
 |*Name* |*Type* |*Description*
