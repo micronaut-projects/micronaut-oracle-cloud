@@ -1,5 +1,3 @@
-= OCI Streaming
-
 To use https://docs.oracle.com/en-us/iaas/Content/Streaming/Concepts/streamingoverview.htm[OCI Streaming] through Micronaut Kafka, add the following dependency:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-streaming[]
