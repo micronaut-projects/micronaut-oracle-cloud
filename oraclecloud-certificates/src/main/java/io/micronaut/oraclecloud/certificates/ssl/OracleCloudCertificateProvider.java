@@ -49,6 +49,9 @@ import java.util.List;
 @EachBean(OracleCloudCertificateProperties.class)
 @BootstrapContextCompatible
 @Singleton
+// Eager: the constructor fetches the certificate bundle with a blocking OCI call. Without @Context the
+// provider is first created lazily from NettyHttpServer's channel initializer on an acceptor event loop,
+// which the event-loop guard in the Netty HTTP client rejects.
 @Context
 final class OracleCloudCertificateProvider implements CertificateProvider, ApplicationEventListener<CertificateEvent> {
 
