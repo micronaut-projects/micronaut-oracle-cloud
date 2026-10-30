@@ -1,5 +1,3 @@
-== Oracle Cloud Notifications
-
 To publish messages to https://docs.oracle.com/en-us/iaas/Content/Notification/Concepts/notificationoverview.htm[Oracle Cloud Notifications] topics, add the following dependency to your project:
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-notifications[]
