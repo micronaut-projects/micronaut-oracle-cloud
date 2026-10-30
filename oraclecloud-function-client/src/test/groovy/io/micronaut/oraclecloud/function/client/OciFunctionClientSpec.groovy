@@ -15,12 +15,18 @@
  */
 package io.micronaut.oraclecloud.function.client
 
+import com.oracle.bmc.auth.AuthenticationDetailsProvider
 import com.oracle.bmc.functions.FunctionsInvokeAsyncClient
 import com.oracle.bmc.functions.FunctionsInvokeClient
+import com.oracle.bmc.functions.FunctionsManagementClient
+import com.oracle.bmc.functions.model.Function
+import com.oracle.bmc.functions.requests.GetFunctionRequest
 import com.oracle.bmc.functions.requests.InvokeFunctionRequest
+import com.oracle.bmc.functions.responses.GetFunctionResponse
 import com.oracle.bmc.functions.responses.InvokeFunctionResponse
 import com.oracle.bmc.responses.AsyncHandler
 import io.micronaut.context.ApplicationContext
+import io.micronaut.context.BeanProvider
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Replaces
 import io.micronaut.context.annotation.Requires
@@ -48,14 +54,17 @@ class OciFunctionClientSpec extends Specification {
 
     private static final String MOCK_CLIENTS_PROPERTY = 'spec.name'
     private static final String MOCK_CLIENTS_PROPERTY_VALUE = 'OciFunctionClientSpec'
+    private static final String INVOKE_ENDPOINT = 'https://books.eu-frankfurt-1.functions.oci.oraclecloud.com'
+    private static final String RESOLVED_INVOKE_ENDPOINT = 'https://resolved.eu-frankfurt-1.functions.oci.oraclecloud.com'
 
-    private static FunctionsInvokeClient mockSyncClient
-    private static FunctionsInvokeAsyncClient mockAsyncClient
+    private static OciFunctionInvokeClients mockInvokeClients
+    private static FunctionsManagementClient mockManagementClient
 
     void "configures OCI function definitions"() {
         given:
         ApplicationContext applicationContext = ApplicationContext.run([
             'oci.functions.books.function-id': 'ocid1.fnfunc.oc1..books',
+            'oci.functions.books.invoke-endpoint': INVOKE_ENDPOINT,
             'oci.functions.books.fn-intent': 'Httprequest',
             'oci.functions.books.fn-invoke-type': 'Sync',
             'oci.functions.books.opc-request-id': 'request-1',
@@ -74,6 +83,7 @@ class OciFunctionClientSpec extends Specification {
         then:
         definition.name == 'books'
         definition.functionId == 'ocid1.fnfunc.oc1..books'
+        definition.invokeEndpoint == INVOKE_ENDPOINT
         definition.fnIntent == InvokeFunctionRequest.FnIntent.Httprequest
         definition.fnInvokeType == InvokeFunctionRequest.FnInvokeType.Sync
         definition.opcRequestId == 'request-1'
@@ -83,12 +93,13 @@ class OciFunctionClientSpec extends Specification {
         applicationContext.close()
     }
 
-    void "invokes OCI function with FunctionClient"() {
+    void "invokes OCI function with FunctionClient at the configured invoke endpoint"() {
         given:
         FunctionsInvokeClient syncClient = Mock()
-        FunctionsInvokeAsyncClient asyncClient = Mock()
-        mockSyncClient = syncClient
-        mockAsyncClient = asyncClient
+        OciFunctionInvokeClients invokeClients = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        mockInvokeClients = invokeClients
+        mockManagementClient = managementClient
         InvokeFunctionRequest capturedRequest
         syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { InvokeFunctionRequest request ->
             capturedRequest = request
@@ -98,6 +109,7 @@ class OciFunctionClientSpec extends Specification {
             .properties([
                 (MOCK_CLIENTS_PROPERTY): MOCK_CLIENTS_PROPERTY_VALUE,
                 'oci.functions.micronaut-function.function-id': 'ocid1.fnfunc.oc1..sync',
+                'oci.functions.micronaut-function.invoke-endpoint': INVOKE_ENDPOINT,
                 'oci.functions.micronaut-function.fn-intent': 'Httprequest',
                 'oci.functions.micronaut-function.fn-invoke-type': 'Sync'
             ])
@@ -108,6 +120,8 @@ class OciFunctionClientSpec extends Specification {
         Map<String, Object> result = client.micronautFunction([title: 'The Stand'])
 
         then:
+        1 * invokeClients.syncClient(INVOKE_ENDPOINT) >> syncClient
+        0 * managementClient.getFunction(_)
         result == [title: 'THE STAND']
         capturedRequest.functionId == 'ocid1.fnfunc.oc1..sync'
         capturedRequest.fnIntent == InvokeFunctionRequest.FnIntent.Httprequest
@@ -116,16 +130,52 @@ class OciFunctionClientSpec extends Specification {
 
         cleanup:
         applicationContext.close()
-        mockSyncClient = null
-        mockAsyncClient = null
+        mockInvokeClients = null
+        mockManagementClient = null
+    }
+
+    void "invokes OCI function with FunctionClient at the invoke endpoint resolved from the function metadata"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        OciFunctionInvokeClients invokeClients = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        mockInvokeClients = invokeClients
+        mockManagementClient = managementClient
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { response('{"title":"THE STAND"}') }
+        ApplicationContext applicationContext = ApplicationContext.builder()
+            .properties([
+                (MOCK_CLIENTS_PROPERTY): MOCK_CLIENTS_PROPERTY_VALUE,
+                'oci.functions.micronaut-function.function-id': 'ocid1.fnfunc.oc1..sync'
+            ])
+            .start()
+
+        when:
+        BookClient client = applicationContext.getBean(BookClient)
+        Map<String, Object> first = client.micronautFunction([title: 'The Stand'])
+        Map<String, Object> second = client.micronautFunction([title: 'The Stand'])
+
+        then:
+        1 * managementClient.getFunction(_ as GetFunctionRequest) >> { GetFunctionRequest request ->
+            assert request.functionId == 'ocid1.fnfunc.oc1..sync'
+            functionResponse(RESOLVED_INVOKE_ENDPOINT)
+        }
+        2 * invokeClients.syncClient(RESOLVED_INVOKE_ENDPOINT) >> syncClient
+        first == [title: 'THE STAND']
+        second == [title: 'THE STAND']
+
+        cleanup:
+        applicationContext.close()
+        mockInvokeClients = null
+        mockManagementClient = null
     }
 
     void "invokes OCI function reactively with FunctionClient"() {
         given:
-        FunctionsInvokeClient syncClient = Mock()
         FunctionsInvokeAsyncClient asyncClient = Mock()
-        mockSyncClient = syncClient
-        mockAsyncClient = asyncClient
+        OciFunctionInvokeClients invokeClients = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        mockInvokeClients = invokeClients
+        mockManagementClient = managementClient
         InvokeFunctionRequest capturedRequest
         ApplicationContext applicationContext = ApplicationContext.builder()
             .properties([
@@ -141,12 +191,14 @@ class OciFunctionClientSpec extends Specification {
         Map<String, Object> result = Mono.from(client.reactiveFunction([title: 'The Stand'])).block()
 
         then:
+        1 * managementClient.getFunction(_ as GetFunctionRequest) >> functionResponse(RESOLVED_INVOKE_ENDPOINT)
+        1 * invokeClients.asyncClient(RESOLVED_INVOKE_ENDPOINT) >> asyncClient
+        0 * invokeClients.syncClient(_)
         1 * asyncClient.invokeFunction(_ as InvokeFunctionRequest, _ as AsyncHandler) >> { InvokeFunctionRequest request, AsyncHandler handler ->
             capturedRequest = request
             handler.onSuccess(request, response('{"title":"THE STAND"}'))
             CompletableFuture.completedFuture(null)
         }
-        0 * syncClient.invokeFunction(_ as InvokeFunctionRequest)
         result == [title: 'THE STAND']
         capturedRequest.functionId == 'ocid1.fnfunc.oc1..reactive'
         capturedRequest.fnIntent == InvokeFunctionRequest.FnIntent.Httprequest
@@ -155,8 +207,8 @@ class OciFunctionClientSpec extends Specification {
 
         cleanup:
         applicationContext.close()
-        mockSyncClient = null
-        mockAsyncClient = null
+        mockInvokeClients = null
+        mockManagementClient = null
     }
 
     void "invokes OCI function reactively"() {
@@ -170,13 +222,14 @@ class OciFunctionClientSpec extends Specification {
             CompletableFuture.completedFuture(null)
         }
         OciFunctionInvoker<Map<String, Object>, Publisher<Map<String, Object>>> invoker = new OciFunctionInvoker<>(
-            syncClient,
-            asyncClient,
+            invokeClients(syncClient, asyncClient),
+            managementClientProvider(Mock(FunctionsManagementClient)),
             JsonMapper.createDefault(),
             ConversionService.SHARED
         )
         OciFunctionDefinition definition = new OciFunctionDefinition('books')
         definition.functionId = 'ocid1.fnfunc.oc1..reactive'
+        definition.invokeEndpoint = INVOKE_ENDPOINT
 
         when:
         Publisher<Map<String, Object>> publisher = invoker.invoke(
@@ -324,8 +377,8 @@ class OciFunctionClientSpec extends Specification {
         JsonMapper jsonMapper = Mock()
         jsonMapper.writeValueAsBytes(_) >> { throw new IOException('encoding failed') }
         OciFunctionInvoker invoker = new OciFunctionInvoker(
-            Mock(FunctionsInvokeClient),
-            Mock(FunctionsInvokeAsyncClient),
+            invokeClients(Mock(FunctionsInvokeClient), Mock(FunctionsInvokeAsyncClient)),
+            managementClientProvider(Mock(FunctionsManagementClient)),
             jsonMapper,
             ConversionService.SHARED
         )
@@ -346,8 +399,8 @@ class OciFunctionClientSpec extends Specification {
         FunctionsInvokeClient syncClient = Mock()
         syncClient.invokeFunction(_ as InvokeFunctionRequest) >> response('{"title":"THE STAND"}')
         OciFunctionInvoker invoker = new OciFunctionInvoker(
-            syncClient,
-            Mock(FunctionsInvokeAsyncClient),
+            invokeClients(syncClient, Mock(FunctionsInvokeAsyncClient)),
+            managementClientProvider(Mock(FunctionsManagementClient)),
             jsonMapper,
             ConversionService.SHARED
         )
@@ -388,8 +441,8 @@ class OciFunctionClientSpec extends Specification {
             CompletableFuture.completedFuture(null)
         }
         OciFunctionInvoker invoker = new OciFunctionInvoker(
-            Mock(FunctionsInvokeClient),
-            asyncClient,
+            invokeClients(Mock(FunctionsInvokeClient), asyncClient),
+            managementClientProvider(Mock(FunctionsManagementClient)),
             jsonMapper,
             ConversionService.SHARED
         )
@@ -425,16 +478,203 @@ class OciFunctionClientSpec extends Specification {
         invoker.choose({ 'other' } as FunctionDefinition).isEmpty()
     }
 
+    void "invokes OCI function at the configured invoke endpoint without resolving the function metadata"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        RecordingInvokeClients invokeClients = new RecordingInvokeClients(syncClient, Mock(FunctionsInvokeAsyncClient))
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> response('{"title":"THE STAND"}')
+        OciFunctionInvoker invoker = invoker(invokeClients, managementClient)
+        OciFunctionDefinition definition = definition()
+        definition.invokeEndpoint = 'https://explicit.eu-frankfurt-1.functions.oci.oraclecloud.com'
+
+        when:
+        Map<String, Object> result = invoker.invoke(definition, [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        result == [title: 'THE STAND']
+        invokeClients.syncEndpoints == ['https://explicit.eu-frankfurt-1.functions.oci.oraclecloud.com']
+        0 * managementClient.getFunction(_)
+    }
+
+    void "resolves the invoke endpoint from the function metadata once per function"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        FunctionsInvokeAsyncClient asyncClient = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        RecordingInvokeClients invokeClients = new RecordingInvokeClients(syncClient, asyncClient)
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { response('{"title":"THE STAND"}') }
+        asyncClient.invokeFunction(_ as InvokeFunctionRequest, _ as AsyncHandler) >> { InvokeFunctionRequest request, AsyncHandler handler ->
+            handler.onSuccess(request, response('{"title":"THE STAND"}'))
+            CompletableFuture.completedFuture(null)
+        }
+        OciFunctionInvoker invoker = invoker(invokeClients, managementClient)
+        OciFunctionDefinition definition = definitionWithoutInvokeEndpoint()
+        definition.invokeEndpoint = blankInvokeEndpoint
+
+        when:
+        Map<String, Object> first = invoker.invoke(definition, [title: 'The Stand'], Argument.mapOf(String, Object))
+        Map<String, Object> second = invoker.invoke(definition, [title: 'The Stand'], Argument.mapOf(String, Object))
+        Map<String, Object> third = Mono.from(invoker.invoke(definition, [title: 'The Stand'], Argument.of(Publisher, Argument.mapOf(String, Object)))).block()
+
+        then:
+        1 * managementClient.getFunction(_ as GetFunctionRequest) >> { GetFunctionRequest request ->
+            assert request.functionId == 'ocid1.fnfunc.oc1..books'
+            functionResponse(RESOLVED_INVOKE_ENDPOINT)
+        }
+        first == [title: 'THE STAND']
+        second == [title: 'THE STAND']
+        third == [title: 'THE STAND']
+        invokeClients.syncEndpoints == [RESOLVED_INVOKE_ENDPOINT, RESOLVED_INVOKE_ENDPOINT]
+        invokeClients.asyncEndpoints == [RESOLVED_INVOKE_ENDPOINT]
+
+        where:
+        blankInvokeEndpoint << [null, '', '  ']
+    }
+
+    void "does not cache failed invoke endpoint lookups"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        RecordingInvokeClients invokeClients = new RecordingInvokeClients(syncClient, Mock(FunctionsInvokeAsyncClient))
+        syncClient.invokeFunction(_ as InvokeFunctionRequest) >> { response('{"title":"THE STAND"}') }
+        OciFunctionInvoker invoker = invoker(invokeClients, managementClient)
+
+        when:
+        invoker.invoke(definitionWithoutInvokeEndpoint(), [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        1 * managementClient.getFunction(_ as GetFunctionRequest) >> { throw new IllegalStateException('lookup failed') }
+        FunctionExecutionException e = thrown()
+        e.message == 'Error resolving the invoke endpoint of OCI Function [books]: lookup failed'
+        e.cause instanceof IllegalStateException
+        invokeClients.syncEndpoints.isEmpty()
+
+        when:
+        Map<String, Object> result = invoker.invoke(definitionWithoutInvokeEndpoint(), [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        1 * managementClient.getFunction(_ as GetFunctionRequest) >> functionResponse(RESOLVED_INVOKE_ENDPOINT)
+        result == [title: 'THE STAND']
+        invokeClients.syncEndpoints == [RESOLVED_INVOKE_ENDPOINT]
+    }
+
+    void "rejects function metadata without an invoke endpoint"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        FunctionsManagementClient managementClient = Mock()
+        managementClient.getFunction(_ as GetFunctionRequest) >> functionResponse(invokeEndpoint as String)
+        OciFunctionInvoker invoker = invoker(new RecordingInvokeClients(syncClient, Mock(FunctionsInvokeAsyncClient)), managementClient)
+
+        when:
+        invoker.invoke(definitionWithoutInvokeEndpoint(), [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        FunctionExecutionException e = thrown()
+        e.message == 'OCI Function [books] with id [ocid1.fnfunc.oc1..books] has no invoke endpoint. Configure [oci.functions.books.invoke-endpoint]'
+        0 * syncClient.invokeFunction(_)
+
+        where:
+        invokeEndpoint << [null, '']
+    }
+
+    void "requires a FunctionsManagementClient to resolve the invoke endpoint"() {
+        given:
+        FunctionsInvokeClient syncClient = Mock()
+        BeanProvider<FunctionsManagementClient> managementClientProvider = [
+            isPresent: { false },
+            get: { throw new IllegalStateException('no bean') }
+        ] as BeanProvider<FunctionsManagementClient>
+        OciFunctionInvoker invoker = new OciFunctionInvoker(
+            new RecordingInvokeClients(syncClient, Mock(FunctionsInvokeAsyncClient)),
+            managementClientProvider,
+            JsonMapper.createDefault(),
+            ConversionService.SHARED
+        )
+
+        when:
+        invoker.invoke(definitionWithoutInvokeEndpoint(), [title: 'The Stand'], Argument.mapOf(String, Object))
+
+        then:
+        FunctionExecutionException e = thrown()
+        e.message == 'Cannot resolve the invoke endpoint of OCI Function [books]: no FunctionsManagementClient bean is available. Configure [oci.functions.books.invoke-endpoint]'
+        0 * syncClient.invokeFunction(_)
+    }
+
+    void "builds one invoke client per invoke endpoint"() {
+        given:
+        DefaultOciFunctionInvokeClients invokeClients = new DefaultOciFunctionInvokeClients(
+            FunctionsInvokeClient.builder(),
+            FunctionsInvokeAsyncClient.builder(),
+            new TestAuthenticationDetailsProvider()
+        )
+        String otherInvokeEndpoint = 'https://other.eu-frankfurt-1.functions.oci.oraclecloud.com'
+
+        when:
+        FunctionsInvokeClient syncClient = invokeClients.syncClient(INVOKE_ENDPOINT)
+        FunctionsInvokeClient otherSyncClient = invokeClients.syncClient(otherInvokeEndpoint)
+        FunctionsInvokeAsyncClient asyncClient = invokeClients.asyncClient(INVOKE_ENDPOINT)
+        FunctionsInvokeAsyncClient otherAsyncClient = invokeClients.asyncClient(otherInvokeEndpoint)
+
+        then:
+        syncClient.endpoint == INVOKE_ENDPOINT
+        otherSyncClient.endpoint == otherInvokeEndpoint
+        asyncClient.endpoint == INVOKE_ENDPOINT
+        otherAsyncClient.endpoint == otherInvokeEndpoint
+        !syncClient.is(otherSyncClient)
+        !asyncClient.is(otherAsyncClient)
+        invokeClients.syncClient(INVOKE_ENDPOINT).is(syncClient)
+        invokeClients.asyncClient(INVOKE_ENDPOINT).is(asyncClient)
+
+        when:
+        invokeClients.close()
+
+        then:
+        !invokeClients.syncClient(INVOKE_ENDPOINT).is(syncClient)
+        !invokeClients.asyncClient(INVOKE_ENDPOINT).is(asyncClient)
+
+        cleanup:
+        invokeClients.close()
+    }
+
     private static OciFunctionInvoker invoker(FunctionsInvokeClient syncClient, FunctionsInvokeAsyncClient asyncClient) {
+        invoker(invokeClients(syncClient, asyncClient), null)
+    }
+
+    private static OciFunctionInvoker invoker(OciFunctionInvokeClients invokeClients, FunctionsManagementClient managementClient) {
         new OciFunctionInvoker(
-            syncClient,
-            asyncClient,
+            invokeClients,
+            managementClientProvider(managementClient),
             JsonMapper.createDefault(),
             ConversionService.SHARED
         )
     }
 
+    private static OciFunctionInvokeClients invokeClients(FunctionsInvokeClient syncClient, FunctionsInvokeAsyncClient asyncClient) {
+        new RecordingInvokeClients(syncClient, asyncClient)
+    }
+
+    private static BeanProvider<FunctionsManagementClient> managementClientProvider(FunctionsManagementClient managementClient) {
+        [
+            isPresent: { managementClient != null },
+            get: { managementClient }
+        ] as BeanProvider<FunctionsManagementClient>
+    }
+
+    private static GetFunctionResponse functionResponse(String invokeEndpoint) {
+        GetFunctionResponse.builder()
+            .__httpStatusCode__(200)
+            .function(Function.builder().id('ocid1.fnfunc.oc1..books').invokeEndpoint(invokeEndpoint).build())
+            .build()
+    }
+
     private static OciFunctionDefinition definition() {
+        OciFunctionDefinition definition = definitionWithoutInvokeEndpoint()
+        definition.invokeEndpoint = INVOKE_ENDPOINT
+        definition
+    }
+
+    private static OciFunctionDefinition definitionWithoutInvokeEndpoint() {
         OciFunctionDefinition definition = new OciFunctionDefinition('books')
         definition.functionId = 'ocid1.fnfunc.oc1..books'
         definition
@@ -485,6 +725,77 @@ class OciFunctionClientSpec extends Specification {
         }
     }
 
+    private static final class RecordingInvokeClients implements OciFunctionInvokeClients {
+        final FunctionsInvokeClient syncClient
+        final FunctionsInvokeAsyncClient asyncClient
+        final List<String> syncEndpoints = []
+        final List<String> asyncEndpoints = []
+
+        RecordingInvokeClients(FunctionsInvokeClient syncClient, FunctionsInvokeAsyncClient asyncClient) {
+            this.syncClient = syncClient
+            this.asyncClient = asyncClient
+        }
+
+        @Override
+        FunctionsInvokeClient syncClient(String invokeEndpoint) {
+            syncEndpoints << invokeEndpoint
+            syncClient
+        }
+
+        @Override
+        FunctionsInvokeAsyncClient asyncClient(String invokeEndpoint) {
+            asyncEndpoints << invokeEndpoint
+            asyncClient
+        }
+    }
+
+    private static final class TestAuthenticationDetailsProvider implements AuthenticationDetailsProvider {
+        private static final String DUMMY_PEM_KEY = '''-----BEGIN RSA PRIVATE KEY-----
+MIIBOAIBAAJAUczpZlq0T4QOr4F1RAg/lp0CJLn56ldrmis7bDQ1+XiC3/j7DzhP
+oLCd2PWHU/jniJdWAw6wESix/nb0xs/EiQIDAQABAkAqmNqyQmnDPrGnE3NNij4S
+4JBNL8vFDOEr13eKUWYKEvAAYEnscgyWQvGb7yvAQ5z/YBYatnAjakHRDO5kXtAB
+AiEAoQm2tcP3IiBm8BxstWKJlJ3xYA1euqLFdPnAaPQ5L6ECIQCCCYE0CSeLxgWw
+YqJyStqFbAzlUO1yarWIL3L61IeL6QIgenKQYxVmzKQmoVx7rFAInOCbsJV5+h/a
+VF+zVhqdgQECIEZZ3gzI5xw3hdxngHtVA+QrEM7/eXbtREjpYstRMAQBAiAy3g7Q
+ikw16ABtUnL1IVcwxBPZpSowDd5G3bcJyt+NSQ==
+-----END RSA PRIVATE KEY-----'''
+
+        @Override
+        String getKeyId() {
+            'ocid1.tenancy.oc1..test/ocid1.user.oc1..test/00:00'
+        }
+
+        @Override
+        InputStream getPrivateKey() {
+            new ByteArrayInputStream(DUMMY_PEM_KEY.getBytes(StandardCharsets.UTF_8))
+        }
+
+        @Override
+        String getPassPhrase() {
+            null
+        }
+
+        @Override
+        char[] getPassphraseCharacters() {
+            new char[0]
+        }
+
+        @Override
+        String getFingerprint() {
+            '00:00'
+        }
+
+        @Override
+        String getTenantId() {
+            'ocid1.tenancy.oc1..test'
+        }
+
+        @Override
+        String getUserId() {
+            'ocid1.user.oc1..test'
+        }
+    }
+
     @FunctionClient
     static interface BookClient {
         Map<String, Object> micronautFunction(@Body Map<String, Object> book)
@@ -498,15 +809,15 @@ class OciFunctionClientSpec extends Specification {
     static class MockFunctionClients {
 
         @Singleton
-        @Replaces(FunctionsInvokeClient)
-        FunctionsInvokeClient syncClient() {
-            mockSyncClient
+        @Replaces(OciFunctionInvokeClients)
+        OciFunctionInvokeClients invokeClients() {
+            mockInvokeClients
         }
 
         @Singleton
-        @Replaces(FunctionsInvokeAsyncClient)
-        FunctionsInvokeAsyncClient asyncClient() {
-            mockAsyncClient
+        @Replaces(FunctionsManagementClient)
+        FunctionsManagementClient managementClient() {
+            mockManagementClient
         }
     }
 }

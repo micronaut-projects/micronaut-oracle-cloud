@@ -35,6 +35,7 @@ public class OciFunctionDefinition implements FunctionDefinition {
 
     private final String name;
     private String functionId;
+    private @Nullable String invokeEndpoint;
     private InvokeFunctionRequest.FnIntent fnIntent;
     private InvokeFunctionRequest.FnInvokeType fnInvokeType;
     private @Nullable String opcRequestId;
@@ -64,6 +65,26 @@ public class OciFunctionDefinition implements FunctionDefinition {
      */
     public void setFunctionId(String functionId) {
         this.functionId = functionId;
+    }
+
+    /**
+     * The invoke endpoint of the function, for example
+     * {@code https://<unique-id>.<region>.functions.oci.oraclecloud.com}. When not configured, the endpoint is
+     * resolved once from the function metadata with {@link com.oracle.bmc.functions.FunctionsManagementClient}.
+     *
+     * @return The optional invoke endpoint of the function.
+     * @since 6.2.5
+     */
+    public @Nullable String getInvokeEndpoint() {
+        return invokeEndpoint;
+    }
+
+    /**
+     * @param invokeEndpoint The optional invoke endpoint of the function.
+     * @since 6.2.5
+     */
+    public void setInvokeEndpoint(@Nullable String invokeEndpoint) {
+        this.invokeEndpoint = invokeEndpoint;
     }
 
     /**
