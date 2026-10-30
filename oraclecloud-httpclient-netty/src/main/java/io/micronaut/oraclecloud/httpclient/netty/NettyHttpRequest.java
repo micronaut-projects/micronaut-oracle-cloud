@@ -82,6 +82,7 @@ final class NettyHttpRequest implements HttpRequest {
 
     private Executor offloadExecutor;
     private BlockHint blockHint;
+    private Thread blockingThread;
 
     private boolean expectContinue;
     private Object returningBody;
@@ -112,6 +113,7 @@ final class NettyHttpRequest implements HttpRequest {
         this.query = new StringBuilder(from.query);
         this.offloadExecutor = from.offloadExecutor;
         this.blockHint = from.blockHint;
+        this.blockingThread = from.blockingThread;
         this.expectContinue = from.expectContinue;
 
         this.returningBody = from.returningBody;
@@ -251,6 +253,7 @@ final class NettyHttpRequest implements HttpRequest {
         // this is technically not what this setter is for, but offloadExecutor() is only called in
         // callSync and always at top level, i.e. in the thread that will actually block.
         this.blockHint = BlockHint.willBlockThisThread();
+        this.blockingThread = Thread.currentThread();
         return this;
     }
 
@@ -268,6 +271,10 @@ final class NettyHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
+        if (NettyHttpClient.isBlockingOperationOnEventLoop(blockingThread)) {
+            return CompletableFuture.failedFuture(NettyHttpClient.blockingOperationOnEventLoopException());
+        }
+
         // jersey client buffers even when BUFFER_REQUEST is off, if the content length is not explicitly set.
         if (blockingBody != null && (client.buffered || blockingContentLength == UNKNOWN_CONTENT_LENGTH) && !expectContinue) {
 

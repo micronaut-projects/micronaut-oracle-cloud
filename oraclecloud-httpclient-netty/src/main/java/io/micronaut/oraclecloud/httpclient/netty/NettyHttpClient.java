@@ -28,6 +28,7 @@ import io.micronaut.core.order.OrderUtil;
 import io.micronaut.http.client.DefaultHttpClientConfiguration;
 import io.micronaut.http.client.HttpVersionSelection;
 import io.micronaut.http.client.RawHttpClient;
+import io.micronaut.http.client.exceptions.HttpClientException;
 import io.micronaut.http.client.exceptions.ResponseClosedException;
 import io.micronaut.http.client.netty.ConnectionManager;
 import io.micronaut.http.client.netty.DefaultHttpClient;
@@ -36,6 +37,7 @@ import io.micronaut.oraclecloud.serde.OciSdkMicronautSerializer;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelException;
 import io.netty.handler.codec.PrematureChannelClosureException;
+import io.netty.util.concurrent.FastThreadLocalThread;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +79,10 @@ final class NettyHttpClient implements HttpClient {
     private static final boolean LEGACY_NETTY_CLIENT = Boolean.getBoolean("io.micronaut.oraclecloud.httpclient.netty.legacy-netty-client");
 
     private static final Logger LOG = LoggerFactory.getLogger(NettyHttpClient.class);
+    private static final String BLOCKING_EVENT_LOOP_MESSAGE = "You are trying to run a BlockingHttpClient operation on a netty event "
+        + "loop thread. This is a common cause for bugs: Event loops should never be blocked. "
+        + "You can either mark your controller as @ExecuteOn(TaskExecutors.BLOCKING), or use the reactive HTTP client "
+        + "to resolve this bug.";
 
     final boolean legacyNettyClient;
     final boolean hasContext;
@@ -171,6 +177,26 @@ final class NettyHttpClient implements HttpClient {
         }
         // Failed stages must also use the sync caller: OCI retry callbacks can sleep.
         return stage.exceptionallyComposeAsync(CompletableFuture::failedFuture, executor);
+    }
+
+    /**
+     * Whether a synchronous request would block a netty event loop. The relevant thread is the one that
+     * called {@code HttpRequest.offloadExecutor(Executor)}, i.e. the caller of {@code callSync} that waits
+     * for the result, and not the thread that happens to call {@code execute()}: the OCI SDK re-executes
+     * retried and token-refreshed requests from a continuation of the previous attempt, which may run on the
+     * event loop that completed that attempt while the caller keeps waiting on its own thread.
+     *
+     * @param blockingThread The thread that will block waiting for the response, or {@code null} for
+     *                       asynchronous requests
+     * @return {@code true} if the request must be rejected
+     */
+    static boolean isBlockingOperationOnEventLoop(Thread blockingThread) {
+        return blockingThread instanceof FastThreadLocalThread fastThreadLocalThread
+            && !fastThreadLocalThread.permitBlockingCalls();
+    }
+
+    static HttpClientException blockingOperationOnEventLoopException() {
+        return new HttpClientException(BLOCKING_EVENT_LOOP_MESSAGE);
     }
 
     String baseUri() {
