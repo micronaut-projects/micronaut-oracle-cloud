@@ -179,10 +179,19 @@ final class NettyHttpClient implements HttpClient {
         return stage.exceptionallyComposeAsync(CompletableFuture::failedFuture, executor);
     }
 
-    static boolean isBlockingOperationOnEventLoop(Executor offloadExecutor) {
-        Thread thread = Thread.currentThread();
-        return offloadExecutor != null
-            && thread instanceof FastThreadLocalThread fastThreadLocalThread
+    /**
+     * Whether a synchronous request would block a netty event loop. The relevant thread is the one that
+     * called {@code HttpRequest.offloadExecutor(Executor)}, i.e. the caller of {@code callSync} that waits
+     * for the result, and not the thread that happens to call {@code execute()}: the OCI SDK re-executes
+     * retried and token-refreshed requests from a continuation of the previous attempt, which may run on the
+     * event loop that completed that attempt while the caller keeps waiting on its own thread.
+     *
+     * @param blockingThread The thread that will block waiting for the response, or {@code null} for
+     *                       asynchronous requests
+     * @return {@code true} if the request must be rejected
+     */
+    static boolean isBlockingOperationOnEventLoop(Thread blockingThread) {
+        return blockingThread instanceof FastThreadLocalThread fastThreadLocalThread
             && !fastThreadLocalThread.permitBlockingCalls();
     }
 

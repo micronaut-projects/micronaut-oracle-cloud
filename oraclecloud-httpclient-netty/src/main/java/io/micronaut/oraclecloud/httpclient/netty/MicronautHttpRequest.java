@@ -307,7 +307,7 @@ final class MicronautHttpRequest implements HttpRequest {
 
     @Override
     public CompletionStage<HttpResponse> execute() {
-        if (NettyHttpClient.isBlockingOperationOnEventLoop(offloadExecutor)) {
+        if (NettyHttpClient.isBlockingOperationOnEventLoop(blockHint)) {
             // the OCI SDK does not discard a request whose execute() fails, so release the body here
             discard();
             return CompletableFuture.failedFuture(NettyHttpClient.blockingOperationOnEventLoopException());
