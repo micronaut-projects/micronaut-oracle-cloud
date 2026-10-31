@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2025 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,13 +15,23 @@
  */
 package io.micronaut.oraclecloud.atp.jdbc;
 
+import com.oracle.bmc.database.Database;
+import com.oracle.bmc.database.requests.GenerateAutonomousDatabaseWalletRequest;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.lang.reflect.Proxy;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OracleWalletArchiveProviderTest {
 
@@ -36,11 +46,117 @@ class OracleWalletArchiveProviderTest {
         assertEquals(expected, result);
     }
 
+    @ParameterizedTest
+    @MethodSource("missingWalletPasswordCases")
+    void generatesWalletPasswordWhenNotConfigured(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+        cfg.setWalletPassword(configuredPassword);
+
+        String walletPassword = cfg.getWalletPassword();
+
+        assertSame(walletPassword, cfg.getWalletPassword());
+        assertEquals(32, walletPassword.length());
+        assertTrue(walletPassword.matches(".*[A-Za-z].*"));
+        assertTrue(walletPassword.matches(".*[0-9].*"));
+    }
+
+    @ParameterizedTest
+    @MethodSource("configuredWalletPasswordCases")
+    void preservesConfiguredWalletPassword(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+        cfg.setWalletPassword(configuredPassword);
+
+        assertEquals(configuredPassword, cfg.getWalletPassword());
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidConfiguredWalletPasswordCases")
+    void rejectsInvalidConfiguredWalletPassword(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+
+        assertThrows(IllegalArgumentException.class, () -> cfg.setWalletPassword(configuredPassword));
+    }
+
+    @ParameterizedTest
+    @MethodSource("missingWalletPasswordCases")
+    void generatesSameWalletPasswordForConcurrentAccess(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+        cfg.setWalletPassword(configuredPassword);
+
+        Set<String> walletPasswords = IntStream.range(0, 64)
+            .parallel()
+            .mapToObj(i -> cfg.getWalletPassword())
+            .collect(Collectors.toSet());
+
+        assertEquals(1, walletPasswords.size());
+    }
+
+    @ParameterizedTest
+    @MethodSource("missingWalletPasswordCases")
+    void sendsGeneratedWalletPasswordToWalletRequest(String configuredPassword) {
+        AutonomousDatabaseConfiguration cfg = new AutonomousDatabaseConfiguration();
+        cfg.setOcid("ocid1.autonomousdatabase.oc1..example");
+        cfg.setServiceAlias("example_high");
+        cfg.setWalletPassword(configuredPassword);
+        OracleWalletArchiveProvider provider = new OracleWalletArchiveProvider(databaseCapturingWalletRequest());
+
+        assertThrows(ExpectedRequestCapturedException.class, () -> provider.loadWalletArchive(cfg));
+    }
+
     private static Stream<Arguments> aliasCases() {
         return Stream.of(
             Arguments.of(null, null, "mydb", "mydb_high"),
             Arguments.of(null, "tp", "mydb", "mydb_tp"),
             Arguments.of("custom_alias", "tp", "mydb", "custom_alias")
         );
+    }
+
+    private static Stream<Arguments> missingWalletPasswordCases() {
+        return Stream.of(
+            Arguments.of((String) null),
+            Arguments.of(""),
+            Arguments.of("   ")
+        );
+    }
+
+    private static Stream<Arguments> configuredWalletPasswordCases() {
+        return Stream.of(
+            Arguments.of("micronaut.1"),
+            Arguments.of("micronaut!"),
+            Arguments.of("abcdefghijklmnopqrstuvwxyz123456")
+        );
+    }
+
+    private static Stream<Arguments> invalidConfiguredWalletPasswordCases() {
+        return Stream.of(
+            Arguments.of("short1"),
+            Arguments.of("abcdefgh"),
+            Arguments.of("12345678"),
+            Arguments.of("abcdefg ")
+        );
+    }
+
+    private static Database databaseCapturingWalletRequest() {
+        return (Database) Proxy.newProxyInstance(
+            Database.class.getClassLoader(),
+            new Class<?>[] { Database.class },
+            (proxy, method, args) -> {
+                if ("generateAutonomousDatabaseWallet".equals(method.getName())) {
+                    GenerateAutonomousDatabaseWalletRequest request = (GenerateAutonomousDatabaseWalletRequest) args[0];
+                    String password = request.getGenerateAutonomousDatabaseWalletDetails().getPassword();
+                    assertNotNull(password);
+                    assertEquals(32, password.length());
+                    assertTrue(password.matches(".*[A-Za-z].*"));
+                    assertTrue(password.matches(".*[0-9].*"));
+                    throw new ExpectedRequestCapturedException();
+                }
+                if ("toString".equals(method.getName())) {
+                    return "Database proxy";
+                }
+                throw new UnsupportedOperationException(method.getName());
+            });
+    }
+
+    private static final class ExpectedRequestCapturedException extends RuntimeException {
     }
 }

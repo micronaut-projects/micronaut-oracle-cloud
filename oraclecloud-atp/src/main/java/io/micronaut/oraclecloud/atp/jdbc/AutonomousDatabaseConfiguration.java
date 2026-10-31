@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2020 original authors
+ * Copyright 2017-2026 original authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.EachProperty;
 import io.micronaut.jdbc.BasicJdbcConfiguration;
 
+import java.security.SecureRandom;
+
 /**
  * Configuration properties for the automated oracle wallet download and configuration.
  *
@@ -29,6 +31,19 @@ import io.micronaut.jdbc.BasicJdbcConfiguration;
 @EachProperty(value = BasicJdbcConfiguration.PREFIX, primary = "default")
 @Context
 public class AutonomousDatabaseConfiguration {
+
+    private static final int GENERATED_WALLET_VALUE_LENGTH = 32;
+
+    private static final int MIN_WALLET_VALUE_LENGTH = 8;
+
+    private static final char[] ALPHABETIC_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
+
+    private static final char[] NUMERIC_CHARS = "0123456789".toCharArray();
+
+    private static final char[] ALPHANUMERIC_CHARS =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789".toCharArray();
+
+    private static final SecureRandom SECURE_RANDOM = new SecureRandom();
 
     private String ocid;
 
@@ -62,14 +77,20 @@ public class AutonomousDatabaseConfiguration {
     /**
      * @return wallet password
      */
-    public String getWalletPassword() {
+    public synchronized String getWalletPassword() {
+        if (walletPassword == null || walletPassword.isBlank()) {
+            walletPassword = generateWalletPassword();
+        }
         return walletPassword;
     }
 
     /**
      * @param walletPassword wallet password
      */
-    public void setWalletPassword(String walletPassword) {
+    public synchronized void setWalletPassword(String walletPassword) {
+        if (walletPassword != null && !walletPassword.isBlank()) {
+            validateConfiguredWalletValue(walletPassword);
+        }
         this.walletPassword = walletPassword;
     }
 
@@ -113,5 +134,42 @@ public class AutonomousDatabaseConfiguration {
      */
     public void setServiceAliasSuffix(String serviceAliasSuffix) {
         this.serviceAliasSuffix = serviceAliasSuffix;
+    }
+
+    private static String generateWalletPassword() {
+        char[] password = new char[GENERATED_WALLET_VALUE_LENGTH];
+        password[0] = randomChar(ALPHABETIC_CHARS);
+        password[1] = randomChar(NUMERIC_CHARS);
+        for (int i = 2; i < password.length; i++) {
+            password[i] = randomChar(ALPHANUMERIC_CHARS);
+        }
+        shuffle(password);
+        return new String(password);
+    }
+
+    private static void validateConfiguredWalletValue(String walletPassword) {
+        if (walletPassword.length() < MIN_WALLET_VALUE_LENGTH
+                || walletPassword.chars().noneMatch(Character::isLetter)
+                || walletPassword.chars().noneMatch(AutonomousDatabaseConfiguration::isNumberOrSpecialCharacter)) {
+            throw new IllegalArgumentException(
+                    "wallet-password must be at least eight characters long and include at least one letter and one numeric or special character");
+        }
+    }
+
+    private static boolean isNumberOrSpecialCharacter(int character) {
+        return Character.isDigit(character) || (!Character.isLetterOrDigit(character) && !Character.isWhitespace(character));
+    }
+
+    private static char randomChar(char[] chars) {
+        return chars[SECURE_RANDOM.nextInt(chars.length)];
+    }
+
+    private static void shuffle(char[] password) {
+        for (int i = password.length - 1; i > 0; i--) {
+            int index = SECURE_RANDOM.nextInt(i + 1);
+            char current = password[index];
+            password[index] = password[i];
+            password[i] = current;
+        }
     }
 }

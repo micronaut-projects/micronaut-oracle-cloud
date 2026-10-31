@@ -44,6 +44,27 @@ class HikariPoolConfigurationListenerSpec extends Specification {
         context.close()
     }
 
+    void "test it connects to database when wallet password is omitted"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "datasources.default.ocid"    : atpId,
+                "datasources.default.username": userName,
+                "datasources.default.password": password
+        ], Environment.ORACLE_CLOUD)
+
+        when:
+        DataSource dataSource = context.getBean(DataSource)
+
+        then:
+        Connection connection = dataSource.getConnection()
+        ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL")
+        resultSet.next()
+        resultSet.getString(1) == "X"
+
+        cleanup:
+        context.close()
+    }
+
     void "test it skips datasource without ocid field"() {
         given:
         ApplicationContext context = ApplicationContext.run([

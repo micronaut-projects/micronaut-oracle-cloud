@@ -46,6 +46,27 @@ class UcpPoolConfigurationListenerSpec extends Specification {
         context.close()
     }
 
+    void "test it connects to database when wallet password is omitted"() {
+        given:
+        ApplicationContext context = ApplicationContext.run([
+                "datasources.default.ocid"    : atpId,
+                "datasources.default.username": userName,
+                "datasources.default.password": password
+        ], Environment.ORACLE_CLOUD)
+
+        when:
+        PoolDataSource poolDataSource = context.getBean(PoolDataSource)
+
+        then:
+        Connection connection = poolDataSource.getConnection()
+        ResultSet resultSet = connection.createStatement().executeQuery("SELECT * FROM DUAL")
+        resultSet.next()
+        resultSet.getString(1) == "X"
+
+        cleanup:
+        context.close()
+    }
+
     @PendingFeature(reason = "Requires CI config?")
     void "test it skips datasource without ocid field"() {
         given:
