@@ -1,0 +1,14 @@
+[
+  {
+    "condition": {
+      "typeReachable": "io.micrometer.core.instrument.binder.system.ProcessorMetrics"
+    },
+    "name": "com.sun.management.OperatingSystemMXBean",
+    "methods": [
+      {
+        "name": "getProcessCpuTime",
+        "parameterTypes": []
+      }
+    ]
+  }
+]
