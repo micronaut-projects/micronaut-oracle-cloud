@@ -1,7 +1,7 @@
 [versions]
 micronaut = "5.2.22"
 micronaut-platform = "5.2.5"
-fn = '1.1.31'
+fn = '1.1.28'
 graal-svm = "25.0.5"
 javapoet = '1.13.0'
 logback-json-classic = '0.1.5'
