@@ -4,7 +4,7 @@ plugins {
 
 dependencies {
     api(mn.micronaut.inject)
-    api(mnSerde.micronaut.serde.jackson)
+    implementation(mnSerde.micronaut.serde.jackson)
     api(projects.micronautOraclecloudBmcLoggingingestion)
     implementation(mnLogging.logback.classic)
     implementation(libs.logback.json.classic) {

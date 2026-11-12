@@ -21,6 +21,7 @@ import io.micronaut.serde.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * OracleCloudJsonFormatter implementation of the {@link JsonFormatter}.
@@ -30,14 +31,23 @@ import java.util.Map;
  */
 @Internal
 public final class OracleCloudJsonFormatter implements JsonFormatter {
-    private io.micronaut.serde.ObjectMapper objectMapper;
+    private final AtomicReference<ObjectMapper> objectMapper = new AtomicReference<>();
 
     @Override
     public String toJsonString(Map m) throws IOException {
-        if (objectMapper == null) {
-            objectMapper = ObjectMapper.getDefault();
+        return objectMapper().writeValueAsString(m);
+    }
+
+    private ObjectMapper objectMapper() {
+        ObjectMapper mapper = objectMapper.get();
+        if (mapper == null) {
+            ObjectMapper newMapper = ObjectMapper.create(Map.of());
+            if (objectMapper.compareAndSet(null, newMapper)) {
+                return newMapper;
+            }
+            mapper = objectMapper.get();
         }
-        return objectMapper.writeValueAsString(m);
+        return mapper;
     }
 
 }
