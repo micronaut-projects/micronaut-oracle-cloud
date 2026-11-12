@@ -10,6 +10,7 @@ functions: Oracle Functions (Serverless)
 httpFunctions: Oracle Functions HTTP (Serverless)
 autonomousDatabase: Oracle Autonomous Database
 micrometer: Micrometer Support For Oracle Monitoring
+streaming: OCI Streaming Support
 tracing: OCI Application Performance Monitoring as a Tracing Endpoint
 logging: OCI Logging service
 vault: Secure Distributed Configuration with Oracle Cloud Vault
