@@ -1,0 +1,55 @@
+The `micronaut-oraclecloud-function-client` module lets you invoke Oracle Cloud Functions from a Micronaut application with `@FunctionClient`.
+
+Add the following dependency:
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-client[]
+
+Define one or more configured OCI functions under `oci.functions`.
+The map key is the logical name used by `@FunctionClient`.
+The `function-id` value is required and must be the OCID of the OCI Function to invoke.
+
+[configuration]
+----
+oci:
+  functions:
+    list-books:
+      function-id: ocid1.fnfunc.oc1..example
+      invoke-endpoint: https://aaaaaaaaaa.eu-frankfurt-1.functions.oci.oraclecloud.com
+      fn-intent: Httprequest
+      fn-invoke-type: Sync
+----
+
+==== Invoke endpoint
+
+OCI Functions are not invoked at the regional Functions service endpoint but at the invoke endpoint of each function, for example `https://aaaaaaaaaa.eu-frankfurt-1.functions.oci.oraclecloud.com`.
+You can find the invoke endpoint of a function in the OCI Console or with `oci fn function get`.
+
+Set the `invoke-endpoint` value to invoke the function at a known invoke endpoint.
+When `invoke-endpoint` is not configured, the invoke endpoint is resolved once with the `FunctionsManagementClient` from the function metadata (`GetFunction`) and cached for the lifetime of the application.
+The identity used by the application must then be allowed to read the function (`FN_FUNCTION_READ`), in addition to invoking it.
+
+Each invoke endpoint gets its own `FunctionsInvokeClient` and `FunctionsInvokeAsyncClient`, created from the same configuration, HTTP client, client configurators and authentication as the default OCI Functions invoke clients, so functions with different invoke endpoints are never invoked through a shared client whose endpoint is changed between calls.
+
+Then create a function client interface:
+
+[source,java]
+----
+import io.micronaut.function.client.FunctionClient;
+import io.micronaut.http.annotation.Body;
+
+@FunctionClient
+interface BooksClient {
+    Book listBooks(@Body BookRequest request);
+}
+----
+
+By default, the method name is hyphenated to resolve the configured function name.
+You can use `@jakarta.inject.Named` on a method to invoke a differently named function definition.
+
+The request body is serialized to JSON and sent with `InvokeFunctionRequest`.
+For non-void return types, a non-empty response stream is decoded as JSON to the method return type.
+Plain text and binary response bodies are not passed through directly; functions should return JSON-compatible payloads for client methods that expect a value.
+Reactive return types are supported when Micronaut can convert from a Reactive Streams `Publisher`.
+
+When `fn-invoke-type` is set to `Detached`, OCI Functions returns after starting the function and does not return function output to the client.
+Use `void`, `Void`, or nullable/reactive-null-aware return handling for detached client methods.
