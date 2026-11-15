@@ -1,13 +1,13 @@
 [versions]
-micronaut = "5.2.22"
-micronaut-platform = "5.2.5"
+micronaut = "5.2.23"
+micronaut-platform = "5.2.6"
 fn = '1.1.28'
 graal-svm = "25.0.5"
 javapoet = '1.13.0'
 logback-json-classic = '0.1.5'
 objenesis = "3.6"
 oracle-database-security = "21.24.0.0"
-oci = "3.100.0"
+oci = "3.101.0"
 protobuf = '0.10.1'
 shadow = '9.6.1'
 slf4j-jcl = '2.0.20'
@@ -32,7 +32,7 @@ micronaut-validation = "5.2.1"
 
 #TODO remove these versions once dependencies do not bring vulnerable versions of these libraries
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-48924?component-type=maven&component-name=org.apache.commons%2Fcommons-lang3
-commons-lang3 = "3.21.0"
+commons-lang3 = "3.22.0"
 #https://ossindex.sonatype.org/vulnerability/CVE-2025-53864?component-type=maven&component-name=com.google.code.gson%2Fgson
 gson = "2.15.0"
 [libraries]
