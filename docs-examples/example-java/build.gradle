@@ -8,6 +8,7 @@ dependencies {
     // @SdkImport (example.SdkImports) generates the client factory at compile time
     annotationProcessor(projects.micronautOraclecloudSerdeProcessor)
     annotationProcessor(mnSourcegen.micronaut.sourcegen.generator.java)
+    annotationProcessor(mnSerde.micronaut.serde.processor)
     implementation(mn.micronaut.http.server.netty)
     implementation(mnReactor.micronaut.reactor)
     implementation(mnSerde.micronaut.serde.jackson)
@@ -18,6 +19,7 @@ dependencies {
     implementation(libs.oci.disasterrecovery) {
         exclude group: 'org.javassist', module: 'javassist'
     }
+    implementation(projects.micronautOraclecloudNotifications)
     runtimeOnly(mn.snakeyaml)
     runtimeOnly(mnLogging.logback.classic)
     testImplementation(libs.commons.lang3)
