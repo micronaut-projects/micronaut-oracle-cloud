@@ -69,6 +69,12 @@ dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function[]
 
 Provides the api:oci.function.OciFunction[] superclass that you can subclass to write Oracle Cloud Functions in Micronaut that can use Micronaut dependency injection.
 
+=== micronaut-oraclecloud-function-client
+
+dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-client[]
+
+Provides support for invoking Oracle Cloud Functions with `@FunctionClient`.
+
 === micronaut-oraclecloud-function-http
 
 dependency:io.micronaut.oraclecloud:micronaut-oraclecloud-function-http[]
