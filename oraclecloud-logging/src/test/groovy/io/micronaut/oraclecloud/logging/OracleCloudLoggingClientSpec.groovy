@@ -21,5 +21,37 @@ class OracleCloudLoggingClientSpec extends Specification {
         context.close()
     }
 
+    def "readable property injection works with oracle logging on the classpath"() {
+        given:
+        new OracleCloudJsonFormatter().toJsonString([message: "starting"])
+        ApplicationContext context = ApplicationContext.run([
+                "spec.name"     : "OracleCloudLoggingClientSpec",
+                "app.filepath"  : "classpath:data/addresses.csv",
+                "oci.logging.enabled": "true",
+        ], Environment.ORACLE_CLOUD)
+
+        when:
+        ReadableConfiguration configuration = context.getBean(ReadableConfiguration)
+
+        then:
+        configuration.readable.exists()
+        configuration.readable.name.endsWith("addresses.csv")
+
+        cleanup:
+        context.close()
+    }
+
+    def "json formatter reuses isolated object mapper"() {
+        given:
+        OracleCloudJsonFormatter formatter = new OracleCloudJsonFormatter()
+
+        when:
+        formatter.toJsonString([message: "starting"])
+        def objectMapper = formatter.@objectMapper.get()
+        formatter.toJsonString([message: "started"])
+
+        then:
+        formatter.@objectMapper.get().is(objectMapper)
+    }
 
 }
